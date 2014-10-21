@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-15 09:36+0200\n"
+"POT-Creation-Date: 2014-10-21 17:18+0200\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -67,11 +67,11 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:151 ../src/toolbar.py:173
+#: ../src/toolbar.py:154 ../src/toolbar.py:176
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:156 ../src/toolbar.py:170 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:159 ../src/toolbar.py:173 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
@@ -87,30 +87,39 @@ msgstr "Tous les genres"
 msgid "Populars albums"
 msgstr "Albums populaires"
 
-#: ../src/notification.py:40 ../data/headerbar.ui.h:1
+#: ../src/window.py:268 ../src/window.py:278
+msgid "Compilations"
+msgstr "Compilations"
+
+#: ../src/notification.py:41 ../data/headerbar.ui.h:1
 msgid "Previous"
 msgstr "Précédent"
 
-#: ../src/notification.py:42 ../data/headerbar.ui.h:3
+#: ../src/notification.py:43 ../data/headerbar.ui.h:3
 msgid "Next"
 msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:62
+#: ../src/notification.py:64
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database.py:190 ../src/database.py:229 ../src/database.py:255
-#: ../src/database.py:331
+#: ../src/database.py:215 ../src/database.py:269 ../src/database.py:375
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/playlist.py:78
+#: ../src/database.py:263
+msgid "Many artists"
+msgstr "Plusieurs artists"
+
+#: ../src/database.py:298
+msgid "Compilation"
+msgstr "Compilation"
+
+#: ../src/playlist.py:72
 msgid "Right click on a song to add it to playlist"
-msgstr ""
-"Clique droit sur une chanson pour la rajouter\n"
-" dans la liste de lecture"
+msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
