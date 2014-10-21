@@ -22,7 +22,7 @@ class AlbumArt:
 
 	_mimes = [ "jpeg", "jpg", "png", "gif" ]
 	_ART_SIZE = 200
-	_ART_SMALL_SIZE = 48
+	_ART_SMALL_SIZE = 40
 	CACHE_PATH = os.path.expanduser ("~") +  "/.cache/lollypop"
 	
 	"""
