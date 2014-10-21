@@ -59,7 +59,7 @@ class Player(GObject.GObject):
 		
 		self._bus = self._player.get_bus()
 		self._bus.add_signal_watch()
-		self.bus.connect('message::error', self._on_bus_eos)
+		self._bus.connect('message::error', self._on_bus_eos)
 		self._bus.connect('message::eos', self._on_bus_eos)
 		
 	"""
