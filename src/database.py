@@ -25,14 +25,15 @@ class Database:
 						artist_id INT NOT NULL,
 						genre_id INT NOT NULL,
 						year INT NOT NULL,
+						path TEXT NOT NULL,
 						popularity INT NOT NULL)'''
-
 	create_artists = '''CREATE TABLE artists (name TEXT NOT NULL)'''
 	create_genres = '''CREATE TABLE genres (name TEXT NOT NULL)'''
 	create_tracks = '''CREATE TABLE tracks (name TEXT NOT NULL,
 						filepath TEXT NOT NULL,
 						length INT,
 						tracknumber INT,
+						artist_id INT NOT NULL,
 						album_id INT NOT NULL)'''
 #	create_sort_index = '''CREATE INDEX index_name ON table_name(tracknumber ASC)'''
 							   
@@ -56,9 +57,9 @@ class Database:
 #				self._sql.execute(self.create_sort_index)
 				self._sql.commit()
 			except:
-				#TODO: REMOVE ME => Add year to album table
+				#TODO: REMOVE ME => Add path to album table
 				try:
-					self._sql.execute('''SELECT year from albums''')
+					self._sql.execute('''SELECT path from albums''')
 				except:
 					self._sql.execute('''DROP TABLE albums''')
 					self._sql.execute('''DROP TABLE tracks''')
@@ -89,6 +90,7 @@ class Database:
 
 	"""
 		Reset database, all datas will be lost
+		No commit needed
 	"""
 	def reset(self):
 		self._sql.execute("DELETE FROM tracks")
@@ -96,6 +98,7 @@ class Database:
 
 	"""
 		Clean database deleting orphaned entries
+		No commit needed
 	"""
 	def clean(self):
 		self._sql.execute("DELETE FROM albums WHERE NOT EXISTS (SELECT rowid FROM tracks where albums.rowid = tracks.album_id)")
@@ -103,12 +106,13 @@ class Database:
 		self._sql.execute("DELETE FROM genres WHERE NOT EXISTS (SELECT rowid FROM albums where genres.rowid = albums.genre_id)")
 		self._sql.commit()
 
+
 	"""
 		Add a new album to database
 		arg: string, int, int, int
 	"""
-	def add_album(self, name, artist_id, genre_id, year):
-		self._sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, popularity) VALUES (?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, 0))
+	def add_album(self, name, artist_id, genre_id, year, path):
+		self._sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, path, popularity) VALUES (?, ?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, path, 0))
 
 	"""
 		Add a new artist to database
@@ -128,24 +132,47 @@ class Database:
 		Add a new track to database
 		arg: string, string, int, int, int
 	"""
-	def add_track(self, name, filepath, length, tracknumber, album_id):
-		self._sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber, album_id) VALUES (?, ?, ?, ?, ?)", (name, filepath, length, tracknumber, album_id))
+	def add_track(self, name, filepath, length, tracknumber, artist_id, album_id):
+		self._sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber, artist_id, album_id) VALUES (?, ?, ?, ?, ?, ?)", (name, filepath, length, tracknumber, artist_id, album_id))
 
 	"""
 		Increment popularity field for album id
+		No commit needed
 		arg: int
 	"""
 	def set_more_popular(self, album_id):
-		result = self._sql.execute("SELECT popularity from albums where rowid=?", (album_id,))
+		result = self._sql.execute("SELECT popularity from albums WHERE rowid=?", (album_id,))
 		pop = result.fetchone()
 		if pop:
 			current = pop[0]
 		else:
 			current = 0
 		current += 1
-		self._sql.execute("UPDATE albums set popularity=? where rowid=?", (current, album_id))
+		self._sql.execute("UPDATE albums set popularity=? WHERE rowid=?", (current, album_id))
 		self._sql.commit()
-		
+
+	"""
+		Search for compilation in database, regroups albums
+		No commit needed
+	"""
+	def compilation_lookup(self):
+		albums = self._sql.execute("SELECT DISTINCT rowid, artist_id, path FROM albums")
+		for rowid, artist_id, path in albums:
+			compilation_set = False
+			other_albums = self._sql.execute("SELECT rowid FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid,artist_id,path))
+			for other_rowid in other_albums:
+				# Mark new albums as compilation (artist_id == -1)
+				if  not compilation_set:
+					print(rowid)
+					self._sql.execute("UPDATE albums SET artist_id=-1 WHERE rowid=?", (rowid,))
+					compilation_set = True
+				# Add track to compilation, delete orphaned album
+				tracks = self._sql.execute("SELECT rowid FROM tracks WHERE album_id=?", (other_rowid[0],))
+				for track in tracks:
+					self._sql.execute("UPDATE tracks SET album_id=? WHERE rowid=?", (rowid,track[0]))
+				self._sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid[0],))
+		self.commit()
+
 	"""
 		Get genre rowid by album_id
 		arg: int
@@ -263,13 +290,14 @@ class Database:
 		return artists
 
 	"""
-		Get all available artists(id, name)
+		Get all available artists(id, name) except one without an album
 		arg: int
 		ret: [(int, string)]
 	"""
 	def get_all_artists(self):
 		artists = []
-		result = self._sql.execute("SELECT rowid, name FROM artists ORDER BY name COLLATE NOCASE")
+		# Only artist that really have an album
+		result = self._sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid ORDER BY name COLLATE NOCASE")
 		for row in result:
 			artists += (row,)
 		return artists
@@ -348,10 +376,10 @@ class Database:
 		ret: string
 	"""
 	def get_album_path_by_id(self, album_id):
-		result = self._sql.execute("SELECT filepath FROM tracks where album_id=? LIMIT 1", (album_id,))
+		result = self._sql.execute("SELECT path FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v:
-			return os.path.dirname(v[0])
+			return v[0]
 		else:
 			return ""
 	
@@ -435,6 +463,18 @@ class Database:
 	def get_albums_by_genre_id(self, genre_id):
 		albums = []
 		result = self._sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
+		for row in result:
+			albums += row
+		return albums
+
+	"""
+		Get all compilations for genre id
+		arg: int
+		retr: [int]
+	"""
+	def get_compilations_by_genre_id(self, genre_id):
+		albums = []
+		result = self._sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year", (genre_id,))
 		for row in result:
 			albums += row
 		return albums

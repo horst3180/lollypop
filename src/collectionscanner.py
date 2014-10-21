@@ -70,6 +70,7 @@ class CollectionScanner:
 
 		db.commit()
 		db.clean()
+		db.compilation_lookup()
 		callback(db.get_all_genres())
 		db.close()
 
@@ -77,6 +78,8 @@ class CollectionScanner:
 		Add new file to db with tag
 	"""
 	def _add2db(self, db, filepath, tag):
+		path = os.path.dirname(filepath)
+
 		keys = tag.keys()
 		if "title" in keys:
 			title = tag["title"][0]
@@ -142,8 +145,8 @@ class CollectionScanner:
 		# Get album id, add it if missing
 		album_id = db.get_album_id(album, artist_id, genre_id)
 		if album_id == -1:
-			db.add_album(album, artist_id, genre_id, int(year))
+			db.add_album(album, artist_id, genre_id, int(year), path)
 			album_id = db.get_album_id(album, artist_id, genre_id)
 
 		# Add track to db
-		db.add_track(title, filepath, length, tracknumber, album_id)
+		db.add_track(title, filepath, length, tracknumber, artist_id, album_id)

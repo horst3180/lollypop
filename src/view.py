@@ -303,7 +303,8 @@ class AlbumView(View):
 		if self._genre_id == -1:
 			albums = self._db.get_all_albums()
 		else:
-			albums = self._db.get_albums_by_genre_id(self._genre_id)
+			albums = self._db.get_compilations_by_genre_id(self._genre_id)
+			albums += self._db.get_albums_by_genre_id(self._genre_id)
 		for album_id in albums:
 			widget = AlbumWidget(self._db, album_id)
 			widget.show()
