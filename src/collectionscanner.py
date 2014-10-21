@@ -23,8 +23,11 @@ from lollypop.utils import format_artist_name
 class CollectionScanner:
 
 	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4" ]
-	def __init__(self):
-		self._path = GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)
+	def __init__(self, paths):
+		if len(paths) > 0:
+			self._paths = paths
+		else:
+			self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
 
 	"""
 		Update database if empty
@@ -44,25 +47,26 @@ class CollectionScanner:
 	def _scan(self, callback):
 		db = Database()
 		tracks = db.get_tracks_filepath()
-		for root, dirs, files in os.walk(self._path):
-			for f in files:
-				lowername = f.lower()
-				supported = False
-				for mime in self._mimes:
-					if lowername.endswith(mime):
-						supported = True
-						break	
-				if (supported):
-					filepath = os.path.join(root, f)
-					try:
-						if filepath not in tracks:
-							tag = mutagen.File(filepath, easy = True)
-							self._add2db(db, filepath, tag)
-						else:
-							tracks.remove(filepath)
+		for path in self._paths:
+			for root, dirs, files in os.walk(path):
+				for f in files:
+					lowername = f.lower()
+					supported = False
+					for mime in self._mimes:
+						if lowername.endswith(mime):
+							supported = True
+							break	
+					if (supported):
+						filepath = os.path.join(root, f)
+						try:
+							if filepath not in tracks:
+								tag = mutagen.File(filepath, easy = True)
+								self._add2db(db, filepath, tag)
+							else:
+								tracks.remove(filepath)
 						
-					except Exception as e:
-						print("CollectionScanner::_scan(): %s" %e)
+						except Exception as e:
+							print("CollectionScanner::_scan(): %s" %e)
 
 		# Clean deleted files
 		for track in tracks:

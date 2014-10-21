@@ -648,3 +648,12 @@ class Database:
 		for row in result:
 			tracks += (row,)
 		return tracks
+
+	"""
+		Remove track id
+		arg: int
+	"""
+	def remove_track(self, path):
+		self._sql.execute("DELETE FROM tracks WHERE filepath=?", (path,))
+
+

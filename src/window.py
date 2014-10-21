@@ -34,8 +34,9 @@ class Window(Gtk.ApplicationWindow):
 		
 		self._db = db
 		self._player = player
-		self._scanner = CollectionScanner()
+
 		self._settings = Gio.Settings.new('org.gnome.Lollypop')
+		self._scanner = CollectionScanner(self._settings.get_value('music-path'))
 
 		self._artist_signal_id = 0
 

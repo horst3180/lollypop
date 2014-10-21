@@ -27,5 +27,10 @@
             <summary>Enabled genres in party mode</summary>
             <description>Ids for genres.</description>
         </key>
+  	<key type="as" name="music-path">
+            <default>[]</default>
+            <summary>Music paths</summary>
+            <description>When empty, use XDG_MUSIC_DIR</description>
+        </key>
     </schema>
 </schemalist>
