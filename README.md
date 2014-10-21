@@ -14,6 +14,7 @@ It provides:
 
 Changes:
 * 0.5.3 (not released yet):
+  - Add an gsetting option to add customs music paths
   - Handle album compilations
   - Fix performance issues
   - Better widgets for search and playlist
@@ -34,7 +35,6 @@ Tarball: https://github.com/gnumdk/lollypop-data/raw/master/lollypop-0.5.2.tar.x
 TODO:
 - Gapless playback 
 - Extract covers from files (is mutagen able?)
-- Add an gsetting option to add more music path
 - Missing covers in notify-osd
 - Drag & Drop in playlist popup (help really welcome)
 
