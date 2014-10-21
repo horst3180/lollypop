@@ -158,7 +158,7 @@ class PlayListWidget(Gtk.Popover):
 #######################
 
 	"""
-		Clear widget removing every row
+		Clear widget removing every row, use it when widget isn't visible
 	"""
 	def _clear(self):
 		for child in self._view.get_children():
@@ -168,10 +168,12 @@ class PlayListWidget(Gtk.Popover):
 		Delete item when item have been destroyed
 	"""
 	def _on_remove(self, container, widget):
-		new_playlist = []
-		for child in self._view.get_children():
-			new_playlist.append(child.get_object_id())
-		self._player.set_playlist(new_playlist)
+		# Do not remove items if we are just calling _clear()
+		if self.is_visible():
+			new_playlist = []
+			for child in self._view.get_children():
+				new_playlist.append(child.get_object_id())
+			self._player.set_playlist(new_playlist)
 
 	"""
 		Update playlist order after user drag&drop reorder
