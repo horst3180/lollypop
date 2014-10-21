@@ -13,6 +13,11 @@ It provides:
 - Replay gain
 
 Changes:
+* 0.5.3 (not released yet):
+  - Handle album compilations
+  - Fix performance issues
+  - Better widgets for search and playlist
+  - Handle specials prefix for artists
 * 0.5.2:
   - Fix Ubuntu notifications (cover not working for now)
   - Fix database reinit
@@ -27,10 +32,11 @@ Tarball: https://github.com/gnumdk/lollypop-data/raw/master/lollypop-0.5.2.tar.x
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop3.png)
 
 TODO:
-- Better search/playlist interface
+- Gapless playback 
 - Extract covers from files (is mutagen able?)
 - Add an gsetting option to add more music path
 - Missing covers in notify-osd
+- Drag & Drop in playlist popup (help really welcome)
 
 Patchs are welcome ;)
 
