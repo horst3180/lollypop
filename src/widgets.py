@@ -79,6 +79,9 @@ class AlbumWidgetSongs(Gtk.Grid):
 		self._db = db
 		self._player = player
 		self._art = AlbumArt(db)
+		self._artist_id = self._db.get_artist_id_by_album_id(album_id)
+		self._album_id = album_id
+	
 		self.set_vexpand(False)
 		self.set_hexpand(False)
 		grid = self._ui.get_object('grid2')
@@ -90,8 +93,6 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 		self._player.connect("playlist-changed", self._update_pos_labels)
 
-		self._album_id = album_id
-	
 		GLib.idle_add(self._add_tracks, album_id)
 	
 	def destroy(self):
@@ -115,15 +116,21 @@ class AlbumWidgetSongs(Gtk.Grid):
 		for track_widget in self._tracks:
 			# Update position label
 			self._update_pos_label(track_widget)
+			
+			track_name = self._db.get_track_name(track_widget.id)
+			# If we are listening to a compilation, prepend artist name
+			if self._artist_id == -1:
+				artist_name = translate_artist_name(self._db.get_artist_name_by_track_id(track_id))
+				track_name =  artist_name + " - " + track_name
 
 			# Update playing label
 			if track_widget.id == track_id:
-				track_widget.title.set_markup('<b>%s</b>' % self._db.get_track_name(track_widget.id))
+				track_widget.title.set_markup('<b>%s</b>' % track_name)
 				track_widget.playing.show()
 			else:
 				if track_widget.playing.is_visible():
 					track_widget.playing.hide()
-					track_widget.title.set_text(self._db.get_track_name(track_widget.id))
+					track_widget.title.set_text(track_name)
 
 #######################
 # PRIVATE             #
@@ -134,7 +141,12 @@ class AlbumWidgetSongs(Gtk.Grid):
 	"""
 	def _add_tracks(self, album_id):
 		i = 0
+
 		for track_id, name, filepath, length in self._db.get_tracks_by_album_id(album_id):
+			# If we are listening to a compilation, prepend artist name
+			if self._artist_id == -1:
+				artist_name = translate_artist_name(self._db.get_artist_name_by_track_id(track_id))
+				name =  artist_name + " - " + name
 			ui = Gtk.Builder()
 			self._tracks_ui.append(ui)
 			ui.add_from_resource('/org/gnome/Lollypop/TrackWidget.ui')

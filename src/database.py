@@ -61,11 +61,7 @@ class Database:
 				try:
 					self._sql.execute('''SELECT path from albums''')
 				except:
-					self._sql.execute('''DROP TABLE albums''')
-					self._sql.execute('''DROP TABLE tracks''')
-					self._sql.execute(self.create_albums)
-					self._sql.execute(self.create_tracks)
-					self.commit()
+					self.reset()
 				
 		except Exception as e:
 			print("Can't connect to %s" % self.DB_PATH)
@@ -156,22 +152,28 @@ class Database:
 		No commit needed
 	"""
 	def compilation_lookup(self):
-		albums = self._sql.execute("SELECT DISTINCT rowid, artist_id, path FROM albums")
+		albums = []
+		cursor = self._sql.execute("SELECT rowid, artist_id, path FROM albums")
+		# Copy cursor to an array
+		for rowid, artist_id, path in cursor:
+			albums.append((rowid, artist_id, path))
+
 		for rowid, artist_id, path in albums:
 			compilation_set = False
-			other_albums = self._sql.execute("SELECT rowid FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid,artist_id,path))
-			for other_rowid in other_albums:
+			other_albums = self._sql.execute("SELECT rowid, artist_id, path FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid,artist_id,path))
+			for other_rowid, other_artist_id, other_path in other_albums:
 				# Mark new albums as compilation (artist_id == -1)
 				if  not compilation_set:
 					print(rowid)
 					self._sql.execute("UPDATE albums SET artist_id=-1 WHERE rowid=?", (rowid,))
 					compilation_set = True
 				# Add track to compilation, delete orphaned album
-				tracks = self._sql.execute("SELECT rowid FROM tracks WHERE album_id=?", (other_rowid[0],))
+				tracks = self._sql.execute("SELECT rowid FROM tracks WHERE album_id=?", (other_rowid,))
 				for track in tracks:
 					self._sql.execute("UPDATE tracks SET album_id=? WHERE rowid=?", (rowid,track[0]))
-				self._sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid[0],))
-		self.commit()
+				self._sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid,))
+				albums.remove((other_rowid, other_artist_id, other_path))
+		self._sql.commit()
 
 	"""
 		Get genre rowid by album_id
@@ -225,13 +227,26 @@ class Database:
 
 
 	"""
-		Get artist rowid by name
+		Get artist id by name
 		arg: string
 		ret: int
 	"""
 	def get_artist_id_by_name(self, name):
 
 		result = self._sql.execute("SELECT rowid from artists where name=?", (name,))
+		v = result.fetchone()
+		if v:
+			return v[0]
+		else:
+			return -1
+	"""
+		Get artist id by album_id
+		arg: string
+		ret: int
+	"""
+	def get_artist_id_by_album_id(self, album_id):
+
+		result = self._sql.execute("SELECT artist_id from albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v:
 			return v[0]
@@ -252,18 +267,21 @@ class Database:
 			return _("Unknown")
 	
 	"""
-		Get artist rowid by album id
+		Get artist rowid by track id
 		arg: int
-		ret: int
+		ret: string
 	"""
-	def get_artist_id_by_album_id(self, album_id):
-		result = self._sql.execute("SELECT artist_id from albums where rowid=?", (album_id,))
+	def get_artist_name_by_track_id(self, track_id):
+		result = self._sql.execute("SELECT artists.name from artists,tracks where tracks.rowid=? and tracks.artist_id=artists.rowid", (track_id,))
 		v = result.fetchone()
 		if v:
 			return v[0]
 		else:
 			return -1
 
+	"""
+		Get artist rowid by 
+	"""
 	"""
 		Get artist name by album id
 		arg: int
@@ -275,7 +293,7 @@ class Database:
 		if v:
 			return v[0]
 		else:
-			return _("Unknown")
+			return _("Compilation")
 
 	"""
 		Get all available artists(id, name) for genre id
@@ -579,7 +597,7 @@ class Database:
 			return v[0]
 		else:
 			return ""
-			
+
 	"""
 		Get track length for track id
 		arg: int

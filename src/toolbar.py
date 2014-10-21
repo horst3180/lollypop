@@ -113,7 +113,7 @@ class Toolbar(GObject.GObject):
 				self._cover.hide()
 			
 			title = self._db.get_track_name(track_id)
-			artist = self._db.get_artist_name_by_album_id(album_id)
+			artist = self._db.get_artist_name_by_track_id(track_id)
 			artist = translate_artist_name(artist)
 			self._title_label.set_text(title)
 			self._artist_label.set_text(artist)

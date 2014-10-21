@@ -54,7 +54,7 @@ class NotificationManager:
 	def _update_track(self, obj, track_id):
 		album_id = self._db.get_album_id_by_track_id(track_id)
 		album = self._db.get_album_name_by_id(album_id)
-		artist = self._db.get_artist_name_by_album_id(album_id)
+		artist = self._db.get_artist_name_by_track_id(track_id)
 		artist = translate_artist_name(artist)
 		title = self._db.get_track_name(track_id)
 		
