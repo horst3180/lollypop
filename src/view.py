@@ -301,7 +301,7 @@ class AlbumView(View):
 	"""   
 	def _add_albums(self):
 		if self._genre_id == -1:
-			albums = self._db.get_all_albums()
+			albums = self._db.get_all_albums_ids()
 		else:
 			albums = self._db.get_compilations_by_genre_id(self._genre_id)
 			albums += self._db.get_albums_by_genre_id(self._genre_id)

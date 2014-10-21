@@ -259,6 +259,8 @@ class Database:
 		ret: string
 	"""
 	def get_artist_name_by_id(self, id):
+		if id == -1:
+			return _("Many artists")
 		result = self._sql.execute("SELECT name from artists where rowid=?", (id,))
 		v = result.fetchone()
 		if v:
@@ -315,7 +317,7 @@ class Database:
 	def get_all_artists(self):
 		artists = []
 		# Only artist that really have an album
-		result = self._sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid ORDER BY name COLLATE NOCASE")
+		result = self._sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid) ORDER BY name COLLATE NOCASE")
 		for row in result:
 			artists += (row,)
 		return artists
@@ -412,17 +414,6 @@ class Database:
 		for row in result:
 			albums += row
 		return albums
-	
-	"""
-		Get all albums ids
-		ret: [int]
-	"""
-	def get_all_albums_ids(self):
-		albums = []
-		result = self._sql.execute("SELECT rowid FROM albums")
-		for row in result:
-			albums += row
-		return albums
 
 	"""
 		Get album ids for party mode based on party ids
@@ -439,10 +430,10 @@ class Database:
 		return albums
 
 	"""
-		Get all albums id
+		Get all albums ids
 		ret: [int]
 	"""
-	def get_all_albums(self):
+	def get_all_albums_ids(self):
 		albums = []
 		result = self._sql.execute("SELECT rowid FROM albums ORDER BY artist_id")
 		for row in result:
@@ -481,6 +472,17 @@ class Database:
 	def get_albums_by_genre_id(self, genre_id):
 		albums = []
 		result = self._sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
+		for row in result:
+			albums += row
+		return albums
+
+
+	"""
+		Get all compilations
+	"""
+	def get_all_compilations(self):
+		albums = []
+		result = self._sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year")
 		for row in result:
 			albums += row
 		return albums

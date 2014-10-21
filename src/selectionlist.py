@@ -52,10 +52,10 @@ class SelectionList(GObject.GObject):
 	"""	
 	def populate(self, values, is_artist = False):
 		self._model.clear()
-		for (id, string) in values:
+		for (object_id, string) in values:
 			if is_artist:
 				string = translate_artist_name(string)
-			self._model.append([string, id])
+			self._model.append([string, object_id])
 				
 	
 	"""
