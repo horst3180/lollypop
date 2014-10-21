@@ -102,7 +102,7 @@ class Application(Gtk.Application):
 	def do_activate(self):
 		if not self._window:
 			self._window = Window(self, self._db, self._player)
-			self._service = MediaPlayer2Service(self._db, self._player)
+			self._service = MediaPlayer2Service(self, self._db, self._player)
 			self._notifications = NotificationManager(self._player, self._db)
 
 		self._window.present()

@@ -29,10 +29,11 @@ class MediaPlayer2Service(dbus.service.Object):
 	MEDIA_PLAYER2_IFACE = 'org.mpris.MediaPlayer2'
 	MEDIA_PLAYER2_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
 
-	def __init__(self, db, player):
+	def __init__(self, app, db, player):
 		DBusGMainLoop(set_as_default=True)
 		name = dbus.service.BusName('org.mpris.MediaPlayer2.Lollypop', dbus.SessionBus())
 		dbus.service.Object.__init__(self, name, '/org/mpris/MediaPlayer2')
+		self._app = app
 		self._db = db
 		self._player = player
 		self._player.connect('current-changed', self._on_current_changed)
@@ -40,11 +41,11 @@ class MediaPlayer2Service(dbus.service.Object):
 
 	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_IFACE)
 	def Raise(self):
-		self.app.do_activate()
+		self._app.do_activate()
 
 	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_IFACE)
 	def Quit(self):
-		self.app.quit()
+		self._app.quit()
 
 	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
 	def Next(self):
