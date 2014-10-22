@@ -57,11 +57,7 @@ class Database:
 #				self._sql.execute(self.create_sort_index)
 				self._sql.commit()
 			except:
-				#TODO: REMOVE ME => Add path to album table
-				try:
-					self._sql.execute('''SELECT path from albums''')
-				except:
-					self.reset()
+				pass
 				
 		except Exception as e:
 			print("Can't connect to %s" % self.DB_PATH)
