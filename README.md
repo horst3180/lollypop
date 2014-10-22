@@ -13,7 +13,7 @@ It provides:
 - Replay gain
 
 Changes:
-* 0.6):
+* 0.6:
   - Add an gsetting option to add customs music paths
   - Handle album compilations
   - Fix performance issues
