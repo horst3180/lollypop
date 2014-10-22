@@ -17,7 +17,9 @@ Lollypop is distributed in the hope that it will be useful, but WITHOUT ANY WARR
 You should have received a copy of the GNU General Public License along with Lollypop; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.</property>
     <property name="authors">Cédric Bellegarde &lt;gnumdk@gmail.com&gt;
 </property>
-    <property name="artists">    Allan Day &lt;allanpday@gmail.com&gt;
+    <property name="artists"> 
+    Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts 
+    Allan Day &lt;allanpday@gmail.com&gt;
     Jakub Steiner &lt;jimmac@gmail.com&gt;
     William Jon McCann &lt;william.jon.mccann@gmail.com&gt;</property>
     <property name="logo_icon_name">lollypop</property>
