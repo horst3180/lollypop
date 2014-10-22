@@ -203,6 +203,8 @@ class SearchWidget(Gtk.Popover):
 		value_id = row.get_object_id()
 		if row.is_track():
 			self._player.load(value_id)
+			album_id = self._db.get_track_album_id(value_id)
+			self._db.set_more_popular(album_id)
 		else:
 			self._db.set_more_popular(value_id)
 			genre_id = self._db.get_genre_id_by_album_id(value_id)

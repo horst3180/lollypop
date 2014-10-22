@@ -500,6 +500,19 @@ class Database:
 		return albums
 
 	"""
+		Get album_id for track_id
+		arg: int
+		ret: int
+	"""
+	def get_track_album_id(self, track_id):
+		result = self._sql.execute("SELECT album_id FROM tracks where rowid=?", (track_id,))
+		v = result.fetchone()
+		if v:
+			return v[0]
+		else:
+			return -1
+
+	"""
 		Get number of tracks in an album id
 		arg: int
 		ret: int
