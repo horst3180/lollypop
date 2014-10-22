@@ -13,12 +13,13 @@ It provides:
 - Replay gain
 
 Changes:
-* 0.5.3 (not released yet):
+* 0.6 (not released yet):
   - Add an gsetting option to add customs music paths
   - Handle album compilations
   - Fix performance issues
   - Better widgets for search and playlist
   - Handle specials prefix for artists
+  - Gapless playing
 * 0.5.2:
   - Fix Ubuntu notifications (cover not working for now)
   - Fix database reinit
