@@ -7,7 +7,7 @@
     <property name="program_name" translatable="no">Lollypop</property>
     <property name="version">@PACKAGE_VERSION@</property>
     <property name="copyright" translatable="no">Copyright © 2014 Cédric Bellegarde</property>
-    <property name="comments" translatable="yes">A music player and management application for GNOME.</property>
+    <property name="comments" translatable="yes">A music player for GNOME.</property>
     <property name="website">@PACKAGE_URL@</property>
     <property name="website_label" translatable="yes">Visit Lollypop website</property>
     <property name="license" translatable="no">Lollypop is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.

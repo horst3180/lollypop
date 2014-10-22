@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-22 17:45+0200\n"
+"POT-Creation-Date: 2014-10-22 17:53+0200\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -51,9 +51,8 @@ msgid "Ids for genres."
 msgstr "Les ids des genres"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
-#, fuzzy
 msgid "Music paths"
-msgstr "Lecteur de musique"
+msgstr "Chemins de la musique"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
@@ -141,8 +140,8 @@ msgid "The the"
 msgstr "The the Les les La Le la le"
 
 #: ../data/AboutDialog.ui.in.h:1
-msgid "A music player and management application for GNOME."
-msgstr "Un lecteur de musique et une application de gestion pour GNOME."
+msgid "A music player for GNOME."
+msgstr "Lecteur de musique pour GNOME"
 
 #: ../data/AboutDialog.ui.in.h:2
 msgid "Visit Lollypop website"
@@ -187,3 +186,6 @@ msgstr "Liste de lecture"
 #: ../data/PartyDialog.ui.h:1
 msgid "Close"
 msgstr "Fermer"
+
+#~ msgid "A music player and management application for GNOME."
+#~ msgstr "Un lecteur de musique et une application de gestion pour GNOME."
