@@ -27,7 +27,7 @@ Changes:
 * 0.5.1: 
   - Fix Ubuntu install
 
-Tarball: https://github.com/gnumdk/lollypop-data/raw/master/
+Tarball: https://github.com/gnumdk/lollypop-data
 
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop1.png)
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop2.png)
