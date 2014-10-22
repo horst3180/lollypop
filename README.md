@@ -14,7 +14,7 @@ It provides:
 
 Changes:
 * 0.6:
-  - Add an gsetting option to add customs music paths
+  - Add a gsetting option to add customs music paths
   - Handle album compilations
   - Fix performance issues
   - Better widgets for search and playlist
