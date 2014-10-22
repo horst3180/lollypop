@@ -152,6 +152,7 @@ class ArtistView(View):
 			album_id = self._db.get_album_id_by_track_id(self._player.get_current_track_id())
 			self._object_id = self._db.get_artist_id_by_album_id(album_id)
 			artist_name = self._db.get_artist_name_by_id(self._object_id)
+			artist_name = translate_artist_name(artist_name)
 			self._ui.get_object('artist').set_label(artist_name)
 			for album_id in self._db.get_albums_by_artist_id(self._object_id):
 				self._populate_content(album_id)
