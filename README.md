@@ -1,4 +1,4 @@
-Lollypop 0.5.2
+Lollypop 0.6
 ========================
 
 Lollypop is a new GNOME music playing application.
@@ -13,7 +13,7 @@ It provides:
 - Replay gain
 
 Changes:
-* 0.6 (not released yet):
+* 0.6):
   - Add an gsetting option to add customs music paths
   - Handle album compilations
   - Fix performance issues
@@ -27,7 +27,7 @@ Changes:
 * 0.5.1: 
   - Fix Ubuntu install
 
-Tarball: https://github.com/gnumdk/lollypop-data/raw/master/lollypop-0.5.2.tar.xz
+Tarball: https://github.com/gnumdk/lollypop-data/raw/master/
 
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop1.png)
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop2.png)
