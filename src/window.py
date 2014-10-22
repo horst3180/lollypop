@@ -36,7 +36,8 @@ class Window(Gtk.ApplicationWindow):
 		self._player = player
 
 		self._settings = Gio.Settings.new('org.gnome.Lollypop')
-		self._scanner = CollectionScanner(self._settings.get_value('music-path'))
+		self._scanner = CollectionScanner(self._db, self._settings.get_value('music-path'))
+		self._scanner.connect("scan-finished", self._update_genres)
 
 		self._artist_signal_id = 0
 
@@ -104,7 +105,7 @@ class Window(Gtk.ApplicationWindow):
 		self._box.remove(self._view)
 		self._view = LoadingView()
 		self._box.add(self._view)
-		self._scanner.update(self._update_genres)
+		self._scanner.update()
 
 ############
 # Private  #
@@ -241,15 +242,15 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _on_mapped_window(self, obj, data):
 		if self._db.is_empty():
-			self._scanner.update(self._update_genres)
+			self._scanner.update()
 		else:
-			genres = self._db.get_all_genres()
-			self._update_genres(genres)
+			self._update_genres()
 		
 	"""
-		Update genres list with genres
+		Update list with db genres
 	"""
-	def _update_genres(self, genres):
+	def _update_genres(self, obj = None, data = None):
+		genres = self._db.get_all_genres()
 		genres.insert(0, (-1, _("All genres")))
 		genres.insert(0, (-2, _("Populars albums")))
 		self._list_genres.populate(genres)

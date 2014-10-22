@@ -54,13 +54,14 @@ class Player(GObject.GObject):
 
 		self._db = db
 		self._player = Gst.ElementFactory.make('playbin', 'player')
+		self._player.connect("about-to-finish", self._on_stream_about_to_finish)
 		self._rg_setup()
 		
 		
 		self._bus = self._player.get_bus()
 		self._bus.add_signal_watch()
-		self._bus.connect('message::error', self._on_bus_eos)
-		self._bus.connect('message::eos', self._on_bus_eos)
+		self._bus.connect('message::error', self._on_bus_error)
+		self._bus.connect('message::stream-start', self._on_stream_start)
 		
 	"""
 		Return True if player is playing
@@ -102,7 +103,6 @@ class Player(GObject.GObject):
 		self.stop()
 		self._load_track(track_id)
 		self.play()
-
 
 	"""
 		Change player state to PLAYING
@@ -181,14 +181,15 @@ class Player(GObject.GObject):
 		Play next track
 		If shuffle or party => get a random file not already played
 		Else => get next track in currents albums
+		if force is True (default), don't wait for end of stream
 	"""
-	def next(self):
+	def next(self, force = True):
 		# Look first at user playlist
 		if len(self._playlist) > 0:
 			self.load(self._playlist.pop(0))
 		# Get a random album/track
 		elif self._shuffle or self._party:
-			self._shuffle_next()
+			self._shuffle_next(force)
 		elif self._current_track_number != -1:
 			track_id = None
 			tracks = self._db.get_tracks_ids_by_album_id(self._current_track_album_id)
@@ -203,8 +204,13 @@ class Player(GObject.GObject):
 				track_id = self._db.get_tracks_ids_by_album_id(self._albums[pos])[0]
 			else:
 				self._current_track_number += 1
-				track_id = tracks[self._current_track_number]	
-			self.load(track_id)
+				track_id = tracks[self._current_track_number]
+
+			if force:
+				self.load(track_id)
+			else:
+				# Use this to ensure track start if we already get an End Of Stream
+				self._load_track_play(track_id)
 
 	"""
 		Seek current track to position
@@ -398,7 +404,7 @@ class Player(GObject.GObject):
 	"""
 		Next track in shuffle mode
 	"""
-	def _shuffle_next(self):
+	def _shuffle_next(self, force = False):
 		track_id = self._get_random()
 		# Need to clear history
 		if not track_id:
@@ -407,8 +413,14 @@ class Player(GObject.GObject):
 			self._shuffle_albums_history = []
 			self._shuffle_next()
 			return
-		self.load(track_id)
+			
 		self._current_track_album_id = self._db.get_album_id_by_track_id(track_id)
+		if force:
+			self.load(track_id)
+		else:
+			# wait for end of stream
+			self._load_track(track_id)
+
 
 	"""
 		Return a random track and make sure it has never been played
@@ -425,10 +437,27 @@ class Player(GObject.GObject):
 		return None
 
 	"""
-		On End Of Stream => next()
+		On stream start
+		Emit "current-changed" to notify others components
+		Add track to shuffle history if needed
 	"""
-	def _on_bus_eos(self, bus, message):
+	def _on_stream_start(self, bus, message):
+		self.emit("current-changed", self._current_track_id)
+		self._duration = self._db.get_track_length(self._current_track_id)
+		if self._shuffle or self._party:
+			self._shuffle_tracks_history.append(self._current_track_id)
+
+	"""
+		On error, next()
+	"""
+	def _on_bus_error(self, bus, message):
 		self.next()
+
+	"""
+		When stream is about to finish, switch to next track without gap
+	"""
+	def _on_stream_about_to_finish(self, obj):
+		self.next(False)
 
 	"""
 		Call progress callback with new position
@@ -441,14 +470,17 @@ class Player(GObject.GObject):
 		return True
 
 	"""
+		Load track_id and assure we are playing
+	"""
+	def _load_track_play(self, track_id):
+		self._load_track(track_id)
+		# We force playing 
+		self._player.set_state(Gst.State.PLAYING)
+		
+	"""
 		Load track_id
-		Emit "current-changed" to notify others components
-		Add track to shuffle history if needed
 	"""
 	def _load_track(self, track_id):
 		self._current_track_id = track_id
-		self.emit("current-changed", track_id)
 		self._player.set_property('uri', "file://"+self._db.get_track_filepath(track_id))
-		self._duration = self._db.get_track_length(track_id)
-		if self._shuffle or self._party:
-			self._shuffle_tracks_history.append(track_id)
+		

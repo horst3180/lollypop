@@ -46,7 +46,7 @@ class Database:
 				print("Can't create %s" % self.LOCAL_PATH)
 				
 		try:
-			self._sql = sqlite3.connect(self.DB_PATH)
+			self._sql = sqlite3.connect(self.DB_PATH, check_same_thread = False)
 
 			# Create db schema
 			try:
@@ -410,7 +410,7 @@ class Database:
 	"""
 	def get_albums_popular(self):
 		albums = []
-		result = self._sql.execute("SELECT rowid FROM albums where popularity!=0 ORDER BY popularity LIMIT 40")
+		result = self._sql.execute("SELECT rowid FROM albums where popularity!=0 ORDER BY popularity DESC LIMIT 40")
 		for row in result:
 			albums += row
 		return albums

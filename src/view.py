@@ -233,10 +233,8 @@ class AlbumView(View):
 		Populate albums with popular ones
 	"""			
 	def populate_popular(self):
-		# We are in a thread, can't use global db object
-		db = Database()
-		for album_id in db.get_albums_popular():
-			widget = AlbumWidget(db, album_id)
+		for album_id in self._db.get_albums_popular():
+			widget = AlbumWidget(self._db, album_id)
 			widget.show()
 			self._albumbox.insert(widget, -1)
 

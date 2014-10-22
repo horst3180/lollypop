@@ -15,15 +15,19 @@
 import os, time
 import sqlite3
 from gettext import gettext as _, ngettext    
-from gi.repository import GLib, Gdk
+from gi.repository import GLib, Gdk, GObject
 import mutagen
 from lollypop.database import Database
 from lollypop.utils import format_artist_name
 
-class CollectionScanner:
-
+class CollectionScanner(GObject.GObject):
+	__gsignals__ = {
+		'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
+	}
 	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4" ]
-	def __init__(self, paths):
+	def __init__(self, db, paths):
+		GObject.GObject.__init__(self)
+		self._db = db
 		if len(paths) > 0:
 			self._paths = paths
 		else:
@@ -31,10 +35,9 @@ class CollectionScanner:
 
 	"""
 		Update database if empty
-		Call callback with new genres items []
 	"""
-	def update(self, callback):
-		GLib.idle_add(self._scan, callback)
+	def update(self):
+		GLib.idle_add(self._scan)
 
 #######################
 # PRIVATE             #
@@ -42,11 +45,9 @@ class CollectionScanner:
 
 	"""
 		Scan music collection for music files
-		Call callback with new genres items []
 	"""
-	def _scan(self, callback):
-		db = Database()
-		tracks = db.get_tracks_filepath()
+	def _scan(self):
+		tracks = self._db.get_tracks_filepath()
 		for path in self._paths:
 			for root, dirs, files in os.walk(path):
 				for f in files:
@@ -61,7 +62,7 @@ class CollectionScanner:
 						try:
 							if filepath not in tracks:
 								tag = mutagen.File(filepath, easy = True)
-								self._add2db(db, filepath, tag)
+								self._add2db(filepath, tag)
 							else:
 								tracks.remove(filepath)
 						
@@ -70,18 +71,17 @@ class CollectionScanner:
 
 		# Clean deleted files
 		for track in tracks:
-			db.remove_track(track)
+			self._db.remove_track(track)
 
-		db.commit()
-		db.clean()
-		db.compilation_lookup()
-		callback(db.get_all_genres())
-		db.close()
+		self._db.commit()
+		self._db.clean()
+		self._db.compilation_lookup()
+		self.emit("scan-finished")
 
 	"""
 		Add new file to db with tag
 	"""
-	def _add2db(self, db, filepath, tag):
+	def _add2db(self, filepath, tag):
 		path = os.path.dirname(filepath)
 
 		keys = tag.keys()
@@ -135,22 +135,22 @@ class CollectionScanner:
 		if not year: year = 0
 
 		# Get artist id, add it if missing
-		artist_id = db.get_artist_id_by_name(artist)
+		artist_id = self._db.get_artist_id_by_name(artist)
 		if artist_id == -1:
-			db.add_artist(artist)
-			artist_id = db.get_artist_id_by_name(artist)
+			self._db.add_artist(artist)
+			artist_id = self._db.get_artist_id_by_name(artist)
 
 		# Get genre id, add genre if missing
-		genre_id = db.get_genre_id_by_name(genre)
+		genre_id = self._db.get_genre_id_by_name(genre)
 		if genre_id == -1:
-			db.add_genre(genre)
-			genre_id = db.get_genre_id_by_name(genre)
+			self._db.add_genre(genre)
+			genre_id = self._db.get_genre_id_by_name(genre)
 
 		# Get album id, add it if missing
-		album_id = db.get_album_id(album, artist_id, genre_id)
+		album_id = self._db.get_album_id(album, artist_id, genre_id)
 		if album_id == -1:
-			db.add_album(album, artist_id, genre_id, int(year), path)
-			album_id = db.get_album_id(album, artist_id, genre_id)
+			self._db.add_album(album, artist_id, genre_id, int(year), path)
+			album_id = self._db.get_album_id(album, artist_id, genre_id)
 
 		# Add track to db
-		db.add_track(title, filepath, length, tracknumber, artist_id, album_id)
+		self._db.add_track(title, filepath, length, tracknumber, artist_id, album_id)
