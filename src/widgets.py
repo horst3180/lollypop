@@ -15,9 +15,8 @@
 from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from gi.repository import GdkPixbuf
 
-from gettext import gettext as _, ngettext
+from gettext import gettext as _, ngettext        
 
-from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
 from lollypop.utils import translate_artist_name
@@ -30,20 +29,22 @@ class AlbumWidget(Gtk.Grid):
 			- Album name
 			- Artist name
 	"""
-	def __init__(self, album_id):
+	def __init__(self, db, album_id):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 		
 		self._album_id = album_id
+		self._db = db
+		self._art = AlbumArt(db)
 		
-		self._ui.get_object('cover').set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
+		self._ui.get_object('cover').set_from_pixbuf(self._art.get(album_id))
 
-		label = Objects["db"].get_album_name_by_id(album_id)
+		label = self._db.get_album_name_by_id(album_id)
 		title = self._ui.get_object('title')
 		title.set_max_width_chars(20)
 		title.set_label(label)
-		label = Objects["db"].get_artist_name_by_album_id(album_id)
+		label = self._db.get_artist_name_by_album_id(album_id)
 		label = translate_artist_name(label)
 		artist = self._ui.get_object('artist')
 		artist.set_max_width_chars(20)
@@ -58,32 +59,39 @@ class AlbumWidget(Gtk.Grid):
 
 class AlbumWidgetSongs(Gtk.Grid):
 
+	__gsignals__ = {
+        'new-playlist': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+    }
+
 	"""
 		Init album widget songs ui with a complex grid:
 			- Album cover
 			- Album name
 			- Albums tracks aligned on two columns
 	"""
-	def __init__(self, album_id):
+	def __init__(self, db, player, album_id):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidgetSongs.ui')
 		
 		self._tracks_ui = []
 		self._tracks = []
-		self.artist_id = Objects["db"].get_artist_id_by_album_id(album_id)
+		self._db = db
+		self._player = player
+		self._art = AlbumArt(db)
+		self._artist_id = self._db.get_artist_id_by_album_id(album_id)
 		self._album_id = album_id
 	
 		self.set_vexpand(False)
 		self.set_hexpand(False)
 		grid = self._ui.get_object('grid2')
-		self._nb_tracks = Objects["db"].get_tracks_count_for_album_id(album_id)
-		self._ui.get_object('cover').set_from_pixbuf(Objects["art"].get(album_id,  ART_SIZE_BIG))
-		self._ui.get_object('title').set_label(Objects["db"].get_album_name_by_id(album_id))
-		self._ui.get_object('year').set_label(Objects["db"].get_album_year_by_id(album_id))
+		self._nb_tracks = self._db.get_tracks_count_for_album_id(album_id)
+		self._ui.get_object('cover').set_from_pixbuf(self._art.get(album_id))
+		self._ui.get_object('title').set_label(self._db.get_album_name_by_id(album_id))
+		self._ui.get_object('year').set_label(self._db.get_album_year_by_id(album_id))
 		self.add(self._ui.get_object('AlbumWidgetSongs'))
 
-		Objects["player"].connect("playlist-changed", self._update_pos_labels)
+		self._player.connect("playlist-changed", self._update_pos_labels)
 
 		GLib.idle_add(self._add_tracks, album_id)
 	
@@ -109,10 +117,10 @@ class AlbumWidgetSongs(Gtk.Grid):
 			# Update position label
 			self._update_pos_label(track_widget)
 			
-			track_name = Objects["db"].get_track_name(track_widget.id)
+			track_name = self._db.get_track_name(track_widget.id)
 			# If we are listening to a compilation, prepend artist name
-			if self.artist_id == -1:
-				artist_name = translate_artist_name(Objects["db"].get_artist_name_by_track_id(track_id))
+			if self._artist_id == -1:
+				artist_name = translate_artist_name(self._db.get_artist_name_by_track_id(track_id))
 				track_name =  artist_name + " - " + track_name
 
 			# Update playing label
@@ -134,10 +142,10 @@ class AlbumWidgetSongs(Gtk.Grid):
 	def _add_tracks(self, album_id):
 		i = 0
 
-		for track_id, name, filepath, length in Objects["db"].get_tracks_by_album_id(album_id):
+		for track_id, name, filepath, length in self._db.get_tracks_by_album_id(album_id):
 			# If we are listening to a compilation, prepend artist name
-			if self.artist_id == -1:
-				artist_name = translate_artist_name(Objects["db"].get_artist_name_by_track_id(track_id))
+			if self._artist_id == -1:
+				artist_name = translate_artist_name(self._db.get_artist_name_by_track_id(track_id))
 				name =  artist_name + " - " + name
 			ui = Gtk.Builder()
 			self._tracks_ui.append(ui)
@@ -152,7 +160,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			ui.get_object('num').set_markup('<span color=\'grey\'>%d</span>' % len(self._tracks))
 			track_widget.title = ui.get_object('title')
 			track_widget.id = track_id
-			if not track_id == Objects["player"].get_current_track_id():
+			if not track_id == self._player.get_current_track_id():
 				track_widget.playing.set_no_show_all('True')
 				track_widget.title.set_text(name)
 			else:
@@ -163,7 +171,7 @@ class AlbumWidgetSongs(Gtk.Grid):
                     					   int(i / (self._nb_tracks / 2)),
                     					   int(i % (self._nb_tracks / 2)), 1, 1
                 					   )
-			ui.get_object('duration').set_text(Objects["player"].seconds_to_string(length))
+			ui.get_object('duration').set_text(self._player.seconds_to_string(length))
 			track_widget.play_pos = ui.get_object('play-pos')
 			self._update_pos_label(track_widget)
 			track_widget.show_all()
@@ -177,16 +185,13 @@ class AlbumWidgetSongs(Gtk.Grid):
 		if event.button == 1:
 			for track_widget in self._tracks:
 				if track_widget == widget:
-					Objects["player"].load(widget.id)	
-					album_id = Objects["db"].get_album_id_by_track_id(widget.id)
-					Objects["player"].set_albums(None, Objects["filter"], widget.id)
-					Objects["db"].set_more_popular(album_id)
+					self.emit("new-playlist", widget.id)
 		# Add/Remove to/from playlist		
 		else:
-			if Objects["player"].is_in_playlist(widget.id):
-				Objects["player"].del_from_playlist(widget.id)
+			if self._player.is_in_playlist(widget.id):
+				self._player.del_from_playlist(widget.id)
 			else:
-				Objects["player"].add_to_playlist(widget.id)
+				self._player.add_to_playlist(widget.id)
 			self._update_pos_labels()
 
 	"""
@@ -200,8 +205,8 @@ class AlbumWidgetSongs(Gtk.Grid):
 		Update postion label for track widget
 	"""
 	def _update_pos_label(self, track_widget):
-		if Objects["player"].is_in_playlist(track_widget.id):
-			pos = Objects["player"].get_track_position(track_widget.id) + 1
+		if self._player.is_in_playlist(track_widget.id):
+			pos = self._player.get_track_position(track_widget.id) + 1
 			track_widget.play_pos.set_text(str(pos))
 		else:
 			track_widget.play_pos.set_text("")

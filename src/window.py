@@ -15,7 +15,6 @@
 from gi.repository import Gtk, Gdk, Gio, GLib
 from gettext import gettext as _, ngettext
 
-from lollypop.config import Objects
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.database import Database
@@ -28,25 +27,30 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init window objects
 	"""
-	def __init__(self, app):
+	def __init__(self, app, db, player):
 		Gtk.ApplicationWindow.__init__(self,
 					       application=app,
 					       title=_("Lollypop"))
-		global Objects
-		Objects["settings"] = Gio.Settings.new('org.gnome.Lollypop')
-		self._scanner = CollectionScanner(Objects["settings"].get_value('music-path'))
+		
+		self._db = db
+		self._player = player
+
+		self._settings = Gio.Settings.new('org.gnome.Lollypop')
+		self._scanner = CollectionScanner(self._db, self._settings.get_value('music-path'))
 		self._scanner.connect("scan-finished", self._update_genres)
+
+		self._artist_signal_id = 0
 
 		self._setup_window()				
 		self._setup_view()
 		self._setup_media_keys()
 
-		party_settings = Objects["settings"].get_value('party-ids')
+		party_settings = self._settings.get_value('party-ids')
 		ids = []
 		for setting in party_settings:
 			if isinstance(setting, int):
 				ids.append(setting)	
-		Objects["player"].set_party_ids(ids)
+		self._player.set_party_ids(ids)
 		
 		self.connect("map-event", self._on_mapped_window)
 
@@ -61,12 +65,12 @@ class Window(Gtk.ApplicationWindow):
 		party_button = builder.get_object('button1')
 		party_button.connect("clicked", self._edit_party_close)
 		scrolled = builder.get_object('scrolledwindow1')
-		genres = Objects["db"].get_all_genres()
+		genres = self._db.get_all_genres()
 		genres.insert(0, (-1, "Populars"))
 		self._party_grid = Gtk.Grid()
 		self._party_grid.set_orientation(Gtk.Orientation.VERTICAL)
 		self._party_grid.set_property("column-spacing", 10)
-		ids = Objects["player"].get_party_ids()
+		ids = self._player.get_party_ids()
 		i = 0
 		x = 0
 		for genre_id, genre in genres:
@@ -92,10 +96,10 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def update_db(self, reinit):
 		if reinit:
-			Objects["player"].stop()
-			Objects["player"].clear_albums()
+			self._player.stop()
+			self._player.clear_albums()
 			self._toolbar.update_toolbar(None, None)
-			Objects["db"].reset()
+			self._db.reset()
 		self._list_genres.widget.hide()
 		self._list_artists.widget.hide()
 		self._box.remove(self._view)
@@ -111,7 +115,7 @@ class Window(Gtk.ApplicationWindow):
 		Update party ids when use change a switch in dialog
 	"""
 	def _party_switch_state(self, widget, state, genre_id):
-		ids = Objects["player"].get_party_ids()
+		ids = self._player.get_party_ids()
 		if state:
 			try:
 				ids.append(genre_id)
@@ -122,8 +126,8 @@ class Window(Gtk.ApplicationWindow):
 				ids.remove(genre_id)
 			except:
 				pass
-		Objects["player"].set_party_ids(ids)
-		Objects["settings"].set_value('party-ids',  GLib.Variant('ai', ids))
+		self._player.set_party_ids(ids)
+		self._settings.set_value('party-ids',  GLib.Variant('ai', ids))
 		
 
 	"""
@@ -174,13 +178,13 @@ class Window(Gtk.ApplicationWindow):
 			return
 		response = parameters.get_child_value(1).get_string()
 		if 'Play' in response:
-			Objects["player"].play_pause()
+			self._player.play_pause()
 		elif 'Stop' in response:
-			Objects["player"].stop()
+			self._player.stop()
 		elif 'Next' in response:
-			Objects["player"].next()
+			self._player.next()
 		elif 'Previous' in response:
-			Objects["player"].prev()
+			self._player.prev()
 	
 	"""
 		Setup window icon, position and size, callback for updating this values
@@ -188,17 +192,17 @@ class Window(Gtk.ApplicationWindow):
 	def _setup_window(self):
 		self.set_size_request(200, 100)
 		self.set_icon_name('lollypop')
-		size_setting = Objects["settings"].get_value('window-size')
+		size_setting = self._settings.get_value('window-size')
 		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
 			self.resize(size_setting[0], size_setting[1])
 
-		position_setting = Objects["settings"].get_value('window-position')
+		position_setting = self._settings.get_value('window-position')
 		if len(position_setting) == 2 \
 			and isinstance(position_setting[0], int) \
 			and isinstance(position_setting[1], int):
 			self.move(position_setting[0], position_setting[1])
 
-		if Objects["settings"].get_value('window-maximized'):
+		if self._settings.get_value('window-maximized'):
 			self.maximize()
 
 		self.connect("window-state-event", self._on_window_state_event)
@@ -212,7 +216,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _setup_view(self):
 		self._box = Gtk.Grid()
-		self._toolbar = Toolbar()
+		self._toolbar = Toolbar(self._db, self._player)
 		self.set_titlebar(self._toolbar.header_bar)
 		self._toolbar.header_bar.show()
 		self._toolbar.get_infobox().connect("button-press-event", self._show_current_album)
@@ -237,7 +241,7 @@ class Window(Gtk.ApplicationWindow):
 		Pass _update_genre() as collection scanned callback
 	"""	
 	def _on_mapped_window(self, obj, data):
-		if Objects["db"].is_empty():
+		if self._db.is_empty():
 			self._scanner.update()
 		else:
 			self._update_genres()
@@ -246,7 +250,7 @@ class Window(Gtk.ApplicationWindow):
 		Update list with db genres
 	"""
 	def _update_genres(self, obj = None, data = None):
-		genres = Objects["db"].get_all_genres()
+		genres = self._db.get_all_genres()
 		genres.insert(0, (-1, _("All genres")))
 		genres.insert(0, (-2, _("Populars albums")))
 		self._list_genres.populate(genres)
@@ -257,31 +261,28 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Update artist list for genre_id
 	"""
-	def _update_artists(self, obj, filter_id):
-		try:
-			self._list_artists.disconnect_by_func(self._update_view_artist)
-		except:
-			pass
-		Objects["filter"] = filter_id
-		if filter_id == -1:
-			values = Objects["db"].get_all_artists()
-			if len(Objects["db"].get_all_compilations()) > 0:
+	def _update_artists(self, obj, genre_id):
+		if self._artist_signal_id:
+			self._list_artists.disconnect(self._artist_signal_id)
+		if genre_id == -1:
+			values = self._db.get_all_artists()
+			if len(self._db.get_all_compilations()) > 0:
 				values.insert(0, (-1, _("Compilations")))
 			self._list_artists.populate(values, True)
-			self._update_view_albums()
+			self._update_view_albums(self, -1)
 			self._list_artists.widget.show()
-		elif filter_id == -2:
+		elif genre_id == -2:
 			self._update_view_populars_albums()
 			self._list_artists.widget.hide()
 		else:
-			values = Objects["db"].get_artists_by_genre_id(filter_id)
-			if len(Objects["db"].get_compilations_by_genre_id(filter_id)) > 0:
+			values = self._db.get_artists_by_genre_id(genre_id)
+			if len(self._db.get_compilations_by_genre_id(genre_id)) > 0:
 				values.insert(0, (-1, _("Compilations")))
 			self._list_artists.populate(values, True)
-			self._update_view_albums()
+			self._update_view_albums(self, genre_id)
 			self._list_artists.widget.show()
-		self._list_artists.connect('item-selected', self._update_view_artist)
-
+		self._artist_signal_id = self._list_artists.connect('item-selected', self._update_view_artist)
+		self._genre_id = genre_id
 
 	"""
 		Update artist view for artist_id
@@ -289,7 +290,7 @@ class Window(Gtk.ApplicationWindow):
 	def _update_view_artist(self, obj, artist_id):
 		self._box.remove(self._view)
 		self._view.destroy()
-		self._view = ArtistView(artist_id)
+		self._view = ArtistView(self._db, self._player, self._genre_id, artist_id)
 		self._box.add(self._view)
 		self._view.populate()
 	
@@ -299,16 +300,16 @@ class Window(Gtk.ApplicationWindow):
 	def _update_view_populars_albums(self):
 		self._box.remove(self._view)
 		self._view.destroy()
-		self._view = AlbumView()
+		self._view = AlbumView(self._db, self._player, None)
 		self._box.add(self._view)
 		self._view.populate_popular()
 	"""
 		Update albums view for genre_id
 	"""
-	def _update_view_albums(self):
+	def _update_view_albums(self, obj, genre_id):
 		self._box.remove(self._view)
 		self._view.destroy()
-		self._view = AlbumView()
+		self._view = AlbumView(self._db, self._player, genre_id)
 		self._box.add(self._view)
 		self._view.populate()
 	
@@ -317,22 +318,22 @@ class Window(Gtk.ApplicationWindow):
 	"""		
 	def _on_configure_event(self, widget, event):
 		size = widget.get_size()
-		Objects["settings"].set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
+		self._settings.set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
 
 		position = widget.get_position()
-		Objects["settings"].set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
+		self._settings.set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
 
 	"""
 		Save maximised state
 	"""
 	def _on_window_state_event(self, widget, event):
-		Objects["settings"].set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
+		self._settings.set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
 
 	"""
 		Show current album context/content
 	"""
 	def _show_current_album(self, obj, data):
-		track_id = Objects["player"].get_current_track_id()
+		track_id = self._player.get_current_track_id()
 		if  track_id != -1:
 			self._view.current_changed(False, track_id)
 

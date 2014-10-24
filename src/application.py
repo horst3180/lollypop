@@ -14,12 +14,9 @@
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify
 from gettext import gettext as _
-
-from lollypop.config import Objects
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
-from lollypop.albumart import AlbumArt
 from lollypop.mpris import MediaPlayer2Service
 from lollypop.notification import NotificationManager
 
@@ -43,9 +40,8 @@ class Application(Gtk.Application):
 		styleContext.add_provider_for_screen(screen, cssProvider,
 						     Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-		Objects["db"] = Database()
-		Objects["player"] = Player()
-		Objects["art"] = AlbumArt()
+		self._db = Database()
+		self._player = Player(self._db)
 		self._window = None
 
 	"""
@@ -105,9 +101,9 @@ class Application(Gtk.Application):
 	"""
 	def do_activate(self):
 		if not self._window:
-			self._window = Window(self)
-			self._service = MediaPlayer2Service(self)
-			self._notifications = NotificationManager()
+			self._window = Window(self, self._db, self._player)
+			self._service = MediaPlayer2Service(self, self._db, self._player)
+			self._notifications = NotificationManager(self._player, self._db)
 
 		self._window.present()
 

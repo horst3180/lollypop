@@ -14,7 +14,6 @@
 
 from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 
-from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -95,10 +94,13 @@ class SearchWidget(Gtk.Popover):
 	"""
 		Init Popover ui with a text entry and a scrolled treeview
 	"""
-	def __init__(self):
+	def __init__(self, db, player):
 		Gtk.Popover.__init__(self)
 		
+		self._db = db
+		self._player = player
 		self._timeout = None
+		self._art = AlbumArt(db)
 
 		self.set_property('height-request', 600)
 		self.set_property('width-request', 400)
@@ -163,31 +165,31 @@ class SearchWidget(Gtk.Popover):
 		self._clear()
 		searched = self._text_entry.get_text()
 
-		albums = Objects["db"].search_albums(searched)
+		albums = self._db.search_albums(searched)
 		
-		for artist_id in Objects["db"].search_artists(searched):
-			for album_id in Objects["db"].get_albums_by_artist_id(artist_id):
+		for artist_id in self._db.search_artists(searched):
+			for album_id in self._db.get_albums_by_artist_id(artist_id):
 				if (album_id, artist_id) not in albums:
 					albums.append((album_id, artist_id))
 
 		for album_id, artist_id in albums:
-			artist_name = Objects["db"].get_artist_name_by_id(artist_id)
-			album_name = Objects["db"].get_album_name_by_id(album_id)
+			artist_name = self._db.get_artist_name_by_id(artist_id)
+			album_name = self._db.get_album_name_by_id(album_id)
 			search_row = SearchRow()
 			search_row.set_artist(artist_name)
 			search_row.set_item(album_name)
-			search_row.set_cover(Objects["art"].get(album_id,  ART_SIZE_MEDIUM))
+			search_row.set_cover(self._art.get_small(album_id))
 			search_row.set_object_id(album_id)			
 			self._view.add(search_row)
 
-		for track_id, track_name in Objects["db"].search_tracks(searched):
-			album_id = Objects["db"].get_album_id_by_track_id(track_id)
-			artist_id = Objects["db"].get_artist_id_by_album_id(album_id)
-			artist_name = Objects["db"].get_artist_name_by_id(artist_id)
+		for track_id, track_name in self._db.search_tracks(searched):
+			album_id = self._db.get_album_id_by_track_id(track_id)
+			artist_id = self._db.get_artist_id_by_album_id(album_id)
+			artist_name = self._db.get_artist_name_by_id(artist_id)
 			search_row = SearchRow()
 			search_row.set_artist(artist_name)
 			search_row.set_item(track_name)
-			search_row.set_cover(Objects["art"].get(album_id, ART_SIZE_MEDIUM))
+			search_row.set_cover(self._art.get_small(album_id))
 			search_row.set_object_id(track_id)
 			search_row.track()
 			self._view.add(search_row)
@@ -200,18 +202,18 @@ class SearchWidget(Gtk.Popover):
 	def _on_activate(self, widget, row):
 		value_id = row.get_object_id()
 		if row.is_track():
-			Objects["player"].load(value_id)
-			album_id = Objects["db"].get_track_album_id(value_id)
-			Objects["db"].set_more_popular(album_id)
+			self._player.load(value_id)
+			album_id = self._db.get_track_album_id(value_id)
+			self._db.set_more_popular(album_id)
 		else:
-			Objects["db"].set_more_popular(value_id)
-			genre_id = Objects["db"].get_genre_id_by_album_id(value_id)
+			self._db.set_more_popular(value_id)
+			genre_id = self._db.get_genre_id_by_album_id(value_id)
 			# Get first track from album
-			track_id = Objects["db"].get_track_ids_by_album_id(value_id)[0]
-			artist_id = Objects["db"].get_artist_id_by_album_id(value_id)
-			Objects["player"].load(track_id)
-			if not Objects["player"].is_party():
-				Objects["db"].set_more_popular(value_id)
-				Objects["player"].set_albums(artist_id, genre_id, track_id)
+			track_id = self._db.get_track_ids_by_album_id(value_id)[0]
+			artist_id = self._db.get_artist_id_by_album_id(value_id)
+			self._player.load(track_id)
+			if not self._player.is_party():
+				self._db.set_more_popular(value_id)
+				self._player.set_albums(artist_id, genre_id, track_id)
 
 
