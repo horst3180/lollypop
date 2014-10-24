@@ -15,6 +15,7 @@
 from gi.repository import GLib, Gtk, Notify
 from gettext import gettext as _
 
+from lollypop.config import Objects
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -23,10 +24,7 @@ class NotificationManager:
 	"""
 		Init notification object with lollypop infos
 	"""
-	def __init__(self, player, db):
-		self._player = player
-		self._db = db
-		self._art = AlbumArt(db)
+	def __init__(self):
 
 		caps = Notify.get_server_caps()
 		
@@ -42,7 +40,7 @@ class NotificationManager:
 									     self._go_previous, None)
 			self._notification.add_action('media-skip-forward', _("Next"),
 									     self._go_next, None)
-		self._player.connect('current-changed', self._update_track)
+		Objects["player"].connect('current-changed', self._update_track)
 
 #######################
 # PRIVATE             #
@@ -52,13 +50,13 @@ class NotificationManager:
 		Update notification with track_id infos
 	"""
 	def _update_track(self, obj, track_id):
-		album_id = self._db.get_album_id_by_track_id(track_id)
-		album = self._db.get_album_name_by_id(album_id)
-		artist = self._db.get_artist_name_by_track_id(track_id)
+		album_id = Objects["db"].get_album_id_by_track_id(track_id)
+		album = Objects["db"].get_album_name_by_id(album_id)
+		artist = Objects["db"].get_artist_name_by_track_id(track_id)
 		artist = translate_artist_name(artist)
-		title = self._db.get_track_name(track_id)
+		title = Objects["db"].get_track_name(track_id)
 		
-		self._notification.set_hint('image-path', GLib.Variant('s', self._art.get_path(album_id)))
+		self._notification.set_hint('image-path', GLib.Variant('s', Objects["art"].get_path(album_id)))
 		self._notification.update(title,
 								  # TRANSLATORS: by refers to the artist, from to the album
 								  _("by %s, from %s") % ('<b>' + artist + '</b>',
@@ -71,10 +69,10 @@ class NotificationManager:
 		Callback for notification prev button
 	"""
 	def _go_previous(self, notification, action, data):
-		self._player.prev()
+		Objects["player"].prev()
 
 	"""
 		Callback for notification next button
 	"""
 	def _go_next(self, notification, action, data):
-		self._player.next()
+		Objects["player"].next()

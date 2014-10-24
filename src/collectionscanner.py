@@ -25,9 +25,8 @@ class CollectionScanner(GObject.GObject):
 		'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
 	}
 	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4" ]
-	def __init__(self, db, paths):
+	def __init__(self, paths):
 		GObject.GObject.__init__(self)
-		self._db = db
 		if len(paths) > 0:
 			self._paths = paths
 		else:
@@ -47,7 +46,7 @@ class CollectionScanner(GObject.GObject):
 		Scan music collection for music files
 	"""
 	def _scan(self):
-		tracks = self._db.get_tracks_filepath()
+		tracks = Objects["db"].get_tracks_filepath()
 		for path in self._paths:
 			for root, dirs, files in os.walk(path):
 				for f in files:
@@ -71,11 +70,11 @@ class CollectionScanner(GObject.GObject):
 
 		# Clean deleted files
 		for track in tracks:
-			self._db.remove_track(track)
+			Objects["db"].remove_track(track)
 
-		self._db.commit()
-		self._db.clean()
-		self._db.compilation_lookup()
+		Objects["db"].commit()
+		Objects["db"].clean()
+		Objects["db"].compilation_lookup()
 		self.emit("scan-finished")
 
 	"""
@@ -135,22 +134,22 @@ class CollectionScanner(GObject.GObject):
 		if not year: year = 0
 
 		# Get artist id, add it if missing
-		artist_id = self._db.get_artist_id_by_name(artist)
+		artist_id = Objects["db"].get_artist_id_by_name(artist)
 		if artist_id == -1:
-			self._db.add_artist(artist)
-			artist_id = self._db.get_artist_id_by_name(artist)
+			Objects["db"].add_artist(artist)
+			artist_id = Objects["db"].get_artist_id_by_name(artist)
 
 		# Get genre id, add genre if missing
-		genre_id = self._db.get_genre_id_by_name(genre)
+		genre_id = Objects["db"].get_genre_id_by_name(genre)
 		if genre_id == -1:
-			self._db.add_genre(genre)
-			genre_id = self._db.get_genre_id_by_name(genre)
+			Objects["db"].add_genre(genre)
+			genre_id = Objects["db"].get_genre_id_by_name(genre)
 
 		# Get album id, add it if missing
-		album_id = self._db.get_album_id(album, artist_id, genre_id)
+		album_id = Objects["db"].get_album_id(album, artist_id, genre_id)
 		if album_id == -1:
-			self._db.add_album(album, artist_id, genre_id, int(year), path)
-			album_id = self._db.get_album_id(album, artist_id, genre_id)
+			Objects["db"].add_album(album, artist_id, genre_id, int(year), path)
+			album_id = Objects["db"].get_album_id(album, artist_id, genre_id)
 
 		# Add track to db
-		self._db.add_track(title, filepath, length, tracknumber, artist_id, album_id)
+		Objects["db"].add_track(title, filepath, length, tracknumber, artist_id, album_id)

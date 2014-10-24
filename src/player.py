@@ -14,8 +14,11 @@
 # Many code inspiration from gnome-music at the GNOME project
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject, Gst, GstAudio
-from lollypop.database import Database
 import random
+
+from lollypop.config import Objects
+from lollypop.database import Database
+
 
 class PlaybackStatus:
     PLAYING = 0
@@ -35,7 +38,7 @@ class Player(GObject.GObject):
 	"""
 		Create a gstreamer bin and listen to signals on bus
 	"""
-	def __init__(self, db):
+	def __init__(self):
 		GObject.GObject.__init__(self)
 		Gst.init(None)
 
@@ -52,13 +55,12 @@ class Player(GObject.GObject):
 		self._party_ids = []
 		self._playlist = []
 
-		self._db = db
-		self._player = Gst.ElementFactory.make('playbin', 'player')
-		self._player.connect("about-to-finish", self._on_stream_about_to_finish)
+		self._playbin = Gst.ElementFactory.make('playbin', 'player')
+		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
 		self._rg_setup()
 		
 		
-		self._bus = self._player.get_bus()
+		self._bus = self._playbin.get_bus()
 		self._bus.add_signal_watch()
 		self._bus.connect('message::error', self._on_bus_error)
 		self._bus.connect('message::stream-start', self._on_stream_start)
@@ -67,7 +69,7 @@ class Player(GObject.GObject):
 		Return True if player is playing
 	"""
 	def is_playing(self):
-		ok, state, pending = self._player.get_state(0)
+		ok, state, pending = self._playbin.get_state(0)
 		if ok == Gst.StateChangeReturn.ASYNC:
 			return pending == Gst.State.PLAYING
 		elif ok == Gst.StateChangeReturn.SUCCESS:
@@ -82,7 +84,7 @@ class Player(GObject.GObject):
 			- PlaybackStatus.PAUSED
 	"""
 	def get_playback_status(self):
-		ok, state, pending = self._player.get_state(0)
+		ok, state, pending = self._playbin.get_state(0)
 		if ok == Gst.StateChangeReturn.ASYNC:
 			state = pending
 		elif (ok != Gst.StateChangeReturn.SUCCESS):
@@ -108,7 +110,7 @@ class Player(GObject.GObject):
 		Change player state to PLAYING
 	"""
 	def play(self):
-		self._player.set_state(Gst.State.PLAYING)
+		self._playbin.set_state(Gst.State.PLAYING)
 		if not self._timeout:
 			self._timeout = GLib.timeout_add(1000, self._update_position)
 		self.emit("playback-status-changed")
@@ -117,7 +119,7 @@ class Player(GObject.GObject):
 		Change player state to PAUSED
 	"""
 	def pause(self):
-		self._player.set_state(Gst.State.PAUSED)
+		self._playbin.set_state(Gst.State.PAUSED)
 		self.emit("playback-status-changed")
 		if self._timeout:
 			GLib.source_remove(self._timeout)
@@ -127,7 +129,7 @@ class Player(GObject.GObject):
 		Change player state to STOPPED
 	"""
 	def stop(self):
-		self._player.set_state(Gst.State.NULL)
+		self._playbin.set_state(Gst.State.NULL)
 		if self._timeout:
 			GLib.source_remove(self._timeout)
 			self._timeout = None
@@ -159,7 +161,7 @@ class Player(GObject.GObject):
 				print(e)
 				track_id = None
 		elif self._current_track_number != -1:
-			tracks = self._db.get_tracks_ids_by_album_id(self._current_track_album_id)
+			tracks = Objects["db"].get_tracks_ids_by_album_id(self._current_track_album_id)
 			if self._current_track_number <=0 : #Prev album
 				pos = self._albums.index(self._current_track_album_id)
 				if pos - 1 < 0: #we are on last album, go to first
@@ -167,9 +169,9 @@ class Player(GObject.GObject):
 				else:
 					pos -= 1
 				self._current_track_album_id = self._albums[pos]
-				tracks = self._db.get_track_ids_by_album_id(self._current_track_album_id)
+				tracks = Objects["db"].get_track_ids_by_album_id(self._current_track_album_id)
 				self._current_track_number = len(tracks) - 1
-				track_id = self._db.get_tracks_ids_by_album_id(self._albums[pos])[self._current_track_number]
+				track_id = Objects["db"].get_tracks_ids_by_album_id(self._albums[pos])[self._current_track_number]
 			else:
 				self._current_track_number -= 1
 				track_id = tracks[self._current_track_number]
@@ -192,7 +194,7 @@ class Player(GObject.GObject):
 			self._shuffle_next(force)
 		elif self._current_track_number != -1:
 			track_id = None
-			tracks = self._db.get_tracks_ids_by_album_id(self._current_track_album_id)
+			tracks = Objects["db"].get_tracks_ids_by_album_id(self._current_track_album_id)
 			if self._current_track_number + 1 >= len(tracks): #next album
 				pos = self._albums.index(self._current_track_album_id)
 				if pos +1 >= len(self._albums): #we are on last album, go to first
@@ -201,7 +203,7 @@ class Player(GObject.GObject):
 					pos += 1
 				self._current_track_album_id = self._albums[pos]
 				self._current_track_number = 0
-				track_id = self._db.get_tracks_ids_by_album_id(self._albums[pos])[0]
+				track_id = Objects["db"].get_tracks_ids_by_album_id(self._albums[pos])[0]
 			else:
 				self._current_track_number += 1
 				track_id = tracks[self._current_track_number]
@@ -216,7 +218,7 @@ class Player(GObject.GObject):
 		Seek current track to position
 	"""
 	def seek(self, position):
-		self._player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
+		self._playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
 
 	"""
 		Return current track id
@@ -236,9 +238,9 @@ class Player(GObject.GObject):
 		self._shuffle_tracks_history = []
 		self._shuffle = shuffle
 		if not shuffle and self._current_track_id != -1:
-			album_id = self._db.get_album_id_by_track_id(self._current_track_id)
-			artist_id = self._db.get_artist_id_by_album_id(album_id)
-			genre_id = self._db.get_genre_id_by_album_id(album_id)
+			album_id = Objects["db"].get_album_id_by_track_id(self._current_track_id)
+			artist_id = Objects["db"].get_artist_id_by_album_id(album_id)
+			genre_id = Objects["db"].get_genre_id_by_album_id(album_id)
 			self.set_albums(artist_id, genre_id, self._current_track_id)
 
 	"""
@@ -254,16 +256,16 @@ class Player(GObject.GObject):
 		self._shuffle_tracks_history = []
 		if party:
 			if len(self._party_ids) > 0:
-				self._albums = self._db.get_party_albums_ids(self._party_ids)
+				self._albums = Objects["db"].get_party_albums_ids(self._party_ids)
 			else:
-				self._albums = self._db.get_all_albums_ids()
+				self._albums = Objects["db"].get_all_albums_ids()
 			track_id = self._get_random()
 			self.load(track_id)
-			self._current_track_album_id = self._db.get_album_id_by_track_id(track_id)
+			self._current_track_album_id = Objects["db"].get_album_id_by_track_id(track_id)
 		else:
-			album_id = self._db.get_album_id_by_track_id(self._current_track_id)
-			artist_id = self._db.get_artist_id_by_album_id(album_id)
-			genre_id = self._db.get_genre_id_by_album_id(album_id)
+			album_id = Objects["db"].get_album_id_by_track_id(self._current_track_id)
+			artist_id = Objects["db"].get_artist_id_by_album_id(album_id)
+			genre_id = Objects["db"].get_genre_id_by_album_id(album_id)
 			self.set_albums(artist_id, genre_id, self._current_track_id)
 
 	"""
@@ -295,15 +297,15 @@ class Player(GObject.GObject):
 		self._albums = []
 		# We are in artist view, add all albums from artist for genre
 		if artist_id:
-			self._albums = self._db.get_albums_by_artist_and_genre_ids(artist_id, genre_id)
+			self._albums = Objects["db"].get_albums_by_artist_and_genre_ids(artist_id, genre_id)
 		# We are in album view, add all albums from genre
 		elif genre_id:
-			self._albums = self._db.get_albums_by_genre_id(genre_id)
+			self._albums = Objects["db"].get_albums_by_genre_id(genre_id)
 		# We are in popular view, add populars albums
 		else:
-			self._albums = self._db.get_albums_popular()
-		album_id = self._db.get_album_id_by_track_id(track_id)
-		tracks = self._db.get_tracks_ids_by_album_id(album_id)
+			self._albums = Objects["db"].get_albums_popular()
+		album_id = Objects["db"].get_album_id_by_track_id(track_id)
+		tracks = Objects["db"].get_tracks_ids_by_album_id(album_id)
 		self._current_track_number = tracks.index(track_id) 
 		self._current_track_album_id = album_id
 
@@ -399,7 +401,7 @@ class Player(GObject.GObject):
 		
 		self._rgfilter.add_pad(Gst.GhostPad.new("sink", self._rg_audioconvert1.get_static_pad("sink")))
 		
-		self._player.set_property("audio-sink", self._rgfilter)
+		self._playbin.set_property("audio-sink", self._rgfilter)
 
 	"""
 		Next track in shuffle mode
@@ -414,7 +416,7 @@ class Player(GObject.GObject):
 			self._shuffle_next()
 			return
 			
-		self._current_track_album_id = self._db.get_album_id_by_track_id(track_id)
+		self._current_track_album_id = Objects["db"].get_album_id_by_track_id(track_id)
 		if force:
 			self.load(track_id)
 		else:
@@ -427,7 +429,7 @@ class Player(GObject.GObject):
 	"""
 	def _get_random(self):
 		for album in sorted(self._albums, key=lambda *args: random.random()):
-			tracks = self._db.get_tracks_ids_by_album_id(album)
+			tracks = Objects["db"].get_tracks_ids_by_album_id(album)
 			for track in sorted(tracks, key=lambda *args: random.random()):
 				if not track in self._shuffle_tracks_history:
 					return track
@@ -443,7 +445,7 @@ class Player(GObject.GObject):
 	"""
 	def _on_stream_start(self, bus, message):
 		self.emit("current-changed", self._current_track_id)
-		self._duration = self._db.get_track_length(self._current_track_id)
+		self._duration = Objects["db"].get_track_length(self._current_track_id)
 		if self._shuffle or self._party:
 			self._shuffle_tracks_history.append(self._current_track_id)
 
@@ -464,7 +466,7 @@ class Player(GObject.GObject):
 	"""
 	def _update_position(self):
 		if self._progress_callback:
-			position = self._player.query_position(Gst.Format.TIME)[1] / 1000000000
+			position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000
 			if position > 0:
 				self._progress_callback(position * 60)
 		return True
@@ -475,12 +477,12 @@ class Player(GObject.GObject):
 	def _load_track_play(self, track_id):
 		self._load_track(track_id)
 		# We force playing 
-		self._player.set_state(Gst.State.PLAYING)
+		self._playbin.set_state(Gst.State.PLAYING)
 		
 	"""
 		Load track_id
 	"""
 	def _load_track(self, track_id):
 		self._current_track_id = track_id
-		self._player.set_property('uri', "file://"+self._db.get_track_filepath(track_id))
+		self._playbin.set_property('uri', "file://"+Objects["db"].get_track_filepath(track_id))
 		

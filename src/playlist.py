@@ -15,6 +15,7 @@
 from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
 
+from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -102,13 +103,10 @@ class PlayListWidget(Gtk.Popover):
 	"""
 		Init Popover ui with a text entry and a scrolled treeview
 	"""
-	def __init__(self, db, player):
+	def __init__(self):
 		Gtk.Popover.__init__(self)
 		
-		self._db = db
-		self._player = player
 		self._timeout = None
-		self._art = AlbumArt(db)
 		self._row_signal = None
 
 		self._view = Gtk.ListBox()
@@ -133,18 +131,18 @@ class PlayListWidget(Gtk.Popover):
 	"""
 	def show(self):
 		self._clear()
-		tracks = self._player.get_playlist()
+		tracks = Objects["player"].get_playlist()
 		if len(tracks) > 0:
 			for track_id in tracks:
-				track_name = self._db.get_track_name(track_id)
-				album_id = self._db.get_album_id_by_track_id(track_id)
-				artist_id = self._db.get_artist_id_by_album_id(album_id)
-				artist_name = self._db.get_artist_name_by_id(artist_id)
-				art = self._art.get_small(album_id)
+				track_name = Objects["db"].get_track_name(track_id)
+				album_id = Objects["db"].get_album_id_by_track_id(track_id)
+				artist_id = Objects["db"].get_artist_id_by_album_id(album_id)
+				artist_name = Objects["db"].get_artist_name_by_id(artist_id)
+				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
 				playlist_row = PlayListRow()
 				playlist_row.set_artist(artist_name)
 				playlist_row.set_title(track_name)
-				playlist_row.set_cover(self._art.get_small(album_id))
+				playlist_row.set_cover(art)
 				playlist_row.set_object_id(track_id)
 				self._view.add(playlist_row)
 		else:
@@ -173,7 +171,7 @@ class PlayListWidget(Gtk.Popover):
 			new_playlist = []
 			for child in self._view.get_children():
 				new_playlist.append(child.get_object_id())
-			self._player.set_playlist(new_playlist)
+			Objects["player"].set_playlist(new_playlist)
 
 	"""
 		Update playlist order after user drag&drop reorder
@@ -184,7 +182,7 @@ class PlayListWidget(Gtk.Popover):
 		for row in self._model:
 			if row[2]:
 				new_playlist.append(row[2])
-		self._player.set_playlist(new_playlist)
+		Objects["player"].set_playlist(new_playlist)
 
 	"""
 		Play clicked item
@@ -192,7 +190,7 @@ class PlayListWidget(Gtk.Popover):
 	def _on_activate(self, view, row):
 		
 		value_id = row.get_object_id()
-		self._player.del_from_playlist(value_id)
-		self._player.load(value_id)
+		Objects["player"].del_from_playlist(value_id)
+		Objects["player"].load(value_id)
 		view.remove(row)
 		row.destroy()

@@ -15,6 +15,7 @@
 from gettext import gettext as _, ngettext 
 from gi.repository import Gtk, GObject, Gdk
 
+from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
 from lollypop.playlist import PlayListWidget
@@ -25,15 +26,12 @@ class Toolbar(GObject.GObject):
 	"""
 		Init toolbar/headerbar ui
 	"""
-	def __init__(self, db, player):
+	def __init__(self):
 		GObject.GObject.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
 		self.header_bar = self._ui.get_object('header-bar')
 		self.header_bar.set_custom_title(self._ui.get_object('title-box'))
-		self._db = db
-		self._player = player
-		self._art = AlbumArt(db)
 		
 		self._prev_btn = self._ui.get_object('previous_button')
 		self._play_btn = self._ui.get_object('play_button')
@@ -51,9 +49,9 @@ class Toolbar(GObject.GObject):
 		self._cover = self._ui.get_object('cover')
 		self._infobox = self._ui.get_object('infobox')	
 
-		self._player.connect("playback-status-changed", self._playback_status_changed)
-		self._player.connect("current-changed", self.update_toolbar)
-		self._player.set_progress_callback(self._progress_callback)
+		Objects["player"].connect("playback-status-changed", self._playback_status_changed)
+		Objects["player"].connect("current-changed", self.update_toolbar)
+		Objects["player"].set_progress_callback(self._progress_callback)
 		
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
 		self._shuffle_btn.connect("toggled", self._shuffle_update)
@@ -69,12 +67,12 @@ class Toolbar(GObject.GObject):
 
 		search_button = self._ui.get_object('search-button')
 		search_button.connect("clicked", self._on_search_btn_clicked)
-		self._search = SearchWidget(self._db, self._player)
+		self._search = SearchWidget()
 		self._search.set_relative_to(search_button)
 
 		playlist_button = self._ui.get_object('playlist-button')
 		playlist_button.connect("clicked", self._on_playlist_btn_clicked)
-		self._playlist = PlayListWidget(self._db, self._player)
+		self._playlist = PlayListWidget()
 		self._playlist.set_relative_to(playlist_button)
 
 		self.header_bar.set_show_close_button(True)
@@ -104,23 +102,23 @@ class Toolbar(GObject.GObject):
 			self._title_label.set_text("")
 			self._artist_label.set_text("")
 		else:
-			album_id = self._db.get_album_id_by_track_id(track_id)
-			art = self._art.get_small(album_id)
+			album_id = Objects["db"].get_album_id_by_track_id(track_id)
+			art = Objects["art"].get(album_id,  ART_SIZE_SMALL)
 			if art:
 				self._cover.set_from_pixbuf(art)
 				self._cover.show()
 			else:
 				self._cover.hide()
 			
-			title = self._db.get_track_name(track_id)
-			artist = self._db.get_artist_name_by_track_id(track_id)
+			title = Objects["db"].get_track_name(track_id)
+			artist = Objects["db"].get_artist_name_by_track_id(track_id)
 			artist = translate_artist_name(artist)
 			self._title_label.set_text(title)
 			self._artist_label.set_text(artist)
 			self._progress.set_value(0.0)
-			duration = self._db.get_track_length(track_id)
+			duration = Objects["db"].get_track_length(track_id)
 			self._progress.set_range(0.0, duration * 60)
-			self._total_time_label.set_text(self._player.seconds_to_string(duration))
+			self._total_time_label.set_text(Objects["player"].seconds_to_string(duration))
 			self._total_time_label.show()
 			self._time_label.set_text("0:00")
 			self._time_label.show()
@@ -134,20 +132,20 @@ class Toolbar(GObject.GObject):
 		Seek player to scale value
 	"""	
 	def _on_progress_scale_button(self, scale, data):
-		self._player.seek(scale.get_value()/60)
+		Objects["player"].seek(scale.get_value()/60)
 	
 	"""
 		Update progress bar position and set time label
 	"""
 	def _progress_callback(self, position):
 		self._progress.set_value(position)
-		self._time_label.set_text(self._player.seconds_to_string(position/60))
+		self._time_label.set_text(Objects["player"].seconds_to_string(position/60))
 	
 	"""
 		Update buttons and progress bar
 	"""
 	def _playback_status_changed(self, obj):
-		playing = self._player.is_playing()
+		playing = Objects["player"].is_playing()
 
 		self._progress.set_sensitive(playing)
 		if playing:
@@ -162,24 +160,24 @@ class Toolbar(GObject.GObject):
 		Previous track on prev button clicked
 	"""		
 	def _on_prev_btn_clicked(self, obj):
-		self._player.prev()
+		Objects["player"].prev()
 
 	"""
 		Play/Pause on play button clicked
 	"""		
 	def _on_play_btn_clicked(self, obj):
-		if self._player.is_playing():
-			self._player.pause()
+		if Objects["player"].is_playing():
+			Objects["player"].pause()
 			self._change_play_btn_status(self._play_image, _("Play"))
 		else:
-			self._player.play()
+			Objects["player"].play()
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 
 	"""
 		Next track on next button clicked
 	"""		
 	def _on_next_btn_clicked(self, obj):
-		self._player.next()		
+		Objects["player"].next()		
 	
 	"""
 		Show search widget on search button clicked
@@ -204,7 +202,7 @@ class Toolbar(GObject.GObject):
 		Set shuffle mode on if shuffle button active
 	"""
 	def _shuffle_update(self, obj):
-		self._player.set_shuffle(self._shuffle_btn.get_active())
+		Objects["player"].set_shuffle(self._shuffle_btn.get_active())
 
 	"""
 		Set party mode on if party button active
@@ -214,4 +212,4 @@ class Toolbar(GObject.GObject):
 		active = self._party.get_active()
 		self._shuffle_btn.set_sensitive(not active)
 		settings.set_property("gtk-application-prefer-dark-theme", active)
-		self._player.set_party(active)
+		Objects["player"].set_party(active)
