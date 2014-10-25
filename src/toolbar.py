@@ -228,4 +228,4 @@ class Toolbar():
 		active = self._party_btn.get_active()
 		self._shuffle_btn.set_sensitive(not active)
 		settings.set_property("gtk-application-prefer-dark-theme", active)
-		Objects["player"].set_party_btn(active)
+		Objects["player"].set_party(active)
