@@ -65,7 +65,6 @@ class Toolbar():
 		
 		self._view_genres_btn = self._ui.get_object('genres_button')
 		self._view_genres_btn.set_active(Objects["settings"].get_value('hide-genres'))
-		self._view_genres_btn.connect('toggled', self._on_genres_btn_toggled)
 
 		search_button = self._ui.get_object('search-button')
 		search_button.connect("clicked", self._on_search_btn_clicked)
@@ -212,13 +211,6 @@ class Toolbar():
 	"""
 	def _shuffle_update(self, obj):
 		Objects["player"].set_shuffle(self._shuffle_btn.get_active())
-
-	"""
-		Set party mode on if party button active
-	"""
-	def _on_genres_btn_toggled(self, obj):
-		active = self._view_genres_btn.get_active()
-		Objects["settings"].set_value('hide-genres', GLib.Variant('b', active))
 
 	"""
 		Set party mode on if party button active

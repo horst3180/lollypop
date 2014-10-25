@@ -272,6 +272,7 @@ class Window(Gtk.ApplicationWindow):
 		Update with new genres or artist
 	"""
 	def _update_list_one(self, obj = None, data = None):
+		previous = Objects["settings"].get_value('hide-genres')
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
 			self._list_one.disconnect_by_func(self._update_view_artists)
@@ -290,7 +291,10 @@ class Window(Gtk.ApplicationWindow):
 		items.insert(0, (-1, _("All artists")))
 		items.insert(0, (-2, _("Populars albums")))
 		self._list_one.update(items, not active)
-		if not self._list_one.widget.is_visible():
+		if previous != active:
+			Objects["settings"].set_value('hide-genres', GLib.Variant('b', active))
+			self._list_one.select_first()
+		elif not self._list_one.widget.is_visible():
 			self._list_one.select_first()
 			self._list_one.widget.show()
 	"""
