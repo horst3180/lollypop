@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-24 20:35+0200\n"
+"POT-Creation-Date: 2014-10-25 18:48+0200\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -66,6 +66,10 @@ msgstr "NE PAS MODIFIER"
 msgid "Scan library at startup"
 msgstr "Scanner la collection au démarrage"
 
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "Do not show genres list"
+msgstr "Ne pas afficher la liste des genres"
+
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/application.py:39 ../src/application.py:99 ../src/window.py:34
 msgid "Lollypop"
@@ -83,11 +87,11 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:153 ../src/toolbar.py:175
+#: ../src/toolbar.py:161 ../src/toolbar.py:183
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:158 ../src/toolbar.py:172 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:166 ../src/toolbar.py:180 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
@@ -95,15 +99,15 @@ msgstr "Lecture"
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/window.py:256 ../src/window.py:268
+#: ../src/window.py:265 ../src/window.py:290
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:257 ../src/window.py:269
+#: ../src/window.py:266 ../src/window.py:291
 msgid "Populars albums"
 msgstr "Albums populaires"
 
-#: ../src/window.py:288 ../src/window.py:298
+#: ../src/window.py:308 ../src/window.py:318
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -129,7 +133,7 @@ msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popimages.py:56
+#: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
@@ -179,6 +183,10 @@ msgstr "Recherche"
 msgid "Playlist"
 msgstr "Liste de lecture"
 
+#: ../data/headerbar.ui.h:8
+msgid "Show genres"
+msgstr "Afficher les genres"
+
 #: ../data/PartyDialog.ui.h:1
 msgid "Close"
 msgstr "Fermer"
@@ -186,9 +194,6 @@ msgstr "Fermer"
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artist"
-
-#~ msgid "All genres"
-#~ msgstr "Tous les genres"
 
 #~ msgid "Unknown"
 #~ msgstr "Inconnu"
