@@ -14,11 +14,18 @@
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify
 from gettext import gettext as _
+
+from lollypop.config import Objects
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
+from lollypop.albumart import AlbumArt
 from lollypop.mpris import MediaPlayer2Service
 from lollypop.notification import NotificationManager
+from lollypop.database_albums import DatabaseAlbums
+from lollypop.database_artists import DatabaseArtists
+from lollypop.database_genres import DatabaseGenres
+from lollypop.database_tracks import DatabaseTracks
 
 class Application(Gtk.Application):
 
@@ -40,8 +47,17 @@ class Application(Gtk.Application):
 		styleContext.add_provider_for_screen(screen, cssProvider,
 						     Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-		self._db = Database()
-		self._player = Player(self._db)
+		Objects["settings"] = Gio.Settings.new('org.gnome.Lollypop')
+		Objects["db"] = Database()
+		# We store a cursor for the main thread
+		Objects["sql"] = Objects["db"].get_cursor()
+		Objects["albums"] = DatabaseAlbums()
+		Objects["artists"] = DatabaseArtists()
+		Objects["genres"] = DatabaseGenres()
+		Objects["tracks"] = DatabaseTracks()	
+		Objects["player"] = Player()
+		Objects["art"] = AlbumArt()
+
 		self._window = None
 
 	"""
@@ -49,14 +65,7 @@ class Application(Gtk.Application):
 	"""
 	def update_db(self, action, param):
 		if self._window:
-			self._window.update_db(False)
-
-	"""
-		Empty db and search for new music
-	"""
-	def reinit_db(self, action, param):
-		if self._window:
-			self._window.update_db(True)
+			self._window.update_db()
 
 	"""
 		Party dialog
@@ -94,6 +103,7 @@ class Application(Gtk.Application):
 		Destroy main window
 	"""
 	def quit(self, action=None, param=None):
+		Objects["player"].stop()
 		self._window.destroy()
 
 	"""
@@ -101,9 +111,9 @@ class Application(Gtk.Application):
 	"""
 	def do_activate(self):
 		if not self._window:
-			self._window = Window(self, self._db, self._player)
-			self._service = MediaPlayer2Service(self, self._db, self._player)
-			self._notifications = NotificationManager(self._player, self._db)
+			self._window = Window(self)
+			self._service = MediaPlayer2Service(self)
+			self._notifications = NotificationManager()
 
 		self._window.present()
 
@@ -131,10 +141,6 @@ class Application(Gtk.Application):
 		updateAction = Gio.SimpleAction.new('update_db', None)
 		updateAction.connect('activate', self.update_db)
 		self.add_action(updateAction)
-
-		reinitAction = Gio.SimpleAction.new('reinit_db', None)
-		reinitAction.connect('activate', self.reinit_db)
-		self.add_action(reinitAction)
 
 		aboutAction = Gio.SimpleAction.new('about', None)
 		aboutAction.connect('activate', self.about)

@@ -14,97 +14,124 @@
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 import cairo
-import os
+import os, json
+import urllib.request
+import urllib.parse
 from math import pi
+
+from lollypop.config import *
 from lollypop.database import Database
 
 class AlbumArt: 
 
+	_CACHE_PATH = os.path.expanduser ("~") +  "/.cache/lollypop"
 	_mimes = [ "jpeg", "jpg", "png", "gif" ]
-	_ART_SIZE = 200
-	_ART_SMALL_SIZE = 40
-	CACHE_PATH = os.path.expanduser ("~") +  "/.cache/lollypop"
 	
 	"""
 		Create cache path
 	"""	
-	def __init__(self, db):
-		self._db = db
+	def __init__(self):
 
-		if not os.path.exists(self.CACHE_PATH):
+		if not os.path.exists(self._CACHE_PATH):
 			try:
-				os.mkdir(self.CACHE_PATH)
+				os.mkdir(self._CACHE_PATH)
 			except:
-				print("Can't create %s" % self.CACHE_PATH)
+				print("Can't create %s" % self._CACHE_PATH)
 
 	"""
 		get cover cache path for album_id
 	"""
 	def get_path(self, album_id):
-		album_path = self._db.get_album_path_by_id(album_id)
-		return "%s/%s.jpg" % (self.CACHE_PATH, album_path.replace("/", "_"))
+		album_path = Objects["albums"].get_path(album_id)
+		return "%s/%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"))
+	
+	
+	"""
+		Return path for a cover art in dir
+	"""
+	def get_art_path(self, dir):
+		try:
+			for file in os.listdir (dir):
+				lowername = file.lower()
+				supported = False
+				for mime in self._mimes:
+					if lowername.endswith(mime):
+						supported = True
+						break	
+				if (supported):
+					return "%s/%s" % (dir, file)
+
+			return None
+		except:
+		    pass
 	
 	"""
 		Return pixbuf for album_id
 	"""
-	def get(self, album_id):
-		album_path = self._db.get_album_path_by_id(album_id)
-		cache_path = "%s/%s.jpg" % (self.CACHE_PATH, album_path.replace("/", "_"))
+	def get(self, album_id, size):
+		album_path = Objects["albums"].get_path(album_id)
+		CACHE_PATH = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		cached = True
 		try:
-			if not os.path.exists(cache_path):
-				path = self._get_art_path(album_path)
+			if not os.path.exists(CACHE_PATH):
+				path = self.get_art_path(album_path)
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
-																	  self._ART_SIZE, self._ART_SIZE, False)
-					pixbuf.savev(cache_path, "jpeg", ["quality"], ["90"])
+																	  size, size, False)
+					pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
 				else:
-					pixbuf = self._get_default_art()
+					pixbuf = self._get_default_art(size)
 			else:
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (cache_path,
-																 self._ART_SIZE, self._ART_SIZE)
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
+																 size, size)
 			return pixbuf
 			
 		except Exception as e:
 			print(e)
-			return self._get_default_art()			
+			return self._get_default_art(size)
+
 
 	"""
-		Return small pixbuf for album_id
+		Remove cover from cache for album id
 	"""
-	def get_small(self, album_id):
-		album_path = self._db.get_album_path_by_id(album_id)
-		cache_path = "%s/%s_small.jpg" % (self.CACHE_PATH, album_path.replace("/", "_"))
-		cached = True
+	def clean_cache(self, album_id, size):
+		album_path = Objects["albums"].get_path(album_id)
+		cache_path = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		if os.path.exists(cache_path):
+			os.remove(cache_path)
+
+	"""
+		Get arts on google image corresponding to search
+		return pixbufs array
+	"""
+	def get_google_arts(self, search):
 		try:
-			if not os.path.exists(cache_path):
-				path = self._get_art_path(album_path)
-				if path:
-					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (self._get_art_path(album_path), 												  self._ART_SMALL_SIZE,
-											  self._ART_SMALL_SIZE, False)
-					pixbuf.savev(cache_path, "jpeg", ["quality"], ["90"])
-				else:
-					pixbuf = None
-			else:
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (cache_path, self._ART_SMALL_SIZE,
-											     self._ART_SMALL_SIZE)
-			return pixbuf
-			
-		except Exception as e:
-			print(e)
+			response = urllib.request.urlopen("https://ajax.googleapis.com/ajax/services/search/images?&q=%s&v=1.0&start=0&rsz=8" %  urllib.parse.quote(search))
+		except:
 			return None
+
+		data = response.read()
+		decode = json.loads(data.decode("utf-8"))
+		urls = []
+		if not decode:
+			return None
+		for item in decode['responseData']['results']:
+			urls.append(item['url'])
+			
+		return urls
 
 #######################
 # PRIVATE             #
 #######################
 
+
 	"""
 		Return pixbuf for default album
 	"""
-	def _get_default_art(self):
+	def _get_default_art(self, size):
 		# get a small pixbuf with the given path
 		icon = Gtk.IconTheme.get_default().load_icon('folder-music-symbolic', 
-							     max(self._ART_SIZE, self._ART_SIZE) / 4, 0)
+							     max(size, size) / 4, 0)
 
 		# create an empty pixbuf with the requested size
 		result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
@@ -123,25 +150,6 @@ class AlbumArt:
 					   1, 1,
 					   GdkPixbuf.InterpType.NEAREST, 0xff)
 		return self._make_icon_frame(result)
-
-	"""
-		Return path for a cover art in dir
-	"""
-	def _get_art_path(self, dir):
-		try:
-			for file in os.listdir (dir):
-				lowername = file.lower()
-				supported = False
-				for mime in self._mimes:
-					if lowername.endswith(mime):
-						supported = True
-						break	
-				if (supported):
-					return "%s/%s" % (dir, file)
-
-			return None
-		except:
-		    pass
 
 	"""
 		Make an icon frame on pixbuf

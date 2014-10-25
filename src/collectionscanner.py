@@ -12,22 +12,33 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 # Many code inspiration from gnome-music at the GNOME project
 
-import os, time
+import os
+from time import sleep
 import sqlite3
 from gettext import gettext as _, ngettext    
 from gi.repository import GLib, Gdk, GObject
+from _thread import start_new_thread
 import mutagen
-from lollypop.database import Database
+
+from lollypop.config import Objects
 from lollypop.utils import format_artist_name
+from lollypop.database import Database
+from lollypop.database_albums import DatabaseAlbums
+from lollypop.database_artists import DatabaseArtists
+from lollypop.database_genres import DatabaseGenres
+from lollypop.database_tracks import DatabaseTracks
 
 class CollectionScanner(GObject.GObject):
 	__gsignals__ = {
 		'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
 	}
 	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4" ]
-	def __init__(self, db, paths):
+	def __init__(self, paths):
 		GObject.GObject.__init__(self)
-		self._db = db
+
+		self._in_thread = False
+		self._cool = False
+
 		if len(paths) > 0:
 			self._paths = paths
 		else:
@@ -35,19 +46,34 @@ class CollectionScanner(GObject.GObject):
 
 	"""
 		Update database if empty
+		if cool = True, don't slow down the machine while scanning
 	"""
-	def update(self):
-		GLib.idle_add(self._scan)
+	def update(self, cool = False):
+		self._cool = cool
+		
+		if not self._in_thread:
+			self._in_thread = True
+			self._mtimes = Objects["tracks"].get_mtimes()
+			start_new_thread(self._scan, ())
 
 #######################
 # PRIVATE             #
 #######################
 
 	"""
+		Notify from main thread when scan finished
+	"""
+	def _notify(self):
+		self._in_thread = False
+		self.emit("scan-finished")
+		
+	"""
 		Scan music collection for music files
 	"""
 	def _scan(self):
-		tracks = self._db.get_tracks_filepath()
+		sql = Objects["db"].get_cursor()
+
+		tracks = Objects["tracks"].get_paths(sql)
 		for path in self._paths:
 			for root, dirs, files in os.walk(path):
 				for f in files:
@@ -59,29 +85,40 @@ class CollectionScanner(GObject.GObject):
 							break	
 					if (supported):
 						filepath = os.path.join(root, f)
+						mtime = int(os.path.getmtime(filepath))
 						try:
 							if filepath not in tracks:
 								tag = mutagen.File(filepath, easy = True)
-								self._add2db(filepath, tag)
+								self._add2db(filepath, mtime, tag)
 							else:
+								# Update tags by removing song and readd it
+								if mtime != self._mtimes[filepath]:
+									tag = mutagen.File(filepath, easy = True)
+									tracks_db.remove(filepath)
+									self._add2db(filepath, mtime, tag, sql)
 								tracks.remove(filepath)
 						
 						except Exception as e:
 							print("CollectionScanner::_scan(): %s" %e)
+					if self._cool:
+						sleep(0.001)
 
 		# Clean deleted files
 		for track in tracks:
-			self._db.remove_track(track)
+			Objects("tracks").remove(filepath, sql)
 
-		self._db.commit()
-		self._db.clean()
-		self._db.compilation_lookup()
-		self.emit("scan-finished")
+		sql.commit()
+		Objects["tracks"].clean(sql)
+		Objects["albums"].compilation_lookup(sql)
+		sql.close()
+		GLib.idle_add(self._notify)
+
+
 
 	"""
 		Add new file to db with tag
 	"""
-	def _add2db(self, filepath, tag):
+	def _add2db(self, filepath, mtime, tag, sql):
 		path = os.path.dirname(filepath)
 
 		keys = tag.keys()
@@ -135,22 +172,22 @@ class CollectionScanner(GObject.GObject):
 		if not year: year = 0
 
 		# Get artist id, add it if missing
-		artist_id = self._db.get_artist_id_by_name(artist)
+		artist_id = Objects["artists"].get_id(artist, sql)
 		if artist_id == -1:
-			self._db.add_artist(artist)
-			artist_id = self._db.get_artist_id_by_name(artist)
+			Objects["artists"].add(artist, sql)
+			artist_id = Objects["artists"].get_id(artist, sql)
 
 		# Get genre id, add genre if missing
-		genre_id = self._db.get_genre_id_by_name(genre)
+		genre_id = Objects["genres"].get_id(genre, sql)
 		if genre_id == -1:
-			self._db.add_genre(genre)
-			genre_id = self._db.get_genre_id_by_name(genre)
+			Objects["genres"].add(genre, sql)
+			genre_id = Objects["genres"].get_id(genre, sql)
 
 		# Get album id, add it if missing
-		album_id = self._db.get_album_id(album, artist_id, genre_id)
+		album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 		if album_id == -1:
-			self._db.add_album(album, artist_id, genre_id, int(year), path)
-			album_id = self._db.get_album_id(album, artist_id, genre_id)
+			Objects["albums"].add(album, artist_id, genre_id, int(year), path, sql)
+			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 
 		# Add track to db
-		self._db.add_track(title, filepath, length, tracknumber, artist_id, album_id)
+		Objects["tracks"].add(title, filepath, length, tracknumber, artist_id, album_id, mtime, sql)

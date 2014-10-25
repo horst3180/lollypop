@@ -29,7 +29,7 @@ class SelectionList(GObject.GObject):
 	def __init__(self, title, width):
 		GObject.GObject.__init__(self)
 		
-		self._model = Gtk.ListStore(str, int)
+		self._model = Gtk.ListStore(int, str)
 
 		self._view = Gtk.TreeView(self._model)
 		self._view.connect('cursor-changed', self._new_item_selected)
@@ -37,7 +37,7 @@ class SelectionList(GObject.GObject):
 		renderer.set_fixed_size(width, -1)
 		renderer.set_property('ellipsize-set',True)
 		renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-		self._view.append_column(Gtk.TreeViewColumn(title, renderer, text=0))
+		self._view.append_column(Gtk.TreeViewColumn(title, renderer, text=1))
 		self._view.set_headers_visible(False)
 		self._view.show()
 
@@ -55,9 +55,43 @@ class SelectionList(GObject.GObject):
 		for (object_id, string) in values:
 			if is_artist:
 				string = translate_artist_name(string)
-			self._model.append([string, object_id])
+			self._model.append([object_id, string])
 				
 	
+	"""
+		Update view with values
+		Translate string if is_artist = True
+	"""	
+	def update(self, values, is_artist = False):
+		(path, column) = self._view.get_cursor()
+		if path:
+			rowiter = self._model.get_iter(path)
+			selected_id = self._model.get_value(rowiter, 0)
+
+		selected_iter = None
+		for row in self._model:
+			if row[0] != selected_id:
+				self._model.remove(row.iter)
+			else:
+				selected_iter = row.iter
+		
+		before = True
+		rowiter = selected_iter
+		for object_id, string in values:
+				if object_id == selected_id:
+					rowiter = selected_iter
+					before = False
+					continue
+				if before:
+					self._model.insert_before(rowiter, [object_id, string])
+				else:
+					rowiter = self._model.insert_after(rowiter, [object_id, string])
+
+		# Remove selected if unavailable
+		if before:
+			self._model.remove(selected_iter)
+			self.select_first()
+
 	"""
 		Make treeview select first default item
 	"""
@@ -78,5 +112,5 @@ class SelectionList(GObject.GObject):
 		if path:
 			iter = self._model.get_iter(path)
 			if iter:
-				self.emit('item-selected', self._model.get_value(iter, 1))
+				self.emit('item-selected', self._model.get_value(iter, 0))
 

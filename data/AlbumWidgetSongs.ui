@@ -6,14 +6,19 @@
         <property name="margin">15</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkImage" id="cover">
+ 	<object class="GtkEventBox" id="eventbox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="valign">start</property>
-        <style>
-          <class name="cover"/>
-        </style>
-      </object>
+        <child>
+	      <object class="GtkImage" id="cover">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+	        <property name="valign">start</property>
+	        <style>
+	          <class name="cover"/>
+	        </style>
+	      </object>
+	     </child>
+	     </object>
     </child>
     <child>
       <object class="GtkGrid" id="grid1">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-22 17:53+0200\n"
+"POT-Creation-Date: 2014-10-24 20:35+0200\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -58,8 +58,16 @@ msgstr "Chemins de la musique"
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Utilise XDG_MUSIC_DIR si vide"
 
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "DO NOT MODIFY"
+msgstr "NE PAS MODIFIER"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Scan library at startup"
+msgstr "Scanner la collection au démarrage"
+
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/application.py:32 ../src/application.py:90 ../src/window.py:33
+#: ../src/application.py:39 ../src/application.py:99 ../src/window.py:34
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -75,63 +83,55 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:154 ../src/toolbar.py:176
+#: ../src/toolbar.py:153 ../src/toolbar.py:175
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:159 ../src/toolbar.py:173 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:158 ../src/toolbar.py:172 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:64
+#: ../src/window.py:60
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/window.py:254
-msgid "All genres"
-msgstr "Tous les genres"
+#: ../src/window.py:256 ../src/window.py:268
+msgid "All artists"
+msgstr "Tous les artistes"
 
-#: ../src/window.py:255
+#: ../src/window.py:257 ../src/window.py:269
 msgid "Populars albums"
 msgstr "Albums populaires"
 
-#: ../src/window.py:270 ../src/window.py:280
+#: ../src/window.py:288 ../src/window.py:298
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:1
+#: ../src/notification.py:39 ../data/headerbar.ui.h:1
 msgid "Previous"
 msgstr "Précédent"
 
-#: ../src/notification.py:43 ../data/headerbar.ui.h:3
+#: ../src/notification.py:41 ../data/headerbar.ui.h:3
 msgid "Next"
 msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:64
+#: ../src/notification.py:62
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database.py:215 ../src/database.py:269 ../src/database.py:375
-msgid "Unknown"
-msgstr "Inconnu"
-
-#: ../src/database.py:263
-msgid "Many artists"
-msgstr "Plusieurs artists"
-
-#: ../src/database.py:298
-msgid "Compilation"
-msgstr "Compilation"
-
-#: ../src/playlist.py:72
+#: ../src/playlist.py:73
 msgid "Right click on a song to add it to playlist"
 msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
 
-#: ../src/view.py:32
+#: ../src/view.py:33
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
+
+#: ../src/popimages.py:56
+msgid "Select a cover art for this album"
+msgstr "Sélectionnez une pochette pour cet album"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -156,14 +156,10 @@ msgid "_Update music"
 msgstr "Mise à jour de la musique"
 
 #: ../data/app-menu.ui.h:3
-msgid "_New music scan"
-msgstr "Nouveau scan de la musique"
-
-#: ../data/app-menu.ui.h:4
 msgid "_About"
 msgstr "À _propos"
 
-#: ../data/app-menu.ui.h:5
+#: ../data/app-menu.ui.h:4
 msgid "_Quit"
 msgstr "_Quitter"
 
@@ -186,6 +182,22 @@ msgstr "Liste de lecture"
 #: ../data/PartyDialog.ui.h:1
 msgid "Close"
 msgstr "Fermer"
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr "artist"
+
+#~ msgid "All genres"
+#~ msgstr "Tous les genres"
+
+#~ msgid "Unknown"
+#~ msgstr "Inconnu"
+
+#~ msgid "Compilation"
+#~ msgstr "Compilation"
+
+#~ msgid "_New music scan"
+#~ msgstr "Nouveau scan de la musique"
 
 #~ msgid "A music player and management application for GNOME."
 #~ msgstr "Un lecteur de musique et une application de gestion pour GNOME."
