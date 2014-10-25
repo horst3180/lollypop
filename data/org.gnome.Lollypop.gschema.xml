@@ -42,5 +42,10 @@
             <summary>Scan library at startup</summary>
             <description></description>
         </key>
+         <key type="b" name="hide-genres">
+            <default>true</default>
+            <summary>Do not show genres list</summary>
+            <description></description>
+        </key>
     </schema>
 </schemalist>

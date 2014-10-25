@@ -13,7 +13,7 @@
 # Many code inspiration from gnome-music at the GNOME project
 
 from gettext import gettext as _
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
@@ -21,13 +21,11 @@ from lollypop.search import SearchWidget
 from lollypop.playlist import PlayListWidget
 from lollypop.utils import translate_artist_name
 
-class Toolbar(GObject.GObject):
-
+class Toolbar():
 	"""
 		Init toolbar/headerbar ui
 	"""
 	def __init__(self):
-		GObject.GObject.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
 		self.header_bar = self._ui.get_object('header-bar')
@@ -56,14 +54,18 @@ class Toolbar(GObject.GObject):
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
 		self._shuffle_btn.connect("toggled", self._shuffle_update)
 
-		self._party = self._ui.get_object('party-button')
-		self._party.connect("toggled", self._party_update)
+		self._party_btn = self._ui.get_object('party-button')
+		self._party_btn.connect("toggled", self._on_party_btn_toggled)
 
 		Objects["progress"].connect('button-release-event', self._on_progress_scale_button)
 
 		self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
 		self._play_btn.connect('clicked', self._on_play_btn_clicked)
 		self._next_btn.connect('clicked', self._on_next_btn_clicked)
+		
+		self._view_genres_btn = self._ui.get_object('genres_button')
+		self._view_genres_btn.set_active(Objects["settings"].get_value('hide-genres'))
+		self._view_genres_btn.connect('toggled', self._on_genres_btn_toggled)
 
 		search_button = self._ui.get_object('search-button')
 		search_button.connect("clicked", self._on_search_btn_clicked)
@@ -82,6 +84,12 @@ class Toolbar(GObject.GObject):
 	"""
 	def get_infobox(self):
 		return self._infobox
+
+	"""
+		Return view genres button
+	"""
+	def get_view_genres_btn(self):
+		return self._view_genres_btn
 
 	"""
 		Update toolbar items with track_id informations:
@@ -208,9 +216,16 @@ class Toolbar(GObject.GObject):
 	"""
 		Set party mode on if party button active
 	"""
-	def _party_update(self, obj):
+	def _on_genres_btn_toggled(self, obj):
+		active = self._view_genres_btn.get_active()
+		Objects["settings"].set_value('hide-genres', GLib.Variant('b', active))
+
+	"""
+		Set party mode on if party button active
+	"""
+	def _on_party_btn_toggled(self, obj):
 		settings = Gtk.Settings.get_default()
-		active = self._party.get_active()
+		active = self._party_btn.get_active()
 		self._shuffle_btn.set_sensitive(not active)
 		settings.set_property("gtk-application-prefer-dark-theme", active)
-		Objects["player"].set_party(active)
+		Objects["player"].set_party_btn(active)

@@ -78,9 +78,13 @@ class SelectionList(GObject.GObject):
 		before = True
 		rowiter = selected_iter
 		for object_id, string in values:
+				if is_artist:
+					string = translate_artist_name(string)
 				if object_id == selected_id:
 					rowiter = selected_iter
 					before = False
+					# Force string update if changed
+					self._model.set_value(rowiter, 1, string)
 					continue
 				if before:
 					self._model.insert_before(rowiter, [object_id, string])
