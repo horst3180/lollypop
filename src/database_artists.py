@@ -82,7 +82,7 @@ class DatabaseArtists:
 		if not sql:
 			sql = Objects["sql"]
 		albums = []
-		result = sql.execute("SELECT rowid FROM albums where artist_id=?",(artist_id,))
+		result = sql.execute("SELECT rowid FROM albums where artist_id=? order by year",(artist_id,))
 		for row in result:
 			albums += row
 		return albums

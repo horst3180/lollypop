@@ -144,9 +144,9 @@ class ArtistView(View):
 	def _update_content(self):
 		track_id = Objects["player"].get_current_track_id()
 		artist_id = Objects["tracks"].get_artist_id(track_id)
-		if self._albumbox and artist_id == self.object_id:
+		if self._albumbox and artist_id == self._object_id:
 			for widget in self._albumbox.get_children():
-				widget.update_tracks()
+				widget.update_tracks(track_id)
 
 
 	"""
