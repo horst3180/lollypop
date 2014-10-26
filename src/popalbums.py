@@ -65,10 +65,6 @@ class PopAlbums(Gtk.Popover):
 			widget.show()
 			self._widgets.append(widget)
 			self._view.insert(widget, -1)
-		
-	def hide(self):
-		Gtk.Popover.hide(self)
-		Objects["player"].disconnect_by_func(self._update_content)
 
 #######################
 # PRIVATE             #

@@ -139,8 +139,8 @@ class Toolbar():
 		if track_id != -1:
 			album_id = Objects["tracks"].get_album_id(track_id)
 			artist_id = Objects["albums"].get_artist_id(album_id)
-			self._popalbums.populate(artist_id)
 			self._popalbums.show()
+			GLib.idle_add(self._popalbums.populate, artist_id)
 
 	"""
 		Update cover for album_id
