@@ -43,7 +43,7 @@ class View(Gtk.Grid):
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self.set_border_width(0)
 		# Current object, used to handle context/content view
-		self._artist_id = None
+		self._object_id = None
 
 		Objects["player"].connect("current-changed", self.current_changed)
 		Objects["player"].connect("cover-changed", self.cover_changed)
@@ -62,9 +62,9 @@ class View(Gtk.Grid):
 	def current_changed(self, widget, track_id):
 		update = False
 		object_id = self._get_object_id_by_track_id(track_id)
-		if object_id != self._artist_id:
+		if object_id != self._object_id:
 			update = True
-			self._artist_id = object_id
+			self._object_id = object_id
 
 		self._update_content(update)
 		self._update_context(update)
@@ -106,7 +106,7 @@ class ArtistView(View):
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
 
-		self._artist_id = artist_id
+		self._object_id = artist_id
 		artist_name = Objects["artists"].get_name(artist_id)
 		artist_name = translate_artist_name(artist_name)
 		self._ui.get_object('artist').set_label(artist_name)
@@ -129,9 +129,9 @@ class ArtistView(View):
 	"""
 	def populate(self):
 		if self._genre_id == -1:
-			albums = Objects["albums"].get_ids(self._artist_id, None)
+			albums = Objects["albums"].get_ids(self._object_id, None)
 		else:
-			albums = Objects["albums"].get_ids(self._artist_id, self._genre_id)
+			albums = Objects["albums"].get_ids(self._object_id, self._genre_id)
 		for album_id in albums:
 			self._populate_content(album_id)
 
@@ -158,14 +158,14 @@ class ArtistView(View):
 		New view if replace True
 	"""
 	def _update_content(self, replace):
-		if replace:
+		if replace and Objects["player"].is_party():
 			self._clean_content()
 			album_id = Objects["tracks"].get_album(Objects["player"].get_current_track_id())
-			self._artist_id = Objects["artists"].get_id(album_id)
-			artist_name = Objects["artists"].get_name(self._artist_id)
+			self._object_id = Objects["artists"].get_id(album_id)
+			artist_name = Objects["artists"].get_name(self._object_id)
 			artist_name = translate_artist_name(artist_name)
 			self._ui.get_object('artist').set_label(artist_name)
-			for album_id in Objects["albums"].get_ids(self._artist_id, None):
+			for album_id in Objects["albums"].get_ids(self._object_id, None):
 				self._populate_content(album_id)
 		else:
 			for widget in self._albumbox.get_children():
@@ -267,8 +267,8 @@ class AlbumView(View):
 		New view if replace True
 	"""
 	def _update_context(self, replace):
-		# If in party mode and context not visible, show it
-		if replace or (not self._scrolledContext.is_visible() and Objects["player"].is_party()):
+		# If in party mode, replace
+		if replace  and Objects["player"].is_party():
 			self._clean_context()
 			album_id =Objects["tracks"].get_album(Objects["player"].get_current_track_id())
 			self._populate_context(album_id)
@@ -296,14 +296,14 @@ class AlbumView(View):
 		Show Context view for activated album
 	"""
 	def _on_album_activated(self, flowbox, child):
-		if self._albumsongs and self._artist_id == child.get_child().get_id():
+		if self._albumsongs and self._object_id == child.get_child().get_id():
 			self._clean_context()
 			self._scrolledContext.hide()
 		else:
 			if self._albumsongs:
 				self._clean_context()
-			self._artist_id = child.get_child().get_id()
-			self._populate_context(self._artist_id)
+			self._object_id = child.get_child().get_id()
+			self._populate_context(self._object_id)
 			self._scrolledContext.show_all()		
 	
 	"""
