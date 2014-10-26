@@ -31,10 +31,10 @@ class PopAlbums(Gtk.Popover):
 
 		self._artist_id = None
 
-		self._view = Gtk.FlowBox()
+		self._view = Gtk.Grid()
+		self._view.set_orientation(Gtk.Orientation.VERTICAL)
 		self._view.set_column_spacing(20)
 		self._view.set_row_spacing(20)
-		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._view.show()
 		self._view.get_style_context().add_class('black')
 
@@ -64,7 +64,7 @@ class PopAlbums(Gtk.Popover):
 			widget = AlbumWidgetSongs(album_id, genre_id)
 			widget.show()
 			self._widgets.append(widget)
-			self._view.insert(widget, -1)
+			self._view.add(widget)
 
 #######################
 # PRIVATE             #

@@ -108,7 +108,7 @@ class ArtistView(View):
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_hexpand(True)
-		self._scrolledWindow.set_policy(Gtk.PolicyType.NEVER,
+		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
 						Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
 
@@ -125,7 +125,7 @@ class ArtistView(View):
 		else:
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id)
 		for album_id in albums:
-			GLib.idle_add(self._populate_content, album_id)
+			self._populate_content, album_id)
 
 	"""
 		Update album cover in view
