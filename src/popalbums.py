@@ -35,7 +35,6 @@ class PopAlbums(Gtk.Popover):
 		self._view.set_column_spacing(20)
 		self._view.set_row_spacing(20)
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
-		self._view.connect("child-activated", self._on_activate)
 		self._view.show()
 		self._view.get_style_context().add_class('black')
 
@@ -67,7 +66,10 @@ class PopAlbums(Gtk.Popover):
 			self._widgets.append(widget)
 			self._view.insert(widget, -1)
 		
-	
+	def hide(self):
+		Gtk.Popover.hide(self)
+		Objects["player"].disconnect_by_func(self._update_content)
+
 #######################
 # PRIVATE             #
 #######################		
@@ -83,12 +85,3 @@ class PopAlbums(Gtk.Popover):
 			for widget in self._widgets:
 				widget.update_tracks(track_id)
 	
-	"""
-		hide
-	"""
-	def _on_activate(self, flowbox, child):
-		Objects["player"].disconnect_by_func(self._update_content)
-		self._widgets = []
-		self.hide()
-		
-		
