@@ -74,6 +74,19 @@ class DatabaseArtists:
 
 		return _("Unknown")
 
+	"""
+		Get all availables albums  for artist
+		ret: Array of id as int
+	"""
+	def get_albums(self, artist_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		albums = []
+		result = sql.execute("SELECT rowid FROM albums where artist_id=?",(artist_id,))
+		for row in result:
+			albums += row
+		return albums
+
 
 	"""
 		Get all available artists

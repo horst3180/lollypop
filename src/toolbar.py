@@ -20,6 +20,7 @@ from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
 from lollypop.playlist import PlayListWidget
 from lollypop.utils import translate_artist_name
+from lollypop.popalbums import PopAlbums
 
 class Toolbar():
 	"""
@@ -45,7 +46,8 @@ class Toolbar():
 		self._title_label = self._ui.get_object('title')
 		self._artist_label = self._ui.get_object('artist')
 		self._cover = self._ui.get_object('cover')
-		self._infobox = self._ui.get_object('infobox')	
+		infobox = self._ui.get_object('infobox')	
+		infobox.connect("button-press-event", self._pop_albums)
 
 		Objects["player"].connect("playback-status-changed", self._playback_status_changed)
 		Objects["player"].connect("current-changed", self.update_toolbar)
@@ -77,12 +79,6 @@ class Toolbar():
 		self._playlist.set_relative_to(playlist_button)
 
 		self.header_bar.set_show_close_button(True)
-
-	"""
-		Return information eventbox
-	"""
-	def get_infobox(self):
-		return self._infobox
 
 	"""
 		Return view genres button
@@ -133,6 +129,19 @@ class Toolbar():
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Pop albums from current artist
+	"""
+	def _pop_albums(self, widget, data):
+		track_id = Objects["player"].get_current_track_id()
+		if track_id != -1:
+			album_id = Objects["tracks"].get_album(track_id)
+			artist_id = Objects["albums"].get_artist_id(album_id)
+			popup = PopAlbums()
+			popup.set_relative_to(widget)
+			popup.populate(artist_id)
+			popup.show()
+
 	"""
 		Update cover for album_id
 	"""

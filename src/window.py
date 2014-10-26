@@ -210,7 +210,7 @@ class Window(Gtk.ApplicationWindow):
 		self._toolbar = Toolbar()
 		self.set_titlebar(self._toolbar.header_bar)
 		self._toolbar.header_bar.show()
-		self._toolbar.get_infobox().connect("button-press-event", self._show_current_album)
+
 		self._toolbar.get_view_genres_btn().connect("toggled", self._update_list_one)
 		self._list_one = SelectionList("Genre", 150)
 		self._list_two = SelectionList("Artist", 200)
@@ -376,13 +376,5 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _on_window_state_event(self, widget, event):
 		Objects["settings"].set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
-
-	"""
-		Show current album context/content
-	"""
-	def _show_current_album(self, obj, data):
-		track_id = Objects["player"].get_current_track_id()
-		if  track_id != -1:
-			self._view.current_changed(False, track_id)
 
 

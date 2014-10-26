@@ -22,5 +22,6 @@ app_PYTHON = \
 	widgets.py\
 	player.py\
 	popimages.py\
+	popalbums.py\
 	collectionscanner.py
 

@@ -33,13 +33,10 @@ class PopImages(Gtk.Popover):
 		self._urls = None
 
 		self._view = Gtk.FlowBox()
+		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._view.connect("child-activated", self._on_activate)
-		self._view.set_property('margin-start', 10)
-		self._view.set_property('margin-end', 10)
-		self._view.set_property('margin-top', 10)
-		self._view.set_property('margin-bottom', 10)
 		self._view.show()
-		self._view.get_style_context().add_class('cover-search')
+		self._view.get_style_context().add_class('black')
 
 		self.set_property('width-request', 700)
 		self.set_property('height-request', 400)

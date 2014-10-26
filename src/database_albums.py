@@ -122,7 +122,20 @@ class DatabaseAlbums:
 
 		return _("Compilation")
 
+	"""
+		Get artist id
+		arg: Album id as int
+		ret: Artist id as int
+	"""
+	def get_artist_id(self, album_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		result = sql.execute("SELECT artists.rowid from artists,albums where albums.rowid=? AND albums.artist_id == artists.rowid", (album_id,))
+		v = result.fetchone()
+		if v:
+			return v[0]
 
+		return -1
 	"""
 		Get album year for album id
 		arg: Album id as int

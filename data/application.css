@@ -6,7 +6,7 @@ GtkWidget {
 @define-color theme_base_color #333333;
 @define-color theme_text_color #eeeeec;
 
-.cover-search {
+.black {
 	background-color: @theme_base_color;
 	color: @theme_text_color;
 }
