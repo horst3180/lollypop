@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 # Many code inspiration from gnome-music at the GNOME project
 
-from time import sleep
 from gettext import gettext as _, ngettext 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 import urllib.request

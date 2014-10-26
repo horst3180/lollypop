@@ -14,6 +14,7 @@
 
 from gettext import gettext as _
 from gi.repository import Gtk, GObject, Gdk, GLib
+from _thread import start_new_thread
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
@@ -139,8 +140,9 @@ class Toolbar():
 		if track_id != -1:
 			album_id = Objects["tracks"].get_album_id(track_id)
 			artist_id = Objects["albums"].get_artist_id(album_id)
+			self._popalbums.clean()
 			self._popalbums.show()
-			GLib.idle_add(self._popalbums.populate, artist_id)
+			start_new_thread(self._popalbums.populate, (artist_id,))
 
 	"""
 		Update cover for album_id

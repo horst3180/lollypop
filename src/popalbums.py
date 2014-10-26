@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 # Many code inspiration from gnome-music at the GNOME project
 
-from time import sleep
 from gettext import gettext as _, ngettext 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
@@ -53,23 +52,36 @@ class PopAlbums(Gtk.Popover):
 		self.add(self._scroll)	
 
 	"""
+		Clean view
+	"""
+	def clean(self):
+		for child in self._view.get_children():
+			child.destroy()
+
+	"""
 		Populate view
 	"""
 	def populate(self, artist_id):
+		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
-		for child in self._view.get_children():
-			child.destroy()
-		albums = Objects["artists"].get_albums(artist_id)
+		albums = Objects["artists"].get_albums(artist_id, sql)
 		for album_id in albums:
-			genre_id = Objects["albums"].get_genre(album_id)
-			widget = AlbumWidgetSongs(album_id, genre_id)
-			widget.show()
-			self._widgets.append(widget)
-			self._view.add(widget)
+			genre_id = Objects["albums"].get_genre(album_id,sql)
+			GLib.idle_add(self._add_widget_songs, album_id, genre_id)
 
 #######################
 # PRIVATE             #
-#######################		
+#######################	
+
+	"""
+		Add a new widget to the view
+	"""
+	def _add_widget_songs(self, album_id, genre_id):
+		widget = AlbumWidgetSongs(album_id, genre_id)
+		widget.show()
+		self._widgets.append(widget)
+		self._view.add(widget)
+
 	"""
 		Update the content view
 	"""
@@ -78,6 +90,7 @@ class PopAlbums(Gtk.Popover):
 			track_id = Objects["player"].get_current_track_id()
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			if artist_id != self._artist_id:
+				self.clean()
 				self.populate(artist_id)
 			else:
 				for widget in self._widgets:
