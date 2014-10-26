@@ -212,7 +212,7 @@ class Player(GObject.GObject):
 					pos += 1
 				self._current_track_album_id = self._albums[pos]
 				self._current_track_number = 0
-				track_id = Objects["tracks"].get_tracks(self._albums[pos], sql)[0]
+				track_id = Objects["albums"].get_tracks(self._albums[pos], sql)[0]
 			else:
 				self._current_track_number += 1
 				track_id = tracks[self._current_track_number]
