@@ -184,7 +184,7 @@ class SearchWidget(Gtk.Popover):
 			self._view.add(search_row)
 
 		for track_id, track_name in Objects["tracks"].search(searched):
-			album_id = Objects["tracks"].get_album(track_id)
+			album_id = Objects["tracks"].get_album_id(track_id)
 			artist_id = Objects["artists"].get_id(album_id)
 			artist_name = Objects["artists"].get_name(artist_id)
 			search_row = SearchRow()

@@ -246,7 +246,7 @@ class Player(GObject.GObject):
 		self._shuffle_tracks_history = []
 		self._shuffle = shuffle
 		if not shuffle and self._current_track_id != -1:
-			album_id = Objects["tracks"].get_album(self._current_track_id)
+			album_id = Objects["tracks"].get_album_id(self._current_track_id)
 			artist_id = Objects["artists"].get_id(album_id)
 			genre_id = Objects["albums"].get_genre(album_id)
 			self.set_albums(artist_id, genre_id, self._current_track_id)
@@ -269,9 +269,9 @@ class Player(GObject.GObject):
 				self._albums = Objects["albums"].get_ids()
 			track_id = self._get_random()
 			self.load(track_id)
-			self._current_track_album_id = Objects["tracks"].get_album(track_id)
+			self._current_track_album_id = Objects["tracks"].get_album_id(track_id)
 		else:
-			album_id = Objects["tracks"].get_album(self._current_track_id)
+			album_id = Objects["tracks"].get_album_id(self._current_track_id)
 			artist_id = Objects["artists"].get_id(album_id)
 			genre_id = Objects["albums"].get_genre(album_id)
 			self.set_albums(artist_id, genre_id, self._current_track_id)
@@ -312,7 +312,7 @@ class Player(GObject.GObject):
 		# We are in album view, add all albums from genre
 		else:
 			self._albums = Objects["albums"].get_ids(None, genre_id)
-		album_id = Objects["tracks"].get_album(track_id)
+		album_id = Objects["tracks"].get_album_id(track_id)
 		tracks = Objects["albums"].get_tracks(album_id)
 		self._current_track_number = tracks.index(track_id) 
 		self._current_track_album_id = album_id
@@ -411,7 +411,7 @@ class Player(GObject.GObject):
 	"""
 	def _shuffle_next(self, force = False, sql = None):
 		track_id = self._get_random(sql)
-		self._current_track_album_id = Objects["tracks"].get_album(track_id, sql)
+		self._current_track_album_id = Objects["tracks"].get_album_id(track_id, sql)
 		# Need to clear history
 		if not track_id:
 			self._albums = self._shuffle_albums_history
@@ -467,7 +467,7 @@ class Player(GObject.GObject):
 		sql = Objects["db"].get_cursor()
 		self.next(False, sql)
 		# Add populariy if we listen to the song
-		album_id = Objects["tracks"].get_album(self._previous_track_id, sql)
+		album_id = Objects["tracks"].get_album_id(self._previous_track_id, sql)
 		Objects["albums"].set_more_popular(album_id, sql)
 
 		sql.close()

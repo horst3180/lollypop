@@ -29,6 +29,8 @@ class PopAlbums(Gtk.Popover):
 
 		self._widgets = []
 
+		self._artist_id = None
+
 		self._view = Gtk.FlowBox()
 		self._view.set_column_spacing(20)
 		self._view.set_row_spacing(20)
@@ -38,6 +40,7 @@ class PopAlbums(Gtk.Popover):
 		self._view.get_style_context().add_class('black')
 
 		self.set_property('height-request', 600)
+		self.set_property('width-request', 600)
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
@@ -51,6 +54,7 @@ class PopAlbums(Gtk.Popover):
 		Populate view
 	"""
 	def populate(self, artist_id):
+		self._artist_id = artist_id
 		for child in self._view.get_children():
 			child.destroy()
 		Objects["player"].connect("current-changed", self._update_content)
@@ -70,8 +74,13 @@ class PopAlbums(Gtk.Popover):
 		Update the content view
 	"""
 	def _update_content(self, obj, data):
-		for widget in self._widgets:
-			widget.update_tracks(Objects["player"].get_current_track_id())
+		track_id = Objects["player"].get_current_track_id()
+		artist_id = Objects["tracks"].get_artist_id(track_id)
+		if artist_id != self._artist_id:
+			self.populate(artist_id)
+		else:
+			for widget in self._widgets:
+				widget.update_tracks(track_id)
 	
 	"""
 		hide

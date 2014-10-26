@@ -55,19 +55,11 @@ class View(Gtk.Grid):
 
 	"""
 		Current song changed
-		widget is unused, passe None if not a callback for a signal
-		If album changed => new context view
-		else => update context view
+		Update context and content
 	"""
 	def current_changed(self, widget, track_id):
-		update = False
-		object_id = self._get_object_id_by_track_id(track_id)
-		if object_id != self._object_id:
-			update = True
-			self._object_id = object_id
-
-		self._update_content(update)
-		self._update_context(update)
+		self._update_content()
+		self._update_context()
 
 	"""
 		Update album cover in view
@@ -81,16 +73,14 @@ class View(Gtk.Grid):
 
 	"""
 		Update content view
-		If replace True, create a new content view
 	"""
-	def _update_content(self, replace):
+	def _update_content(self):
 		pass
 
 	"""
 		Update context view
-		if replace True, create a new context view
 	"""
-	def _update_context(self, replace):
+	def _update_context(self):
 		pass
 
 
@@ -148,30 +138,15 @@ class ArtistView(View):
 # PRIVATE             #
 #######################
 
-	"""	
-		Return object id for track_id
-	"""
-	def _get_object_id_by_track_id(self, track_id):
-		album_id = Objects["tracks"].get_album(track_id)
-		return Objects["artists"].get_id(album_id)
-
 	"""
 		Update the content view
-		New view if replace True
 	"""
-	def _update_content(self, replace):
-		if replace and Objects["player"].is_party():
-			self._clean_content()
-			album_id = Objects["tracks"].get_album(Objects["player"].get_current_track_id())
-			self._object_id = Objects["artists"].get_id(album_id)
-			artist_name = Objects["artists"].get_name(self._object_id)
-			artist_name = translate_artist_name(artist_name)
-			self._ui.get_object('artist').set_label(artist_name)
-			for album_id in Objects["albums"].get_ids(self._object_id, None):
-				self._populate_content(album_id)
-		else:
+	def _update_content(self):
+		track_id = Objects["player"].get_current_track_id()
+		artist_id = Objects["tracks"].get_artist_id(track_id)
+		if self._albumbox and artist_id == self._albumbox.get_id():
 			for widget in self._albumbox.get_children():
-				widget.update_tracks(Objects["player"].get_current_track_id())
+				widget.update_tracks()
 
 
 	"""
@@ -259,25 +234,14 @@ class AlbumView(View):
 #######################
 # PRIVATE             #
 #######################
-
-	"""
-		Return object id for track_id
-	"""
-	def _get_object_id_by_track_id(self, track_id):
-		return Objects["tracks"].get_album(track_id)
-
 	"""
 		Update the context view
-		New view if replace True
 	"""
-	def _update_context(self, replace):
-		# If in party mode, replace
-		if replace  and Objects["player"].is_party():
-			self._clean_context()
-			album_id =Objects["tracks"].get_album(Objects["player"].get_current_track_id())
-			self._populate_context(album_id)
-		elif self._albumsongs:
-			self._albumsongs.update_tracks(Objects["player"].get_current_track_id())
+	def _update_context(self):
+		track_id = Objects["player"].get_current_track_id()
+		album_id = Objects["tracks"].get_album_id(track_id)
+		if self._albumsongs and album_id == self._albumsongs.get_id():
+			self._albumsongs.update_tracks()
 
 	"""
 		populate context view

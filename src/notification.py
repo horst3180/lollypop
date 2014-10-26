@@ -50,7 +50,7 @@ class NotificationManager:
 		Update notification with track_id infos
 	"""
 	def _update_track(self, obj, track_id):
-		album_id = Objects["tracks"].get_album(track_id)
+		album_id = Objects["tracks"].get_album_id(track_id)
 		album = Objects["albums"].get_name(album_id)
 		artist = Objects["tracks"].get_artist_name(track_id)
 		artist = translate_artist_name(artist)

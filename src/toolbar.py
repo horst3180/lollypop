@@ -107,7 +107,7 @@ class Toolbar():
 			self._title_label.set_text("")
 			self._artist_label.set_text("")
 		else:
-			album_id = Objects["tracks"].get_album(track_id)
+			album_id = Objects["tracks"].get_album_id(track_id)
 			art = Objects["art"].get(album_id,  ART_SIZE_SMALL)
 			if art:
 				self._cover.set_from_pixbuf(art)
@@ -137,7 +137,7 @@ class Toolbar():
 	def _pop_albums(self, widget, data):
 		track_id = Objects["player"].get_current_track_id()
 		if track_id != -1:
-			album_id = Objects["tracks"].get_album(track_id)
+			album_id = Objects["tracks"].get_album_id(track_id)
 			artist_id = Objects["albums"].get_artist_id(album_id)
 			self._popalbums.populate(artist_id)
 			self._popalbums.show()
@@ -147,7 +147,7 @@ class Toolbar():
 	"""
 	def _update_cover(self, widget, album_id):
 		current_track_id = Objects["player"].get_current_track_id()
-		current_album_id = Objects["tracks"].get_album(current_track_id)
+		current_album_id = Objects["tracks"].get_album_id(current_track_id)
 		if current_album_id == album_id:
 			self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_SMALL))
 

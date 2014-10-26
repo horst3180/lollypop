@@ -53,7 +53,7 @@ class DatabaseTracks:
 		arg: track id as int
 		ret: album id as int
 	"""
-	def get_album(self, track_id, sql = None):
+	def get_album_id(self, track_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT album_id FROM tracks where rowid=?", (track_id,))
@@ -110,6 +110,22 @@ class DatabaseTracks:
 			return v[0]
 
 		return _("Unknown")
+
+	"""
+		Get artist id for track id
+		arg: Track id as int
+		ret: Artist id as int
+	"""
+	def get_artist_id(self, track_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		result = sql.execute("SELECT artists.rowid from artists,tracks where tracks.rowid=? and tracks.artist_id=artists.rowid", (track_id,))
+		v = result.fetchone()
+		if v:
+			return v[0]
+
+		return -1
+
 
 	"""
 		Get track filepath for track id
