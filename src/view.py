@@ -240,7 +240,7 @@ class AlbumView(View):
 	def _update_context(self):
 		track_id = Objects["player"].get_current_track_id()
 		album_id = Objects["tracks"].get_album_id(track_id)
-		if self._albumsongs and album_id == self._albumsongs.get_id():
+		if self._albumsongs:
 			self._albumsongs.update_tracks(track_id)
 
 	"""
