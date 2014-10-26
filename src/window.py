@@ -331,6 +331,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_view_artists(self, obj, artist_id):
 		if artist_id == -1:
+			self._item_id = -1
 			self._update_view_albums()
 		elif artist_id == -2:
 			self._update_view_populars_albums()
