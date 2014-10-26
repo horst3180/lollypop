@@ -3,7 +3,7 @@ GtkWidget {
 
 }
 
-@define-color theme_base_color #333333;
+@define-color theme_base_color #393F3F;
 @define-color theme_text_color #eeeeec;
 
 .black {
