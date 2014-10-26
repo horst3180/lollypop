@@ -251,16 +251,21 @@ class DatabaseAlbums:
 		
 		ret: Array of album ids as int
 	"""
-	def get_ids(self, genre_id, sql = None):
+	def get_ids(self, *args, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		albums = []
 		result = []
-		if not genre_id:
+		if len(args) == 0:
 			result = sql.execute("SELECT rowid FROM albums ORDER BY artist_id")
-		else:
-			result = sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
-	
+		elif len(args) == 2:
+			if args[1] == None:
+				result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? ORDER BY year", (args[0],))
+			elif args[0] == None:
+				result = sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (args[1],))
+			else:
+				result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? and genre_id=? ORDER BY year", (args[0], args[1]))
+			
 		for row in result:
 			albums += row
 		return albums

@@ -301,14 +301,17 @@ class Player(GObject.GObject):
 		Elif genre_id => Albums for genre_id
 		Else => Albums populars
 	"""
-	def set_albums(self, genre_id, track_id):
+	def set_albums(self, artist_id, genre_id, track_id):
 		self._albums = []
-		# We are in popular view, add populars albums
-		if genre_id == -2:
-			self._albums = Objects["albums"].get_populars()
+		# We are in artist view, add all albums from artist for genre
+		if artist_id:
+			self._albums = Objects["albums"].get_ids(artist_id, genre_id)
 		# We are in album view, add all albums from genre
+		elif genre_id:
+			self._albums = Objects["albums"].get_ids(None, genre_id)
+		# We are in popular view, add populars albums
 		else:
-			self._albums = Objects["albums"].get_ids(genre_id)
+			self._albums = Objects["albums"].get_populars()
 		album_id = Objects["tracks"].get_album(track_id)
 		tracks = Objects["albums"].get_tracks(album_id)
 		self._current_track_number = tracks.index(track_id) 
