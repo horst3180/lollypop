@@ -101,7 +101,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 		Objects["player"].connect("playlist-changed", self._update_pos_labels)
 
-		GLib.idle_add(self._add_tracks, album_id)
+		self._add_tracks(album_id)
 	
 	def destroy(self):
 		for ui in self._tracks_ui:
