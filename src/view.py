@@ -125,7 +125,7 @@ class ArtistView(View):
 		else:
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id)
 		for album_id in albums:
-			self._populate_content, album_id)
+			GLib.idle_add(self._populate_content, album_id)
 
 	"""
 		Update album cover in view
