@@ -48,7 +48,9 @@ class Toolbar():
 		self._cover = self._ui.get_object('cover')
 		infobox = self._ui.get_object('infobox')	
 		infobox.connect("button-press-event", self._pop_albums)
-
+		self._popalbums = PopAlbums()
+		self._popalbums.set_relative_to(infobox)
+	
 		Objects["player"].connect("playback-status-changed", self._playback_status_changed)
 		Objects["player"].connect("current-changed", self.update_toolbar)
 		Objects["player"].connect("cover-changed", self._update_cover)
@@ -137,10 +139,8 @@ class Toolbar():
 		if track_id != -1:
 			album_id = Objects["tracks"].get_album(track_id)
 			artist_id = Objects["albums"].get_artist_id(album_id)
-			popup = PopAlbums()
-			popup.set_relative_to(widget)
-			popup.populate(artist_id)
-			popup.show()
+			self._popalbums.populate(artist_id)
+			self._popalbums.show()
 
 	"""
 		Update cover for album_id

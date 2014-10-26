@@ -27,6 +27,8 @@ class PopAlbums(Gtk.Popover):
 	def __init__(self):
 		Gtk.Popover.__init__(self)
 
+		self._widgets = []
+
 		self._view = Gtk.FlowBox()
 		self._view.set_column_spacing(20)
 		self._view.set_row_spacing(20)
@@ -41,30 +43,42 @@ class PopAlbums(Gtk.Popover):
 		self._scroll.set_vexpand(True)
 		self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._view)
-
 		self._scroll.show()
+
 		self.add(self._scroll)
 
 	"""
 		Populate view
 	"""
 	def populate(self, artist_id):
+		for child in self._view.get_children():
+			child.destroy()
+		Objects["player"].connect("current-changed", self._update_content)
 		albums = Objects["artists"].get_albums(artist_id)
 		for album_id in albums:
 			genre_id = Objects["albums"].get_genre(album_id)
 			widget = AlbumWidgetSongs(album_id, genre_id)
 			widget.show()
+			self._widgets.append(widget)
 			self._view.insert(widget, -1)
 		
 	
 #######################
 # PRIVATE             #
 #######################		
-		
+	"""
+		Update the content view
+	"""
+	def _update_content(self, obj, data):
+		for widget in self._widgets:
+			widget.update_tracks(Objects["player"].get_current_track_id())
+	
 	"""
 		hide
 	"""
 	def _on_activate(self, flowbox, child):
+		Objects["player"].disconnect_by_func("current-changed", self.update_content)
+		self._widgets = []
 		self.hide()
 		
 		
