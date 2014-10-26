@@ -67,7 +67,7 @@ class PopAlbums(Gtk.Popover):
 		albums = Objects["artists"].get_albums(artist_id, sql)
 		for album_id in albums:
 			genre_id = Objects["albums"].get_genre(album_id,sql)
-			GLib.idle_add(self._add_widget_songs, album_id, genre_id)
+			GLib.idle_add(self._add_widget_songs, album_id, genre_id, priority=GLib.PRIORITY_LOW)
 
 #######################
 # PRIVATE             #
