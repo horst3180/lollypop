@@ -31,6 +31,8 @@ class PopAlbums(Gtk.Popover):
 
 		self._artist_id = None
 
+		Objects["player"].connect("current-changed", self._update_content)
+
 		self._view = Gtk.Grid()
 		self._view.set_orientation(Gtk.Orientation.VERTICAL)
 		self._view.set_column_spacing(20)
@@ -57,7 +59,6 @@ class PopAlbums(Gtk.Popover):
 		self._artist_id = artist_id
 		for child in self._view.get_children():
 			child.destroy()
-		Objects["player"].connect("current-changed", self._update_content)
 		albums = Objects["artists"].get_albums(artist_id)
 		for album_id in albums:
 			genre_id = Objects["albums"].get_genre(album_id)
@@ -73,11 +74,13 @@ class PopAlbums(Gtk.Popover):
 		Update the content view
 	"""
 	def _update_content(self, obj, data):
-		track_id = Objects["player"].get_current_track_id()
-		artist_id = Objects["tracks"].get_artist_id(track_id)
-		if artist_id != self._artist_id:
-			self.populate(artist_id)
-		else:
-			for widget in self._widgets:
-				widget.update_tracks(track_id)
+		if self.is_visible():
+			print("update")
+			track_id = Objects["player"].get_current_track_id()
+			artist_id = Objects["tracks"].get_artist_id(track_id)
+			if artist_id != self._artist_id:
+				self.populate(artist_id)
+			else:
+				for widget in self._widgets:
+					widget.update_tracks(track_id)
 	
