@@ -15,7 +15,7 @@
 from gi.repository import GLib, Gtk, Notify
 from gettext import gettext as _
 
-from lollypop.config import Objects
+from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -56,7 +56,7 @@ class NotificationManager:
 		artist = translate_artist_name(artist)
 		title = Objects["tracks"].get_name(track_id)
 		
-		self._notification.set_hint('image-path', GLib.Variant('s', Objects["art"].get_path(album_id)))
+		self._notification.set_hint('image-path', GLib.Variant('s', Objects["art"].get_path(album_id, ART_SIZE_BIG)))
 		self._notification.update(title,
 								  # TRANSLATORS: by refers to the artist, from to the album
 								  _("by %s, from %s") % ('<b>' + artist + '</b>',

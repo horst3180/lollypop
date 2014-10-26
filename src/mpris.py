@@ -16,7 +16,7 @@ import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 
-from lollypop.config import Objects
+from lollypop.config import *
 from lollypop.player import Player, PlaybackStatus
 from lollypop.albumart import AlbumArt
 from lollypop.database import Database
@@ -185,7 +185,7 @@ class MediaPlayer2Service(dbus.service.Object):
 		metadata['xesam:artist'] = [artist]
 		metadata['xesam:albumArtist'] = [artist]
 		metadata['xesam:genre'] = genre
-		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id)
+		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
 		
 		return metadata
 

@@ -41,9 +41,9 @@ class AlbumArt:
 	"""
 		get cover cache path for album_id
 	"""
-	def get_path(self, album_id):
+	def get_path(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		return "%s/%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"))
+		return "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 	
 	
 	"""
