@@ -185,13 +185,13 @@ class AlbumView(View):
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_hexpand(True)
-		self._scrolledWindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
 		self._scrolledWindow.show_all()
 
 		self._scrolledContext = Gtk.ScrolledWindow()
 		self._scrolledContext.set_min_content_height(250)
-		self._scrolledContext.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		self._scrolledContext.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._viewport = Gtk.Viewport()
 		Gtk.Container.add(self._scrolledContext ,self._viewport)
 		separator = Gtk.Separator()
@@ -241,7 +241,7 @@ class AlbumView(View):
 		track_id = Objects["player"].get_current_track_id()
 		album_id = Objects["tracks"].get_album_id(track_id)
 		if self._albumsongs and album_id == self._albumsongs.get_id():
-			self._albumsongs.update_tracks()
+			self._albumsongs.update_tracks(track_id)
 
 	"""
 		populate context view

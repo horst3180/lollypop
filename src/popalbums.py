@@ -39,16 +39,17 @@ class PopAlbums(Gtk.Popover):
 		self._view.show()
 		self._view.get_style_context().add_class('black')
 
-		self.set_property('height-request', 600)
-		self.set_property('width-request', 600)
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
-		self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._view)
 		self._scroll.show()
 
-		self.add(self._scroll)
+		self.set_property('height-request', 700)
+		self.set_property('width-request', 1000)
+
+		self.add(self._scroll)	
 
 	"""
 		Populate view

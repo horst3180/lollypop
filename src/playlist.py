@@ -114,6 +114,7 @@ class PlayListWidget(Gtk.Popover):
 		self._view = Gtk.ListBox()
 		self._view.connect("row-activated", self._on_activate)	
 		self._view.connect("remove", self._on_remove)
+
 		self._view.show()
 
 		self.set_property('width-request', 500)
@@ -121,7 +122,7 @@ class PlayListWidget(Gtk.Popover):
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
-		self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._view)
 		self._scroll.show_all()
 

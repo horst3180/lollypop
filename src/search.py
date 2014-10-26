@@ -34,9 +34,6 @@ class SearchRow(Gtk.ListBoxRow):
 		self._cover = self._ui.get_object('cover')
 		self.add(self._row_widget)
 
-		self._artist.set_max_width_chars(28)
-		self._item.set_max_width_chars(28)
-
 		self.show()
 
 	"""
@@ -120,7 +117,7 @@ class SearchWidget(Gtk.Popover):
 		
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_vexpand(True)
-		self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._view)
 		self._scroll.show()
 
