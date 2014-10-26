@@ -77,7 +77,7 @@ class PopAlbums(Gtk.Popover):
 		hide
 	"""
 	def _on_activate(self, flowbox, child):
-		Objects["player"].disconnect_by_func("current-changed", self.update_content)
+		Objects["player"].disconnect_by_func(self._update_content)
 		self._widgets = []
 		self.hide()
 		

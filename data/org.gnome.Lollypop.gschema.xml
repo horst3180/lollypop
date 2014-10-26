@@ -47,5 +47,10 @@
             <summary>Do not show genres list</summary>
             <description></description>
         </key>
+	 <key type="b" name="dark-view">
+            <default>false</default>
+            <summary>Show albums/artists view as dark</summary>
+            <description></description>
+        </key>
     </schema>
 </schemalist>
