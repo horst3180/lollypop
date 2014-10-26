@@ -23,7 +23,7 @@ from lollypop.player import Player
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
-class AlbumWidget(Gtk.Grid):
+class AlbumWidget(Gtk.Box):
 
 	"""
 		Init album widget ui with an vertical grid:
@@ -32,7 +32,8 @@ class AlbumWidget(Gtk.Grid):
 			- Artist name
 	"""
 	def __init__(self, album_id):
-		Gtk.Grid.__init__(self)
+		Gtk.Box.__init__(self)
+		self.set_orientation(Gtk.Orientation.VERTICAL)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 		
@@ -53,7 +54,9 @@ class AlbumWidget(Gtk.Grid):
 		title.set_max_width_chars(20)
 		artist.set_max_width_chars(20)
 
-		self.add(self._ui.get_object('AlbumWidget'))
+		self.pack_start(self._cover, False, False, 0)
+		self.pack_start(title, False, False, 0)
+		self.pack_start(artist, False, False, 0)
 	
 	"""
 		Update cover for album id

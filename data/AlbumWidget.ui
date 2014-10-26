@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.6 -->
-  <object class="GtkGrid" id="AlbumWidget">
-    <property name="visible">True</property>
-    <property name="orientation">vertical</property>
-    <property name="can_focus">False</property>
-    <child>
       <object class="GtkImage" id="cover">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -15,8 +10,8 @@
           <class name="cover"/>
         </style>
       </object>
-    </child>
-    <child>
+
+ 
       <object class="GtkLabel" id="title">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -29,8 +24,7 @@
           <attribute name="weight" value="bold"/>
         </attributes>
       </object>
-    </child>
-    <child>
+
       <object class="GtkLabel" id="artist">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -40,6 +34,5 @@
                   <class name="dim-label"/>
         </style>
       </object>
-    </child>
-  </object>
+
 </interface>
