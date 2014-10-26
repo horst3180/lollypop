@@ -43,16 +43,15 @@ class AlbumWidget(Gtk.Grid):
 
 		album_name = Objects["albums"].get_name(album_id)
 		title = self._ui.get_object('title')
-		title.set_max_width_chars(20)
+		
 		title.set_label(album_name)
 		artist_name = Objects["albums"].get_artist_name(album_id)
 		artist_name = translate_artist_name(artist_name)
 		artist = self._ui.get_object('artist')
-		artist.set_max_width_chars(20)
 		artist.set_label(artist_name)
-		
-		layout = title.get_layout()
-		print(layout.get_pixel_size())
+
+		title.set_max_width_chars(20)
+		artist.set_max_width_chars(20)
 
 		self.add(self._ui.get_object('AlbumWidget'))
 	
