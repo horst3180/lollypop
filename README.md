@@ -13,6 +13,8 @@ It provides:
 - Replay gain
 
 Changes:
+* 0.7.1:
+  - Fix multiple issues
 * 0.7.0:
   - Threaded interface
   - Cover art search
