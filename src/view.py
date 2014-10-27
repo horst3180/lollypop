@@ -254,7 +254,9 @@ class AlbumView(View):
 	def _update_context(self):
 		track_id = Objects["player"].get_current_track_id()
 		album_id = Objects["tracks"].get_album_id(track_id)
-		self._stack.get_visible_child().update_tracks(track_id)
+		context_widget = self._stack.get_visible_child()
+		if context_widget:
+			context_widget.update_tracks(track_id)
 
 	"""
 		populate context view
@@ -273,6 +275,7 @@ class AlbumView(View):
 	"""
 	def _on_album_activated(self, flowbox, child):
 		if self._object_id == child.get_child().get_id():
+			self._object_id = None
 			self._scrolledContext.hide()
 		else:
 			self._object_id = child.get_child().get_id()
