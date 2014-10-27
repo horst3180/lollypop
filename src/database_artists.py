@@ -14,7 +14,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import Objects
+from lollypop.config import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -93,20 +93,20 @@ class DatabaseArtists:
 		
 		arg: None
 		or
-		arg: Filter id as int
+		arg: Filter genre id as int
 		
 		ret: Array of (artist id as int, artist name as string)
 	"""
-	def get_ids(self, *args, sql = None):
+	def get_ids(self, genre_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		artists = []
 		result = []
-		if len(args) == 0:
+		if genre_id == ALL:
 			# Only artist that really have an album
 			result = sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid) ORDER BY name COLLATE NOCASE")
-		elif len(args) == 1:
-			result = sql.execute("SELECT DISTINCT artists.rowid, artists.name FROM artists,albums WHERE artists.rowid == albums.artist_id AND albums.genre_id=? ORDER BY artists.name COLLATE NOCASE", (args[0],))
+		else:
+			result = sql.execute("SELECT DISTINCT artists.rowid, artists.name FROM artists,albums WHERE artists.rowid == albums.artist_id AND albums.genre_id=? ORDER BY artists.name COLLATE NOCASE", (genre_id,))
 		
 		for row in result:
 			artists += (row,)

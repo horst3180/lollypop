@@ -94,7 +94,6 @@ class SelectionList(GObject.GObject):
 		# Remove selected if unavailable
 		if before:
 			self._model.remove(selected_iter)
-			self.select_first()
 
 	"""
 		Make treeview select first default item

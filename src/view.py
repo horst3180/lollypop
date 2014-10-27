@@ -91,12 +91,13 @@ class ArtistView(View):
 	"""
 	def __init__(self, artist_id, genre_id):
 		View.__init__(self)
-		self._genre_id = genre_id
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-
+		
+		self._genre_id = genre_id
 		self._object_id = artist_id
+
 		artist_name = Objects["artists"].get_name(artist_id)
 		artist_name = translate_artist_name(artist_name)
 		self._ui.get_object('artist').set_label(artist_name)
@@ -120,8 +121,10 @@ class ArtistView(View):
 		Populate the view
 	"""
 	def populate(self):
-		if self._genre_id == -1:
+		if self._genre_id == ALL:
 			albums = Objects["albums"].get_ids(self._object_id, None)
+		elif self._object_id == COMPILATIONS:
+			albums = Objects["albums"].get_compilations(self._genre_id)
 		else:
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id)
 		for album_id in albums:

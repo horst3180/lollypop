@@ -16,7 +16,7 @@
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject, Gst, GstAudio
 import random
 
-from lollypop.config import Objects
+from lollypop.config import *
 from lollypop.database import Database
 
 
@@ -298,11 +298,12 @@ class Player(GObject.GObject):
 	def set_albums(self, artist_id, genre_id, track_id):
 		self._albums = []
 
-		# We are in artist view without genres, add all albums
-		if genre_id == -1 or artist_id == -1:
+		# We are in All artists
+		if genre_id == ALL or artist_id == ALL:
+			self._albums = Objects["albums"].get_compilations(ALL)
 			self._albums = Objects["albums"].get_ids()
 		# We are in popular view, add populars albums
-		elif genre_id == -2:
+		elif genre_id == POPULARS:
 			self._albums = Objects["albums"].get_populars()
 		else:
 		# We are in album/artist view, add all albums from current genre
