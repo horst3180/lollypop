@@ -32,18 +32,33 @@ class PopAlbums(Gtk.Popover):
 
 		Objects["player"].connect("current-changed", self._update_content)
 
-		self._view = Gtk.Grid()
-		self._view.set_orientation(Gtk.Orientation.VERTICAL)
-		self._view.set_column_spacing(20)
-		self._view.set_row_spacing(20)
-		self._view.show()
-		self._view.get_style_context().add_class('black')
+		self._view1 = Gtk.Grid()
+		self._view1.set_orientation(Gtk.Orientation.VERTICAL)
+		self._view1.set_column_spacing(20)
+		self._view1.set_row_spacing(20)
+		self._view1.show()
+		self._view1.get_style_context().add_class('black')
 
+		self._view2 = Gtk.Grid()
+		self._view2.set_orientation(Gtk.Orientation.VERTICAL)
+		self._view2.set_column_spacing(20)
+		self._view2.set_row_spacing(20)
+		self._view2.show()
+		self._view2.get_style_context().add_class('black')
+
+		self._stack = Gtk.Stack()
+		self._stack.add(self._view1)
+		self._stack.add(self._view2)
+		self._stack.set_visible_child(self._view1)
+		self._stack.set_transition_duration(1000)
+		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+		self._stack.show()
+		
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
 		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._scroll.add(self._view)
+		self._scroll.add(self._stack)
 		self._scroll.show()
 
 		self.set_property('height-request', 700)
@@ -55,7 +70,7 @@ class PopAlbums(Gtk.Popover):
 		Clean view
 	"""
 	def clean(self):
-		for child in self._view.get_children():
+		for child in self._get_next_view().get_children():
 			child.destroy()
 
 	"""
@@ -65,22 +80,43 @@ class PopAlbums(Gtk.Popover):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
+		GLib.idle_add(self.clean, priority=GLib.PRIORITY_LOW)
 		for album_id in albums:
 			genre_id = Objects["albums"].get_genre(album_id,sql)
 			GLib.idle_add(self._add_widget_songs, album_id, genre_id, priority=GLib.PRIORITY_LOW)
+		GLib.idle_add(self._switch_view, priority=GLib.PRIORITY_LOW)
 
 #######################
 # PRIVATE             #
 #######################	
 
 	"""
+		Retun next view
+	"""
+	def _get_next_view(self):
+		if self._view1 == self._stack.get_visible_child():
+			return self._view2
+		else:
+			return self._view1
+		
+	"""
+		Switch to no visible view
+	"""
+	def _switch_view(self):
+		self._stack.set_visible_child(self._get_next_view())
+		
+	"""
 		Add a new widget to the view
 	"""
 	def _add_widget_songs(self, album_id, genre_id):
+		if self._view1 == self._stack.get_visible_child():
+			view = self._view2
+		else:
+			view = self._view1
 		widget = AlbumWidgetSongs(album_id, genre_id)
 		widget.show()
 		self._widgets.append(widget)
-		self._view.add(widget)
+		view.add(widget)
 
 	"""
 		Update the content view
@@ -90,7 +126,6 @@ class PopAlbums(Gtk.Popover):
 			track_id = Objects["player"].get_current_track_id()
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			if artist_id != self._artist_id:
-				self.clean()
 				self.populate(artist_id)
 			else:
 				for widget in self._widgets:
