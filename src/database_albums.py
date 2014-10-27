@@ -54,27 +54,36 @@ class DatabaseAlbums:
 	"""
 		Get album id 
 		
-		args: Album name as string, artist id as int and genre id as int
-		or
 		args: Track id as int
-
 
 		ret: Album id as int
 	"""
-	def get_id(self,*args, sql = None):
+	def get_id(self, track_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		if len(args) == 1:
-			result = sql.execute("SELECT albums.rowid FROM albums,tracks where tracks.album_id=albums.rowid AND tracks.rowid=?", (args[0],))
-			v = result.fetchone()
-			if v:
-				return v[0]
-		elif len(args) == 3:
-			result = sql.execute("SELECT rowid FROM albums where name=? AND artist_id=? AND genre_id=?", (args[0], args[1], args[2]))
-			v = result.fetchone()
-			if v:
-				return v[0]
+		result = sql.execute("SELECT albums.rowid FROM albums,tracks where tracks.album_id=albums.rowid AND tracks.rowid=?", (track_id,))
+		v = result.fetchone()
+		if v:
+			return v[0]
 	
+		return -1
+
+
+	"""
+		Get album id 
+		
+		args: Album name as string, artist id as int and genre id as int
+
+		ret: Album id as int
+	"""
+	def get_id_var(self, album_name, artist_id, genre_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		result = sql.execute("SELECT rowid FROM albums where name=? AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+		v = result.fetchone()
+		if v:
+			return v[0]
+
 		return -1
 
 	"""
@@ -317,7 +326,8 @@ class DatabaseAlbums:
 
 		for rowid, artist_id, path in albums:
 			compilation_set = False
-			other_albums = sql.execute("SELECT rowid, artist_id, path FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid,artist_id,path))
+			# we look at albums with same path but different artist, no albums with multiple CD
+			other_albums = sql.execute("SELECT rowid, artist_id, path FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid, artist_id, path))
 			for other_rowid, other_artist_id, other_path in other_albums:
 				# Mark new albums as compilation (artist_id == -1)
 				if  not compilation_set:
@@ -329,6 +339,5 @@ class DatabaseAlbums:
 					sql.execute("UPDATE tracks SET album_id=? WHERE rowid=?", (rowid,track[0]))
 				sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid,))
 				albums.remove((other_rowid, other_artist_id, other_path))
-		sql.commit()
 
 

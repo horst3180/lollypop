@@ -194,7 +194,6 @@ class DatabaseTracks:
 		sql.execute("DELETE FROM albums WHERE NOT EXISTS (SELECT rowid FROM tracks where albums.rowid = tracks.album_id)")
 		sql.execute("DELETE FROM artists WHERE NOT EXISTS (SELECT rowid FROM albums where artists.rowid = albums.artist_id)")
 		sql.execute("DELETE FROM genres WHERE NOT EXISTS (SELECT rowid FROM albums where genres.rowid = albums.genre_id)")
-		sql.commit()
 
 	"""
 		Search for tracks looking like string

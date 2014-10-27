@@ -35,7 +35,7 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._scanner = CollectionScanner(Objects["settings"].get_value('music-path'))
-		self._scanner.connect("scan-finished", self._update_list_one)
+		self._scanner.connect("scan-finished", self._init_list_one)
 
 		self._setup_window()				
 		self._setup_view()
@@ -94,9 +94,13 @@ class Window(Gtk.ApplicationWindow):
 	def update_db(self):
 		self._list_one.widget.hide()
 		self._list_two.widget.hide()
-		self._box.remove(self._view)
-		self._view = LoadingView()
-		self._box.add(self._view)
+		old_view = self._get_next_view()
+		if old_view:
+			self._stack.remove(old_view)
+			old_view.remove_signals()
+		view = LoadingView()
+		self._stack.add(view)
+		self._stack.set_visible_child(view)
 		self._scanner.update()
 
 ############
@@ -271,25 +275,28 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list with genres or artist
 	"""
-	def _init_list_one(self):
-		active = self._toolbar.get_view_genres_btn().get_active()
-		if active:
-			items = Objects["genres"].get_ids()
-			self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
+	def _init_list_one(self, obj = None):
+		if self._list_one.widget.is_visible():
+			self._update_list_one()
 		else:
-			items = Objects["artists"].get_ids()
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists)
-
-		items.insert(0, (ALL, _("All artists")))
-		items.insert(0, (POPULARS, _("Populars albums")))
-		self._list_one.populate(items, not active)	
-		self._list_one.select_first()
-		self._list_one.widget.show()
+			active = self._toolbar.get_view_genres_btn().get_active()
+			if active:
+				items = Objects["genres"].get_ids()
+				self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
+			else:
+				items = Objects["artists"].get_ids()
+				self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists)
+	
+			items.insert(0, (ALL, _("All artists")))
+			items.insert(0, (POPULARS, _("Populars albums")))
+			self._list_one.populate(items, not active)	
+			self._list_one.select_first()
+			self._list_one.widget.show()
 
 	"""
 		Update with new genres or artist
 	"""
-	def _update_list_one(self, obj = None, data = None):
+	def _update_list_one(self, obj = None):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
 		previous = Objects["settings"].get_value('hide-genres')

@@ -89,7 +89,7 @@ class CollectionScanner(GObject.GObject):
 						try:
 							if filepath not in tracks:
 								tag = mutagen.File(filepath, easy = True)
-								self._add2db(filepath, mtime, tag)
+								self._add2db(filepath, mtime, tag, sql)
 							else:
 								# Update tags by removing song and readd it
 								if mtime != self._mtimes[filepath]:
@@ -107,9 +107,9 @@ class CollectionScanner(GObject.GObject):
 		for track in tracks:
 			Objects("tracks").remove(filepath, sql)
 
-		sql.commit()
 		Objects["tracks"].clean(sql)
 		Objects["albums"].compilation_lookup(sql)
+		sql.commit()
 		sql.close()
 		GLib.idle_add(self._notify)
 
@@ -184,10 +184,10 @@ class CollectionScanner(GObject.GObject):
 			genre_id = Objects["genres"].get_id(genre, sql)
 
 		# Get album id, add it if missing
-		album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+		album_id = Objects["albums"].get_id_var(album, artist_id, genre_id, sql)
 		if album_id == -1:
 			Objects["albums"].add(album, artist_id, genre_id, int(year), path, sql)
-			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+			album_id = Objects["albums"].get_id_var(album, artist_id, genre_id, sql)
 
 		# Add track to db
 		Objects["tracks"].add(title, filepath, length, tracknumber, artist_id, album_id, mtime, sql)
