@@ -98,6 +98,7 @@ class Window(Gtk.ApplicationWindow):
 		if old_view:
 			self._stack.remove(old_view)
 			old_view.remove_signals()
+		self._loading = True
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
@@ -222,6 +223,7 @@ class Window(Gtk.ApplicationWindow):
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
+		self._loading = True
 		loading_view = LoadingView()
 
 		self._stack = Gtk.Stack()
@@ -297,7 +299,11 @@ class Window(Gtk.ApplicationWindow):
 
 		# If was empty
 		if not self._list_one_signal:
+
 			self._list_one.select_first()
+		if self._loading:
+			self._stack.get_visible_child().hide()
+			self._loading = False
 
 		self._list_one.widget.show()
 		if active:
