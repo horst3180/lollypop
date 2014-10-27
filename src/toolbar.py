@@ -69,7 +69,7 @@ class Toolbar():
 		self._next_btn.connect('clicked', self._on_next_btn_clicked)
 		
 		self._view_genres_btn = self._ui.get_object('genres_button')
-		self._view_genres_btn.set_active(Objects["settings"].get_value('hide-genres'))
+		self._view_genres_btn.set_active(not Objects["settings"].get_value('hide-genres'))
 
 		search_button = self._ui.get_object('search-button')
 		search_button.connect("clicked", self._on_search_btn_clicked)
