@@ -10,6 +10,9 @@ src/toolbar.py
 src/window.py
 src/notification.py
 src/database.py
+src/database_artists.py
+src/database_albums.py
+src/database_tracks.py
 src/albumart.py
 src/selectionlist.py
 src/playlist.py

@@ -122,10 +122,10 @@ class ArtistView(View):
 	"""
 	def populate(self):
 		sql = Objects["db"].get_cursor()
-		if self._genre_id == ALL:
-			albums = Objects["albums"].get_ids(self._object_id, None, sql)
-		elif self._object_id == COMPILATIONS:
+		if self._object_id == COMPILATIONS:
 			albums = Objects["albums"].get_compilations(self._genre_id, sql)
+		elif self._genre_id == ALL:
+			albums = Objects["albums"].get_ids(self._object_id, None, sql)
 		else:
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id, sql)
 		for album_id in albums:

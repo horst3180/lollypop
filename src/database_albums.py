@@ -14,7 +14,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import Objects
+from lollypop.config import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -283,15 +283,15 @@ class DatabaseAlbums:
 		
 		ret: Array of album ids as int
 	"""
-	def get_compilations(self, *args, sql = None):
+	def get_compilations(self, genre_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		albums = []
 		result = []
-		if len(args) == 0:
+		if genre_id == ALL:
 			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year")
-		elif len(args) == 1:
-			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year", (args[0],))
+		else:
+			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year", (genre_id,))
 		for row in result:
 			albums += row
 		return albums

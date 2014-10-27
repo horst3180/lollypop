@@ -64,7 +64,7 @@ class DatabaseArtists:
 	def get_name(self, artist_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		if artist_id == -1:
+		if artist_id == COMPILATIONS:
 			return _("Many artists")
 
 		result = sql.execute("SELECT name from artists where rowid=?", (artist_id,))

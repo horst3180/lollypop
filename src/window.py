@@ -346,7 +346,7 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one_id = -1
 			self._update_view_albums()
 		elif artist_id == POPULARS:
-			self._update_view_populars_albums()
+			self._update_view_populars_albums()	
 		else:
 			old_view = self._get_next_view()
 			if old_view:
