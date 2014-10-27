@@ -243,11 +243,9 @@ class AlbumWidgetSongs(Gtk.Grid):
 	def _show_web_art(self, obj, data):
 		artist = Objects["artists"].get_name(self._artist_id)
 		album = Objects["albums"].get_name(self._album_id)
-		urls = Objects["art"].get_google_arts(artist + " " + album)
 		popover = PopImages(self._album_id)
 		popover.set_relative_to(obj)
-		popover.set_urls(urls)
-		popover.populate()
+		popover.populate(artist + " " + album)
 		popover.show()
 
 	

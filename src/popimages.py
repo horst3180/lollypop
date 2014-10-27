@@ -29,7 +29,6 @@ class PopImages(Gtk.Popover):
 		Gtk.Popover.__init__(self)
 		
 		self._album_id = album_id
-		self._urls = None
 
 		self._view = Gtk.FlowBox()
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -55,27 +54,26 @@ class PopImages(Gtk.Popover):
 		grid.add(self._scroll)
 		grid.show_all()
 		self.add(grid)
-	
-	"""
-		Set urls to download
-	"""
-	def set_urls(self, urls):
-		self._urls = urls
 
 	"""
 		Populate view
 	"""
-	def populate(self):
-		if self._urls and len(self._urls) > 0:
-			self._thread = True
-			start_new_thread(self._add_pixbufs, (self._urls.pop(),))
+	def populate(self, string):
+		self._thread = True
+		start_new_thread(self._populate, (string,))
 
-		
-	
 #######################
 # PRIVATE             #
 #######################		
 
+	"""
+		Get/Set cover arts urls
+	"""
+	def _populate(self, string):
+		sql = Objects["db"].get_cursor()
+		self._urls = Objects["art"].get_google_arts(string)
+		self._add_pixbufs()
+		
 	"""
 		On hide, stop thread
 	"""
@@ -85,35 +83,36 @@ class PopImages(Gtk.Popover):
 	"""
 		Add urls to the view
 	"""
-	def _add_pixbufs(self, url):
-		response = None
-		try:
-			response = urllib.request.urlopen(url)
-		except:
-			pass
-		GLib.idle_add(self._add_pixbuf, response)
-
+	def _add_pixbufs(self):
+		if len(self._urls) > 0:
+			url = self._urls.pop()
+			stream = None
+			try:
+				response = urllib.request.urlopen(url)
+				stream = Gio.MemoryInputStream.new_from_data(response.read(), None)
+			except:
+				if self._thread:
+					self._add_pixbufs()
+			if stream:
+				GLib.idle_add(self._add_pixbuf, stream)
+			if self._thread:				
+				self._add_pixbufs()
 				
 	"""
 		Add url to the view
 	"""
-	def _add_pixbuf(self, response):
-		if response:
-			try:
-				input_stream = Gio.MemoryInputStream.new_from_data(response.read(), None)
-				pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(input_stream, ART_SIZE_BIG,
-																   ART_SIZE_BIG,
-															       False,
-																   None)
-				image = Gtk.Image()
-				image.set_from_pixbuf(pixbuf)
-				image.show()
-				self._view.add(image)
-			except:
-				pass #Format error
-		if self._thread:
-			self.populate()
-
+	def _add_pixbuf(self, stream):
+		try:
+			pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_BIG,
+															   ART_SIZE_BIG,
+														       False,
+															   None)
+			image = Gtk.Image()
+			image.set_from_pixbuf(pixbuf)
+			image.show()
+			self._view.add(image)
+		except:
+			pass #Format error
 		
 	"""
 		Use pixbuf as cover
