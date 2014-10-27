@@ -85,10 +85,10 @@ class SelectionList(GObject.GObject):
 					found = True
 			if not found:
 				if is_artist:
-					string = translate_artist_name(value[0])
+					string = translate_artist_name(value[1])
 				else:
-					string = value[0]
-				self._model.append([string, value[1]])
+					string = value[1]
+				self._model.append([value[0], string])
 		self._values = None
 
 	"""

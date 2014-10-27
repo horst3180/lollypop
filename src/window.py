@@ -291,7 +291,7 @@ class Window(Gtk.ApplicationWindow):
 		items.insert(0, (POPULARS, _("Populars albums")))
 
 		if update:
-			self._list_one.update(items)
+			self._list_one.update(items, not active)
 		else:
 			self._list_one.populate(items, not active)		
 

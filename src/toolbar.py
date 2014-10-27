@@ -70,6 +70,7 @@ class Toolbar():
 		
 		self._view_genres_btn = self._ui.get_object('genres_button')
 		self._view_genres_btn.set_active(not Objects["settings"].get_value('hide-genres'))
+		self._view_genres_btn.connect("toggled", self._save_genres_btn_state)
 
 		search_button = self._ui.get_object('search-button')
 		search_button.connect("clicked", self._on_search_btn_clicked)
@@ -83,6 +84,7 @@ class Toolbar():
 
 		self.header_bar.set_show_close_button(True)
 
+		
 	"""
 		Return view genres button
 	"""
@@ -132,6 +134,13 @@ class Toolbar():
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Save button state
+	"""
+	def _save_genres_btn_state(self, widget):
+		Objects["settings"].set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
+
 	"""
 		Pop albums from current artist
 	"""
