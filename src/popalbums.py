@@ -31,6 +31,7 @@ class PopAlbums(Gtk.Popover):
 		self._artist_id = None
 
 		Objects["player"].connect("current-changed", self._update_content)
+		self.connect('closed', self._on_closed)
 
 		view1 = Gtk.Grid()
 		view1.set_orientation(Gtk.Orientation.VERTICAL)
@@ -80,15 +81,21 @@ class PopAlbums(Gtk.Popover):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
-		GLib.idle_add(self.clean, priority=GLib.PRIORITY_LOW)
 		for album_id in albums:
 			genre_id = Objects["albums"].get_genre(album_id,sql)
 			GLib.idle_add(self._add_widget_songs, album_id, genre_id, priority=GLib.PRIORITY_LOW)
 		GLib.idle_add(self._switch_view, priority=GLib.PRIORITY_LOW)
+		self.clean()
 
 #######################
 # PRIVATE             #
 #######################	
+	"""
+		On closed, clean view
+	"""
+	def _on_closed(self, widget):
+		self.clean()
+		self._switch_view()
 
 	"""
 		Return next view
