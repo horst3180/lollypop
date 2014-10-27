@@ -94,7 +94,7 @@ class CollectionScanner(GObject.GObject):
 								# Update tags by removing song and readd it
 								if mtime != self._mtimes[filepath]:
 									tag = mutagen.File(filepath, easy = True)
-									tracks_db.remove(filepath)
+									Objects["tracks"].remove(filepath, sql)
 									self._add2db(filepath, mtime, tag, sql)
 								tracks.remove(filepath)
 						
