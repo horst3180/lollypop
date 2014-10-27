@@ -302,11 +302,11 @@ class Player(GObject.GObject):
 	"""
 	def set_albums(self, artist_id, genre_id, track_id):
 		self._albums = []
-
+		print(genre_id, artist_id)
 		# We are in All artists
 		if genre_id == ALL or artist_id == ALL:
 			self._albums = Objects["albums"].get_compilations(ALL)
-			self._albums = Objects["albums"].get_ids()
+			self._albums += Objects["albums"].get_ids()
 		# We are in popular view, add populars albums
 		elif genre_id == POPULARS:
 			self._albums = Objects["albums"].get_populars()

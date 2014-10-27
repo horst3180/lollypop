@@ -285,6 +285,8 @@ class Window(Gtk.ApplicationWindow):
 			else:
 				items = Objects["artists"].get_ids(ALL)
 				self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
+				if len(Objects["albums"].get_compilations(ALL)) > 0:
+					items.insert(0, (COMPILATIONS, _("Compilations")))
 
 			items.insert(0, (ALL, _("All artists")))
 			items.insert(0, (POPULARS, _("Populars albums")))
@@ -307,7 +309,7 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
-					items.insert(0, (-3, _("Compilations")))
+					items.insert(0, (COMPILATIONS, _("Compilations")))
 			self._list_two.widget.hide()
 		Objects["settings"].set_value('hide-genres', GLib.Variant('b', not active))	
 		items.insert(0, (ALL, _("All artists")))
@@ -330,7 +332,7 @@ class Window(Gtk.ApplicationWindow):
 			
 			values = Objects["artists"].get_ids(genre_id)
 			if len(Objects["albums"].get_compilations(genre_id)) > 0:
-				values.insert(0, (-3, _("Compilations")))
+				values.insert(0, (COMPILATIONS, _("Compilations")))
 			self._list_two.populate(values, True)
 			self._list_two.widget.show()
 			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_artists, genre_id)

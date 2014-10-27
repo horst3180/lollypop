@@ -129,7 +129,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			
 			track_name = Objects["tracks"].get_name(track_widget.id)
 			# If we are listening to a compilation, prepend artist name
-			if self._artist_id == -1:
+			if self._artist_id == COMPILATIONS:
 				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
 				track_name =  artist_name + " - " + track_name
 
@@ -168,7 +168,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 		for track_id, name, filepath, length in Objects["albums"].get_tracks_infos(album_id):
 			# If we are listening to a compilation, prepend artist name
-			if self._artist_id == -1:
+			if self._artist_id == COMPILATIONS:
 				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
 				name =  artist_name + " - " + name
 			ui = Gtk.Builder()
