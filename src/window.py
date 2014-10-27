@@ -35,7 +35,7 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._scanner = CollectionScanner(Objects["settings"].get_value('music-path'))
-		self._scanner.connect("scan-finished", self._init_list_one)
+		self._scanner.connect("scan-finished", self._setup_list_one)
 
 		self._setup_window()				
 		self._setup_view()
@@ -216,7 +216,7 @@ class Window(Gtk.ApplicationWindow):
 		self.set_titlebar(self._toolbar.header_bar)
 		self._toolbar.header_bar.show()
 
-		self._toolbar.get_view_genres_btn().connect("toggled", self._update_list_one)
+		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)
 		self._list_one = SelectionList("Genre", 150)
 		self._list_two = SelectionList("Artist", 200)
 		self._list_one_signal = None
@@ -257,11 +257,13 @@ class Window(Gtk.ApplicationWindow):
 	def _on_mapped_window(self, obj, data):
 		if Objects["tracks"].is_empty():
 			self._scanner.update()
+			return
 		elif Objects["settings"].get_value('startup-scan'):
 			self._scanner.update(True)
-			self._init_list_one()
-		else:
-			self._init_list_one()
+			
+		self._setup_list_one()
+		self._update_view_albums(POPULARS)
+
 	
 	"""
 		Init the filter list
@@ -274,58 +276,40 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list with genres or artist
 	"""
-	def _init_list_one(self, obj = None):
-		if self._list_one.widget.is_visible():
-			self._update_list_one(None, False)
-		else:
-			active = self._toolbar.get_view_genres_btn().get_active()
-			if active:
-				items = Objects["genres"].get_ids()
-				self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
-			else:
-				items = Objects["artists"].get_ids(ALL)
-				self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
-				if len(Objects["albums"].get_compilations(ALL)) > 0:
-					items.insert(0, (COMPILATIONS, _("Compilations")))
-
-			items.insert(0, (ALL, _("All artists")))
-			items.insert(0, (POPULARS, _("Populars albums")))
-			self._list_one.populate(items, not active)	
-			self._list_one.select_first()
-			self._list_one.widget.show()
-
-	"""
-		Update with new genres or artist
-		If force, switch back to first item
-	"""
-	def _update_list_one(self, obj = None, force = True):
+	def _setup_list_one(self, obj = None):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
-
-		previous = Objects["settings"].get_value('hide-genres')
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
-			self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
 			items = Objects["genres"].get_ids()
 		else:
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
-					items.insert(0, (COMPILATIONS, _("Compilations")))
-			self._list_two.widget.hide()
-		Objects["settings"].set_value('hide-genres', GLib.Variant('b', not active))	
+				items.insert(0, (COMPILATIONS, _("Compilations")))
+
 		items.insert(0, (ALL, _("All artists")))
 		items.insert(0, (POPULARS, _("Populars albums")))
-		self._list_one.update(items, not active)
-		if force:
+
+		if obj:
+			self._list_one.update(items)
+	
+		else:
+			self._list_one.populate(items, not active)		
+
+		# If was empty
+		if not self._list_one_signal:
 			self._list_one.select_first()
-		if not self._list_one.widget.is_visible():
-			self._list_one.widget.show()
+
+		self._list_one.widget.show()
+		if active:
+			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)
+		else:
+			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
 
 	"""
 		Init list two with artist based on genre
 	"""
-	def _init_list_two(self, obj, genre_id):
+	def _setup_list_two(self, obj, genre_id):
 		if self._list_two_signal:
 			self._list_two.disconnect(self._list_two_signal)
 

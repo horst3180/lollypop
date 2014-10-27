@@ -16,6 +16,7 @@ from gi.repository import Gtk, GObject, Pango
 
 from lollypop.database import Database
 from lollypop.utils import translate_artist_name
+from lollypop.config import *
 
 class SelectionList(GObject.GObject):
 
@@ -30,7 +31,8 @@ class SelectionList(GObject.GObject):
 		GObject.GObject.__init__(self)
 		
 		self._model = Gtk.ListStore(int, str)
-
+		self._updates = None
+		
 		self._view = Gtk.TreeView(self._model)
 		self._view.connect('cursor-changed', self._new_item_selected)
 		renderer = Gtk.CellRendererText()
@@ -60,40 +62,27 @@ class SelectionList(GObject.GObject):
 	
 	"""
 		Update view with values
-		Translate string if is_artist = True
 	"""	
 	def update(self, values, is_artist = False):
-		(path, column) = self._view.get_cursor()
-		if path:
-			rowiter = self._model.get_iter(path)
-			selected_id = self._model.get_value(rowiter, 0)
-
-		selected_iter = None
-		for row in self._model:
-			if row[0] != selected_id:
-				self._model.remove(row.iter)
-			else:
-				selected_iter = row.iter
-		
-		before = True
-		rowiter = selected_iter
-		for object_id, string in values:
-				if is_artist:
-					string = translate_artist_name(string)
-				if object_id == selected_id:
-					rowiter = selected_iter
-					before = False
-					# Force string update if changed
-					self._model.set_value(rowiter, 1, string)
-					continue
-				if before:
-					self._model.insert_before(rowiter, [object_id, string])
-				else:
-					rowiter = self._model.insert_after(rowiter, [object_id, string])
-
-		# Remove selected if unavailable
-		if before:
-			self._model.remove(selected_iter)
+		return
+		for item in self._model:
+			found = False
+			for value in values:
+				if item == value:
+					found = True
+			if not found:
+				self._model.remove(item.iter)
+	
+		self._model.set_sort_func(0, self._sort_items, values)
+		self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)	
+		for value in values:
+			found = False
+			for item in self._model:
+				if item == value:
+					found = True
+			if not found:
+				self._model.append([value[0], value[1]])
+		self._model.set_sort_func(0, None)
 
 	"""
 		Make treeview select first default item
@@ -106,6 +95,29 @@ class SelectionList(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Sort model
+	"""
+	def _sort_items(self, model, itera, iterb, values):
+		a = model.get_value(itera, 0)
+		b = model.get_value(itera, 0)
+		
+		if a == POPULARS:
+			return False
+		elif a == ALL:
+			if b == POPULARS:
+				return False
+			else:
+				return True
+		elif a == COMPILATIONS:
+			if b == POPULARS or b == ALL:
+				return False
+			else:
+				return True
+		else:
+			pos_a = values_array.index(a)
+			pos_b = values_array.index(b)
+			return pos_a < pos_b
 
 	"""
 		Forward "cursor-changed" as "item-selected" with item id as arg
