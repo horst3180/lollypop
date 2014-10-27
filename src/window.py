@@ -35,7 +35,7 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._scanner = CollectionScanner(Objects["settings"].get_value('music-path'))
-		self._scanner.connect("scan-finished", self._setup_list_one)
+		self._scanner.connect("scan-finished", self._setup_list_one, True)
 
 		self._setup_window()				
 		self._setup_view()
@@ -276,7 +276,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list with genres or artist
 	"""
-	def _setup_list_one(self, obj = None):
+	def _setup_list_one(self, obj = None, update = None):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
 		active = self._toolbar.get_view_genres_btn().get_active()
@@ -290,9 +290,8 @@ class Window(Gtk.ApplicationWindow):
 		items.insert(0, (ALL, _("All artists")))
 		items.insert(0, (POPULARS, _("Populars albums")))
 
-		if obj:
+		if update:
 			self._list_one.update(items)
-	
 		else:
 			self._list_one.populate(items, not active)		
 

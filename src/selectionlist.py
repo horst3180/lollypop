@@ -30,9 +30,12 @@ class SelectionList(GObject.GObject):
 	def __init__(self, title, width):
 		GObject.GObject.__init__(self)
 		
-		self._model = Gtk.ListStore(int, str)
-		self._updates = None
-		
+		self._model = Gtk.ListStore(int, str)	
+		self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+		self._model.set_sort_func(0, self._sort_items)
+		self._sort = False
+		self._values = None
+
 		self._view = Gtk.TreeView(self._model)
 		self._view.connect('cursor-changed', self._new_item_selected)
 		renderer = Gtk.CellRendererText()
@@ -62,9 +65,10 @@ class SelectionList(GObject.GObject):
 	
 	"""
 		Update view with values
+		Setup a sort function on list
+		Please  use populate in priority
 	"""	
 	def update(self, values, is_artist = False):
-		return
 		for item in self._model:
 			found = False
 			for value in values:
@@ -72,17 +76,20 @@ class SelectionList(GObject.GObject):
 					found = True
 			if not found:
 				self._model.remove(item.iter)
-	
-		self._model.set_sort_func(0, self._sort_items, values)
-		self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)	
+
+		self._values = values
 		for value in values:
 			found = False
 			for item in self._model:
 				if item == value:
 					found = True
 			if not found:
-				self._model.append([value[0], value[1]])
-		self._model.set_sort_func(0, None)
+				if is_artist:
+					string = translate_artist_name(value[0])
+				else:
+					string = value[0]
+				self._model.append([string, value[1]])
+		self._values = None
 
 	"""
 		Make treeview select first default item
@@ -98,25 +105,36 @@ class SelectionList(GObject.GObject):
 	"""
 		Sort model
 	"""
-	def _sort_items(self, model, itera, iterb, values):
+	def _sort_items(self, model, itera, iterb, data):
 		a = model.get_value(itera, 0)
 		b = model.get_value(itera, 0)
-		
+		if not self._values:
+			return b < a
+		#print("sort")
 		if a == POPULARS:
 			return False
 		elif a == ALL:
 			if b == POPULARS:
-				return False
-			else:
 				return True
+			else:
+				return False
 		elif a == COMPILATIONS:
 			if b == POPULARS or b == ALL:
-				return False
-			else:
 				return True
+			else:
+				return False
 		else:
-			pos_a = values_array.index(a)
-			pos_b = values_array.index(b)
+			pos_a = 0
+			for rowid, string in self._values:
+				if rowid == a:
+					break
+				pos_a += 1
+			pos_b = 0
+			for rowid, string in self._values:
+				if rowid == a:
+					break
+				pos_b += 1
+
 			return pos_a < pos_b
 
 	"""

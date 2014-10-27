@@ -105,7 +105,7 @@ class CollectionScanner(GObject.GObject):
 
 		# Clean deleted files
 		for track in tracks:
-			Objects("tracks").remove(filepath, sql)
+			Objects["tracks"].remove(filepath, sql)
 
 		Objects["tracks"].clean(sql)
 		Objects["albums"].compilation_lookup(sql)
