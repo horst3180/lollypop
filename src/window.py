@@ -276,7 +276,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _init_list_one(self, obj = None):
 		if self._list_one.widget.is_visible():
-			self._update_list_one()
+			self._update_list_one(None, False)
 		else:
 			active = self._toolbar.get_view_genres_btn().get_active()
 			if active:
@@ -296,8 +296,9 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Update with new genres or artist
+		If force, switch back to first item
 	"""
-	def _update_list_one(self, obj = None):
+	def _update_list_one(self, obj = None, force = True):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
 
@@ -316,7 +317,8 @@ class Window(Gtk.ApplicationWindow):
 		items.insert(0, (ALL, _("All artists")))
 		items.insert(0, (POPULARS, _("Populars albums")))
 		self._list_one.update(items, not active)
-		self._list_one.select_first()
+		if force:
+			self._list_one.select_first()
 		if not self._list_one.widget.is_visible():
 			self._list_one.widget.show()
 
