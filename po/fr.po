@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-25 18:48+0200\n"
+"POT-Creation-Date: 2014-10-27 14:48+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -70,8 +70,12 @@ msgstr "Scanner la collection au démarrage"
 msgid "Do not show genres list"
 msgstr "Ne pas afficher la liste des genres"
 
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Show albums/artists view as dark"
+msgstr "Montrer les albums/artistes avec un fond sombre"
+
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/application.py:39 ../src/application.py:99 ../src/window.py:34
+#: ../src/application.py:39 ../src/application.py:99 ../src/window.py:35
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -87,27 +91,27 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:161 ../src/toolbar.py:183
+#: ../src/toolbar.py:170 ../src/toolbar.py:192
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:166 ../src/toolbar.py:180 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:175 ../src/toolbar.py:189 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:60
+#: ../src/window.py:61
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/window.py:265 ../src/window.py:290
+#: ../src/window.py:290 ../src/window.py:314
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:266 ../src/window.py:291
+#: ../src/window.py:291 ../src/window.py:315
 msgid "Populars albums"
 msgstr "Albums populaires"
 
-#: ../src/window.py:308 ../src/window.py:318
+#: ../src/window.py:334
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -125,6 +129,19 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
+#: ../src/database_artists.py:68
+msgid "Many artists"
+msgstr "Plusieurs artistes"
+
+#: ../src/database_artists.py:75 ../src/database_albums.py:117
+#: ../src/database_tracks.py:112
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: ../src/database_albums.py:132
+msgid "Compilation"
+msgstr "Compilation"
+
 #: ../src/playlist.py:73
 msgid "Right click on a song to add it to playlist"
 msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
@@ -133,7 +150,7 @@ msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popimages.py:57
+#: ../src/popimages.py:52
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
@@ -194,15 +211,3 @@ msgstr "Fermer"
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artist"
-
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgid "Compilation"
-#~ msgstr "Compilation"
-
-#~ msgid "_New music scan"
-#~ msgstr "Nouveau scan de la musique"
-
-#~ msgid "A music player and management application for GNOME."
-#~ msgstr "Un lecteur de musique et une application de gestion pour GNOME."
