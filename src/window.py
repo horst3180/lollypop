@@ -285,7 +285,7 @@ class Window(Gtk.ApplicationWindow):
 		else:
 			self._list_one_id = None
 			self._list_one.connect('item-selected', self._update_view_artists)
-			items = Objects["artists"].get_ids()
+			items = Objects["artists"].get_ids(ALL)
 			self._list_two.widget.hide()
 
 		items.insert(0, (ALL, _("All artists")))
