@@ -288,7 +288,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		albums = []
 		result = []
-		if genre_id == ALL:
+		if genre_id == ALL or not genre_id:
 			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year")
 		else:
 			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year", (genre_id,))

@@ -309,6 +309,8 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one_id = None
 			self._list_one.connect('item-selected', self._update_view_artists)
 			items = Objects["artists"].get_ids(ALL)
+			if len(Objects["albums"].get_compilations(ALL)) > 0:
+					items.insert(0, (-3, _("Compilations")))
 			self._list_two.widget.hide()
 
 		items.insert(0, (ALL, _("All artists")))
@@ -343,10 +345,11 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_view_artists(self, obj, artist_id):
 		if artist_id == ALL:
-			self._list_one_id = -1
+			self._list_one_id = ALL
 			self._update_view_albums()
 		elif artist_id == POPULARS:
-			self._update_view_populars_albums()	
+			self._list_one_id = POPULARS
+			self._update_view_albums()
 		else:
 			old_view = self._get_next_view()
 			if old_view:
