@@ -300,6 +300,7 @@ class Window(Gtk.ApplicationWindow):
 	def _update_list_one(self, obj = None):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
+
 		previous = Objects["settings"].get_value('hide-genres')
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
@@ -328,6 +329,7 @@ class Window(Gtk.ApplicationWindow):
 
 		if genre_id == POPULARS:
 			self._list_two.widget.hide()
+			self._list_two_signal = None
 		else:
 			
 			values = Objects["artists"].get_ids(genre_id)
