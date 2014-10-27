@@ -219,19 +219,34 @@ class Window(Gtk.ApplicationWindow):
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
-		self._view = LoadingView()
+		loading_view = LoadingView()
+
+		self._stack = Gtk.Stack()
+		self._stack.add(loading_view)
+		self._stack.set_visible_child(loading_view)
+		self._stack.set_transition_duration(500)
+		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+		self._stack.show()
 
 		separator = Gtk.Separator()
 		separator.show()
 		self._box.add(self._list_one.widget)
 		self._box.add(separator)
 		self._box.add(self._list_two.widget)
-		self._box.add(self._view)
+		self._box.add(self._stack)
 		self.add(self._box)
 		self._box.show()
 		self.show()
 
-	
+	"""
+		Return next view
+	"""
+	def _get_next_view(self):
+		for child in self._stack.get_children():
+			if child != self._stack.get_visible_child():
+				return child
+		return None
+			
 	"""
 		Run collection update on mapped window
 		Pass _update_genre() as collection scanned callback
@@ -326,21 +341,28 @@ class Window(Gtk.ApplicationWindow):
 		elif artist_id == POPULARS:
 			self._update_view_populars_albums()
 		else:
-			self._box.remove(self._view)
-			self._view = ArtistView(artist_id, self._list_one_id)
-			self._box.add(self._view)
-			start_new_thread(self._view.populate, ())
+			old_view = self._get_next_view()
+			if old_view:
+				self._stack.remove(old_view)
+				old_view.remove_signals()
+			view = ArtistView(artist_id, self._list_one_id)
+			self._stack.add(view)
+			start_new_thread(view.populate, ())
+			self._stack.set_visible_child(view)
 		
 	"""
 		Update albums view for genre_id
 	"""
 	def _update_view_albums(self):
-		self._box.remove(self._view)
-		self._view.remove_signals()
-		self._view = AlbumView(self._list_one_id)
-		self._box.add(self._view)
-		start_new_thread(self._view.populate, ())
-	
+		old_view = self._get_next_view()
+		if old_view:
+			self._stack.remove(old_view)
+			old_view.remove_signals()
+		view = AlbumView(self._list_one_id)
+		self._stack.add(view)
+		start_new_thread(view.populate, ())
+		self._stack.set_visible_child(view)
+
 	"""
 		Save new window size/position
 	"""		

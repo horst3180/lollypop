@@ -32,25 +32,25 @@ class PopAlbums(Gtk.Popover):
 
 		Objects["player"].connect("current-changed", self._update_content)
 
-		self._view1 = Gtk.Grid()
-		self._view1.set_orientation(Gtk.Orientation.VERTICAL)
-		self._view1.set_column_spacing(20)
-		self._view1.set_row_spacing(20)
-		self._view1.show()
-		self._view1.get_style_context().add_class('black')
+		view1 = Gtk.Grid()
+		view1.set_orientation(Gtk.Orientation.VERTICAL)
+		view1.set_column_spacing(20)
+		view1.set_row_spacing(20)
+		view1.show()
+		view1.get_style_context().add_class('black')
 
-		self._view2 = Gtk.Grid()
-		self._view2.set_orientation(Gtk.Orientation.VERTICAL)
-		self._view2.set_column_spacing(20)
-		self._view2.set_row_spacing(20)
-		self._view2.show()
-		self._view2.get_style_context().add_class('black')
+		view2 = Gtk.Grid()
+		view2.set_orientation(Gtk.Orientation.VERTICAL)
+		view2.set_column_spacing(20)
+		view2.set_row_spacing(20)
+		view2.show()
+		view2.get_style_context().add_class('black')
 
 		self._stack = Gtk.Stack()
-		self._stack.add(self._view1)
-		self._stack.add(self._view2)
-		self._stack.set_visible_child(self._view1)
-		self._stack.set_transition_duration(1000)
+		self._stack.add(view1)
+		self._stack.add(view2)
+		self._stack.set_visible_child(view1)
+		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
 		
@@ -91,13 +91,13 @@ class PopAlbums(Gtk.Popover):
 #######################	
 
 	"""
-		Retun next view
+		Return next view
 	"""
 	def _get_next_view(self):
-		if self._view1 == self._stack.get_visible_child():
-			return self._view2
-		else:
-			return self._view1
+		for child in self._stack.get_children():
+			if child != self._stack.get_visible_child():
+				return child
+		return None
 		
 	"""
 		Switch to no visible view
@@ -109,10 +109,7 @@ class PopAlbums(Gtk.Popover):
 		Add a new widget to the view
 	"""
 	def _add_widget_songs(self, album_id, genre_id):
-		if self._view1 == self._stack.get_visible_child():
-			view = self._view2
-		else:
-			view = self._view1
+		view = self._get_next_view()
 		widget = AlbumWidgetSongs(album_id, genre_id)
 		widget.show()
 		self._widgets.append(widget)

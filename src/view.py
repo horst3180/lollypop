@@ -192,12 +192,18 @@ class AlbumView(View):
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
 		self._scrolledWindow.show_all()
-
+		
+		self._stack = Gtk.Stack()
+		self._stack.set_transition_duration(500)
+		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+		self._stack.show()
+		
 		self._scrolledContext = Gtk.ScrolledWindow()
 		self._scrolledContext.set_min_content_height(250)
 		self._scrolledContext.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._viewport = Gtk.Viewport()
-		Gtk.Container.add(self._scrolledContext ,self._viewport)
+		self._scrolledContext.add(self._stack)
+
+		
 		separator = Gtk.Separator()
 		separator.show()
 		
@@ -225,7 +231,7 @@ class AlbumView(View):
 		Update album cover in view
 	"""
 	def cover_changed(self, widget, album_id):
-		self._albumsongs.update_cover(album_id)
+		self._stack.get_visible_child().update_cover(album_id)
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
@@ -234,44 +240,44 @@ class AlbumView(View):
 # PRIVATE             #
 #######################
 	"""
+		Return next view
+	"""
+	def _get_next_view(self):
+		for child in self._stack.get_children():
+			if child != self._stack.get_visible_child():
+				return child
+		return None
+
+	"""
 		Update the context view
 	"""
 	def _update_context(self):
 		track_id = Objects["player"].get_current_track_id()
 		album_id = Objects["tracks"].get_album_id(track_id)
-		if self._albumsongs:
-			self._albumsongs.update_tracks(track_id)
+		self._stack.get_visible_child().update_tracks(track_id)
 
 	"""
 		populate context view
 	"""
 	def _populate_context(self, album_id):
-		self._albumsongs = AlbumWidgetSongs(album_id, self._genre_id)
-		self._viewport.add(self._albumsongs)
-		self._scrolledContext.show_all()
-
-	"""
-		Clean context view
-	"""
-	def _clean_context(self):
-		if self._albumsongs:
-			self._viewport.remove(self._albumsongs)
-			self._albumsongs.destroy()
-			self._albumsongs = None
+		old_view = self._get_next_view()
+		if old_view:
+			self._stack.remove(old_view)
+		view = AlbumWidgetSongs(album_id, self._genre_id)
+		view.show()
+		self._stack.add(view)
+		self._stack.set_visible_child(view)
 			
 	"""
 		Show Context view for activated album
 	"""
 	def _on_album_activated(self, flowbox, child):
-		if self._albumsongs and self._object_id == child.get_child().get_id():
-			self._clean_context()
+		if self._object_id == child.get_child().get_id():
 			self._scrolledContext.hide()
 		else:
-			if self._albumsongs:
-				self._clean_context()
 			self._object_id = child.get_child().get_id()
 			self._populate_context(self._object_id)
-			self._scrolledContext.show_all()		
+			self._scrolledContext.show()		
 	
 	"""
 		Add albums using gmainloop
