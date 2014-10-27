@@ -13,6 +13,7 @@ src/database.py
 src/database_artists.py
 src/database_albums.py
 src/database_tracks.py
+src/database_genres.py
 src/albumart.py
 src/selectionlist.py
 src/playlist.py
