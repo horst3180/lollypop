@@ -219,7 +219,6 @@ class Window(Gtk.ApplicationWindow):
 		self._toolbar.get_view_genres_btn().connect("toggled", self._update_list_one)
 		self._list_one = SelectionList("Genre", 150)
 		self._list_two = SelectionList("Artist", 200)
-		self._list_one_id = None
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
@@ -285,8 +284,8 @@ class Window(Gtk.ApplicationWindow):
 				self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
 			else:
 				items = Objects["artists"].get_ids(ALL)
-				self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists)
-	
+				self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
+
 			items.insert(0, (ALL, _("All artists")))
 			items.insert(0, (POPULARS, _("Populars albums")))
 			self._list_one.populate(items, not active)	
@@ -302,11 +301,10 @@ class Window(Gtk.ApplicationWindow):
 		previous = Objects["settings"].get_value('hide-genres')
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
-			self._list_one.connect('item-selected', self._init_list_two)
+			self._list_one_signal = self._list_one.connect('item-selected', self._init_list_two)
 			items = Objects["genres"].get_ids()
 		else:
-			self._list_one_id = None
-			self._list_one.connect('item-selected', self._update_view_artists)
+			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
 					items.insert(0, (-3, _("Compilations")))
@@ -318,6 +316,7 @@ class Window(Gtk.ApplicationWindow):
 		if not self._list_one.widget.is_visible():
 			self._list_one.select_first()
 			self._list_one.widget.show()
+
 	"""
 		Init list two with artist based on genre
 	"""
@@ -326,35 +325,29 @@ class Window(Gtk.ApplicationWindow):
 			self._list_two.disconnect(self._list_two_signal)
 
 		if genre_id == POPULARS:
-			self._list_one_id = genre_id
 			self._list_two.widget.hide()
 		else:
-			if self._list_one_id != genre_id:
-				values = Objects["artists"].get_ids(genre_id)
-				if len(Objects["albums"].get_compilations(genre_id)) > 0:
-					values.insert(0, (-3, _("Compilations")))
-				self._list_two.populate(values, True)
-				self._list_two.widget.show()
-			self._list_one_id = genre_id
-			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_artists)
-		self._update_view_albums()
+			
+			values = Objects["artists"].get_ids(genre_id)
+			if len(Objects["albums"].get_compilations(genre_id)) > 0:
+				values.insert(0, (-3, _("Compilations")))
+			self._list_two.populate(values, True)
+			self._list_two.widget.show()
+			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_artists, genre_id)
+		self._update_view_albums(genre_id)
 		
 	"""
 		Update artist view for artist_id
 	"""
-	def _update_view_artists(self, obj, artist_id):
-		if artist_id == ALL:
-			self._list_one_id = ALL
-			self._update_view_albums()
-		elif artist_id == POPULARS:
-			self._list_one_id = POPULARS
-			self._update_view_albums()
+	def _update_view_artists(self, obj, artist_id, genre_id):
+		if artist_id == ALL or artist_id == POPULARS:
+			self._update_view_albums(artist_id)
 		else:
 			old_view = self._get_next_view()
 			if old_view:
 				self._stack.remove(old_view)
 				old_view.remove_signals()
-			view = ArtistView(artist_id, self._list_one_id)
+			view = ArtistView(artist_id, genre_id)
 			self._stack.add(view)
 			start_new_thread(view.populate, ())
 			self._stack.set_visible_child(view)
@@ -362,12 +355,12 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Update albums view for genre_id
 	"""
-	def _update_view_albums(self):
+	def _update_view_albums(self, genre_id):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
 			old_view.remove_signals()
-		view = AlbumView(self._list_one_id)
+		view = AlbumView(genre_id)
 		self._stack.add(view)
 		start_new_thread(view.populate, ())
 		self._stack.set_visible_child(view)
