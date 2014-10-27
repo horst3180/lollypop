@@ -313,8 +313,8 @@ class Window(Gtk.ApplicationWindow):
 		items.insert(0, (ALL, _("All artists")))
 		items.insert(0, (POPULARS, _("Populars albums")))
 		self._list_one.update(items, not active)
+		self._list_one.select_first()
 		if not self._list_one.widget.is_visible():
-			self._list_one.select_first()
 			self._list_one.widget.show()
 
 	"""
