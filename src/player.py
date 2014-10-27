@@ -294,21 +294,20 @@ class Player(GObject.GObject):
 
 	"""
 		Set album list (for next/prev)
-		If artist_id and genre_id => Albums for artist_id and genre_id
-		Elif genre_id => Albums for genre_id
-		Else => Albums populars
 	"""
 	def set_albums(self, artist_id, genre_id, track_id):
 		self._albums = []
-		# We are in artist view, add all albums from artist for genre
-		if artist_id:
-			self._albums = Objects["albums"].get_ids(artist_id, genre_id)
+
+		# We are in artist view without genres, add all albums
+		if genre_id == -1 or artist_id == -1:
+			self._albums = Objects["albums"].get_ids()
 		# We are in popular view, add populars albums
 		elif genre_id == -2:
 			self._albums = Objects["albums"].get_populars()
-		# We are in album view, add all albums from genre
 		else:
-			self._albums = Objects["albums"].get_ids(None, genre_id)
+		# We are in album/artist view, add all albums from current genre
+			self._albums = Objects["albums"].get_compilations(genre_id)
+			self._albums += Objects["albums"].get_ids(None, genre_id)
 		album_id = Objects["tracks"].get_album_id(track_id)
 		tracks = Objects["albums"].get_tracks(album_id)
 		self._current_track_number = tracks.index(track_id) 

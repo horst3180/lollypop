@@ -209,7 +209,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 				if track_widget == widget:
 					Objects["player"].load(widget.id)
 					if not Objects["player"].is_party():
-						Objects["player"].set_albums(None, self._genre_id, widget.id)
+						Objects["player"].set_albums(self._artist_id, self._genre_id, widget.id)
 		# Add/Remove to/from playlist		
 		else:
 			if Objects["player"].is_in_playlist(widget.id):
