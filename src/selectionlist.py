@@ -72,7 +72,7 @@ class SelectionList(GObject.GObject):
 		for item in self._model:
 			found = False
 			for value in values:
-				if item == value:
+				if item[0] == value[0]:
 					found = True
 			if not found:
 				self._model.remove(item.iter)
@@ -81,7 +81,7 @@ class SelectionList(GObject.GObject):
 		for value in values:
 			found = False
 			for item in self._model:
-				if item == value:
+				if item[0] == value[0]:
 					found = True
 			if not found:
 				if is_artist:
