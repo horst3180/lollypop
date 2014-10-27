@@ -14,6 +14,7 @@
 
 from gi.repository import Gtk, Gdk, Gio, GLib
 from gettext import gettext as _, ngettext
+from _thread import start_new_thread
 
 from lollypop.config import Objects
 from lollypop.collectionscanner import CollectionScanner
@@ -214,9 +215,9 @@ class Window(Gtk.ApplicationWindow):
 		self._toolbar.get_view_genres_btn().connect("toggled", self._update_list_one)
 		self._list_one = SelectionList("Genre", 150)
 		self._list_two = SelectionList("Artist", 200)
-		self._list_two.connect('item-selected', self._update_view_artists)
 		self._list_one_id = None
 		self._list_one_signal = None
+		self._list_two_signal = None
 		
 		self._view = LoadingView()
 
@@ -298,18 +299,23 @@ class Window(Gtk.ApplicationWindow):
 		Init list two with artist based on genre
 	"""
 	def _init_list_two(self, obj, genre_id):
-		self._list_one_id = genre_id
+		if self._list_two_signal:
+			self._list_two.disconnect(self._list_two_signal)
+
 		if genre_id == POPULARS:
-			self._update_view_populars_albums()
+			self._list_one_id = genre_id
 			self._list_two.widget.hide()
 		else:
-			values = Objects["artists"].get_ids(genre_id)
-			if len(Objects["albums"].get_compilations(genre_id)) > 0:
-				values.insert(0, (-3, _("Compilations")))
-			self._list_two.populate(values, True)
-			self._update_view_albums()
-			self._list_two.widget.show()
-
+			if self._list_one_id != genre_id:
+				values = Objects["artists"].get_ids(genre_id)
+				if len(Objects["albums"].get_compilations(genre_id)) > 0:
+					values.insert(0, (-3, _("Compilations")))
+				self._list_two.populate(values, True)
+				self._list_two.widget.show()
+			self._list_one_id = genre_id
+			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_artists)
+		self._update_view_albums()
+		
 	"""
 		Update artist view for artist_id
 	"""
@@ -321,20 +327,10 @@ class Window(Gtk.ApplicationWindow):
 			self._update_view_populars_albums()
 		else:
 			self._box.remove(self._view)
-			self._view.destroy()
 			self._view = ArtistView(artist_id, self._list_one_id)
 			self._box.add(self._view)
-			self._view.populate()
-	
-	"""
-		Update albums view with populars albums
-	"""
-	def _update_view_populars_albums(self):
-		self._box.remove(self._view)
-		self._view.remove_signals()
-		self._view = AlbumView(self._list_one_id)
-		self._box.add(self._view)
-		self._view.populate_popular()
+			start_new_thread(self._view.populate, ())
+		
 	"""
 		Update albums view for genre_id
 	"""
@@ -343,7 +339,7 @@ class Window(Gtk.ApplicationWindow):
 		self._view.remove_signals()
 		self._view = AlbumView(self._list_one_id)
 		self._box.add(self._view)
-		self._view.populate()
+		start_new_thread(self._view.populate, ())
 	
 	"""
 		Save new window size/position

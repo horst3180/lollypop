@@ -118,15 +118,16 @@ class ArtistView(View):
 		self.show_all()
 
 	"""
-		Populate the view
+		Populate the view, can be threaded
 	"""
 	def populate(self):
+		sql = Objects["db"].get_cursor()
 		if self._genre_id == ALL:
-			albums = Objects["albums"].get_ids(self._object_id, None)
+			albums = Objects["albums"].get_ids(self._object_id, None, sql)
 		elif self._object_id == COMPILATIONS:
-			albums = Objects["albums"].get_compilations(self._genre_id)
+			albums = Objects["albums"].get_compilations(self._genre_id, sql)
 		else:
-			albums = Objects["albums"].get_ids(self._object_id, self._genre_id)
+			albums = Objects["albums"].get_ids(self._object_id, self._genre_id, sql)
 		for album_id in albums:
 			GLib.idle_add(self._populate_content, album_id)
 
@@ -206,25 +207,20 @@ class AlbumView(View):
 		self.show()
 
 	"""
-		Populate albums
+		Populate albums, can be threaded
 	"""	
 	def populate(self):
-		if self._genre_id == -1:
-			albums = Objects["albums"].get_ids()
+		sql = Objects["db"].get_cursor()
+		if self._genre_id == ALL:
+			albums = Objects["albums"].get_ids(None, None, sql)
+		elif self._genre_id == POPULARS:
+			albums = Objects["albums"].get_populars(sql)
 		else:
-			albums = Objects["albums"].get_compilations(self._genre_id)
-			albums += Objects["albums"].get_ids(None, self._genre_id)
+			albums = Objects["albums"].get_compilations(self._genre_id, sql)
+			albums += Objects["albums"].get_ids(None, self._genre_id, sql)
+
 		GLib.idle_add(self._add_albums, albums)
 	
-	"""
-		Populate albums with popular ones
-	"""			
-	def populate_popular(self):
-		for album_id in Objects["albums"].get_populars():
-			widget = AlbumWidget(album_id)
-			widget.show()
-			self._albumbox.insert(widget, -1)
-
 	"""
 		Update album cover in view
 	"""
