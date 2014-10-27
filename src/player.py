@@ -267,6 +267,11 @@ class Player(GObject.GObject):
 				self._albums = Objects["albums"].get_party_ids(self._party_ids)
 			else:
 				self._albums = Objects["albums"].get_ids()
+			# Start a new song if not playing
+			if not self.is_playing():
+				track_id = self._get_random()
+				self.load(track_id)
+				self._current_track_album_id = Objects["tracks"].get_album_id(track_id)
 		else:
 			album_id = Objects["tracks"].get_album_id(self._current_track_id)
 			artist_id = Objects["artists"].get_id(album_id)
