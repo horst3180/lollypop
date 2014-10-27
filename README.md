@@ -1,4 +1,4 @@
-Lollypop 0.6
+Lollypop
 ========================
 
 Lollypop is a new GNOME music playing application.
