@@ -110,7 +110,7 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def _add_widget_songs(self, album_id, genre_id):
 		view = self._get_next_view()
-		widget = AlbumWidgetSongs(album_id, genre_id)
+		widget = AlbumWidgetSongs(album_id, genre_id, False)
 		widget.show()
 		self._widgets.append(widget)
 		view.add(widget)

@@ -79,8 +79,9 @@ class AlbumWidgetSongs(Gtk.Grid):
 			- Album cover
 			- Album name
 			- Albums tracks aligned on two columns
+		if cover_add True, let user change album cover
 	"""
-	def __init__(self, album_id, genre_id):
+	def __init__(self, album_id, genre_id, cover_add = True):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidgetSongs.ui')
@@ -102,8 +103,9 @@ class AlbumWidgetSongs(Gtk.Grid):
 		self._ui.get_object('year').set_label(Objects["albums"].get_year(album_id))
 		self.add(self._ui.get_object('AlbumWidgetSongs'))
 
-		self._eventbox = self._ui.get_object('eventbox')
-		self._eventbox.connect("button-press-event", self._show_web_art)
+		if cover_add:
+			self._eventbox = self._ui.get_object('eventbox')
+			self._eventbox.connect("button-press-event", self._show_web_art)
 
 		Objects["player"].connect("playlist-changed", self._update_pos_labels)
 
