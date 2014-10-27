@@ -13,24 +13,11 @@ It provides:
 - Replay gain
 
 Changes:
-* 0.7:
+* 0.7.0:
   - Threaded interface
   - Cover art search
   - Context view by clicking on headerbar infobox
   - Able to hide genres column
-* 0.6:
-  - Add a gsetting option to add customs music paths
-  - Handle album compilations
-  - Fix performance issues
-  - Better widgets for search and playlist
-  - Handle specials prefix for artists
-  - Gapless playing
-* 0.5.2:
-  - Fix Ubuntu notifications (cover not working for now)
-  - Fix database reinit
-
-* 0.5.1: 
-  - Fix Ubuntu install
 
 Tarball: https://github.com/gnumdk/lollypop-data
 
