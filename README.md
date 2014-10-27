@@ -13,6 +13,11 @@ It provides:
 - Replay gain
 
 Changes:
+* 0.7:
+  - Threaded interface
+  - Cover art search
+  - Context view by clicking on headerbar infobox
+  - Able to hide genres column
 * 0.6:
   - Add a gsetting option to add customs music paths
   - Handle album compilations
@@ -34,9 +39,7 @@ Tarball: https://github.com/gnumdk/lollypop-data
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop3.png)
 
 TODO:
-- Gapless playback 
 - Extract covers from files (is mutagen able?)
-- Missing covers in notify-osd
 - Drag & Drop in playlist popup (help really welcome)
 
 Patchs are welcome ;)
