@@ -179,9 +179,9 @@ class Toolbar():
 	"""	
 	def _on_progress_release_button(self, scale, data):
 		value = scale.get_value()
+		self._seeking = False
 		self._on_position_changed(None, value)
 		Objects["player"].seek(value/60)
-		self._seeking = False
 	
 	"""
 		Update scale and time label
