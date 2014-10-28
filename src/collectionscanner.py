@@ -113,6 +113,7 @@ class CollectionScanner(GObject.GObject):
 					tracks.remove(filepath)
 			
 			except Exception as e:
+				print(filepath)
 				print("CollectionScanner::_scan(): %s" %e)
 			i += 1
 
@@ -142,7 +143,7 @@ class CollectionScanner(GObject.GObject):
 		if "artist" in keys:
 			artist = tag["artist"][0]
 		else:
-			performer = "Unknown"
+			artist = "Unknown"
 
 		if "performer" in keys:
 			artist = tag["performer"][0]		

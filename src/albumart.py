@@ -90,15 +90,25 @@ class AlbumArt:
 							for tag in filetag.tags:
 								if tag.startswith("APIC:"):
 									audiotag = filetag.tags[tag]
-									if audiotag.type == 3:
-										stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+									# TODO check type by pref
+									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
+																   							size,
+															      							False,
+																  							None)
+									pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+									return pixbuf
+								elif tag == "covr":
+									for data in filetag.tags["covr"]:
+										stream = Gio.MemoryInputStream.new_from_data(data, None)
 										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
 																   							size,
 															      							False,
 																  							None)
 										pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
 										return pixbuf
-					except:
+					except Exception as e:
+						print(e)
 						pass
 
 					pixbuf = self._get_default_art(size)
