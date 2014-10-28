@@ -37,7 +37,6 @@ class CollectionScanner(GObject.GObject):
 		GObject.GObject.__init__(self)
 
 		self._in_thread = False
-		self._cool = False
 		self._progress = None
 
 		if len(paths) > 0:
@@ -47,10 +46,8 @@ class CollectionScanner(GObject.GObject):
 
 	"""
 		Update database
-		if cool = True, don't slow down the machine while scanning
 	"""
-	def update(self, cool , progress):
-		self._cool = cool
+	def update(self,  progress):
 		self._progress = progress
 		progress.show()
 		if not self._in_thread:

@@ -259,10 +259,10 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _on_mapped_window(self, obj, data):
 		if Objects["tracks"].is_empty():
-			self._scanner.update(False, self._progress)
+			self._scanner.update(self._progress)
 			return
 		elif Objects["settings"].get_value('startup-scan'):
-			self._scanner.update(True, self._progress)
+			self._scanner.update(self._progress)
 			
 		self._setup_list_one()
 		self._update_view_albums(POPULARS)
