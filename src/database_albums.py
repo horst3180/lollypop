@@ -32,7 +32,16 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, path, popularity)\
 		                   VALUES (?, ?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, path, 0))
-		                   
+	
+	"""
+		Set artist id
+		arg: album id as int, artist_id as int
+	"""
+	def set_artist_id(self, album_id, artist_id, sql):
+		if not sql:
+			sql = Objects["sql"]
+		sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?", (artist_id, album_id))
+			                   
 	"""
 		Increment popularity field for album id
 		No commit needed
@@ -72,14 +81,17 @@ class DatabaseAlbums:
 	"""
 		Get album id 
 		
-		args: Album name as string, artist id as int and genre id as int
+		args: Album name as string, artist id(can be None) as int and genre id as int
 
 		ret: Album id as int
 	"""
 	def get_id_var(self, album_name, artist_id, genre_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		result = sql.execute("SELECT rowid FROM albums where name=? AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+		if artist_id:
+			result = sql.execute("SELECT rowid FROM albums where name=? AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+		else:
+			result = sql.execute("SELECT rowid FROM albums where name=? AND genre_id=?", (album_name, genre_id))
 		v = result.fetchone()
 		if v:
 			return v[0]
@@ -310,34 +322,4 @@ class DatabaseAlbums:
 		for row in result:
 			albums += (row,)
 		return albums
-
-	"""
-		Search for compilation in database, regroups albums
-		No commit needed
-	"""
-	def compilation_lookup(self, sql = None):
-		if not sql:
-			sql = Objects["sql"]
-		albums = []
-		cursor = sql.execute("SELECT rowid, artist_id, name, path FROM albums")
-		# Copy cursor to an array
-		for rowid, artist_id, name, path in cursor:
-			albums.append((rowid, artist_id, name, path))
-
-		for rowid, artist_id, name, path in albums:
-			compilation_set = False
-			# we look at albums with same path but different artist, no albums with multiple CD
-			other_albums = sql.execute("SELECT rowid, artist_id, name, path FROM albums WHERE rowid!=? and artist_id!=? and name=? and path=?", (rowid, artist_id, name, path))
-			for other_rowid, other_artist_id, other_name, other_path in other_albums:
-				# Mark new albums as compilation (artist_id == -1)
-				if  not compilation_set:
-					sql.execute("UPDATE albums SET artist_id=-1 WHERE rowid=?", (rowid,))
-					compilation_set = True
-				# Add track to compilation, delete orphaned album
-				tracks = sql.execute("SELECT rowid FROM tracks WHERE album_id=?", (other_rowid,))
-				for track in tracks:
-					sql.execute("UPDATE tracks SET album_id=? WHERE rowid=?", (rowid,track[0]))
-				sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid,))
-				albums.remove((other_rowid, other_artist_id, other_name, other_path))
-
 
