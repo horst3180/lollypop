@@ -88,7 +88,6 @@ class CollectionScanner(GObject.GObject):
 						mtime = int(os.path.getmtime(filepath))
 						try:
 							if filepath not in tracks:
-								print(filepath)
 								tag = mutagen.File(filepath, easy = True)
 								self._add2db(filepath, mtime, tag, sql)
 							else:
@@ -106,7 +105,7 @@ class CollectionScanner(GObject.GObject):
 
 		# Clean deleted files
 		for track in tracks:
-			Objects["tracks"].remove(filepath, sql)
+			Objects["tracks"].remove(track, sql)
 
 		Objects["tracks"].clean(sql)
 		Objects["albums"].compilation_lookup(sql)

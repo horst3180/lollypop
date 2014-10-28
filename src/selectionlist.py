@@ -106,11 +106,13 @@ class SelectionList(GObject.GObject):
 		Sort model
 	"""
 	def _sort_items(self, model, itera, iterb, data):
+		print(self._values)
 		a = model.get_value(itera, 0)
-		b = model.get_value(itera, 0)
+		b = model.get_value(iterb, 0)
+
 		if not self._values:
-			return b < a
-		#print("sort")
+			return False
+
 		if a == POPULARS:
 			return False
 		elif a == ALL:
@@ -131,11 +133,11 @@ class SelectionList(GObject.GObject):
 				pos_a += 1
 			pos_b = 0
 			for rowid, string in self._values:
-				if rowid == a:
+				if rowid == b:
 					break
 				pos_b += 1
 
-			return pos_a < pos_b
+			return pos_a > pos_b
 
 	"""
 		Forward "cursor-changed" as "item-selected" with item id as arg
