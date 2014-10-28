@@ -167,7 +167,10 @@ class CollectionScanner(GObject.GObject):
 				index = string.find("/")
 				tracknumber = int(string[0:index])
 			else:
-				tracknumber = int(string)
+				try:
+					tracknumber = int(string)
+				except:
+					tracknumber = 0
 		else:
 			tracknumber = 0
 		
