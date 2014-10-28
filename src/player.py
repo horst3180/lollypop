@@ -15,6 +15,7 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject, Gst, GstAudio
 import random
+from os import path
 
 from lollypop.config import *
 from lollypop.database import Database
@@ -301,23 +302,24 @@ class Player(GObject.GObject):
 		Set album list (for next/prev)
 	"""
 	def set_albums(self, artist_id, genre_id, track_id):
-		self._albums = []
-
-		# We are in All artists
-		if genre_id == ALL or artist_id == ALL:
-			self._albums = Objects["albums"].get_compilations(ALL)
-			self._albums += Objects["albums"].get_ids()
-		# We are in popular view, add populars albums
-		elif genre_id == POPULARS:
-			self._albums = Objects["albums"].get_populars()
-		else:
-		# We are in album/artist view, add all albums from current genre
-			self._albums = Objects["albums"].get_compilations(genre_id)
-			self._albums += Objects["albums"].get_ids(None, genre_id)
-		album_id = Objects["tracks"].get_album_id(track_id)
-		tracks = Objects["albums"].get_tracks(album_id)
-		self._current_track_number = tracks.index(track_id) 
-		self._current_track_album_id = album_id
+		filepath = Objects["tracks"].get_path(track_id)
+		if path.exists(filepath):
+			self._albums = []
+			# We are in All artists
+			if genre_id == ALL or artist_id == ALL:
+				self._albums = Objects["albums"].get_compilations(ALL)
+				self._albums += Objects["albums"].get_ids()
+			# We are in popular view, add populars albums
+			elif genre_id == POPULARS:
+				self._albums = Objects["albums"].get_populars()
+			else:
+			# We are in album/artist view, add all albums from current genre
+				self._albums = Objects["albums"].get_compilations(genre_id)
+				self._albums += Objects["albums"].get_ids(None, genre_id)
+			album_id = Objects["tracks"].get_album_id(track_id)
+			tracks = Objects["albums"].get_tracks(album_id)
+			self._current_track_number = tracks.index(track_id) 
+			self._current_track_album_id = album_id
 
 	"""
 		Empty albums
@@ -489,5 +491,7 @@ class Player(GObject.GObject):
 		Load track_id
 	"""
 	def _load_track(self, track_id, sql = None):
-		self._current_track_id = track_id
-		self._playbin.set_property('uri', "file://" + Objects["tracks"].get_path(track_id, sql))
+		filepath = Objects["tracks"].get_path(track_id, sql)
+		if path.exists(filepath):
+			self._current_track_id = track_id
+			self._playbin.set_property('uri', "file://" + filepath)
