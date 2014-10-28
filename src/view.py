@@ -159,15 +159,7 @@ class ArtistView(View):
 	def _populate_content(self, album_id):
 		widget = AlbumWidgetSongs(album_id, self._genre_id)
 		self._albumbox.add(widget)
-		widget.show()	
-
-	"""
-		Clean content view
-	"""
-	def _clean_content(self):
-		for widget in self._albumbox.get_children():
-			widget.hide()
-			widget.destroy()
+		widget.show()
 
 class AlbumView(View):
 

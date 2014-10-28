@@ -60,12 +60,7 @@ class PopAlbums(Gtk.Popover):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
-
-		for album_id in albums:
-			genre_id = Objects["albums"].get_genre(album_id,sql)
-			GLib.idle_add(self._add_widget_songs, album_id, genre_id, priority=GLib.PRIORITY_HIGH)
-
-		GLib.timeout_add(500, self._switch_view, priority=GLib.PRIORITY_LOW)
+		GLib.idle_add(self._add_widget_songs, albums, priority=GLib.PRIORITY_HIGH)
 
 #######################
 # PRIVATE             #
@@ -109,11 +104,14 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Add a new widget to the view
 	"""
-	def _add_widget_songs(self, album_id, genre_id):
-		widget = AlbumWidgetSongs(album_id, genre_id, False)
-		widget.show()
-		self._widgets.append(widget)
-		self._view.add(widget)
+	def _add_widget_songs(self, albums):
+		for album_id in albums:
+			genre_id = Objects["albums"].get_genre(album_id)
+			widget = AlbumWidgetSongs(album_id, genre_id, False)
+			widget.show()
+			self._widgets.append(widget)
+			self._view.add(widget)
+		self._switch_view()
 
 	"""
 		Update the content view
