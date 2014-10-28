@@ -106,7 +106,7 @@ class SelectionList(GObject.GObject):
 		Sort model
 	"""
 	def _sort_items(self, model, itera, iterb, data):
-		print(self._values)
+
 		a = model.get_value(itera, 0)
 		b = model.get_value(iterb, 0)
 
