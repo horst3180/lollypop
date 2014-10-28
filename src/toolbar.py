@@ -147,13 +147,14 @@ class Toolbar():
 	"""
 		Pop albums from current artist
 	"""
-	def _pop_albums(self, widget, data):
-		track_id = Objects["player"].get_current_track_id()
-		if track_id != -1:
-			album_id = Objects["tracks"].get_album_id(track_id)
-			artist_id = Objects["albums"].get_artist_id(album_id)
-			self._popalbums.show()
-			start_new_thread(self._popalbums.populate, (artist_id,))
+	def _pop_albums(self, widget, event):
+		if event.button == 1:
+			track_id = Objects["player"].get_current_track_id()
+			if track_id != -1:
+				album_id = Objects["tracks"].get_album_id(track_id)
+				artist_id = Objects["albums"].get_artist_id(album_id)
+				self._popalbums.show()
+				start_new_thread(self._popalbums.populate, (artist_id,))
 
 	"""
 		Update cover for album_id
