@@ -213,6 +213,12 @@ class CollectionScanner(GObject.GObject):
 			album_artist_id = Objects["albums"].get_artist_id(album_id, sql)
 			if album_artist_id != artist_id:
 				Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
+		# Look too if it's a compilation (tag changed)
+		elif compilation:
+			print(filepath)
+			album_id_ = Objects["albums"].get_id_var(album, COMPILATIONS, genre_id, sql)
+			if album_id != -1:
+				album_id = album_id_
 
 		# Add track to db
 		Objects["tracks"].add(title, filepath, length, tracknumber, artist_id, album_id, mtime, sql)
