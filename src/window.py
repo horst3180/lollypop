@@ -244,15 +244,6 @@ class Window(Gtk.ApplicationWindow):
 		self.show()
 
 	"""
-		Return next view
-	"""
-	def _get_next_view(self):
-		for child in self._stack.get_children():
-			if child != self._stack.get_visible_child():
-				return child
-		return None
-			
-	"""
 		Run collection update on mapped window
 		Pass _update_genre() as collection scanned callback
 	"""	
@@ -338,27 +329,27 @@ class Window(Gtk.ApplicationWindow):
 		if artist_id == ALL or artist_id == POPULARS:
 			self._update_view_albums(artist_id)
 		else:
-			old_view = self._get_next_view()
-			if old_view:
-				self._stack.remove(old_view)
-				old_view.remove_signals()
+			old_view = self._stack.get_visible_child()
 			view = ArtistView(artist_id, genre_id)
 			self._stack.add(view)
 			start_new_thread(view.populate, ())
 			self._stack.set_visible_child(view)
-		
+			if old_view:
+				self._stack.remove(old_view)
+				old_view.remove_signals()
+
 	"""
 		Update albums view for genre_id
 	"""
 	def _update_view_albums(self, genre_id):
-		old_view = self._get_next_view()
-		if old_view:
-			self._stack.remove(old_view)
-			old_view.remove_signals()
+		old_view = self._stack.get_visible_child()
 		view = AlbumView(genre_id)
 		self._stack.add(view)
 		start_new_thread(view.populate, ())
 		self._stack.set_visible_child(view)
+		if old_view:
+			self._stack.remove(old_view)
+			old_view.remove_signals()
 
 	"""
 		Save new window size/position
