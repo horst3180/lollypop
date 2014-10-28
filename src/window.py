@@ -100,7 +100,7 @@ class Window(Gtk.ApplicationWindow):
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
-		self._scanner.update()
+		self._scanner.update(self._progress)
 		if old_view:
 			self._stack.remove(old_view)
 			old_view.remove_signals()
@@ -213,7 +213,10 @@ class Window(Gtk.ApplicationWindow):
 			- main view as artist view or album view
 	"""
 	def _setup_view(self):
-		self._box = Gtk.Grid()
+		hgrid = Gtk.Grid()
+		vgrid = Gtk.Grid()
+		vgrid.set_orientation(Gtk.Orientation.VERTICAL)
+	
 		self._toolbar = Toolbar()
 		self.set_titlebar(self._toolbar.header_bar)
 		self._toolbar.header_bar.show()
@@ -234,14 +237,20 @@ class Window(Gtk.ApplicationWindow):
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
 
+		self._progress = Gtk.ProgressBar()
+
+		vgrid.add(self._stack)
+		vgrid.add(self._progress)
+		vgrid.show()
+
 		separator = Gtk.Separator()
 		separator.show()
-		self._box.add(self._list_one.widget)
-		self._box.add(separator)
-		self._box.add(self._list_two.widget)
-		self._box.add(self._stack)
-		self.add(self._box)
-		self._box.show()
+		hgrid.add(self._list_one.widget)
+		hgrid.add(separator)
+		hgrid.add(self._list_two.widget)
+		hgrid.add(vgrid)
+		self.add(hgrid)
+		hgrid.show()
 		self.show()
 
 	"""
@@ -250,10 +259,10 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _on_mapped_window(self, obj, data):
 		if Objects["tracks"].is_empty():
-			self._scanner.update()
+			self._scanner.update(False, self._progress)
 			return
 		elif Objects["settings"].get_value('startup-scan'):
-			self._scanner.update(True)
+			self._scanner.update(True, self._progress)
 			
 		self._setup_list_one()
 		self._update_view_albums(POPULARS)

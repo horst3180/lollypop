@@ -38,6 +38,7 @@ class CollectionScanner(GObject.GObject):
 
 		self._in_thread = False
 		self._cool = False
+		self._progress = None
 
 		if len(paths) > 0:
 			self._paths = paths
@@ -45,12 +46,13 @@ class CollectionScanner(GObject.GObject):
 			self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
 
 	"""
-		Update database if empty
+		Update database
 		if cool = True, don't slow down the machine while scanning
 	"""
-	def update(self, cool = False):
+	def update(self, cool , progress):
 		self._cool = cool
-		
+		self._progress = progress
+		progress.show()
 		if not self._in_thread:
 			self._in_thread = True
 			self._mtimes = Objects["tracks"].get_mtimes()
@@ -61,10 +63,17 @@ class CollectionScanner(GObject.GObject):
 #######################
 
 	"""
+		Update progress bar
+	"""
+	def _update_progress(self, current, total):
+		self._progress.set_fraction(current/total)
+		
+	"""
 		Notify from main thread when scan finished
 	"""
 	def _notify(self):
 		self._in_thread = False
+		self._progress.hide()
 		self.emit("scan-finished")
 		
 	"""
@@ -74,6 +83,8 @@ class CollectionScanner(GObject.GObject):
 		sql = Objects["db"].get_cursor()
 
 		tracks = Objects["tracks"].get_paths(sql)
+		new_tracks = []
+		count = 0
 		for path in self._paths:
 			for root, dirs, files in os.walk(path):
 				for f in files:
@@ -83,25 +94,29 @@ class CollectionScanner(GObject.GObject):
 						if lowername.endswith(mime):
 							supported = True
 							break	
-					if (supported):
-						filepath = os.path.join(root, f)
-						mtime = int(os.path.getmtime(filepath))
-						try:
-							if filepath not in tracks:
-								tag = mutagen.File(filepath, easy = True)
-								self._add2db(filepath, mtime, tag, sql)
-							else:
-								# Update tags by removing song and readd it
-								if mtime != self._mtimes[filepath]:
-									tag = mutagen.File(filepath, easy = True)
-									Objects["tracks"].remove(filepath, sql)
-									self._add2db(filepath, mtime, tag, sql)
-								tracks.remove(filepath)
-						
-						except Exception as e:
-							print("CollectionScanner::_scan(): %s" %e)
-					if self._cool:
-						sleep(0.001)
+					if supported:
+						new_tracks.append(os.path.join(root, f))
+						count += 1
+
+		i = 0
+		for filepath in new_tracks:
+			GLib.idle_add(self._update_progress, i, count)
+			mtime = int(os.path.getmtime(filepath))
+			try:
+				if filepath not in tracks:
+					tag = mutagen.File(filepath, easy = True)
+					self._add2db(filepath, mtime, tag, sql)
+				else:
+					# Update tags by removing song and readd it
+					if mtime != self._mtimes[filepath]:
+						tag = mutagen.File(filepath, easy = True)
+						Objects["tracks"].remove(filepath, sql)
+						self._add2db(filepath, mtime, tag, sql)
+					tracks.remove(filepath)
+			
+			except Exception as e:
+				print("CollectionScanner::_scan(): %s" %e)
+			i += 1
 
 		# Clean deleted files
 		for track in tracks:
