@@ -62,7 +62,10 @@ class NotificationManager:
 								  _("by %s, from %s") % ('<b>' + artist + '</b>',
 														 '<i>' + album + '</i>'),
 								  'lollypop')
-		self._notification.show()
+		try:
+			self._notification.show()
+		except:
+			pass
 
    
 	"""
