@@ -83,20 +83,23 @@ class AlbumArt:
 					pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
 				else:
 					# Try to get from tags
-					for track_id in Objects["albums"].get_tracks(album_id):
-						filepath = Objects["tracks"].get_path(track_id)
-						filetag = Idtag(filepath, easy = False)
-						for tag in filetag.tags:
-							if tag.startswith("APIC:"):
-								audiotag = filetag.tags[tag]
-								if audiotag.type == 3:
-									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
-									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
-															   							size,
-														      							False,
-															  							None)
-									pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
-									return pixbuf
+					try:
+						for track_id in Objects["albums"].get_tracks(album_id):
+							filepath = Objects["tracks"].get_path(track_id)
+							filetag = Idtag(filepath, easy = False)
+							for tag in filetag.tags:
+								if tag.startswith("APIC:"):
+									audiotag = filetag.tags[tag]
+									if audiotag.type == 3:
+										stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
+																   							size,
+															      							False,
+																  							None)
+										pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+										return pixbuf
+					except:
+						pass
 
 					pixbuf = self._get_default_art(size)
 			else:
