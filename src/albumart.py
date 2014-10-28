@@ -12,12 +12,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 # Many code inspiration from gnome-music at the GNOME project
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
 import cairo
 import os, json
 import urllib.request
 import urllib.parse
 from math import pi
+from mutagen import File as Idtag
 
 from lollypop.config import *
 from lollypop.database import Database
@@ -72,6 +73,7 @@ class AlbumArt:
 		album_path = Objects["albums"].get_path(album_id)
 		CACHE_PATH = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		cached = True
+		pixbuf = None
 		try:
 			if not os.path.exists(CACHE_PATH):
 				path = self.get_art_path(album_path)
@@ -80,6 +82,22 @@ class AlbumArt:
 																	  size, size, False)
 					pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
 				else:
+					# Try to get from tags
+					for track_id in Objects["albums"].get_tracks(album_id):
+						filepath = Objects["tracks"].get_path(track_id)
+						filetag = Idtag(filepath, easy = False)
+						for tag in filetag.tags:
+							if tag.startswith("APIC:"):
+								audiotag = filetag.tags[tag]
+								if audiotag.type == 3:
+									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
+															   							size,
+														      							False,
+															  							None)
+									pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+									return pixbuf
+
 					pixbuf = self._get_default_art(size)
 			else:
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
