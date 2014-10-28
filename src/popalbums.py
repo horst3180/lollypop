@@ -14,6 +14,7 @@
 
 from gettext import gettext as _, ngettext 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
+from _thread import start_new_thread
 
 from lollypop.widgets import AlbumWidgetSongs
 from lollypop.config import *
@@ -33,27 +34,12 @@ class PopAlbums(Gtk.Popover):
 		Objects["player"].connect("current-changed", self._update_content)
 		self.connect('closed', self._on_closed)
 
-		view1 = Gtk.Grid()
-		view1.set_orientation(Gtk.Orientation.VERTICAL)
-		view1.set_column_spacing(20)
-		view1.set_row_spacing(20)
-		view1.show()
-		view1.get_style_context().add_class('black')
-
-		view2 = Gtk.Grid()
-		view2.set_orientation(Gtk.Orientation.VERTICAL)
-		view2.set_column_spacing(20)
-		view2.set_row_spacing(20)
-		view2.show()
-		view2.get_style_context().add_class('black')
-
 		self._stack = Gtk.Stack()
-		self._stack.add(view1)
-		self._stack.add(view2)
-		self._stack.set_visible_child(view1)
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
+		
+		self._add_new_view()
 		
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
@@ -68,16 +54,9 @@ class PopAlbums(Gtk.Popover):
 		self.add(self._scroll)	
 
 	"""
-		Clean view
-	"""
-	def clean(self):
-		for child in self._get_next_view().get_children():
-			child.destroy()
-
-	"""
 		Populate view
 	"""
-	def populate(self, artist_id):
+	def populate(self, artist_id, view = None):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
@@ -85,42 +64,54 @@ class PopAlbums(Gtk.Popover):
 			genre_id = Objects["albums"].get_genre(album_id,sql)
 			GLib.idle_add(self._add_widget_songs, album_id, genre_id, priority=GLib.PRIORITY_LOW)
 		GLib.idle_add(self._switch_view, priority=GLib.PRIORITY_LOW)
-		self.clean()
 
 #######################
 # PRIVATE             #
-#######################	
-	"""
-		On closed, clean view
-	"""
-	def _on_closed(self, widget):
-		self.clean()
-		self._switch_view()
+#######################
 
 	"""
-		Return next view
+		Add a new view to stack and return it 
 	"""
-	def _get_next_view(self):
+	def _add_new_view(self):
+		self._view = Gtk.Grid()
+		self._view.set_orientation(Gtk.Orientation.VERTICAL)
+		self._view.set_column_spacing(20)
+		self._view.set_row_spacing(20)
+		self._view.show()
+		self._view.get_style_context().add_class('black')
+		self._stack.add(self._view)
+
+	"""
+		On closed, clean stack and add a new fresh view
+	"""
+	def _on_closed(self, widget):
 		for child in self._stack.get_children():
-			if child != self._stack.get_visible_child():
-				return child
-		return None
-		
+			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)
+		self._add_new_view()
+
+	"""
+		Clean the views and 
+	"""
+	def _remove_child(self, child):
+		self._stack.remove(child)
+
 	"""
 		Switch to no visible view
 	"""
 	def _switch_view(self):
-		self._stack.set_visible_child(self._get_next_view())
+		previous = self._stack.get_visible_child()
+		self._stack.set_visible_child(self._view)
+		if previous and previous != self._view:
+			GLib.idle_add(self._remove_child, previous, priority=GLib.PRIORITY_LOW)
 		
 	"""
 		Add a new widget to the view
 	"""
 	def _add_widget_songs(self, album_id, genre_id):
-		view = self._get_next_view()
 		widget = AlbumWidgetSongs(album_id, genre_id, False)
 		widget.show()
 		self._widgets.append(widget)
-		view.add(widget)
+		self._view.add(widget)
 
 	"""
 		Update the content view
@@ -130,7 +121,9 @@ class PopAlbums(Gtk.Popover):
 			track_id = Objects["player"].get_current_track_id()
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			if artist_id != self._artist_id:
-				self.populate(artist_id)
+				self._add_new_view()
+				self._widgets = []
+				start_new_thread(self.populate, (artist_id, ))
 			else:
 				for widget in self._widgets:
 					widget.update_tracks(track_id)
