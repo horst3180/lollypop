@@ -319,16 +319,16 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects["sql"]
 		albums = []
-		cursor = sql.execute("SELECT rowid, artist_id, path FROM albums")
+		cursor = sql.execute("SELECT rowid, artist_id, name, path FROM albums")
 		# Copy cursor to an array
-		for rowid, artist_id, path in cursor:
-			albums.append((rowid, artist_id, path))
+		for rowid, artist_id, name, path in cursor:
+			albums.append((rowid, artist_id, name, path))
 
-		for rowid, artist_id, path in albums:
+		for rowid, artist_id, name, path in albums:
 			compilation_set = False
 			# we look at albums with same path but different artist, no albums with multiple CD
-			other_albums = sql.execute("SELECT rowid, artist_id, path FROM albums WHERE rowid!=? and artist_id!=? and path=?", (rowid, artist_id, path))
-			for other_rowid, other_artist_id, other_path in other_albums:
+			other_albums = sql.execute("SELECT rowid, artist_id, name, path FROM albums WHERE rowid!=? and artist_id!=? and name=? and path=?", (rowid, artist_id, name, path))
+			for other_rowid, other_artist_id, other_name, other_path in other_albums:
 				# Mark new albums as compilation (artist_id == -1)
 				if  not compilation_set:
 					sql.execute("UPDATE albums SET artist_id=-1 WHERE rowid=?", (rowid,))
@@ -338,6 +338,6 @@ class DatabaseAlbums:
 				for track in tracks:
 					sql.execute("UPDATE tracks SET album_id=? WHERE rowid=?", (rowid,track[0]))
 				sql.execute("DELETE FROM albums WHERE rowid=?", (other_rowid,))
-				albums.remove((other_rowid, other_artist_id, other_path))
+				albums.remove((other_rowid, other_artist_id, other_name, other_path))
 
 

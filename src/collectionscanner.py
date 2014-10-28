@@ -88,6 +88,7 @@ class CollectionScanner(GObject.GObject):
 						mtime = int(os.path.getmtime(filepath))
 						try:
 							if filepath not in tracks:
+								print(filepath)
 								tag = mutagen.File(filepath, easy = True)
 								self._add2db(filepath, mtime, tag, sql)
 							else:
