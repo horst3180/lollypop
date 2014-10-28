@@ -32,6 +32,7 @@ class Player(GObject.GObject):
 	
 	__gsignals__ = {
         'current-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'playback-status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
@@ -483,8 +484,7 @@ class Player(GObject.GObject):
 		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000
 
 		if position > 0:
-			Objects["progress"].set_value(position*60)
-			Objects["time"].set_text(self.seconds_to_string(position))
+			self.emit("position-changed", position*60)
 		return True
 		
 	"""

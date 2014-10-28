@@ -28,6 +28,8 @@ class Toolbar():
 		Init toolbar/headerbar ui
 	"""
 	def __init__(self):
+		self._seeking = False
+		
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
 		self.header_bar = self._ui.get_object('header-bar')
@@ -39,9 +41,12 @@ class Toolbar():
 		self._play_image = self._ui.get_object('play_image')
 		self._pause_image = self._ui.get_object('pause_image')
 
-		Objects["progress"] = self._ui.get_object('progress_scale')
-		Objects["progress"].set_sensitive(False)
-		Objects["time"] = self._ui.get_object('playback')
+		self._progress = self._ui.get_object('progress_scale')
+		self._progress.set_sensitive(False)
+		self._progress.connect('button-release-event', self._on_progress_release_button)
+		self._progress.connect('button-press-event', self._on_progress_press_button)
+		Objects["player"].connect('position-changed', self._on_position_changed)
+		self._timelabel = self._ui.get_object('playback')
 		self._total_time_label = self._ui.get_object('duration')
 		
 		self._title_label = self._ui.get_object('title')
@@ -61,8 +66,6 @@ class Toolbar():
 
 		self._party_btn = self._ui.get_object('party-button')
 		self._party_btn.connect("toggled", self._on_party_btn_toggled)
-
-		Objects["progress"].connect('button-release-event', self._on_progress_scale_button)
 
 		self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
 		self._play_btn.connect('clicked', self._on_play_btn_clicked)
@@ -101,10 +104,10 @@ class Toolbar():
 	def update_toolbar(self, obj, track_id):
 		if track_id == None:
 			self._cover.hide()
-			Objects["time"].hide()
+			self._timelabel.hide()
 			self._total_time_label.hide()
 			self._prev_btn.set_sensitive(False)
-			Objects["progress"].set_sensitive(False)
+			self._progress.set_sensitive(False)
 			self._play_btn.set_sensitive(False)
 			self._next_btn.set_sensitive(False)
 			self._title_label.set_text("")
@@ -123,13 +126,13 @@ class Toolbar():
 			artist = translate_artist_name(artist)
 			self._title_label.set_text(title)
 			self._artist_label.set_text(artist)
-			Objects["progress"].set_value(0.0)
+			self._progress.set_value(0.0)
 			duration = Objects["tracks"].get_length(track_id)
-			Objects["progress"].set_range(0.0, duration * 60)
+			self._progress.set_range(0.0, duration * 60)
 			self._total_time_label.set_text(Objects["player"].seconds_to_string(duration))
 			self._total_time_label.show()
-			Objects["time"].set_text("0:00")
-			Objects["time"].show()
+			self._timelabel.set_text("0:00")
+			self._timelabel.show()
 
 #######################
 # PRIVATE             #
@@ -161,12 +164,31 @@ class Toolbar():
 		if current_album_id == album_id:
 			self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_SMALL))
 
+
 	"""
-		Callback for progress bar button
+		Callback for scale press button
 		Seek player to scale value
 	"""	
-	def _on_progress_scale_button(self, scale, data):
-		Objects["player"].seek(scale.get_value()/60)
+	def _on_progress_press_button(self, scale, data):
+		self._seeking = True
+
+	"""
+		Callback for scale release button
+		Seek player to scale value
+	"""	
+	def _on_progress_release_button(self, scale, data):
+		value = scale.get_value()
+		self._on_position_changed(None, value)
+		Objects["player"].seek(value/60)
+		self._seeking = False
+	
+	"""
+		Update scale and time label
+	"""
+	def _on_position_changed(self, obj, value):
+		if not self._seeking:
+			self._progress.set_value(value)
+			self._timelabel.set_text(Objects["player"].seconds_to_string(value/60))
 	
 	"""
 		Update buttons and progress bar
@@ -174,7 +196,7 @@ class Toolbar():
 	def _playback_status_changed(self, obj):
 		playing = Objects["player"].is_playing()
 
-		Objects["progress"].set_sensitive(playing)
+		self._progress.set_sensitive(playing)
 		if playing:
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 			self._prev_btn.set_sensitive(True)
