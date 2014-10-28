@@ -94,15 +94,16 @@ class Window(Gtk.ApplicationWindow):
 	def update_db(self):
 		self._list_one.widget.hide()
 		self._list_two.widget.hide()
-		old_view = self._get_next_view()
-		if old_view:
-			self._stack.remove(old_view)
-			old_view.remove_signals()
+
+		old_view = self._stack.get_visible_child()		
 		self._loading = True
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
 		self._scanner.update()
+		if old_view:
+			self._stack.remove(old_view)
+			old_view.remove_signals()
 
 ############
 # Private  #
@@ -290,8 +291,8 @@ class Window(Gtk.ApplicationWindow):
 
 		# If was empty
 		if not self._list_one_signal:
-
 			self._list_one.select_first()
+
 		if self._loading:
 			self._stack.get_visible_child().hide()
 			self._loading = False
