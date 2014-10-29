@@ -41,7 +41,16 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects["sql"]
 		sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?", (artist_id, album_id))
-			                   
+
+	"""
+		Set album path for album id
+		arg: Album id as int, path as string
+	"""
+	def set_path(self, album_id, path, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
+                   
 	"""
 		Increment popularity field for album id
 		No commit needed

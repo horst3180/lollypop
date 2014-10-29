@@ -227,5 +227,9 @@ class CollectionScanner(GObject.GObject):
 			if album_id_ != -1:
 				album_id = album_id_
 
+		# Now we have our album id, check if path doesn't change
+		if Objects["albums"].get_path(album_id, sql) != path:
+			Objects["albums"].set_path(album_id, path, sql)
+
 		# Add track to db
 		Objects["tracks"].add(title, filepath, length, tracknumber, artist_id, album_id, mtime, sql)
