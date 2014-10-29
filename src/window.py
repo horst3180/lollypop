@@ -100,7 +100,7 @@ class Window(Gtk.ApplicationWindow):
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
-		self._scanner.update(self._progress)
+		self._scanner.update(self._progress, True)
 		if old_view:
 			self._stack.remove(old_view)
 			old_view.remove_signals()
@@ -259,7 +259,7 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _on_mapped_window(self, obj, data):
 		if Objects["tracks"].is_empty():
-			self._scanner.update(self._progress)
+			self._scanner.update(self._progress, True)
 			return
 		elif Objects["settings"].get_value('startup-scan'):
 			self._scanner.update(self._progress)

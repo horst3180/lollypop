@@ -45,12 +45,13 @@ class CollectionScanner(GObject.GObject):
 			self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
 
 	"""
-		Update database
+		Update database smoothly or harder if hard is True
 	"""
-	def update(self,  progress):
-		self._progress = progress
-		progress.show()
+	def update(self,  progress, hard = False):
+		self._hard = hard
 		if not self._in_thread:
+			self._progress = progress
+			progress.show()
 			self._in_thread = True
 			self._compilations = []
 			self._mtimes = Objects["tracks"].get_mtimes()
@@ -116,6 +117,8 @@ class CollectionScanner(GObject.GObject):
 				print(filepath)
 				print("CollectionScanner::_scan(): %s" %e)
 			i += 1
+			if not self._hard:
+				sleep(0.005)
 
 		# Clean deleted files
 		if i > 0:
@@ -220,9 +223,8 @@ class CollectionScanner(GObject.GObject):
 				Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
 		# Look too if it's a compilation (tag changed)
 		elif compilation:
-			print(filepath)
 			album_id_ = Objects["albums"].get_id_var(album, COMPILATIONS, genre_id, sql)
-			if album_id != -1:
+			if album_id_ != -1:
 				album_id = album_id_
 
 		# Add track to db
