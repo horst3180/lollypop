@@ -47,8 +47,7 @@ class CollectionScanner(GObject.GObject):
 	"""
 		Update database smoothly or harder if hard is True
 	"""
-	def update(self,  progress, hard = False):
-		self._hard = hard
+	def update(self,  progress):
 		if not self._in_thread:
 			self._progress = progress
 			progress.show()
@@ -117,8 +116,6 @@ class CollectionScanner(GObject.GObject):
 				print(filepath)
 				print("CollectionScanner::_scan(): %s" %e)
 			i += 1
-			if not self._hard:
-				sleep(0.005)
 
 		# Clean deleted files
 		if i > 0:
