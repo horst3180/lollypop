@@ -11,8 +11,13 @@ It provides:
 - Main playlist (called queue in other apps)
 - Party mode
 - Replay gain
+- Cover art downloader
+- Context artist view
 
 Changes:
+* 0.8.0:
+  - Support for cover art in tags
+  - Fix bugs in collection scanner
 * 0.7.1:
   - Fix multiple issues
 * 0.7.0:
