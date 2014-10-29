@@ -42,7 +42,11 @@ class CollectionScanner(GObject.GObject):
 		if len(paths) > 0:
 			self._paths = paths
 		else:
-			self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
+			if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
+				self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
+			else:
+				self._paths = []
+				print("You need to add a music path to org.gnome.Lollypop in dconf")
 
 	"""
 		Update database smoothly or harder if hard is True
