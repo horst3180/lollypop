@@ -118,8 +118,9 @@ class CollectionScanner(GObject.GObject):
 			i += 1
 
 		# Clean deleted files
-		for track in tracks:
-			Objects["tracks"].remove(track, sql)
+		if i > 0:
+			for track in tracks:
+				Objects["tracks"].remove(track, sql)
 
 		Objects["tracks"].clean(sql)
 		sql.commit()
