@@ -151,9 +151,9 @@ class CollectionScanner(GObject.GObject):
 			artist = "Unknown"
 
 		if "performer" in keys:
-			artist = tag["performer"][0]		
+			performer = tag["performer"][0]		
 		else:
-			compilation = True
+			performer = None
 
 		if "album" in keys:
 			album = tag["album"][0]
@@ -167,6 +167,20 @@ class CollectionScanner(GObject.GObject):
 
 		length = int(tag.info.length)
 
+		
+		if "discnumber" in keys:
+			string = tag["discnumber"][0]
+			if "/" in string:
+				index = string.find("/")
+				discnumber = int(string[0:index])
+			else:
+				try:
+					discnumber = int(string)
+				except:
+					discnumber = 0
+		else:
+			discnumber = 0
+		
 		if "tracknumber" in keys:
 			string = tag["tracknumber"][0]
 			if "/" in string:
@@ -186,12 +200,8 @@ class CollectionScanner(GObject.GObject):
 				index = string.find("-")
 				year = string[0:index]
 			else:
-				year = string
-				
+				year = string		
 		else:
-			year = 0
-
-		if not year: 
 			year = 0
 
 		# Get artist id, add it if missing
@@ -199,6 +209,15 @@ class CollectionScanner(GObject.GObject):
 		if artist_id == -1:
 			Objects["artists"].add(artist, sql)
 			artist_id = Objects["artists"].get_id(artist, sql)
+	
+		if performer:
+			# Get performer id, add it if missing
+			performer_id = Objects["artists"].get_id(performer, sql)
+			if artist_id == -1:
+				Objects["artists"].add(performer, sql)
+				performer_id = Objects["artists"].get_id(performer, sql)
+		else:
+			performer_id = COMPILATIONS
 
 		# Get genre id, add genre if missing
 		genre_id = Objects["genres"].get_id(genre, sql)
@@ -206,31 +225,39 @@ class CollectionScanner(GObject.GObject):
 			Objects["genres"].add(genre, sql)
 			genre_id = Objects["genres"].get_id(genre, sql)
 
-		# Get album id, add it if missing
-		album_id = Objects["albums"].get_id_var(album, artist_id, genre_id, sql)
-		# Look at another album with different artist
-		if compilation and album_id == -1:
-			album_id = Objects["albums"].get_id_var(album, None, genre_id, sql)
+
+		#
+		# Here we search an existing album for this track
+		#
+		# Get albums with this name from this artist
+		album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+		# Track can go in a compilation
+		if performer_id == COMPILATIONS and album_id == -1:
+			# Look if we find a compilation for this name:
+			album_id = Objects["albums"].get_id(album, COMPILATIONS, genre_id, sql)
+			if album_id == -1:
+				# Search for others album with same name
+				for album_id_ in Objects["albums"].get_id(album, None, genre_id, sql): 
+					# there is no performer tag, so use it
+					if len(Objects["albums"].get_performers_id(album_id_, sql)) == 0:
+						album_id = album_id_
+						# We need to check if it's an album without performers or 
+						# a compilation ie different artists without performers
+						for track_id_ in Objects["albums"].get_tracks(album_id, sql):
+							artist_id_ = Objects["tracks"].get_artist_id(track_id_, sql)
+							if artist_id_ != artist_id:
+								# Mark it as a compilation
+								Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
+								break
+
+		# Get a new album if none found
 		if album_id == -1:
 			Objects["albums"].add(album, artist_id, genre_id, int(year), path, sql)
-			album_id = Objects["albums"].get_id_var(album, artist_id, genre_id, sql)
-			# Look later if this albums is a compilation
-			if compilation:
-				self._compilations.append(album_id)
-		# Look if it's a compilation
-		elif album_id in self._compilations:
-			album_artist_id = Objects["albums"].get_artist_id(album_id, sql)
-			if album_artist_id != artist_id:
-				Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
-		# Look too if it's a compilation (tag changed)
-		elif compilation:
-			album_id_ = Objects["albums"].get_id_var(album, COMPILATIONS, genre_id, sql)
-			if album_id_ != -1:
-				album_id = album_id_
+			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 
 		# Now we have our album id, check if path doesn't change
 		if Objects["albums"].get_path(album_id, sql) != path:
 			Objects["albums"].set_path(album_id, path, sql)
 
 		# Add track to db
-		Objects["tracks"].add(title, filepath, length, tracknumber, artist_id, album_id, mtime, sql)
+		Objects["tracks"].add(title, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql)

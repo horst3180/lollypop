@@ -42,7 +42,9 @@ class Database:
 						filepath TEXT NOT NULL,
 						length INT,
 						tracknumber INT,
+						discnumber INT,
 						artist_id INT NOT NULL,
+						performer_id INT NOT NULL,
 						album_id INT NOT NULL,
 						mtime INT)'''
 #	create_sort_index = '''CREATE INDEX index_name ON table_name(tracknumber ASC)'''

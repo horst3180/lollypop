@@ -34,27 +34,19 @@ class DatabaseArtists:
 
 	"""
 		Get artist id
-		
 		arg: Artist name as string
-		or
-		arg: Album id as int
-		
 		ret: Artist id as int
 	"""
-	def get_id(self, value, sql = None):
+	def get_id(self, name, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 
-		if isinstance(value, str):
-				result = sql.execute("SELECT rowid from artists where name=?", (value,))
-		else:
-				result = sql.execute("SELECT artist_id from albums where rowid=?", (value,))
-
+		result = sql.execute("SELECT rowid from artists where name=?", (name,))
 		v = result.fetchone()
 		if v:
 			return v[0]
 
-		return -1
+		return COMPILATIONS
 
 	"""
 		Get artist name
@@ -112,11 +104,10 @@ class DatabaseArtists:
 			artists += (row,)
 		return artists
 		
-		
 	"""
 		Search for artists looking like string
 		arg: string
-		return: Array of id as int
+		ret: Array of id as int
 	"""
 	def search(self, string, sql = None):
 		if not sql:

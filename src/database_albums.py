@@ -72,40 +72,27 @@ class DatabaseAlbums:
 	"""
 		Get album id 
 		
-		args: Track id as int
+		args: Album name as string, artist id(can be None) as int, genre_id as int
 
 		ret: Album id as int
 	"""
-	def get_id(self, track_id, sql = None):
-		if not sql:
-			sql = Objects["sql"]
-		result = sql.execute("SELECT albums.rowid FROM albums,tracks where tracks.album_id=albums.rowid AND tracks.rowid=?", (track_id,))
-		v = result.fetchone()
-		if v:
-			return v[0]
-	
-		return -1
-
-
-	"""
-		Get album id 
-		
-		args: Album name as string, artist id(can be None) as int and genre id as int
-
-		ret: Album id as int
-	"""
-	def get_id_var(self, album_name, artist_id, genre_id, sql = None):
+	def get_id(self, album_name, artist_id, genre_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		if artist_id:
-			result = sql.execute("SELECT rowid FROM albums where name=? AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+			result = sql.execute("SELECT rowid FROM albums where name=? \
+								  AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+			v = result.fetchone()
+			if v:
+				return v[0]
+			return -1
 		else:
+			albums = []
 			result = sql.execute("SELECT rowid FROM albums where name=? AND genre_id=?", (album_name, genre_id))
-		v = result.fetchone()
-		if v:
-			return v[0]
+			for row in result:
+				albums += row
+			return albums
 
-		return -1
 
 	"""
 		Get genre id
@@ -153,19 +140,35 @@ class DatabaseAlbums:
 		return _("Compilation")
 
 	"""
-		Get artist id
-		arg: Album id as int
-		ret: Artist id as int
+		Get album artist id
+		arg: album_id
+		ret: artist id
 	"""
 	def get_artist_id(self, album_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		result = sql.execute("SELECT artists.rowid from artists,albums where albums.rowid=? AND albums.artist_id == artists.rowid", (album_id,))
+		performers = []
+		result = sql.execute("SELECT artist_id FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v:
 			return v[0]
 
-		return -1
+		return COMPILATIONS
+
+	"""
+		Get album perfomers id
+		arg: album_id
+		ret: array of performers id
+	"""
+	def get_performers_id(self, album_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		performers = []
+		result = sql.execute("SELECT performer_id FROM tracks where album_id=? and performer_id!=?", (album_id, COMPILATIONS))
+		for row in result:
+			performers += (row,)
+		return performers
+
 	"""
 		Get album year for album id
 		arg: Album id as int
@@ -316,7 +319,6 @@ class DatabaseAlbums:
 		for row in result:
 			albums += row
 		return albums
-
 
 	"""
 		Search for albums looking like string

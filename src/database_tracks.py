@@ -25,12 +25,17 @@ class DatabaseTracks:
 
 	"""
 		Add a new track to database
-		arg: name as string, filepath as string, length as int, tracknumber as int, artist_id as int, album_id as int, mtime as int
+		arg: name as string, filepath as string, length as int, tracknumber as int, 
+		disknumber as int artist_id as int, album_id as int, mtime as int
 	"""
-	def add(self, name, filepath, length, tracknumber, artist_id, album_id, mtime, sql = None):
+	def add(self, name, filepath, length, tracknumber, disknumber, artist_id, performer_id, album_id, mtime, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber, artist_id, album_id, mtime) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, filepath, length, tracknumber, artist_id, album_id, mtime))
+		sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
+					disknumber, artist_id, performer_id, album_id, mtime) VALUES\
+					(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
+					(name, filepath, length, tracknumber, disknumber,\
+					artist_id, performer_id, album_id, mtime))
 		
 		
 	"""

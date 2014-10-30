@@ -20,7 +20,10 @@ class DatabaseUpgrade:
 	def __init__(self, sql, version):
 		self._sql = sql
 		self._version = version
-		self._UPGRADES = { 1: self._db_add_modification_time }
+		self._UPGRADES = { 
+							1: self._db_add_modification_time,
+							2: self._db_add_performer_disc
+						 }
 
 	"""
 		Return upgrade count
@@ -45,4 +48,13 @@ class DatabaseUpgrade:
 	"""
 	def _db_add_modification_time(self):
  		self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
+
+	"""
+		Add performer time to track table and disc number
+	"""
+	def _db_add_performer_disc(self):
+ 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
+ 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
+ 		# reset mtime to rescan performer tag
+ 		self._sql.execute("UPDATE TABLE tracks SET mtime=0")
 
