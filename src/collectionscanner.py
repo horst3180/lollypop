@@ -232,8 +232,12 @@ class CollectionScanner(GObject.GObject):
 		#
 		# Here we search an existing album for this track
 		#
-		# Get albums with this name from this artist
-		album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+		# Get albums with this name from this artist/performer
+		if performer_id != COMPILATIONS:
+			album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
+		else:
+			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+
 		# Track can go in a compilation
 		if performer_id == COMPILATIONS and album_id == -1:
 			# Look if we find a compilation for this name:
@@ -255,8 +259,12 @@ class CollectionScanner(GObject.GObject):
 
 		# Get a new album if none found
 		if album_id == -1:
-			Objects["albums"].add(album, artist_id, genre_id, year, path, sql)
-			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+			if performer_id != COMPILATIONS:
+				Objects["albums"].add(album, performer_id, genre_id, year, path, sql)
+				album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
+			else:
+				Objects["albums"].add(album, artist_id, genre_id, year, path, sql)
+				album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 
 		# Now we have our album id, check if path doesn't change
 		if Objects["albums"].get_path(album_id, sql) != path:
