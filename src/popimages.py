@@ -118,11 +118,8 @@ class PopImages(Gtk.Popover):
 		Use pixbuf as cover
 	"""
 	def _on_activate(self, flowbox, child):
-		artpath = Objects["art"].get_art_path(self._album_id)
-		
-		if artpath == None:
-			album_path = Objects["albums"].get_path(self._album_id)
-			artpath = album_path+"/folder.jpg"
+		album_path = Objects["albums"].get_path(self._album_id)
+		artpath = album_path+"/folder.jpg"
 		pixbuf = child.get_child().get_pixbuf()
 		pixbuf.savev(artpath, "jpeg", [], [])
 		Objects["art"].clean_cache(self._album_id, ART_SIZE_SMALL)

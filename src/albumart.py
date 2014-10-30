@@ -52,6 +52,9 @@ class AlbumArt:
 	"""
 	def get_art_path(self, dir):
 		try:
+			if os.path.exists(dir+"/folder.jpg"):
+				return dir+"/folder.jpg"
+		
 			for file in os.listdir (dir):
 				lowername = file.lower()
 				supported = False
