@@ -244,7 +244,7 @@ class DatabaseAlbums:
 		artist_id = Objects["albums"].get_artist_id(album_id, sql)
 		album_name = Objects["albums"].get_name(album_id, sql)
 		result = sql.execute("SELECT COUNT(tracks.rowid) FROM tracks, albums\
-							  WHERE tracks.artist_id=? AND albums.name=?\
+							  WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
 		v = result.fetchone()
@@ -264,7 +264,7 @@ class DatabaseAlbums:
 		tracks = []
 		artist_id = Objects["albums"].get_artist_id(album_id, sql)
 		album_name = Objects["albums"].get_name(album_id, sql)
-		result = sql.execute("SELECT tracks.rowid FROM tracks,albums WHERE tracks.artist_id=? AND albums.name=?\
+		result = sql.execute("SELECT tracks.rowid FROM tracks,albums WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
 		for row in result:
@@ -284,7 +284,7 @@ class DatabaseAlbums:
 		artist_id = Objects["albums"].get_artist_id(album_id, sql)
 		album_name = Objects["albums"].get_name(album_id, sql)
 		result = sql.execute("SELECT tracks.rowid, tracks.name, tracks.filepath, tracks.length FROM tracks, albums\
-							  WHERE tracks.artist_id=? AND albums.name=?\
+							  WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
 		for row in result:
