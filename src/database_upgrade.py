@@ -53,8 +53,8 @@ class DatabaseUpgrade:
 		Add performer time to track table and disc number
 	"""
 	def _db_add_performer_disc(self):
- 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
- 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
- 		# reset mtime to rescan performer tag
- 		self._sql.execute("UPDATE TABLE tracks SET mtime=0")
-
+		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
+		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
+		# reset mtime to rescan tags
+		self._sql.execute("UPDATE tracks SET mtime=0")
+		self._sql.commit()
