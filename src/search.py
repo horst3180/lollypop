@@ -164,11 +164,14 @@ class SearchWidget(Gtk.Popover):
 		searched = self._text_entry.get_text()
 
 		albums = Objects["albums"].search(searched)
+		tracks_non_performer = []
 		
 		for artist_id in Objects["artists"].search(searched):
 			for album_id in Objects["albums"].get_ids(artist_id, None):
 				if (album_id, artist_id) not in albums:
 					albums.append((album_id, artist_id))
+			for track_id, track_name in Objects["tracks"].get_as_non_performer(artist_id):
+				tracks_non_performer.append((track_id, track_name))
 
 		for album_id, artist_id in albums:
 			artist_name = Objects["artists"].get_name(artist_id)
@@ -180,7 +183,7 @@ class SearchWidget(Gtk.Popover):
 			search_row.set_object_id(album_id)			
 			self._view.add(search_row)
 
-		for track_id, track_name in Objects["tracks"].search(searched):
+		for track_id, track_name in Objects["tracks"].search(searched)+tracks_non_performer:
 			album_id = Objects["tracks"].get_album_id(track_id)
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			artist_name = Objects["artists"].get_name(artist_id)

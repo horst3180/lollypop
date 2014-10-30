@@ -14,7 +14,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import Objects
+from lollypop.config import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -188,7 +188,22 @@ class DatabaseTracks:
 			return v[0] == 0
 
 		return True
-		
+	
+	"""
+		Get tracks for artist_id where artist_id isn't main artist
+		arg: artist id as int
+		ret: array of (tracks id as int, track name as string)
+	"""
+	def get_as_non_performer(self, artist_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		tracks = []
+		result = sql.execute("SELECT rowid, name FROM tracks where artist_id=?\
+							  and performer_id!=artist_id and performer_id!=?", (artist_id, COMPILATIONS))
+		for row in result:
+			tracks += (row,)
+		return tracks
+			
 	"""
 		Clean database deleting orphaned entries
 		No commit needed
