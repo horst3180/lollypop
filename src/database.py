@@ -61,6 +61,9 @@ class Database:
 			
 		except:
 			exit(-1)
+			
+		db_version = Objects["settings"].get_value('db-version')
+		upgrade = DatabaseUpgrade(sql, db_version)
 		# Create db schema
 		try:
 			sql.execute(self.create_albums)
@@ -74,8 +77,6 @@ class Database:
 		# Upgrade db schema
 		except:
 			try:
-				db_version = Objects["settings"].get_value('db-version')
-				upgrade = DatabaseUpgrade(sql, db_version)
 				if db_version.get_int32() < upgrade.count():
 					Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
 			except Exception as e:
