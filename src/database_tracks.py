@@ -124,7 +124,7 @@ class DatabaseTracks:
 	def get_artist_id(self, track_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		result = sql.execute("SELECT artists.rowid from artists,tracks where tracks.rowid=? and tracks.artist_id=artists.rowid", (track_id,))
+		result = sql.execute("SELECT artist_id from tracks where tracks.rowid=?", (track_id,))
 		v = result.fetchone()
 		if v:
 			return v[0]

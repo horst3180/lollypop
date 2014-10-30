@@ -275,7 +275,7 @@ class DatabaseAlbums:
 		Get tracks informations for album id
 		Will search track from albums from same artist with same name and different genre
 		arg: Album id as int, artist_id as int
-		ret: Arrays of (tracks id as int, name as string, filepath as string, length as int)
+		ret: Arrays of (tracks id as int, name as string, artist id as int, filepath as string, length as int)
 	"""
 	def get_tracks_infos(self, album_id, sql = None):
 		if not sql:
@@ -283,7 +283,7 @@ class DatabaseAlbums:
 		tracks = []
 		artist_id = Objects["albums"].get_artist_id(album_id, sql)
 		album_name = Objects["albums"].get_name(album_id, sql)
-		result = sql.execute("SELECT tracks.rowid, tracks.name, tracks.filepath, tracks.length FROM tracks, albums\
+		result = sql.execute("SELECT tracks.rowid, tracks.name, tracks.artist_id, tracks.filepath, tracks.length FROM tracks, albums\
 							  WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
