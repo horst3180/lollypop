@@ -47,8 +47,7 @@ class Database:
 						performer_id INT NOT NULL,
 						album_id INT NOT NULL,
 						mtime INT)'''
-	#create_sort_index = '''CREATE INDEX tracknumber ON tracks(tracknumber DESC)'''
-							   
+	   
 	def __init__(self):
 		# Create db directory if missing
 		if not os.path.exists(self.LOCAL_PATH):
@@ -70,7 +69,6 @@ class Database:
 			sql.execute(self.create_artists)
 			sql.execute(self.create_genres)
 			sql.execute(self.create_tracks)
-			#sql.execute(self.create_sort_index)
 			sql.commit()
 			Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.count()))
 			sql.close()
