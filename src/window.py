@@ -286,6 +286,7 @@ class Window(Gtk.ApplicationWindow):
 		if active:
 			items = Objects["genres"].get_ids()
 		else:
+			self._list_two.widget.hide()
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
 				items.insert(0, (COMPILATIONS, _("Compilations")))
