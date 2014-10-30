@@ -255,7 +255,7 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects["sql"]
 		tracks = []
-		result = sql.execute("SELECT rowid FROM tracks WHERE album_id=? ORDER BY tracknumber" , (album_id,))
+		result = sql.execute("SELECT rowid FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber" , (album_id,))
 		for row in result:
 			tracks += row
 		return tracks
@@ -269,7 +269,7 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects["sql"]
 		tracks = []
-		result = sql.execute("SELECT rowid, name, filepath, length FROM tracks WHERE album_id=? ORDER BY tracknumber" , (album_id,))
+		result = sql.execute("SELECT rowid, name, filepath, length FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber" , (album_id,))
 		for row in result:
 			tracks += (row,)
 		return tracks
