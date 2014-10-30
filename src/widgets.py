@@ -88,7 +88,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 		
 		self._tracks_ui = []
 		self._tracks = []
-		self._artist_id = Objects["artists"].get_id(album_id)
+		self._artist_id = Objects["albums"].get_artist_id(album_id)
 		self._album_id = album_id
 		self._genre_id = genre_id
 

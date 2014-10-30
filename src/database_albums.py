@@ -233,14 +233,20 @@ class DatabaseAlbums:
 		return albums
 
 	"""
-		Get number of tracks in an album
+		Get number of tracks for album_id
+		Will count tracks from albums with same name, artist and a different genre
 		arg: Album id as int
 		ret: count as int
 	"""
 	def get_count(self, album_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
-		result = sql.execute("SELECT COUNT(*) FROM tracks where album_id=?", (album_id,))
+		artist_id = Objects["albums"].get_artist_id(album_id, sql)
+		album_name = Objects["albums"].get_name(album_id, sql)
+		result = sql.execute("SELECT COUNT(tracks.rowid) FROM tracks, albums\
+							  WHERE tracks.artist_id=? AND albums.name=?\
+							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
+							  (artist_id, album_name))
 		v = result.fetchone()
 		if v:
 			return v[0]
@@ -248,28 +254,39 @@ class DatabaseAlbums:
 
 	"""
 		Get tracks for album id
-		arg: Album id as int
+		Will search track from albums from same artist with same name and different genre
+		arg: Album id as int, artist_id as int
 		ret: Arrays of tracks id as int
 	"""
 	def get_tracks(self, album_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		tracks = []
-		result = sql.execute("SELECT rowid FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber" , (album_id,))
+		artist_id = Objects["albums"].get_artist_id(album_id, sql)
+		album_name = Objects["albums"].get_name(album_id, sql)
+		result = sql.execute("SELECT tracks.rowid FROM tracks,albums WHERE tracks.artist_id=? AND albums.name=?\
+							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
+							  (artist_id, album_name))
 		for row in result:
 			tracks += row
 		return tracks
 
 	"""
 		Get tracks informations for album id
-		arg: Album id as int
+		Will search track from albums from same artist with same name and different genre
+		arg: Album id as int, artist_id as int
 		ret: Arrays of (tracks id as int, name as string, filepath as string, length as int)
 	"""
 	def get_tracks_infos(self, album_id, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		tracks = []
-		result = sql.execute("SELECT rowid, name, filepath, length FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber" , (album_id,))
+		artist_id = Objects["albums"].get_artist_id(album_id, sql)
+		album_name = Objects["albums"].get_name(album_id, sql)
+		result = sql.execute("SELECT tracks.rowid, tracks.name, tracks.filepath, tracks.length FROM tracks, albums\
+							  WHERE tracks.artist_id=? AND albums.name=?\
+							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
+							  (artist_id, album_name))
 		for row in result:
 			tracks += (row,)
 		return tracks
@@ -292,7 +309,7 @@ class DatabaseAlbums:
 		elif not artist_id:
 			result = sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
 		elif not genre_id:
-			result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? ORDER BY year", (artist_id,))
+			result = sql.execute("SELECT DISTINCT rowid FROM albums WHERE artist_id=? GROUP BY name ORDER BY year", (artist_id,))
 			
 		for row in result:
 			albums += row
