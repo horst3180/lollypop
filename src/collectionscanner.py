@@ -195,12 +195,15 @@ class CollectionScanner(GObject.GObject):
 			tracknumber = 0
 		
 		if "date" in keys:
-			string = tag["date"][0]
-			if "-" in string:
-				index = string.find("-")
-				year = string[0:index]
-			else:
-				year = string		
+			try:
+				string = tag["date"][0]
+				if "-" in string:
+					index = string.find("-")
+					year = int(string[0:index])
+				else:
+					year = int(string)
+			except:
+				year = 0
 		else:
 			year = 0
 
@@ -252,7 +255,7 @@ class CollectionScanner(GObject.GObject):
 
 		# Get a new album if none found
 		if album_id == -1:
-			Objects["albums"].add(album, artist_id, genre_id, int(year), path, sql)
+			Objects["albums"].add(album, artist_id, genre_id, year, path, sql)
 			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 
 		# Now we have our album id, check if path doesn't change
