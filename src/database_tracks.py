@@ -212,7 +212,8 @@ class DatabaseTracks:
 		if not sql:
 			sql = Objects["sql"]
 		sql.execute("DELETE FROM albums WHERE NOT EXISTS (SELECT rowid FROM tracks where albums.rowid = tracks.album_id)")
-		sql.execute("DELETE FROM artists WHERE NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.artist_id)")
+		sql.execute("DELETE FROM artists WHERE NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.artist_id)\
+                                           AND NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.performer_id)")
 		sql.execute("DELETE FROM genres WHERE NOT EXISTS (SELECT rowid FROM albums where genres.rowid = albums.genre_id)")
 
 	"""
