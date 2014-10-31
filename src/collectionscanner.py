@@ -38,6 +38,7 @@ class CollectionScanner(GObject.GObject):
 
 		self._in_thread = False
 		self._progress = None
+		self._popularities = Objects["db"].get_popularities()
 
 		if len(paths) > 0:
 			self._paths = paths
@@ -257,13 +258,16 @@ class CollectionScanner(GObject.GObject):
 								Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
 								break
 
+		popularity = 0
+		if path in self._popularities:
+			popularity = self._popularities[path]
 		# Get a new album if none found
 		if album_id == -1:
 			if performer_id != COMPILATIONS:
-				Objects["albums"].add(album, performer_id, genre_id, year, path, sql)
+				Objects["albums"].add(album, performer_id, genre_id, year, path, popularity, sql)
 				album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
 			else:
-				Objects["albums"].add(album, artist_id, genre_id, year, path, sql)
+				Objects["albums"].add(album, artist_id, genre_id, year, path, popularity, sql)
 				album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
 
 		# Now we have our album id, check if path doesn't change

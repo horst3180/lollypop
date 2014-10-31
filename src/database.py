@@ -49,6 +49,7 @@ class Database:
 						mtime INT)'''
 	   
 	def __init__(self):
+		self._popularity_backup = {}
 		# Create db directory if missing
 		if not os.path.exists(self.LOCAL_PATH):
 			try:
@@ -71,16 +72,41 @@ class Database:
 			sql.execute(self.create_tracks)
 			sql.commit()
 			Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.count()))
-			sql.close()
 		# Upgrade db schema
 		except:
 			try:
 				if db_version.get_int32() < upgrade.count():
 					Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
+				if upgrade.reset_needed():
+					self._set_popularities(sql)
+					sql.execute("DELETE FROM tracks")
+					sql.execute("DELETE FROM albums")
+					sql.execute("DELETE FROM artists")
+					sql.execute("DELETE FROM genres")
+					sql.commit()
 			except Exception as e:
 				print(e)
 				pass
-			sql.close()
+		sql.close()
+
+
+	"""
+		Set a dict with album path and popularity 
+	"""
+	def get_popularities(self):
+		return self._popularity_backup
+
+#########
+#Private#
+#########
+
+	"""
+		Set a dict with album path and popularity 
+	"""
+	def _set_popularities(self, sql):
+		result = sql.execute("SELECT path, popularity FROM albums")
+		for row in result:
+			self._popularity_backup[row[0]] = row[1]
 
 	def get_cursor(self):
 		return sqlite3.connect(self.DB_PATH)

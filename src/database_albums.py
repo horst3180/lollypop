@@ -27,11 +27,11 @@ class DatabaseAlbums:
 		Add a new album to database
 		arg: Album name as string, artist id as int, genre id as int, year as int, path as string
 	"""
-	def add(self, name, artist_id, genre_id, year, path, sql = None):
+	def add(self, name, artist_id, genre_id, year, path, popularity, sql = None):
 		if not sql:
 			sql = Objects["sql"]
 		sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, path, popularity)\
-		                   VALUES (?, ?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, path, 0))
+		                   VALUES (?, ?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, path, popularity))
 	
 	"""
 		Set artist id

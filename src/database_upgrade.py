@@ -20,6 +20,7 @@ class DatabaseUpgrade:
 	def __init__(self, sql, version):
 		self._sql = sql
 		self._version = version
+		self._reset = False
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc
@@ -30,6 +31,12 @@ class DatabaseUpgrade:
 	"""
 	def count(self):
 		return len(self._UPGRADES)
+
+	"""
+		Return True if db need a reset
+	"""
+	def reset_needed(self):
+		return self._reset
 
 	"""
 		Upgrade database based on version
@@ -56,5 +63,4 @@ class DatabaseUpgrade:
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
 		# reset mtime to rescan tags
-		self._sql.execute("UPDATE tracks SET mtime=0")
-		self._sql.commit()
+		self._reset = True
