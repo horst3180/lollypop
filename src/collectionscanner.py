@@ -260,6 +260,7 @@ class CollectionScanner(GObject.GObject):
 		# Get a new album if none found
 		if album_id == -1:
 			if performer_id != COMPILATIONS:
+				print(performer, performer_id)
 				Objects["albums"].add(album, performer_id, genre_id, year, path, sql)
 				album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
 			else:
