@@ -209,14 +209,14 @@ class CollectionScanner(GObject.GObject):
 
 		# Get artist id, add it if missing
 		artist_id = Objects["artists"].get_id(artist, sql)
-		if artist_id == -1:
+		if artist_id == COMPILATIONS:
 			Objects["artists"].add(artist, sql)
 			artist_id = Objects["artists"].get_id(artist, sql)
 	
 		if performer:
 			# Get performer id, add it if missing
 			performer_id = Objects["artists"].get_id(performer, sql)
-			if artist_id == -1:
+			if performer_id == COMPILATIONS:
 				Objects["artists"].add(performer, sql)
 				performer_id = Objects["artists"].get_id(performer, sql)
 		else:
