@@ -57,6 +57,7 @@ class PopImages(Gtk.Popover):
 
 	"""
 		Populate view
+		arg: searched words as string
 	"""
 	def populate(self, string):
 		self._thread = True
@@ -67,7 +68,7 @@ class PopImages(Gtk.Popover):
 #######################		
 
 	"""
-		Get/Set cover arts urls
+		Same as populate()
 	"""
 	def _populate(self, string):
 		sql = Objects["db"].get_cursor()
@@ -99,7 +100,7 @@ class PopImages(Gtk.Popover):
 				self._add_pixbufs()
 				
 	"""
-		Add url to the view
+		Add stream to the view
 	"""
 	def _add_pixbuf(self, stream):
 		try:
@@ -116,6 +117,7 @@ class PopImages(Gtk.Popover):
 		
 	"""
 		Use pixbuf as cover
+		Reset cache and use player object to announce cover change
 	"""
 	def _on_activate(self, flowbox, child):
 		album_path = Objects["albums"].get_path(self._album_id)
