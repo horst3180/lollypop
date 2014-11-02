@@ -61,50 +61,12 @@ class Application(Gtk.Application):
 		self._window = None
 
 	"""
-		Search for new music
-	"""
-	def update_db(self, action, param):
-		if self._window:
-			self._window.update_db()
-
-	"""
-		Party dialog
-	"""
-	def party(self, action, param):
-		if self._window:
-			self._window.edit_party()
-
-	"""
-		Setup about dialog
-	"""
-	def about(self, action, param):
-        	builder = Gtk.Builder()
-        	builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        	about = builder.get_object('about_dialog')
-        	about.set_transient_for(self._window)
-        	about.connect("response", self.about_response)
-        	about.show()
-
-	"""
-		Destroy dialog when closed
-	"""
-	def about_response(self, dialog, response):
-		dialog.destroy()
-
-	"""
 		Add startup notification and build gnome-shell menu after Gtk.Application startup
 	"""
 	def do_startup(self):
 		Gtk.Application.do_startup(self)
 		Notify.init(_("Lollypop"))
 		self._build_app_menu()
-
-	"""
-		Destroy main window
-	"""
-	def quit(self, action=None, param=None):
-		Objects["player"].stop()
-		self._window.destroy()
 
 	"""
 		Activate window and create it if missing
@@ -117,9 +79,46 @@ class Application(Gtk.Application):
 
 		self._window.present()
 
+	"""
+		Destroy main window
+	"""
+	def quit(self, action=None, param=None):
+		Objects["player"].stop()
+		self._window.destroy()
+
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Search for new music
+	"""
+	def _update_db(self, action, param):
+		if self._window:
+			self._window.update_db()
+
+	"""
+		Show party dialog edition
+	"""
+	def _party(self, action, param):
+		if self._window:
+			self._window.edit_party()
+
+	"""
+		Setup about dialog
+	"""
+	def _about(self, action, param):
+        	builder = Gtk.Builder()
+        	builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
+        	about = builder.get_object('about_dialog')
+        	about.set_transient_for(self._window)
+        	about.connect("response", self._about_response)
+        	about.show()
+
+	"""
+		Destroy about dialog when closed
+	"""
+	def _about_response(self, dialog, response):
+		dialog.destroy()
 
 	"""
 		Build gnome-shell application menu
@@ -135,15 +134,15 @@ class Application(Gtk.Application):
 		#TODO: Remove this test later
 		if Gtk.get_minor_version() > 12:
 			partyAction = Gio.SimpleAction.new('party', None)
-			partyAction.connect('activate', self.party)
+			partyAction.connect('activate', self._party)
 			self.add_action(partyAction)
 
 		updateAction = Gio.SimpleAction.new('update_db', None)
-		updateAction.connect('activate', self.update_db)
+		updateAction.connect('activate', self._update_db)
 		self.add_action(updateAction)
 
 		aboutAction = Gio.SimpleAction.new('about', None)
-		aboutAction.connect('activate', self.about)
+		aboutAction.connect('activate', self._about)
 		self.add_action(aboutAction)
 
 		quitAction = Gio.SimpleAction.new('quit', None)
