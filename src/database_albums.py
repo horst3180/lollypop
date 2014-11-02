@@ -303,13 +303,13 @@ class DatabaseAlbums:
 		albums = []
 		result = []
 		if artist_id and genre_id:
-			result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? and genre_id=? ORDER BY year", (artist_id, genre_id))
+			result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? and genre_id=? ORDER BY year, name", (artist_id, genre_id))
 		elif not artist_id and not genre_id:
-			result = sql.execute("SELECT albums.rowid FROM albums,artists  WHERE artists.rowid=albums.artist_id ORDER BY artists.name COLLATE NOCASE")
+			result = sql.execute("SELECT albums.rowid FROM albums,artists  WHERE artists.rowid=albums.artist_id ORDER BY artists.name COLLATE NOCASE, albums.year")
 		elif not artist_id:
 			result = sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
 		elif not genre_id:
-			result = sql.execute("SELECT DISTINCT rowid FROM albums WHERE artist_id=? GROUP BY name ORDER BY year", (artist_id,))
+			result = sql.execute("SELECT DISTINCT rowid FROM albums WHERE artist_id=? GROUP BY name ORDER BY year, name", (artist_id,))
 			
 		for row in result:
 			albums += row
