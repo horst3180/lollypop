@@ -82,6 +82,7 @@ class Database:
 					Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
 				if upgrade.reset_needed():
 					self._set_popularities(sql)
+					Objects["settings"].set_value('party-ids', GLib.Variant('ai', []))
 					sql.execute("DELETE FROM tracks")
 					sql.execute("DELETE FROM albums")
 					sql.execute("DELETE FROM artists")
