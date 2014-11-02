@@ -48,17 +48,23 @@ class PlayListRow(Gtk.ListBoxRow):
 		for widget in self._ui.get_objects():
 			widget.destroy()
 		Gtk.ListBoxRow.destroy(self)
+
+	"""
+		Destroy widget
+	"""
 	def destroy_callback(self, event):
 		self.destroy()
 
 	"""
 		Set artist label
+		arg: untranslated artist name as string
 	"""
 	def set_artist(self, name):
 		self._artist.set_text(translate_artist_name(name))
 
 	"""
 		Set title label
+		arg: title as string
 	"""
 	def set_title(self, name):
 		self._title.set_text(name)
@@ -74,24 +80,28 @@ class PlayListRow(Gtk.ListBoxRow):
 	
 	"""
 		Set cover pixbuf
+		arg: pixbuf
 	"""
 	def set_cover(self, pixbuf):
 		self._cover.set_from_pixbuf(pixbuf)
 
 	"""
-		Store object id
+		Store current object id
+		arg: object id as int
 	"""
 	def set_object_id(self, object_id):
 		self._object_id = object_id
 
 	"""
-		Return object id
+		Current object id
+		ret: object id as int
 	"""
 	def get_object_id(self):
 		return self._object_id
 
 	"""
-		Return True if button is active
+		True if button is active
+		ret: bool
 	"""
 	def is_button_active(self):
 		return self._button.get_active()
@@ -176,6 +186,7 @@ class PlayListWidget(Gtk.Popover):
 
 	"""
 		Update playlist order after user drag&drop reorder
+		arg: row, row
 	"""
 	def _reordered_playlist(self, row1 ,row2):
 		return
@@ -187,6 +198,7 @@ class PlayListWidget(Gtk.Popover):
 
 	"""
 		Play clicked item
+		arg: view, row
 	"""
 	def _on_activate(self, view, row):
 		
