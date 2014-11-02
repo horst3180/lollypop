@@ -23,6 +23,9 @@ from lollypop.player import Player
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
+"""
+	Album widget is a pixbuf with two labels: albumm name and artist name
+"""
 class AlbumWidget(Gtk.Box):
 
 	"""
@@ -60,6 +63,7 @@ class AlbumWidget(Gtk.Box):
 	
 	"""
 		Update cover for album id
+		arg: album id as int
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
@@ -67,11 +71,15 @@ class AlbumWidget(Gtk.Box):
 
 	"""
 		Return album id for widget
+		ret: album id as int
 	"""     
 	def get_id(self):
 		return self._album_id
 
 
+"""
+	Album widget songs is a pixbuf with album name and tracks list
+"""
 class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
@@ -80,6 +88,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			- Album name
 			- Albums tracks aligned on two columns
 		if cover_add True, let user change album cover
+		arg: album id as int, genre id as int, bool
 	"""
 	def __init__(self, album_id, genre_id, cover_add = True):
 		Gtk.Grid.__init__(self)
@@ -121,6 +130,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update tracks settings current tracks as bold and adding play symbol
+		arg: track id as int
 	"""
 	def update_tracks(self, track_id):
 		for track_widget in self._tracks:
@@ -145,6 +155,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update cover for album id
+		arg: album id as int
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
@@ -152,6 +163,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 	
 	"""
 		Return album id for widget
+		ret: album id as int
 	"""     
 	def get_id(self):
 		return self._album_id
@@ -162,6 +174,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Add tracks for album_id to Album widget
+		arg: album id as int
 	"""
 	def _add_tracks(self, album_id):
 		i = 0
@@ -229,6 +242,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update postion label for track widget
+		arg: track widget
 	"""
 	def _update_pos_label(self, track_widget):
 		if Objects["player"].is_in_playlist(track_widget.id):

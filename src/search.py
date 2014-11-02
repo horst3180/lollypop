@@ -47,42 +47,48 @@ class SearchRow(Gtk.ListBoxRow):
 
 	"""
 		Set artist label
+		arg: untranslated artist name as string
 	"""
 	def set_artist(self, name):
 		self._artist.set_text(translate_artist_name(name))
 
 	"""
 		Set item label
+		arg: item name as string
 	"""
 	def set_item(self, name):
 		self._item.set_text(name)
 
 	"""
 		Set cover pixbuf
+		arg: pixbuf
 	"""
 	def set_cover(self, pixbuf):
 		self._cover.set_from_pixbuf(pixbuf)
 
 	"""
-		Store object id
+		Store current object id
+		arg: object id as int
 	"""
 	def set_object_id(self, object_id):
 		self._object_id = object_id
 
 	"""
-		Return object id
+		Get object id
+		ret: Current object id as int
 	"""
 	def get_object_id(self):
 		return self._object_id
 
 	"""
-		Set as a track
+		Mark object as a track
 	"""
 	def track(self):
 		self._is_track = True
 
 	"""
-		Return True if it's a track
+		True if it's a track
+		ret: bool
 	"""
 	def is_track(self):
 		return self._is_track

@@ -20,6 +20,9 @@ from lollypop.database import Database
 from lollypop.widgets import *
 from lollypop.utils import translate_artist_name
 
+"""
+	Loading view used on db update
+"""
 class LoadingView(Gtk.Grid):
 	def __init__(self):
 		Gtk.Grid.__init__(self)
@@ -36,7 +39,10 @@ class LoadingView(Gtk.Grid):
 	def remove_signals(self):
 		pass
 
-	
+
+"""
+	Generic view
+"""
 class View(Gtk.Grid):
 	def __init__(self):
 		Gtk.Grid.__init__(self)
@@ -48,6 +54,9 @@ class View(Gtk.Grid):
 		Objects["player"].connect("current-changed", self.current_changed)
 		Objects["player"].connect("cover-changed", self.cover_changed)
 
+	"""
+		Remove signals on player object
+	"""
 	def remove_signals(self):
 		Objects["player"].disconnect_by_func(self.current_changed)
 		Objects["player"].disconnect_by_func(self.cover_changed)
@@ -56,6 +65,7 @@ class View(Gtk.Grid):
 	"""
 		Current song changed
 		Update context and content
+		arg: widget as unused, track id as int
 	"""
 	def current_changed(self, widget, track_id):
 		self._update_content()
@@ -63,6 +73,7 @@ class View(Gtk.Grid):
 
 	"""
 		Update album cover in view
+		Do nothing here
 	"""
 	def cover_changed(self, widget, album_id):
 		pass
@@ -73,17 +84,22 @@ class View(Gtk.Grid):
 
 	"""
 		Update content view
+		Do nothing here
 	"""
 	def _update_content(self):
 		pass
 
 	"""
 		Update context view
+		Do nothing here
 	"""
 	def _update_context(self):
 		pass
 
 
+"""
+	Artist view is a vertical grid with album songs widgets
+"""
 class ArtistView(View):
 
 	"""
@@ -133,6 +149,7 @@ class ArtistView(View):
 
 	"""
 		Update album cover in view
+		arg: album id as int
 	"""
 	def cover_changed(self, widget, album_id):
 		for widget in self._albumbox.get_children():
@@ -154,13 +171,17 @@ class ArtistView(View):
 
 
 	"""
-		populate content view with album_id
+		Add an album widget to the view
+		arg: album id as int
 	"""
 	def _populate_content(self, album_id):
 		widget = AlbumWidgetSongs(album_id, self._genre_id)
 		self._albumbox.add(widget)
 		widget.show()
 
+"""
+	Album view is a flowbox of albums widgets with album name and artist name
+"""
 class AlbumView(View):
 
 	"""
@@ -221,6 +242,7 @@ class AlbumView(View):
 	
 	"""
 		Update album cover in view
+		arg: widget as unused, album id as int
 	"""
 	def cover_changed(self, widget, album_id):
 		self._stack.get_visible_child().update_cover(album_id)
@@ -252,6 +274,7 @@ class AlbumView(View):
 
 	"""
 		populate context view
+		arg: album id as int
 	"""
 	def _populate_context(self, album_id):
 		old_view = self._get_next_view()
@@ -264,6 +287,7 @@ class AlbumView(View):
 			
 	"""
 		Show Context view for activated album
+		arg: flowbox, children
 	"""
 	def _on_album_activated(self, flowbox, child):
 		if self._object_id == child.get_child().get_id():
@@ -276,6 +300,7 @@ class AlbumView(View):
 	
 	"""
 		Add albums using gmainloop
+		arg: [album ids as int]
 	"""
 	def _add_albums_mainloop(self, albums_id):
 		if len(albums_id) > 0:
@@ -286,7 +311,7 @@ class AlbumView(View):
 			GLib.idle_add(self._add_albums, albums_id)
 	"""
 		Add albums with current genre to the flowbox
-		arg: int
+		arg: [albums ids as int]
 	"""
 	def _add_albums(self, albums_id):
 		i = 1

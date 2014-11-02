@@ -15,6 +15,7 @@ from gettext import gettext as _
 
 """
 	Return formated artist name
+	arg: str
 """
 def format_artist_name(name):
 	# Handle language ordering
@@ -26,7 +27,8 @@ def format_artist_name(name):
 	return name
 
 """
-	Translate formated artist name
+	Return translate formated artist name
+	arg: str
 """
 def translate_artist_name(name):
 	split = name.split("@@@@")

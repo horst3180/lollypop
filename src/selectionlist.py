@@ -26,6 +26,7 @@ class SelectionList(GObject.GObject):
 
 	"""
 		Init Selection list ui
+		arg: title as string and width as int
 	"""
 	def __init__(self, title, width):
 		GObject.GObject.__init__(self)
@@ -54,6 +55,7 @@ class SelectionList(GObject.GObject):
 	"""
 		Populate view with values
 		Translate string if is_artist = True
+		arg: [(int, str)], bool
 	"""	
 	def populate(self, values, is_artist = False):
 		self._model.clear()
@@ -67,6 +69,7 @@ class SelectionList(GObject.GObject):
 		Update view with values
 		Setup a sort function on list
 		Please  use populate in priority
+		arg: [(int, str)], bool
 	"""	
 	def update(self, values, is_artist = False):
 		for item in self._model:
@@ -141,6 +144,7 @@ class SelectionList(GObject.GObject):
 
 	"""
 		Forward "cursor-changed" as "item-selected" with item id as arg
+		arg: view
 	"""	
 	def _new_item_selected(self, view):
 		(path, column) = view.get_cursor()
