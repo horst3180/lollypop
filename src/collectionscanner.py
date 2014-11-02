@@ -32,7 +32,7 @@ class CollectionScanner(GObject.GObject):
 	__gsignals__ = {
 		'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
 	}
-	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4" ]
+	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4", "opus" ]
 	def __init__(self, paths):
 		GObject.GObject.__init__(self)
 
