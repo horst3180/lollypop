@@ -23,6 +23,9 @@ from mutagen import File as Idtag
 from lollypop.config import *
 from lollypop.database import Database
 
+"""
+	Manage album's arts
+"""
 class AlbumArt: 
 
 	_CACHE_PATH = os.path.expanduser ("~") +  "/.cache/lollypop"
@@ -41,6 +44,8 @@ class AlbumArt:
 
 	"""
 		get cover cache path for album_id
+		arg: album id as int, size as int
+		ret: cover path as string
 	"""
 	def get_path(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
@@ -48,14 +53,16 @@ class AlbumArt:
 	
 	
 	"""
-		Return path for a cover art in dir
+		Look for covers in dir, folder.jpg if exist, any supported image otherwise
+		arg: directory path as string
+		ret: cover file path as string
 	"""
-	def get_art_path(self, dir):
+	def get_art_path(self, directory):
 		try:
-			if os.path.exists(dir+"/folder.jpg"):
-				return dir+"/folder.jpg"
+			if os.path.exists(directory+"/folder.jpg"):
+				return directory+"/folder.jpg"
 		
-			for file in os.listdir (dir):
+			for file in os.listdir (directory):
 				lowername = file.lower()
 				supported = False
 				for mime in self._mimes:
@@ -63,7 +70,7 @@ class AlbumArt:
 						supported = True
 						break	
 				if (supported):
-					return "%s/%s" % (dir, file)
+					return "%s/%s" % (directory, file)
 
 			return None
 		except:
@@ -71,6 +78,8 @@ class AlbumArt:
 	
 	"""
 		Return pixbuf for album_id
+		arg: album id as int, pixbuf size as int
+		return: pixbuf
 	"""
 	def get(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
@@ -127,6 +136,7 @@ class AlbumArt:
 
 	"""
 		Remove cover from cache for album id
+		arg: album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
@@ -136,7 +146,8 @@ class AlbumArt:
 
 	"""
 		Get arts on google image corresponding to search
-		return pixbufs array
+		arg: search words as string
+		ret: [urls as string]
 	"""
 	def get_google_arts(self, search):
 		try:
@@ -161,6 +172,8 @@ class AlbumArt:
 
 	"""
 		Return pixbuf for default album
+		arg: size as int
+		ret: pixbuf
 	"""
 	def _get_default_art(self, size):
 		# get a small pixbuf with the given path
@@ -187,6 +200,7 @@ class AlbumArt:
 
 	"""
 		Make an icon frame on pixbuf
+		arg: pixbuf
 	"""
 	def _make_icon_frame(self, pixbuf):
 		border = 1.5
