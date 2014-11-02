@@ -55,8 +55,9 @@ class PopAlbums(Gtk.Popover):
 
 	"""
 		Populate view
+		arg: artist id as int
 	"""
-	def populate(self, artist_id, view = None):
+	def populate(self, artist_id):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
@@ -67,7 +68,7 @@ class PopAlbums(Gtk.Popover):
 #######################
 
 	"""
-		Add a new view to stack and return it 
+		Add a new view to stack
 	"""
 	def _add_new_view(self):
 		self._view = Gtk.Grid()
@@ -102,7 +103,8 @@ class PopAlbums(Gtk.Popover):
 			GLib.idle_add(self._remove_child, previous, priority=GLib.PRIORITY_LOW)
 		
 	"""
-		Add a new widget to the view
+		Add a albums to the view
+		arg: [albums ids]
 	"""
 	def _add_widget_songs(self, albums):
 		for album_id in albums:
