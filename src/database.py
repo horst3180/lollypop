@@ -48,6 +48,9 @@ class Database:
 						album_id INT NOT NULL,
 						mtime INT)'''
 	   
+	"""
+		Create database tables or manage update if needed
+	"""
 	def __init__(self):
 		self._popularity_backup = {}
 		# Create db directory if missing
@@ -91,7 +94,8 @@ class Database:
 
 
 	"""
-		Set a dict with album path and popularity 
+		Get a dict with album path and popularity
+		This is usefull for collection scanner be able to restore popularities after db reset
 	"""
 	def get_popularities(self):
 		return self._popularity_backup
@@ -101,13 +105,17 @@ class Database:
 #########
 
 	"""
-		Set a dict with album path and popularity 
+		Set a dict with album path and popularity
+		This is usefull for collection scanner be able to restore popularities after db reset 
 	"""
 	def _set_popularities(self, sql):
 		result = sql.execute("SELECT path, popularity FROM albums")
 		for row in result:
 			self._popularity_backup[row[0]] = row[1]
 
+	"""
+		Return a new sqlite cursor
+	"""
 	def get_cursor(self):
 		return sqlite3.connect(self.DB_PATH)
 
