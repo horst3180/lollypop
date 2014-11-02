@@ -21,6 +21,7 @@ class DatabaseUpgrade:
 		self._sql = sql
 		self._version = version
 		self._reset = False
+		# Here are schema upgrade, key is database version, value function doing shema update
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc
@@ -28,19 +29,21 @@ class DatabaseUpgrade:
 
 	"""
 		Return upgrade count
+		ret: int
 	"""
 	def count(self):
 		return len(self._UPGRADES)
 
 	"""
-		Return True if db need a reset
+		True if db need a reset
+		ret: bool
 	"""
 	def reset_needed(self):
 		return self._reset
 
 	"""
 		Upgrade database based on version
-		Return new version
+		ret: new db version as int
 	"""	
 	def do_db_upgrade(self):
 		for i in range(self._version.get_int32()+1, len(self._UPGRADES)+1):
