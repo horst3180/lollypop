@@ -65,6 +65,7 @@ class Player(GObject.GObject):
 		self._bus = self._playbin.get_bus()
 		self._bus.add_signal_watch()
 		self._bus.connect('message::error', self._on_bus_error)
+		self._bus.connect('message::eos', self._on_bus_eos)
 		self._bus.connect('message::stream-start', self._on_stream_start)
 		
 	"""
@@ -484,6 +485,14 @@ class Player(GObject.GObject):
 	def _on_bus_error(self, bus, message):
 		self.next()
 		
+	"""
+		On eos, force loading if queue fails,
+		if on_stream_about_to_finish never get send  
+	"""
+	def _on_bus_eos(self, bus, message):
+		self.load(self._current_track_id)
+		
+
 	"""
 		When stream is about to finish, switch to next track without gap
 	"""
