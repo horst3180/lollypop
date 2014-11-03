@@ -174,13 +174,15 @@ class Application(Gtk.Application):
 	def _edit_settings_close(self, widget):
 		paths = []
 		main_path = self._main_chooser.get_dir()
-		if main_path != GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
+		choosers = self._chooser_box.get_children()
+		if main_path == GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) and len(choosers) == 0:
+			paths = []
+		else:
 			paths.append(main_path)
-		for chooser in self._chooser_box.get_children():
-			path = chooser.get_dir()
-			if path and not path in paths:
-				paths.append(path)
-
+			for chooser in choosers:
+				path = chooser.get_dir()
+				if path and not path in paths:
+					paths.append(path)
 		Objects["settings"].set_value('music-path', GLib.Variant('as', paths))
 		self._settings_dialog.hide()
 		self._settings_dialog.destroy()
