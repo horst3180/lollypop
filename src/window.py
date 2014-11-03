@@ -256,6 +256,8 @@ class Window(Gtk.ApplicationWindow):
 
 		if self._loading:
 			self._stack.get_visible_child().hide()
+			self._list_one.select_first()
+			self._update_view_albums(POPULARS)
 			self._loading = False
 
 		self._list_one.widget.show()
