@@ -2,6 +2,10 @@
 <interface domain="lollypop">
   <menu id="app-menu">
     <section>
+	<item>
+        <attribute name="action">app.settings</attribute>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+      </item>
       <item>
         <attribute name="action">app.party</attribute>
         <attribute name="label" translatable="yes">_Edit party mode</attribute>

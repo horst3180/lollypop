@@ -36,4 +36,5 @@ src/collectionscanner.py
 [type: gettext/glade]data/PartyDialog.ui
 [type: gettext/glade]data/PlayListRow.ui
 [type: gettext/glade]data/SearchRow.ui
+[type: gettext/glade]data/SettingsDialog.ui
 

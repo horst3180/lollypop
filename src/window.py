@@ -34,7 +34,7 @@ class Window(Gtk.ApplicationWindow):
 					       application=app,
 					       title=_("Lollypop"))
 
-		self._scanner = CollectionScanner(Objects["settings"].get_value('music-path'))
+		self._scanner = CollectionScanner()
 		self._scanner.connect("scan-finished", self._setup_list_one, True)
 
 		self._setup_window()				
@@ -50,44 +50,6 @@ class Window(Gtk.ApplicationWindow):
 		Objects["player"].set_party_ids(ids)
 		
 		self.connect("map-event", self._on_mapped_window)
-
-
-	"""
-		Dialog to let user choose available genre in party mode
-	"""
-	def edit_party(self):
-		builder = Gtk.Builder()
-		builder.add_from_resource('/org/gnome/Lollypop/PartyDialog.ui')
-		self._party_dialog = builder.get_object('party_dialog')
-		self._party_dialog.set_transient_for(self)
-		self._party_dialog.set_title(_("Select what will be available in party mode"))
-		party_button = builder.get_object('button1')
-		party_button.connect("clicked", self._edit_party_close)
-		scrolled = builder.get_object('scrolledwindow1')
-		genres = Objects["genres"].get_ids()
-		genres.insert(0, (-1, "Populars"))
-		self._party_grid = Gtk.Grid()
-		self._party_grid.set_orientation(Gtk.Orientation.VERTICAL)
-		self._party_grid.set_property("column-spacing", 10)
-		ids = Objects["player"].get_party_ids()
-		i = 0
-		x = 0
-		for genre_id, genre in genres:
-			label = Gtk.Label()
-			label.set_text(genre)
-			switch = Gtk.Switch()
-			if genre_id in ids:
-				switch.set_state(True)
-			switch.connect("state-set", self._party_switch_state, genre_id)
-			self._party_grid.attach(label, x, i, 1, 1)
-			self._party_grid.attach(switch, x+1, i, 1, 1)
-			if x == 0:
-				x += 2
-			else:
-				i += 1
-				x = 0
-		scrolled.add(self._party_grid)
-		self._party_dialog.show_all()
 
 	"""
 		Update music database
@@ -106,37 +68,19 @@ class Window(Gtk.ApplicationWindow):
 			self._stack.remove(old_view)
 			old_view.remove_signals()
 
+
+	"""
+		Update view class
+		arg: bool
+	"""
+	def update_view_class(self, dark):
+		view = self._stack.get_visible_child()
+		if view:
+			view.update_class(dark)
+
 ############
 # Private  #
 ############
-
-	"""
-		Update party ids when use change a switch in dialog
-		arg: widget as unused, state as widget state, genre id as int
-	"""
-	def _party_switch_state(self, widget, state, genre_id):
-		ids = Objects["player"].get_party_ids()
-		if state:
-			try:
-				ids.append(genre_id)
-			except:
-				pass
-		else:
-			try:
-				ids.remove(genre_id)
-			except:
-				pass
-		Objects["player"].set_party_ids(ids)
-		Objects["settings"].set_value('party-ids',  GLib.Variant('ai', ids))
-		
-
-	"""
-		Close edit party dialog
-		arg: dialog
-	"""
-	def _edit_party_close(self, widget):
-		self._party_dialog.hide()
-		self._party_dialog.destroy()
 
 	"""
 		Setup media player keys

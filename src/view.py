@@ -155,6 +155,16 @@ class ArtistView(View):
 		for widget in self._albumbox.get_children():
 			widget.update_cover(album_id)
 
+	"""
+		Update view class, dark if dark is True
+		arg: bool
+	"""
+	def update_class(self, dark):
+		if dark:
+			self._albumbox.get_style_context().add_class('black')
+		else:
+			self._albumbox.get_style_context().remove_class('black')
+
 #######################
 # PRIVATE             #
 #######################
@@ -249,6 +259,16 @@ class AlbumView(View):
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
+
+	"""
+		Update view class, dark if dark is True
+		arg: bool
+	"""
+	def update_class(self, dark):
+		if dark:
+			self._albumbox.get_style_context().add_class('black')
+		else:
+			self._albumbox.get_style_context().remove_class('black')
 
 #######################
 # PRIVATE             #

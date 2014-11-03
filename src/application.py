@@ -20,6 +20,7 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.albumart import AlbumArt
+from lollypop.widgets import ChooserWidget
 from lollypop.mpris import MediaPlayer2Service
 from lollypop.notification import NotificationManager
 from lollypop.database_albums import DatabaseAlbums
@@ -89,19 +90,183 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
+
+################
+# settings
+
+	"""
+		Dialog to let user choose available options
+	"""
+	def _edit_settings(self, action, param):
+		if not self._window:
+			return
+		self._choosers = []
+		builder = Gtk.Builder()
+		builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
+		self._settings_dialog = builder.get_object('settings_dialog')
+		self._settings_dialog.set_transient_for(self._window)
+		self._settings_dialog.set_title(_("Configure lollypop"))
+		switch_scan =  builder.get_object('switch_scan')
+		switch_scan.set_state(Objects["settings"].get_value('startup-scan'))
+		switch_view = builder.get_object('switch_view')
+		switch_view.set_state(Objects["settings"].get_value('dark-view'))
+		close_button = builder.get_object('close_btn')
+		switch_scan.connect('state-set', self._update_scan_setting)
+		switch_view.connect('state-set', self._update_view_setting)
+		close_button.connect('clicked', self._edit_settings_close)
+		main_chooser_box = builder.get_object('main_chooser_box')
+		self._chooser_box = builder.get_object('chooser_box')
+		
+		dirs = []
+		for directory in Objects["settings"].get_value('music-path'):
+			dirs.append(directory)
+			
+		# Main chooser
+		self._main_chooser = ChooserWidget()
+		image = Gtk.Image.new_from_icon_name("list-add-symbolic", Gtk.IconSize.MENU)
+		self._main_chooser.set_icon(image)
+		self._main_chooser.set_action(self._add_chooser)
+		main_chooser_box.pack_start(self._main_chooser, False, True, 0)
+		if len(dirs) > 0:
+			path = dirs.pop(0)
+		else:
+			path = GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)
+		self._main_chooser.set_dir(path)
+		
+		# Others choosers	
+		for directory in dirs:
+				self._add_chooser(directory)				
+			
+		self._settings_dialog.show_all()
+
+	"""
+		Add a new chooser widget
+		arg: directory path as string
+	"""
+	def _add_chooser(self, directory = None):
+		chooser = ChooserWidget()
+		image = Gtk.Image.new_from_icon_name("list-remove-symbolic", Gtk.IconSize.MENU)
+		chooser.set_icon(image)
+		if directory:
+			chooser.set_dir(directory)
+		self._chooser_box.add(chooser)
+
+	"""
+		Update view setting
+		arg: widget as unused, state as widget state
+	"""
+	def _update_view_setting(self, widget, state):
+		Objects["settings"].set_value('dark-view',  GLib.Variant('b', state))
+		if self._window:
+			self._window.update_view_class(state)
+
+	"""
+		Update scan setting
+		arg: widget as unused, state as widget state
+	"""
+	def _update_scan_setting(self, widget, state):
+		Objects["settings"].set_value('startup-scan',  GLib.Variant('b', state))
+
+	"""
+		Close edit party dialog
+		arg: unused
+	"""
+	def _edit_settings_close(self, widget):
+		paths = []
+		main_path = self._main_chooser.get_dir()
+		if main_path != GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
+			paths.append(main_path)
+		for chooser in self._chooser_box.get_children():
+			path = chooser.get_dir()
+			if path and not path in paths:
+				paths.append(path)
+
+		Objects["settings"].set_value('music-path', GLib.Variant('as', paths))
+		self._settings_dialog.hide()
+		self._settings_dialog.destroy()
+
+#
+################
+
+################
+# Party settings
+
+	"""
+		Dialog to let user choose available genre in party mode
+	"""
+	def _edit_party(self, action, param):
+		if not self._window:
+			return
+		builder = Gtk.Builder()
+		builder.add_from_resource('/org/gnome/Lollypop/PartyDialog.ui')
+		self._party_dialog = builder.get_object('party_dialog')
+		self._party_dialog.set_transient_for(self._window)
+		self._party_dialog.set_title(_("Select what will be available in party mode"))
+		party_button = builder.get_object('button1')
+		party_button.connect("clicked", self._edit_party_close)
+		scrolled = builder.get_object('scrolledwindow1')
+		genres = Objects["genres"].get_ids()
+		genres.insert(0, (-1, "Populars"))
+		self._party_grid = Gtk.Grid()
+		self._party_grid.set_orientation(Gtk.Orientation.VERTICAL)
+		self._party_grid.set_property("column-spacing", 10)
+		ids = Objects["player"].get_party_ids()
+		i = 0
+		x = 0
+		for genre_id, genre in genres:
+			label = Gtk.Label()
+			label.set_text(genre)
+			switch = Gtk.Switch()
+			if genre_id in ids:
+				switch.set_state(True)
+			switch.connect("state-set", self._party_switch_state, genre_id)
+			self._party_grid.attach(label, x, i, 1, 1)
+			self._party_grid.attach(switch, x+1, i, 1, 1)
+			if x == 0:
+				x += 2
+			else:
+				i += 1
+				x = 0
+		scrolled.add(self._party_grid)
+		self._party_dialog.show_all()
+
+	"""
+		Update party ids when use change a switch in dialog
+		arg: widget as unused, state as widget state, genre id as int
+	"""
+	def _party_switch_state(self, widget, state, genre_id):
+		ids = Objects["player"].get_party_ids()
+		if state:
+			try:
+				ids.append(genre_id)
+			except:
+				pass
+		else:
+			try:
+				ids.remove(genre_id)
+			except:
+				pass
+		Objects["player"].set_party_ids(ids)
+		Objects["settings"].set_value('party-ids',  GLib.Variant('ai', ids))
+		
+
+	"""
+		Close edit party dialog
+		arg: unused
+	"""
+	def _edit_party_close(self, widget):
+		self._party_dialog.hide()
+		self._party_dialog.destroy()
+
+#
+##########
+
 	"""
 		Search for new music
 	"""
-	def _update_db(self, action, param):
+	def _update_db(self, action = None, param = None):
 		if self._window:
 			self._window.update_db()
-
-	"""
-		Show party dialog edition
-	"""
-	def _party(self, action, param):
-		if self._window:
-			self._window.edit_party()
 
 	"""
 		Setup about dialog
@@ -133,8 +298,12 @@ class Application(Gtk.Application):
 
 		#TODO: Remove this test later
 		if Gtk.get_minor_version() > 12:
+			settingsAction = Gio.SimpleAction.new('settings', None)
+			settingsAction.connect('activate', self._edit_settings)
+			self.add_action(settingsAction)
+
 			partyAction = Gio.SimpleAction.new('party', None)
-			partyAction.connect('activate', self._party)
+			partyAction.connect('activate', self._edit_party)
 			self.add_action(partyAction)
 
 		updateAction = Gio.SimpleAction.new('update_db', None)

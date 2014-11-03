@@ -262,5 +262,67 @@ class AlbumWidgetSongs(Gtk.Grid):
 		popover.populate(artist + " " + album)
 		popover.show()
 
+
+
+class ChooserWidget(Gtk.Grid):
 	
+	def __init__(self):
+		Gtk.Grid.__init__(self)
+		self._action = None
+		self.set_property("orientation", Gtk.Orientation.HORIZONTAL)
+		self.set_property("halign", Gtk.Align.CENTER)
+		self._chooser_btn = Gtk.FileChooserButton()
+		self._chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
+		self._chooser_btn.set_property("margin", 5)
+		self._chooser_btn.show()
+		self.add(self._chooser_btn)
+		self._action_btn = Gtk.Button(None)
+		self._action_btn.set_property("margin", 5)
+		self._action_btn.show()
+		self.add(self._action_btn)
+		self._action_btn.connect("clicked", self._do_action)
+		self.show()
 	
+	"""
+		Set current selected directory for chooser
+		arg: directory path as string
+	"""
+	def set_dir(self, directory):
+		self._chooser_btn.set_uri("file://"+directory)
+	
+	"""
+		Set image for action button
+		arg: Gtk.Image
+	"""
+	def set_icon(self, image):
+		self._action_btn.set_image(image)
+		
+	"""
+		Set action callback for button clicked signal
+		arg: func
+	"""
+	def set_action(self, action):
+		self._action = action
+
+	"""
+		Return select directory path
+		ret: path as string
+	"""
+	def get_dir(self):
+		path = self._chooser_btn.get_uri()
+		if path:
+			return path[7:]
+		else:
+			return None
+		
+#######################
+# PRIVATE             #
+#######################
+	"""
+		If action defined, execute, else, remove widget
+	"""
+	def _do_action(self, widget):
+		if self._action:
+			self._action()
+		else:
+			self.destroy()

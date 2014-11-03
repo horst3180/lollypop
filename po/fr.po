@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-27 14:48+0100\n"
+"POT-Creation-Date: 2014-11-03 12:47+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -75,7 +75,7 @@ msgid "Show albums/artists view as dark"
 msgstr "Montrer les albums/artistes avec un fond sombre"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/application.py:39 ../src/application.py:99 ../src/window.py:35
+#: ../src/application.py:40 ../src/application.py:69 ../src/window.py:35
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -91,29 +91,33 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:170 ../src/toolbar.py:192
-msgid "Pause"
-msgstr "Pause"
+#: ../src/application.py:108
+msgid "Configure lollypop"
+msgstr "Configurer lollypop"
 
-#: ../src/toolbar.py:175 ../src/toolbar.py:189 ../data/headerbar.ui.h:2
-msgid "Play"
-msgstr "Lecture"
-
-#: ../src/window.py:61
+#: ../src/application.py:204
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/window.py:290 ../src/window.py:314
+#: ../src/toolbar.py:213 ../src/toolbar.py:237
+msgid "Pause"
+msgstr "Pause"
+
+#: ../src/toolbar.py:218 ../src/toolbar.py:234 ../data/headerbar.ui.h:2
+msgid "Play"
+msgstr "Lecture"
+
+#: ../src/window.py:243 ../src/window.py:282
+msgid "Compilations"
+msgstr "Compilations"
+
+#: ../src/window.py:245
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:291 ../src/window.py:315
+#: ../src/window.py:246
 msgid "Populars albums"
 msgstr "Albums populaires"
-
-#: ../src/window.py:334
-msgid "Compilations"
-msgstr "Compilations"
 
 #: ../src/notification.py:39 ../data/headerbar.ui.h:1
 msgid "Previous"
@@ -124,39 +128,39 @@ msgid "Next"
 msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:62
+#: ../src/notification.py:63
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database_artists.py:68
+#: ../src/database_artists.py:60
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/database_artists.py:75 ../src/database_albums.py:117
-#: ../src/database_tracks.py:112
+#: ../src/database_artists.py:67 ../src/database_albums.py:125
+#: ../src/database_tracks.py:117 ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:132
+#: ../src/database_albums.py:140
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlist.py:73
+#: ../src/playlist.py:79
 msgid "Right click on a song to add it to playlist"
 msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
 
-#: ../src/view.py:33
+#: ../src/view.py:36
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popimages.py:52
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:22
+#: ../src/utils.py:23
 msgid "The the"
 msgstr "The the Les les La Le la le"
 
@@ -169,18 +173,22 @@ msgid "Visit Lollypop website"
 msgstr "Visitez le site web de Lollypop"
 
 #: ../data/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Préférences"
+
+#: ../data/app-menu.ui.h:2
 msgid "_Edit party mode"
 msgstr "_Éditer le mode soirée"
 
-#: ../data/app-menu.ui.h:2
+#: ../data/app-menu.ui.h:3
 msgid "_Update music"
 msgstr "Mise à jour de la musique"
 
-#: ../data/app-menu.ui.h:3
+#: ../data/app-menu.ui.h:4
 msgid "_About"
 msgstr "À _propos"
 
-#: ../data/app-menu.ui.h:4
+#: ../data/app-menu.ui.h:5
 msgid "_Quit"
 msgstr "_Quitter"
 
@@ -204,10 +212,26 @@ msgstr "Liste de lecture"
 msgid "Show genres"
 msgstr "Afficher les genres"
 
-#: ../data/PartyDialog.ui.h:1
+#: ../data/PartyDialog.ui.h:1 ../data/SettingsDialog.ui.h:5
 msgid "Close"
 msgstr "Fermer"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artist"
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Darken views"
+msgstr "Vues sombres"
+
+#: ../data/SettingsDialog.ui.h:2
+msgid "Update music on startup"
+msgstr "Mise à jour de la musique au démarrage"
+
+#: ../data/SettingsDialog.ui.h:3
+msgid "Behaviour"
+msgstr "Comportement"
+
+#: ../data/SettingsDialog.ui.h:4
+msgid "Music"
+msgstr "Musique"

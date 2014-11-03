@@ -33,34 +33,32 @@ class CollectionScanner(GObject.GObject):
 		'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
 	}
 	_mimes = [ "mp3", "ogg", "flac", "m4a", "mp4", "opus" ]
-	def __init__(self, paths):
+	def __init__(self):
 		GObject.GObject.__init__(self)
 
 		self._in_thread = False
 		self._progress = None
 		self._popularities = Objects["db"].get_popularities()
 
-		if len(paths) > 0:
-			self._paths = paths
-		else:
-			if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
-				self._paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
-			else:
-				self._paths = []
-				print("You need to add a music path to org.gnome.Lollypop in dconf")
-
 	"""
 		Update database
 		arg: progress as Gtk.Progress
 	"""
 	def update(self,  progress):
+		paths = Objects["settings"].get_value('music-path')
+		if len(paths) == 0:
+			if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
+				paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
+			else:
+				print("You need to add a music path to org.gnome.Lollypop in dconf")
+
 		if not self._in_thread:
 			self._progress = progress
 			progress.show()
 			self._in_thread = True
 			self._compilations = []
 			self._mtimes = Objects["tracks"].get_mtimes()
-			start_new_thread(self._scan, ())
+			start_new_thread(self._scan, (paths,))
 
 #######################
 # PRIVATE             #
@@ -84,13 +82,13 @@ class CollectionScanner(GObject.GObject):
 	"""
 		Scan music collection for music files
 	"""
-	def _scan(self):
+	def _scan(self, paths):
 		sql = Objects["db"].get_cursor()
 
 		tracks = Objects["tracks"].get_paths(sql)
 		new_tracks = []
 		count = 0
-		for path in self._paths:
+		for path in paths:
 			for root, dirs, files in os.walk(path):
 				for f in files:
 					lowername = f.lower()
