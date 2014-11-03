@@ -29,6 +29,7 @@ class PopImages(Gtk.Popover):
 		Gtk.Popover.__init__(self)
 		
 		self._album_id = album_id
+		self._streams = {}
 
 		self._view = Gtk.FlowBox()
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -104,12 +105,13 @@ class PopImages(Gtk.Popover):
 	"""
 	def _add_pixbuf(self, stream):
 		try:
-			pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_BIG,
-															   ART_SIZE_BIG,
+			pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_MONSTER,
+															   ART_SIZE_MONSTER,
 														       False,
 															   None)
 			image = Gtk.Image()
-			image.set_from_pixbuf(pixbuf)
+			self._streams[image] = pixbuf
+			image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG, ART_SIZE_BIG, 2))
 			image.show()
 			self._view.add(image)
 		except:
@@ -122,12 +124,13 @@ class PopImages(Gtk.Popover):
 	def _on_activate(self, flowbox, child):
 		album_path = Objects["albums"].get_path(self._album_id)
 		artpath = album_path+"/folder.jpg"
-		pixbuf = child.get_child().get_pixbuf()
+		pixbuf = self._streams[child.get_child()]
 		pixbuf.savev(artpath, "jpeg", [], [])
 		Objects["art"].clean_cache(self._album_id, ART_SIZE_SMALL)
 		Objects["art"].clean_cache(self._album_id, ART_SIZE_MEDIUM)
 		Objects["art"].clean_cache(self._album_id, ART_SIZE_BIG)
 		Objects["player"].announce_cover_update(self._album_id)
 		self.hide()
+		self._streams = {}
 		
 		
