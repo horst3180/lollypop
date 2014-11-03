@@ -18,6 +18,7 @@ Changes:
 * 0.8.1 (to be released soon):
   - Handle compilations, albums with main artist and performers
   - Add a settings dialog
+  - Add Opus support
 
 Tarball: https://github.com/gnumdk/lollypop-data
 
