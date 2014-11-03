@@ -15,16 +15,9 @@ It provides:
 - Context artist view
 
 Changes:
-* 0.8.0:
-  - Support for cover art in tags
-  - Fix bugs in collection scanner
-* 0.7.1:
-  - Fix multiple issues
-* 0.7.0:
-  - Threaded interface
-  - Cover art search
-  - Context view by clicking on headerbar infobox
-  - Able to hide genres column
+* 0.8.1 (to be released soon):
+  - Handle compilations, albums with main artist and performers
+  - Add a settings dialog
 
 Tarball: https://github.com/gnumdk/lollypop-data
 
@@ -68,3 +61,4 @@ $ make
 
 UBUNTU USERS:
 You need to install mutagen last version... Python3-mutagen is missing from Ubuntu
+$ pip3 mutagen
