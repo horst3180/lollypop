@@ -51,15 +51,6 @@ class SelectionList(GObject.GObject):
 		self.widget.set_vexpand(True)
 		self.widget.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 		self.widget.add(self._view)
-	
-
-	"""
-		Set list width
-		art: int
-	"""
-	def set_width(self, width):	
-		self._renderer.set_fixed_size(width, -1)
-		self._column.set_fixed_width(width)
 
 	"""
 		Populate view with values

@@ -57,5 +57,15 @@
             <summary>Continue playback when closed</summary>
             <description></description>
         </key>
+		 <key type="i" name="paned-mainlist-width">
+            <default>150</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
+		 <key type="i" name="paned-listview-width">
+            <default>200</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
     </schema>
 </schemalist>

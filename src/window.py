@@ -50,6 +50,7 @@ class Window(Gtk.ApplicationWindow):
 		Objects["player"].set_party_ids(ids)
 		
 		self.connect("map-event", self._on_mapped_window)
+		self.connect("destroy", self._on_destroyed_window)
 
 	"""
 		Update music database
@@ -160,7 +161,8 @@ class Window(Gtk.ApplicationWindow):
 			- main view as artist view or album view
 	"""
 	def _setup_view(self):
-		hgrid = Gtk.Grid()
+		self._paned_main_list = Gtk.HPaned()
+		self._paned_list_view = Gtk.HPaned()
 		vgrid = Gtk.Grid()
 		vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 	
@@ -171,7 +173,6 @@ class Window(Gtk.ApplicationWindow):
 		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)
 		self._list_one = SelectionList("Genre")
 		self._list_two = SelectionList("Artist")
-		self._list_two.set_width(200)
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
@@ -193,30 +194,17 @@ class Window(Gtk.ApplicationWindow):
 
 		separator = Gtk.Separator()
 		separator.show()
-		hgrid.add(self._list_one.widget)
-		hgrid.add(separator)
-		hgrid.add(self._list_two.widget)
-		hgrid.add(vgrid)
-		self.add(hgrid)
-		hgrid.show()
+		self._paned_list_view.add1(self._list_two.widget)
+		self._paned_list_view.add2(vgrid)
+		self._paned_main_list.add1(self._list_one.widget)
+		self._paned_main_list.add2(self._paned_list_view)
+		self.add(self._paned_main_list)
+		self._paned_main_list.set_position(Objects["settings"].get_value("paned-mainlist-width").get_int32())
+		self._paned_list_view.set_position(Objects["settings"].get_value("paned-listview-width").get_int32())
+		self._paned_main_list.show()
+		self._paned_list_view.show()
 		self.show()
 
-	"""
-		Run collection update on mapped window
-		Pass _update_genre() as collection scanned callback
-		arg: obj as unused, data as unused
-	"""	
-	def _on_mapped_window(self, obj, data):
-		if Objects["tracks"].is_empty():
-			self._scanner.update(self._progress)
-			return
-		elif Objects["settings"].get_value('startup-scan'):
-			self._scanner.update(self._progress)
-			
-		self._setup_list_one()
-		self._update_view_albums(POPULARS)
-
-	
 	"""
 		Init the filter list
 		arg: widget as unused
@@ -236,11 +224,9 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one.disconnect(self._list_one_signal)
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
-			self._list_one.set_width(150)
 			items = Objects["genres"].get_ids()
 		else:
 			self._list_two.widget.hide()
-			self._list_one.set_width(300)
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
 				items.insert(0, (COMPILATIONS, _("Compilations")))
@@ -337,4 +323,26 @@ class Window(Gtk.ApplicationWindow):
 	def _on_window_state_event(self, widget, event):
 		Objects["settings"].set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
 
+	"""
+		Run collection update on mapped window
+		Pass _update_genre() as collection scanned callback
+		arg: obj as unused, data as unused
+	"""	
+	def _on_mapped_window(self, obj, data):
+		if Objects["tracks"].is_empty():
+			self._scanner.update(self._progress)
+			return
+		elif Objects["settings"].get_value('startup-scan'):
+			self._scanner.update(self._progress)
+			
+		self._setup_list_one()
+		self._update_view_albums(POPULARS)
 
+	"""
+		Save paned widget width
+		arg: widget as unused, data as unused
+	"""	
+	def _on_destroyed_window(self, widget):
+		Objects["settings"].set_value("paned-mainlist-width", GLib.Variant('i', self._paned_main_list.get_position()))
+		Objects["settings"].set_value("paned-listview-width", GLib.Variant('i', self._paned_list_view.get_position()))
+	
