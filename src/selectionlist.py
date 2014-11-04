@@ -28,7 +28,7 @@ class SelectionList(GObject.GObject):
 		Init Selection list ui
 		arg: title as string and width as int
 	"""
-	def __init__(self, title, width):
+	def __init__(self, title):
 		GObject.GObject.__init__(self)
 		
 		self._model = Gtk.ListStore(int, str)	
@@ -39,11 +39,11 @@ class SelectionList(GObject.GObject):
 
 		self._view = Gtk.TreeView(self._model)
 		self._view.connect('cursor-changed', self._new_item_selected)
-		renderer = Gtk.CellRendererText()
-		renderer.set_fixed_size(width, -1)
-		renderer.set_property('ellipsize-set',True)
-		renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-		self._view.append_column(Gtk.TreeViewColumn(title, renderer, text=1))
+		self._renderer = Gtk.CellRendererText()
+		self._renderer.set_property('ellipsize-set',True)
+		self._renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
+		self._column = Gtk.TreeViewColumn(title, self._renderer, text=1)
+		self._view.append_column(self._column)
 		self._view.set_headers_visible(False)
 		self._view.show()
 
@@ -52,6 +52,15 @@ class SelectionList(GObject.GObject):
 		self.widget.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 		self.widget.add(self._view)
 	
+
+	"""
+		Set list width
+		art: int
+	"""
+	def set_width(self, width):	
+		self._renderer.set_fixed_size(width, -1)
+		self._column.set_fixed_width(width)
+
 	"""
 		Populate view with values
 		Translate string if is_artist = True

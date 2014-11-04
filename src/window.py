@@ -169,8 +169,9 @@ class Window(Gtk.ApplicationWindow):
 		self._toolbar.header_bar.show()
 
 		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)
-		self._list_one = SelectionList("Genre", 150)
-		self._list_two = SelectionList("Artist", 200)
+		self._list_one = SelectionList("Genre")
+		self._list_two = SelectionList("Artist")
+		self._list_two.set_width(200)
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
@@ -235,9 +236,11 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one.disconnect(self._list_one_signal)
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
+			self._list_one.set_width(150)
 			items = Objects["genres"].get_ids()
 		else:
 			self._list_two.widget.hide()
+			self._list_one.set_width(300)
 			items = Objects["artists"].get_ids(ALL)
 			if len(Objects["albums"].get_compilations(ALL)) > 0:
 				items.insert(0, (COMPILATIONS, _("Compilations")))
