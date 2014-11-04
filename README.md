@@ -15,10 +15,11 @@ It provides:
 - Context artist view
 
 Changes:
-* 0.8.1 (to be released soon):
+* 0.8.1:
   - Handle compilations, albums with main artist and performers
   - Add a settings dialog
   - Add Opus support
+  - Don't stop playing on End Of Stream
 
 Tarball: https://github.com/gnumdk/lollypop-data
 
