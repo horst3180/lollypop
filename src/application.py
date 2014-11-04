@@ -63,7 +63,6 @@ class Application(Gtk.Application):
 
 		self.register()
 		if self.get_is_remote():
-			print("remote")
 			Gdk.notify_startup_complete()
 		
 	"""
