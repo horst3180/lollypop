@@ -148,7 +148,7 @@ class PlayListWidget(Gtk.Popover):
 		if len(tracks) > 0:
 			for track_id in tracks:
 				album_id = Objects["tracks"].get_album_id(track_id)
-				artist_id = Objects["artists"].get_id(album_id)
+				artist_id = Objects["albums"].get_artist_id(album_id)
 				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
 				playlist_row = PlayListRow()
 				playlist_row.set_artist(Objects["artists"].get_name(artist_id))

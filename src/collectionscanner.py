@@ -148,12 +148,12 @@ class CollectionScanner(GObject.GObject):
 			title = os.path.basename(filepath)
 
 		if "artist" in keys:
-			artist = tag["artist"][0]
+			artist = format_artist_name(tag["artist"][0])
 		else:
 			artist = "Unknown"
 
 		if "performer" in keys:
-			performer = tag["performer"][0]		
+			performer = format_artist_name(tag["performer"][0])	
 		else:
 			performer = None
 
