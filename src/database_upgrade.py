@@ -63,6 +63,6 @@ class DatabaseUpgrade:
 		Add performer time to track table and disc number
 	"""
 	def _db_add_performer_disc(self):
+		self._reset = True
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
-		self._reset = True
