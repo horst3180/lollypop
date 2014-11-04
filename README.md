@@ -15,7 +15,8 @@ It provides:
 - Context artist view
 
 Changes:
-* 0.8.2: (not released yet)
+* 0.8.2:
+  - Fix regression in artist naming
   - Fix bug with some gtk themes
   - Add an option to continue playback when window is closed
 
