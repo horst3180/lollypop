@@ -3,10 +3,10 @@ GtkWidget {
 
 }
 
-@define-color theme_base_color #393F3F;
-@define-color theme_text_color #eeeeec;
+@define-color lollypop_base_color #393F3F;
+@define-color lollypop_text_color #eeeeec;
 
 .black {
-	background-color: @theme_base_color;
-	color: @theme_text_color;
+	background-color: @lollypop_base_color;
+	color: @lollypop_text_color;
 }
