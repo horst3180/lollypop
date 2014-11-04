@@ -37,9 +37,8 @@ class Application(Gtk.Application):
 		Gtk.Application.__init__(self,
 					 application_id='org.gnome.Lollypop',
 					 flags=Gio.ApplicationFlags.FLAGS_NONE)
-		GLib.set_application_name(_("Lollypop"))
+		GLib.set_application_name('lollypop')
 		GLib.set_prgname('lollypop')
-
 		cssProviderFile = Gio.File.new_for_uri('resource:///org/gnome/Lollypop/application.css')
 		cssProvider = Gtk.CssProvider()
 		cssProvider.load_from_file(cssProviderFile)
@@ -60,13 +59,19 @@ class Application(Gtk.Application):
 		Objects["art"] = AlbumArt()
 
 		self._window = None
+		self._delete_signal = None
 
+		self.register()
+		if self.get_is_remote():
+			print("remote")
+			Gdk.notify_startup_complete()
+		
 	"""
 		Add startup notification and build gnome-shell menu after Gtk.Application startup
 	"""
 	def do_startup(self):
 		Gtk.Application.do_startup(self)
-		Notify.init(_("Lollypop"))
+		Notify.init("Lollypop")
 		self._build_app_menu()
 
 	"""
@@ -75,9 +80,10 @@ class Application(Gtk.Application):
 	def do_activate(self):
 		if not self._window:
 			self._window = Window(self)
+			if Objects["settings"].get_value('background-mode'):
+				self._delete_signal = self._window.connect('delete-event', self._hide_on_delete)
 			self._service = MediaPlayer2Service(self)
 			self._notifications = NotificationManager()
-
 		self._window.present()
 
 	"""
@@ -110,9 +116,12 @@ class Application(Gtk.Application):
 		switch_scan.set_state(Objects["settings"].get_value('startup-scan'))
 		switch_view = builder.get_object('switch_view')
 		switch_view.set_state(Objects["settings"].get_value('dark-view'))
+		switch_background = builder.get_object('switch_background')
+		switch_background.set_state(Objects["settings"].get_value('background-mode'))
 		close_button = builder.get_object('close_btn')
 		switch_scan.connect('state-set', self._update_scan_setting)
 		switch_view.connect('state-set', self._update_view_setting)
+		switch_background.connect('state-set', self._update_background_setting)
 		close_button.connect('clicked', self._edit_settings_close)
 		main_chooser_box = builder.get_object('main_chooser_box')
 		self._chooser_box = builder.get_object('chooser_box')
@@ -166,6 +175,18 @@ class Application(Gtk.Application):
 	"""
 	def _update_scan_setting(self, widget, state):
 		Objects["settings"].set_value('startup-scan',  GLib.Variant('b', state))
+
+	"""
+		Update background mode setting
+		arg: widget as unused, state as widget state
+	"""
+	def _update_background_setting(self, widget, state):
+		if not state and self._delete_signal:
+			self._window.disconnect(self._delete_signal)
+			self._delete_signal = False
+		elif state and not self._delete_signal:
+			self._delete_signal = self._window.connect('delete-event', self._hide_on_delete)
+		Objects["settings"].set_value('background-mode',  GLib.Variant('b', state))
 
 	"""
 		Close edit party dialog
@@ -262,6 +283,13 @@ class Application(Gtk.Application):
 
 #
 ##########
+
+
+	"""
+		Hide window
+	"""
+	def _hide_on_delete(self, widget, event):
+		return widget.hide_on_delete()
 
 	"""
 		Search for new music
