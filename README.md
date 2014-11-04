@@ -65,7 +65,9 @@ UBUNTU USERS:
 
 You need to install mutagen last version... Python3-mutagen is missing from Ubuntu
 
-$ sudo apt-get install build-dep gnome-music python3-pip
+$ sudo apt-get build-dep gnome-music
+
+$ sudo apt-get install python3-pip
 
 $ sudo pip3 install mutagen
 
