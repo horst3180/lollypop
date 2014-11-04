@@ -15,6 +15,10 @@ It provides:
 - Context artist view
 
 Changes:
+* 0.8.2: (not released yet)
+  - Fix bug with some gtk themes
+  - Add an option to continue playback when window is closed
+
 * 0.8.1:
   - Handle compilations, albums with main artist and performers
   - Add a settings dialog
