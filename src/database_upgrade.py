@@ -65,5 +65,4 @@ class DatabaseUpgrade:
 	def _db_add_performer_disc(self):
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
-		# reset mtime to rescan tags
 		self._reset = True
