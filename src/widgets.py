@@ -118,14 +118,6 @@ class AlbumWidgetSongs(Gtk.Grid):
 		Objects["player"].connect("playlist-changed", self._update_pos_labels)
 
 		self._add_tracks(album_id)
-	
-	def destroy(self):
-		for ui in self._tracks_ui:
-			for obj in ui.get_objects():
-				obj.destroy()
-		for obj in self._ui.get_objects():
-			obj.destroy()
-		Gtk.Grid.destroy(self)
 
 	"""
 		Update tracks settings current tracks as bold and adding play symbol
