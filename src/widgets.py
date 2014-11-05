@@ -35,32 +35,31 @@ class AlbumWidget(Gtk.Box):
 			- Artist name
 	"""
 	def __init__(self, album_id):
-		Gtk.Box.__init__(self)
+		Gtk.Grid.__init__(self)
+		self._album_id = album_id
+
 		self.set_orientation(Gtk.Orientation.VERTICAL)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
-		
-		self._album_id = album_id
 		
 		self._cover = self._ui.get_object('cover')
 		self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
 
 		album_name = Objects["albums"].get_name(album_id)
-		title = self._ui.get_object('title')
-		
+		title = self._ui.get_object('title')	
 		title.set_label(album_name)
 		artist_name = Objects["albums"].get_artist_name(album_id)
 		artist_name = translate_artist_name(artist_name)
 		artist = self._ui.get_object('artist')
 		artist.set_label(artist_name)
 
-		title.set_max_width_chars(20)
-		artist.set_max_width_chars(20)
-
-		self.pack_start(self._cover, False, False, 0)
-		self.pack_start(title, False, False, 0)
-		self.pack_start(artist, False, False, 0)
+		self.add(self._cover)
+		self.add(title)
+		self.add(artist)
 	
+	def do_get_preferred_width(self):
+		return (ART_SIZE_BIG, ART_SIZE_BIG)
+		
 	"""
 		Update cover for album id
 		arg: album id as int

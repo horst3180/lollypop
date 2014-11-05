@@ -205,7 +205,7 @@ class AlbumView(View):
 		self._albumbox = Gtk.FlowBox()
 		if Objects["settings"].get_value('dark-view'):
 			self._albumbox.get_style_context().add_class('black')
-		self._albumbox.set_homogeneous(True)
+
 		self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._albumbox.connect("child-activated", self._on_album_activated)
 		self._albumbox.set_max_children_per_line(100)
