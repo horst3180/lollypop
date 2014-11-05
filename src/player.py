@@ -412,6 +412,11 @@ class Player(GObject.GObject):
 		self._rglimiter = Gst.ElementFactory.make("rglimiter", "rglimiter")
 		self._rg_audiosink = Gst.ElementFactory.make("autoaudiosink", "autoaudiosink")
 
+		if not self._rgfilter or not self._rg_audioconvert1 or not self._rg_audioconvert2\
+		or not self._rgvolume or not self._rglimiter or not self._rg_audiosink:
+			print("Replay Gain not available, please check your gstreamer installation...")
+			return
+
 		self._rgvolume.props.pre_amp = 0.0
 
 		self._rgfilter.add(self._rgvolume)
