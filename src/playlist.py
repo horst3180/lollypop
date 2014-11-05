@@ -77,7 +77,8 @@ class PlayListRow(Gtk.ListBoxRow):
 		self._title.hide()
 		self._cover.hide()
 		self._artist.set_text(_("Right click on a song to add it to playlist"))
-	
+		self._object_id = -1
+
 	"""
 		Set cover pixbuf
 		arg: pixbuf
@@ -201,9 +202,9 @@ class PlayListWidget(Gtk.Popover):
 		arg: view, row
 	"""
 	def _on_activate(self, view, row):
-		
 		value_id = row.get_object_id()
-		Objects["player"].del_from_playlist(value_id)
-		Objects["player"].load(value_id)
-		view.remove(row)
-		row.destroy()
+		if value_id != -1:
+			Objects["player"].del_from_playlist(value_id)
+			Objects["player"].load(value_id)
+			view.remove(row)
+			row.destroy()
