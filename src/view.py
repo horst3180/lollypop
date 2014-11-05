@@ -212,8 +212,11 @@ class AlbumView(View):
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_hexpand(True)
+		viewport = Gtk.Viewport()
+		viewport.add(self._albumbox)
+		viewport.set_property("valign", Gtk.Align.START)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._scrolledWindow.add(self._albumbox)
+		self._scrolledWindow.add(viewport)
 		self._scrolledWindow.show_all()
 		
 		self._stack = Gtk.Stack()
