@@ -26,7 +26,7 @@ from lollypop.utils import translate_artist_name
 """
 	Album widget is a pixbuf with two labels: albumm name and artist name
 """
-class AlbumWidget(Gtk.Box):
+class AlbumWidget(Gtk.Grid):
 
 	"""
 		Init album widget ui with an vertical grid:
