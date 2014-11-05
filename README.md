@@ -15,6 +15,9 @@ It provides:
 - Context artist view
 
 Changes:
+* 0.8.3:
+  - Make genres/artists list resizable
+  - Fix a bug when clicking in empty playlist
 * 0.8.2:
   - Fix regression in artist naming
   - Fix bug with some gtk themes
