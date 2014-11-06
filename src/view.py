@@ -231,7 +231,6 @@ class AlbumView(View):
 		self._scrolledContext.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scrolledContext.add(self._stack)
 
-		
 		separator = Gtk.Separator()
 		separator.show()
 		
