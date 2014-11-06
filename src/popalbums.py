@@ -41,8 +41,6 @@ class PopAlbums(Gtk.Popover):
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
 		
-		self._add_new_view()
-		
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
@@ -53,14 +51,12 @@ class PopAlbums(Gtk.Popover):
 		self.add(self._scroll)	
 
 	"""
-		Populate view, can be threaded
-		arg: artist id as int
+		Run _populate in a thread
 	"""
 	def populate(self, artist_id):
-		sql = Objects["db"].get_cursor()
-		self._artist_id = artist_id
-		albums = Objects["artists"].get_albums(artist_id, sql)
-		GLib.idle_add(self._add_albums, albums)
+		view = self._get_new_view()
+		self._stack.add(view)
+		start_new_thread(self._populate, (view, artist_id))
 
 	"""
 		Resize popover
@@ -76,6 +72,16 @@ class PopAlbums(Gtk.Popover):
 #######################
 
 	"""
+		Populate view
+		arg: view, artist id as int
+	"""
+	def _populate(self, view, artist_id):
+		sql = Objects["db"].get_cursor()
+		self._artist_id = artist_id
+		albums = Objects["artists"].get_albums(artist_id, sql)
+		GLib.idle_add(self._add_albums, view, albums)
+
+	"""
 		Remove view
 		arg: view
 	"""
@@ -83,16 +89,16 @@ class PopAlbums(Gtk.Popover):
 		self._stack.remove(view)
 
 	"""
-		Add a new view to stack
+		Get a new view
 	"""
-	def _add_new_view(self):
-		self._view = Gtk.Grid()
-		self._view.set_orientation(Gtk.Orientation.VERTICAL)
-		self._view.set_column_spacing(20)
-		self._view.set_row_spacing(20)
-		self._view.show()
-		self._view.get_style_context().add_class('black')
-		self._stack.add(self._view)
+	def _get_new_view(self):
+		view = Gtk.Grid()
+		view.set_orientation(Gtk.Orientation.VERTICAL)
+		view.set_column_spacing(20)
+		view.set_row_spacing(20)
+		view.show()
+		view.get_style_context().add_class('black')
+		return view
 
 	"""
 		On closed, clean stack and add a new fresh view
@@ -100,7 +106,7 @@ class PopAlbums(Gtk.Popover):
 	def _on_closed(self, widget):
 		for child in self._stack.get_children():
 			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)
-		self._add_new_view()
+		self._stack.add(self._get_new_view())
 
 	"""
 		Clean the views and 
@@ -111,27 +117,27 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Switch to no visible view
 	"""
-	def _switch_view(self):
+	def _switch_view(self, view):
 		previous = self._stack.get_visible_child()
-		self._stack.set_visible_child(self._view)
-		if previous != self._view:
+		self._stack.set_visible_child(view)
+		if previous != view:
 			GLib.timeout_add(500, self._remove_view, previous)
 
 	"""
 		Pop an album and add it to the view,
 		repeat operation until album list is empty
-		arg: [album ids as int]
+		arg: view, [album ids as int]
 	"""
-	def _add_albums(self, albums):
+	def _add_albums(self, view, albums):
 		if len(albums) > 0:
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
 			widget = AlbumWidgetSongs(album_id, genre_id)
 			widget.show()
-			self._view.add(widget)
-			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+			view.add(widget)
+			GLib.idle_add(self._add_albums, view, albums, priority=GLib.PRIORITY_LOW)
 		else:
-			GLib.idle_add(self._switch_view)
+			GLib.idle_add(self._switch_view, view)
 
 	"""
 		Update the content view
@@ -141,9 +147,8 @@ class PopAlbums(Gtk.Popover):
 			track_id = Objects["player"].get_current_track_id()
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			if artist_id != self._artist_id:
-				self._add_new_view()
 				self._widgets = []
-				start_new_thread(self.populate, (artist_id, ))
+				self.populate(artist_id)
 			else:
 				for widget in self._widgets:
 					widget.update_tracks(track_id)
