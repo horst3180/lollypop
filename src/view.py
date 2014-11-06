@@ -145,9 +145,7 @@ class ArtistView(View):
 			albums = Objects["albums"].get_ids(self._object_id, None, sql)
 		else:
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id, sql)
-		for album_id in albums:
-			GLib.idle_add(self._populate_content, album_id)
-			sleep(0.1)
+		GLib.idle_add(self._add_albums, albums)
 
 	"""
 		Update album cover in view
@@ -181,15 +179,17 @@ class ArtistView(View):
 			for widget in self._albumbox.get_children():
 				widget.update_tracks(track_id)
 
-
 	"""
-		Add an album widget to the view
-		arg: album id as int
+		Pop an album and add it to the view,
+		repeat operation until album list is empty
+		arg: [album ids as int]
 	"""
-	def _populate_content(self, album_id):
-		widget = AlbumWidgetSongs(album_id, self._genre_id)
-		self._albumbox.add(widget)
-		widget.show()
+	def _add_albums(self, albums):
+		if len(albums) > 0:
+			widget = AlbumWidgetSongs(albums.pop(), self._genre_id)
+			widget.show()
+			self._albumbox.add(widget)
+			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
 
 """
 	Album view is a flowbox of albums widgets with album name and artist name
@@ -324,28 +324,14 @@ class AlbumView(View):
 			self._scrolledContext.show()		
 	
 	"""
-		Add albums using gmainloop
+		Pop an album and add it to the view,
+		repeat operation until album list is empty
 		arg: [album ids as int]
 	"""
-	def _add_albums_mainloop(self, albums_id):
-		if len(albums_id) > 0:
-			widget = AlbumWidget(albums_id[0])
+	def _add_albums(self, albums):
+		if len(albums) > 0:
+			widget = AlbumWidget(albums.pop(-1))
 			widget.show()
 			self._albumbox.insert(widget, -1)
-			albums_id.pop(0)
-			GLib.idle_add(self._add_albums, albums_id)
-	"""
-		Add albums with current genre to the flowbox
-		arg: [albums ids as int]
-	"""
-	def _add_albums(self, albums_id):
-		i = 1
-		# We first load somes albums to init view and then let mainloop populate the view
-		for album in albums_id:
-			widget = AlbumWidget(album)
-			widget.show()
-			self._albumbox.insert(widget, -1)
-			i += 1
-			if i > 40:
-				GLib.idle_add(self._add_albums_mainloop, albums_id[i:], priority=GLib.PRIORITY_LOW)
-				break
+			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+

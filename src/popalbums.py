@@ -60,7 +60,7 @@ class PopAlbums(Gtk.Popover):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
-		self._add_widget_songs(albums)
+		GLib.idle_add(self._add_albums, albums)
 
 	"""
 		Resize popover
@@ -107,29 +107,23 @@ class PopAlbums(Gtk.Popover):
 	def _switch_view(self):
 		previous = self._stack.get_visible_child()
 		self._stack.set_visible_child(self._view)
-		if previous and previous != self._view:
-			GLib.idle_add(self._remove_child, previous, priority=GLib.PRIORITY_LOW)
-		
-	"""
-		Add a albums to the view
-		arg: [albums ids as int]
-	"""
-	def _add_widget_songs(self, albums):
-		for album_id in albums:
-			GLib.idle_add(self._add_album, album_id, priority=GLib.PRIORITY_LOW)
-			sleep(0.1)
-		GLib.idle_add(self._switch_view, priority=GLib.PRIORITY_LOW)
+
 
 	"""
-		Add album id to the view
-		arg: album id as int
+		Pop an album and add it to the view,
+		repeat operation until album list is empty
+		arg: [album ids as int]
 	"""
-	def _add_album(self, album_id):
-		genre_id = Objects["albums"].get_genre(album_id)
-		widget = AlbumWidgetSongs(album_id, genre_id, False)
-		widget.show()
-		self._widgets.append(widget)
-		self._view.add(widget)
+	def _add_albums(self, albums):
+		if len(albums) > 0:
+			album_id = albums.pop()
+			genre_id = Objects["albums"].get_genre(album_id)
+			widget = AlbumWidgetSongs(album_id, genre_id)
+			widget.show()
+			self._view.add(widget)
+			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+		else:
+			GLib.idle_add(self._switch_view)
 
 	"""
 		Update the content view
