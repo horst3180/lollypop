@@ -19,23 +19,6 @@ from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
-class CellRendererButton(Gtk.CellRenderer):
-	def __init__(self):
-		Gtk.CellRenderer.__init__(self)
-
-	def do_get_size(self, widget, cell_area):
-		btn_height = 0
-		btn_width = 0
-		if cell_area:
-			btn_height = cell_area.height
-			btn_width = btn_height
-		return (0, 0, btn_width, btn_height)
-
-	def do_render(self, cr, widget, background_area, cell_area, flags):
-		x, y, btn_width, btn_height = self.get_size(widget, cell_area)
-		Gtk.paint_box(widget.get_style(), cr, widget.get_state(), Gtk.ShadowType.ETCHED_OUT,
-		              widget, None, 0, 0, btn_width, btn_height)
-
 ######################################################################
 ######################################################################
 
@@ -48,23 +31,39 @@ class PlayListWidget(Gtk.Popover):
 		Gtk.Popover.__init__(self)
 		
 		self._timeout = None
-		self._row_signal = None
+		self._in_drag = False
 
-		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, int)
+		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+
+		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
+		self._model.connect("row-deleted", self._updated_rows)
 		self._view = Gtk.TreeView(self._model)
-		self._view.set_property("activate-on-single-click", True)
-		self._view.set_property("reorderable", True)
+		self._view.set_property('activate-on-single-click', True)
+		self._view.set_property('reorderable', True)
+		
 		renderer0 = Gtk.CellRendererPixbuf()
-		renderer0.set_property('stock-size', 16)
+		renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
+		column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
+		
 		renderer1 = Gtk.CellRendererText()
 		renderer1.set_property('ellipsize-set',True)
 		renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-		renderer2 = CellRendererButton()
-
-		self._view.append_column(Gtk.TreeViewColumn(None, renderer0, pixbuf=0))
-		self._view.append_column(Gtk.TreeViewColumn(None, renderer1, markup=1))
-		#self._view.append_column(Gtk.TreeViewColumn(None, renderer2, label=2))
+		column1 = Gtk.TreeViewColumn("text", renderer1, markup=1)
+		column1.set_expand(True)
+		
+		renderer2 = Gtk.CellRendererPixbuf()
+		renderer2.set_property('stock-size', 22)
+		renderer2.set_fixed_size(22, -1)
+		column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
+		
+		self._view.append_column(column0)
+		self._view.append_column(column1)
+		self._view.append_column(column2)
 		self._view.set_headers_visible(False)
+		self._view.connect('row-activated', self._on_row_activated)
+		self._view.connect('key-release-event', self._on_keyboard_event)
+		self._view.connect('drag-begin', self._on_drag_begin)
+		self._view.connect('drag-end', self._on_drag_end)
 		self._view.show()
 
 		self.set_property('width-request', 500)
@@ -83,7 +82,6 @@ class PlayListWidget(Gtk.Popover):
 		Populate treeview with current playlist
 	"""
 	def show(self):
-		self._model.clear()
 		tracks = Objects["player"].get_playlist()
 		if len(tracks) > 0:
 			for track_id in tracks:
@@ -92,10 +90,11 @@ class PlayListWidget(Gtk.Popover):
 				artist_name = Objects["artists"].get_name(artist_id)
 				track_name = Objects["tracks"].get_name(track_id)
 				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
-				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + track_name, track_id])
+				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + 
+									track_name, self._del_pixbuf, track_id])
 				
 		else:
-			self._model.append([None, _("Right click on a song to add it to playlist"), None])
+			self._model.append([None, _("Right click on a song to add it to playlist"), None, None])
 		Gtk.Popover.show(self)
 
 #######################
@@ -110,35 +109,67 @@ class PlayListWidget(Gtk.Popover):
 			child.destroy()
 
 	"""
-		Delete item when item have been destroyed
+		Mark as in drag
+		arg: unused
 	"""
-	def _on_remove(self, container, widget):
-		# Do not remove items if we are just calling _clear()
-		if self.is_visible():
-			new_playlist = []
-			for child in self._view.get_children():
-				new_playlist.append(child.get_object_id())
-			Objects["player"].set_playlist(new_playlist)
+	def _on_drag_begin(self, widget, context):
+		self._in_drag = True
+		
+	"""
+		Mark as not in drag
+		arg: unused
+	"""
+	def _on_drag_end(self, widget, context):
+		self._in_drag = False
 
 	"""
-		Update playlist order after user drag&drop reorder
-		arg: row, row
+		Delete item if Delete was pressed
+		arg: widget unused, Gtk.Event
 	"""
-	def _reordered_playlist(self, view, path):
+	def _on_keyboard_event(self, widget, event):
+		if len(Objects["player"].get_playlist()) > 0:
+			if event.keyval == 65535:
+				path, column = self._view.get_cursor()
+				iter = self._model.get_iter(path)
+				self._model.remove(iter)
+
+	"""
+		Update playlist when a row has been deleted
+		arg: TreePath unused
+	"""
+	def _updated_rows(self, path, none):
 		new_playlist = []
 		for row in self._model:
-			if row[2]:
-				new_playlist.append(row[2])
+			if row[3]:
+				new_playlist.append(row[3])
 		Objects["player"].set_playlist(new_playlist)
+		
+	"""
+		Delete row
+		arg: GtkTreeIter
+	"""
+	def _delete_row(self, iterator):
+		self._model.remove(iterator)
 
 	"""
 		Play clicked item
-		arg: view, row
+		arg: TreeView, TreePath, TreeViewColumn
 	"""
-	def _on_activate(self, view, row):
-		value_id = row.get_object_id()
-		if value_id != -1:
-			Objects["player"].del_from_playlist(value_id)
+	def _on_row_activated(self, view, path, column):
+		iterator = self._model.get_iter(path)
+		if iterator:
+			if column.get_title() == "pixbuf2":
+				self._delete_row(iterator)
+			else:
+				# We don't want to play if we are starting a drag & drop, so delay
+				GLib.timeout_add(500, self._play_track, iterator)
+			
+	"""
+		Play track for selected iter
+		arg: GtkTreeIter
+	"""
+	def _play_track(self, iterator):
+		if not self._in_drag:
+			value_id = self._model.get_value(iterator, 3)
+			self._model.remove(iterator)
 			Objects["player"].load(value_id)
-			view.remove(row)
-			row.destroy()
