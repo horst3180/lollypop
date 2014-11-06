@@ -53,10 +53,10 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Run _populate in a thread
 	"""
-	def populate(self, artist_id):
+	def populate(self, artist_id, track_id):
 		self._populating_view = self._get_new_view()
 		self._stack.add(self._populating_view)
-		start_new_thread(self._populate, (self._populating_view , artist_id))
+		start_new_thread(self._populate, (self._populating_view , artist_id, track_id))
 
 	"""
 		Resize popover
@@ -73,12 +73,12 @@ class PopAlbums(Gtk.Popover):
 
 	"""
 		Populate view
-		arg: view, artist id as int
+		arg: view, artist id as int, track_id as int
 	"""
-	def _populate(self, view, artist_id):
+	def _populate(self, view, artist_id, track_id):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
-		current_album_id = Objects["tracks"].get_album_id(Objects["player"].get_current_track_id(), sql)
+		current_album_id = Objects["tracks"].get_album_id(track_id, sql)
 		albums = Objects["artists"].get_albums(artist_id, sql)
 		albums.remove(current_album_id)
 		albums.insert(0, current_album_id)
@@ -148,13 +148,12 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Update the content view
 	"""
-	def _update_content(self, obj, data):
+	def _update_content(self, obj, track_id):
 		if self.is_visible():
-			track_id = Objects["player"].get_current_track_id()
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 			if artist_id != self._artist_id:
 				self._widgets = []
-				self.populate(artist_id)
+				self.populate(artist_id, track_id)
 			else:
 				for widget in self._widgets:
 					widget.update_tracks(track_id)
