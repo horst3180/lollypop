@@ -54,9 +54,9 @@ class PopAlbums(Gtk.Popover):
 		Run _populate in a thread
 	"""
 	def populate(self, artist_id):
-		view = self._get_new_view()
-		self._stack.add(view)
-		start_new_thread(self._populate, (view, artist_id))
+		self._populating_view = self._get_new_view()
+		self._stack.add(self._populating_view)
+		start_new_thread(self._populate, (self._populating_view , artist_id))
 
 	"""
 		Resize popover
@@ -85,8 +85,11 @@ class PopAlbums(Gtk.Popover):
 		Remove view
 		arg: view
 	"""
-	def _remove_view(self, view):
-		self._stack.remove(view)
+	def _remove_unused_views(self, view):
+		if view == self._populating_view:
+			for child in self._stack.get_children():
+				if child != view:
+					self._stack.remove(child)
 
 	"""
 		Get a new view
@@ -118,10 +121,8 @@ class PopAlbums(Gtk.Popover):
 		Switch to no visible view
 	"""
 	def _switch_view(self, view):
-		previous = self._stack.get_visible_child()
 		self._stack.set_visible_child(view)
-		if previous != view:
-			GLib.timeout_add(500, self._remove_view, previous)
+		GLib.timeout_add(500, self._remove_unused_views, view)
 
 	"""
 		Pop an album and add it to the view,
@@ -129,7 +130,9 @@ class PopAlbums(Gtk.Popover):
 		arg: view, [album ids as int]
 	"""
 	def _add_albums(self, view, albums):
-		if len(albums) > 0:
+		if self._populating_view != view:
+			return
+		elif len(albums) > 0:
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
 			widget = AlbumWidgetSongs(album_id, genre_id)
