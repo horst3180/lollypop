@@ -186,7 +186,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
-			widget = AlbumWidgetSongs(albums.pop(), self._genre_id)
+			widget = AlbumWidgetSongs(albums.pop(0), self._genre_id)
 			widget.show()
 			self._albumbox.add(widget)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
@@ -330,7 +330,7 @@ class AlbumView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
-			widget = AlbumWidget(albums.pop(-1))
+			widget = AlbumWidget(albums.pop(0))
 			widget.show()
 			self._albumbox.insert(widget, -1)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
