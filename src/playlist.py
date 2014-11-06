@@ -97,6 +97,14 @@ class PlayListWidget(Gtk.Popover):
 			self._model.append([None, _("Right click on a song to add it to playlist"), None, None])
 		Gtk.Popover.show(self)
 
+	"""
+		Clear model
+	"""
+	def do_hide(self):
+		Gtk.Popover.do_hide(self)
+		self._model.clear()
+
+		
 #######################
 # PRIVATE             #
 #######################
@@ -138,11 +146,12 @@ class PlayListWidget(Gtk.Popover):
 		arg: TreePath unused
 	"""
 	def _updated_rows(self, path, none):
-		new_playlist = []
-		for row in self._model:
-			if row[3]:
-				new_playlist.append(row[3])
-		Objects["player"].set_playlist(new_playlist)
+		if self.is_visible():
+			new_playlist = []
+			for row in self._model:
+				if row[3]:
+					new_playlist.append(row[3])
+			Objects["player"].set_playlist(new_playlist)
 		
 	"""
 		Delete row
