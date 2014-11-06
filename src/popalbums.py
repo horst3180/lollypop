@@ -76,6 +76,13 @@ class PopAlbums(Gtk.Popover):
 #######################
 
 	"""
+		Remove view
+		arg: view
+	"""
+	def _remove_view(self, view):
+		self._stack.remove(view)
+
+	"""
 		Add a new view to stack
 	"""
 	def _add_new_view(self):
@@ -107,7 +114,8 @@ class PopAlbums(Gtk.Popover):
 	def _switch_view(self):
 		previous = self._stack.get_visible_child()
 		self._stack.set_visible_child(self._view)
-
+		if previous != self._view:
+			GLib.timeout_add(500, self._remove_view, previous)
 
 	"""
 		Pop an album and add it to the view,
