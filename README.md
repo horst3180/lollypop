@@ -15,6 +15,9 @@ It provides:
 - Context artist view
 
 Changes:
+* 0.8.4:
+  - Fix layout when album grid not full
+  - Fix album widgets sizing
 * 0.8.3:
   - Make genres/artists list resizable
   - Fix a bug when clicking in empty playlist
