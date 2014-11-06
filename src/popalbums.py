@@ -118,7 +118,7 @@ class PopAlbums(Gtk.Popover):
 		for album_id in albums:
 			GLib.idle_add(self._add_album, album_id, priority=GLib.PRIORITY_LOW)
 			sleep(0.1)
-		self._switch_view()
+		GLib.idle_add(self._switch_view, priority=GLib.PRIORITY_LOW)
 
 	"""
 		Add album id to the view
