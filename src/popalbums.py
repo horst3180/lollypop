@@ -93,10 +93,7 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def _populate(self, view, artist_id, track_id):
 		sql = Objects["db"].get_cursor()
-		current_album_id = Objects["tracks"].get_album_id(track_id, sql)
 		albums = Objects["artists"].get_albums(artist_id, sql)
-		albums.remove(current_album_id)
-		albums.insert(0, current_album_id)
 		GLib.idle_add(self._add_albums, view, albums)
 
 	"""
@@ -154,6 +151,7 @@ class PopAlbums(Gtk.Popover):
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
 			widget = AlbumWidgetSongs(album_id, genre_id)
+			self._widgets.append(widget)
 			widget.show()
 			view.add(widget)
 			GLib.idle_add(self._add_albums, view, albums, priority=GLib.PRIORITY_LOW)
