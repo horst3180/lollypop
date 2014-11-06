@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+from gi.repository import Gdk
 
 """
 	Return formated artist name
@@ -35,3 +36,13 @@ def translate_artist_name(name):
 	if len(split) == 2:
 		name = split[1]+" "+split[0]
 	return name
+	
+"""
+	Return current monitor size
+	ret: (monitor width as int, monitor height as int)
+"""
+def get_monitor_size():	
+		s = Gdk.Screen.get_default()
+		m = s.get_monitor_at_window(s.get_active_window())
+		monitor = s.get_monitor_geometry(m)
+		return (monitor.width, monitor.height)

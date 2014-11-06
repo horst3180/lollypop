@@ -18,6 +18,7 @@ from _thread import start_new_thread
 
 from lollypop.widgets import AlbumWidgetSongs
 from lollypop.config import *
+from lollypop.utils import get_monitor_size
 
 class PopAlbums(Gtk.Popover):
 
@@ -48,9 +49,6 @@ class PopAlbums(Gtk.Popover):
 		self._scroll.add(self._stack)
 		self._scroll.show()
 
-		self.set_property('height-request', 700)
-		self.set_property('width-request', 1000)
-
 		self.add(self._scroll)	
 
 	"""
@@ -62,6 +60,15 @@ class PopAlbums(Gtk.Popover):
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
 		GLib.idle_add(self._add_widget_songs, albums, priority=GLib.PRIORITY_HIGH)
+
+	"""
+		Resize popover
+	"""
+	def do_show(self):
+		width, height = get_monitor_size()
+		self.set_property('height-request', height*0.8)
+		self.set_property('width-request', width*0.65)
+		Gtk.Popover.do_show(self)
 
 #######################
 # PRIVATE             #

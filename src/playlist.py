@@ -17,7 +17,7 @@ from gettext import gettext as _, ngettext
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, get_monitor_size
 
 ######################################################################
 ######################################################################
@@ -32,8 +32,8 @@ class PlayListWidget(Gtk.Popover):
 		
 		self._timeout = None
 		self._in_drag = False
-
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+		self._label = Gtk.Label(_("Right click on a song to add it to playlist"))
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
 		self._model.connect("row-deleted", self._updated_rows)
@@ -64,18 +64,13 @@ class PlayListWidget(Gtk.Popover):
 		self._view.connect('key-release-event', self._on_keyboard_event)
 		self._view.connect('drag-begin', self._on_drag_begin)
 		self._view.connect('drag-end', self._on_drag_end)
-		self._view.show()
 
-		self.set_property('width-request', 500)
-		self.set_property('height-request', 700)
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
 		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._view)
 		self._scroll.show_all()
-
-		self.add(self._scroll)
 
 	"""
 		Show playlist popover		
@@ -84,6 +79,11 @@ class PlayListWidget(Gtk.Popover):
 	def show(self):
 		tracks = Objects["player"].get_playlist()
 		if len(tracks) > 0:
+			for child in self.get_children():
+				child.hide()
+				self.remove(child)
+			self.add(self._scroll)
+			self._view.show()
 			for track_id in tracks:
 				album_id = Objects["tracks"].get_album_id(track_id)
 				artist_id = Objects["albums"].get_artist_id(album_id)
@@ -94,7 +94,11 @@ class PlayListWidget(Gtk.Popover):
 									track_name, self._del_pixbuf, track_id])
 				
 		else:
-			self._model.append([None, _("Right click on a song to add it to playlist"), None, None])
+			for child in self.get_children():
+				child.hide()
+				self.remove(child)
+			self.add(self._label)
+			self._label.show()
 		Gtk.Popover.show(self)
 
 	"""
@@ -104,6 +108,14 @@ class PlayListWidget(Gtk.Popover):
 		Gtk.Popover.do_hide(self)
 		self._model.clear()
 
+	"""
+		Resize popover
+	"""
+	def do_show(self):
+		width, height = get_monitor_size()
+		self.set_property('height-request', height*0.8)
+		self.set_property('width-request', width*0.4)
+		Gtk.Popover.do_show(self)
 		
 #######################
 # PRIVATE             #
