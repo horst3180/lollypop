@@ -75,6 +75,13 @@ class PopAlbums(Gtk.Popover):
 		self.set_property('height-request', height*0.8)
 		self.set_property('width-request', width*0.65)
 		Gtk.Popover.do_show(self)
+	
+	"""
+		Reset artist id
+	"""
+	def do_hide(self):
+		self._artist_id = None
+		Gtk.Popover.do_hide(self)
 
 #######################
 # PRIVATE             #
