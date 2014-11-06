@@ -15,6 +15,7 @@
 from gettext import gettext as _, ngettext 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 from _thread import start_new_thread
+from time import sleep
 
 from lollypop.widgets import AlbumWidgetSongs
 from lollypop.config import *
@@ -52,14 +53,14 @@ class PopAlbums(Gtk.Popover):
 		self.add(self._scroll)	
 
 	"""
-		Populate view
+		Populate view, can be threaded
 		arg: artist id as int
 	"""
 	def populate(self, artist_id):
 		sql = Objects["db"].get_cursor()
 		self._artist_id = artist_id
 		albums = Objects["artists"].get_albums(artist_id, sql)
-		GLib.idle_add(self._add_widget_songs, albums, priority=GLib.PRIORITY_HIGH)
+		self._add_widget_songs(albums)
 
 	"""
 		Resize popover
@@ -111,16 +112,24 @@ class PopAlbums(Gtk.Popover):
 		
 	"""
 		Add a albums to the view
-		arg: [albums ids]
+		arg: [albums ids as int]
 	"""
 	def _add_widget_songs(self, albums):
 		for album_id in albums:
-			genre_id = Objects["albums"].get_genre(album_id)
-			widget = AlbumWidgetSongs(album_id, genre_id, False)
-			widget.show()
-			self._widgets.append(widget)
-			self._view.add(widget)
+			GLib.idle_add(self._add_album, album_id, priority=GLib.PRIORITY_LOW)
+			sleep(0.1)
 		self._switch_view()
+
+	"""
+		Add album id to the view
+		arg: album id as int
+	"""
+	def _add_album(self, album_id):
+		genre_id = Objects["albums"].get_genre(album_id)
+		widget = AlbumWidgetSongs(album_id, genre_id, False)
+		widget.show()
+		self._widgets.append(widget)
+		self._view.add(widget)
 
 	"""
 		Update the content view

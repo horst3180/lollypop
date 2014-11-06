@@ -14,6 +14,7 @@
 
 from gi.repository import Gtk, GObject, Gdk
 from gettext import gettext as _
+from time import sleep
 
 from lollypop.config import Objects
 from lollypop.database import Database
@@ -146,6 +147,7 @@ class ArtistView(View):
 			albums = Objects["albums"].get_ids(self._object_id, self._genre_id, sql)
 		for album_id in albums:
 			GLib.idle_add(self._populate_content, album_id)
+			sleep(0.1)
 
 	"""
 		Update album cover in view
