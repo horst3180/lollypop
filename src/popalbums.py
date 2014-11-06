@@ -107,7 +107,8 @@ class PopAlbums(Gtk.Popover):
 	def _switch_view(self):
 		previous = self._stack.get_visible_child()
 		self._stack.set_visible_child(self._view)
-
+		if previous != self._view:
+			self._stack.remove(previous)
 
 	"""
 		Pop an album and add it to the view,
