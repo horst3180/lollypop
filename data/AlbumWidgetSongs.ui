@@ -8,6 +8,7 @@
     <child>
  	<object class="GtkEventBox" id="eventbox">
         <property name="visible">True</property>
+        <property name="valign">GTK_ALIGN_START</property>
         <child>
 	      <object class="GtkImage" id="cover">
 	        <property name="visible">True</property>
