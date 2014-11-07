@@ -37,7 +37,7 @@ class PopAlbums(Gtk.Popover):
 
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
-		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+		self._stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
 		self._stack.show()
 		
 		self._scroll = Gtk.ScrolledWindow()
