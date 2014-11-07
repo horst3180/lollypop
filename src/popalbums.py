@@ -30,11 +30,10 @@ class PopAlbums(Gtk.Popover):
 		Gtk.Popover.__init__(self)
 
 		self._widgets = []
-
+		self._populating_view = None
 		self._artist_id = None
 
 		Objects["player"].connect("current-changed", self._update_content)
-		self.connect('closed', self._on_closed)
 
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
@@ -63,9 +62,13 @@ class PopAlbums(Gtk.Popover):
 		else:
 			self._widget = []
 			self._artist_id = artist_id
-			self._populating_view = self._get_new_view()
-			self._stack.add(self._populating_view)
-			start_new_thread(self._populate, (self._populating_view , artist_id, track_id))
+			
+			view = self._get_new_view()
+			self._stack.add(view)
+			if not self._populating_view:
+				self._stack.set_visible_child(view)
+			self._populating_view = view
+			start_new_thread(self._populate, (view , artist_id, track_id))
 
 	"""
 		Resize popover
@@ -82,6 +85,8 @@ class PopAlbums(Gtk.Popover):
 	def do_hide(self):
 		self._artist_id = None
 		Gtk.Popover.do_hide(self)
+		for child in self._stack.get_children():
+			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)
 
 #######################
 # PRIVATE             #
@@ -120,14 +125,6 @@ class PopAlbums(Gtk.Popover):
 		view.show()
 		view.get_style_context().add_class('black')
 		return view
-
-	"""
-		On closed, clean stack and add a new fresh view
-	"""
-	def _on_closed(self, widget):
-		for child in self._stack.get_children():
-			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)
-		self._stack.add(self._get_new_view())
 
 	"""
 		Clean the view
