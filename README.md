@@ -15,6 +15,8 @@ It provides:
 - Context artist view
 
 Changes:
+* 0.8.5:
+  - Many speed improvements
 * 0.8.4:
   - Fix layout when album grid not full
   - Fix album widgets sizing
