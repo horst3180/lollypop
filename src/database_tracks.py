@@ -48,7 +48,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT name FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return ""
@@ -63,7 +63,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT album_id FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return -1
@@ -97,7 +97,7 @@ class DatabaseTracks:
 		tracks = []
 		result = sql.execute("SELECT name, filepath, length, tracknumber, album_id FROM tracks WHERE rowid=?" , (track_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v
 		return ()
 	
@@ -111,7 +111,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT artists.name from artists,tracks where tracks.rowid=? and tracks.artist_id=artists.rowid", (track_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return _("Unknown")
@@ -126,11 +126,25 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT artist_id from tracks where tracks.rowid=?", (track_id,))
 		v = result.fetchone()
-		if v:
-			return v[0]
 
+		if v and len(v) > 0:
+			return v[0]
 		return -1
 
+	"""
+		Get performer id for track id
+		arg: Track id as int
+		ret: Performer id as int
+	"""
+	def get_performer_id(self, track_id, sql = None):
+		if not sql:
+			sql = Objects["sql"]
+		result = sql.execute("SELECT performer_id from tracks where tracks.rowid=?", (track_id,))
+		v = result.fetchone()
+
+		if v and len(v) > 0:
+			return v[0]
+		return -1
 
 	"""
 		Get track filepath for track id
@@ -142,7 +156,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT filepath FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return ""
@@ -171,7 +185,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT length FROM tracks where rowid=?", (id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return 0
@@ -184,7 +198,7 @@ class DatabaseTracks:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0] == 0
 
 		return True

@@ -43,7 +43,7 @@ class DatabaseArtists:
 
 		result = sql.execute("SELECT rowid from artists where name=?", (name,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return COMPILATIONS
@@ -61,7 +61,7 @@ class DatabaseArtists:
 
 		result = sql.execute("SELECT name from artists where rowid=?", (artist_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return _("Unknown")

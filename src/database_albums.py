@@ -83,7 +83,7 @@ class DatabaseAlbums:
 			result = sql.execute("SELECT rowid FROM albums where name=? \
 								  AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
 			v = result.fetchone()
-			if v:
+			if v and len(v) > 0:
 				return v[0]
 			return -1
 		else:
@@ -104,7 +104,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT genre_id FROM albums WHERE rowid=?", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return -1
@@ -119,7 +119,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT name FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return _("Unknown")
@@ -134,7 +134,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT artists.name from artists,albums where albums.rowid=? AND albums.artist_id == artists.rowid", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return _("Compilation")
@@ -150,7 +150,7 @@ class DatabaseAlbums:
 		performers = []
 		result = sql.execute("SELECT artist_id FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return COMPILATIONS
@@ -179,7 +179,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT year FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			if v[0]:
 				return str(v[0])
 
@@ -195,7 +195,7 @@ class DatabaseAlbums:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT path FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return ""
@@ -248,7 +248,7 @@ class DatabaseAlbums:
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 		return -1
 

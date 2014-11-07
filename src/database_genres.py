@@ -43,7 +43,7 @@ class DatabaseGenres:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT rowid from genres where name=?", (name,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return -1
@@ -58,7 +58,7 @@ class DatabaseGenres:
 			sql = Objects["sql"]
 		result = sql.execute("SELECT name from genres where rowid=?", (genre_id,))
 		v = result.fetchone()
-		if v:
+		if v and len(v) > 0:
 			return v[0]
 
 		return _("Unknown")
