@@ -62,7 +62,7 @@ class AlbumWidget(Gtk.Grid):
 		
 	"""
 		Update cover for album id
-		arg: album id as int
+		@param album id as int
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
@@ -70,7 +70,7 @@ class AlbumWidget(Gtk.Grid):
 
 	"""
 		Return album id for widget
-		ret: album id as int
+		@return album id as int
 	"""     
 	def get_id(self):
 		return self._album_id
@@ -87,7 +87,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			- Album name
 			- Albums tracks aligned on two columns
 		if cover_add True, let user change album cover
-		arg: album id as int, genre id as int, bool
+		@param album id as int, genre id as int, bool
 	"""
 	def __init__(self, album_id, genre_id, cover_add = True):
 		Gtk.Grid.__init__(self)
@@ -121,7 +121,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update tracks settings current tracks as bold and adding play symbol
-		arg: track id as int
+		@param track id as int
 	"""
 	def update_tracks(self, track_id):
 		for track_widget in self._tracks:
@@ -146,7 +146,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update cover for album id
-		arg: album id as int
+		@param album id as int
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
@@ -154,7 +154,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 	
 	"""
 		Return album id for widget
-		ret: album id as int
+		@return album id as int
 	"""     
 	def get_id(self):
 		return self._album_id
@@ -165,7 +165,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Add tracks for album_id to Album widget
-		arg: album id as int
+		@param album id as int
 	"""
 	def _add_tracks(self, album_id):
 		i = 0
@@ -233,7 +233,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 	"""
 		Update postion label for track widget
-		arg: track widget
+		@param track widget
 	"""
 	def _update_pos_label(self, track_widget):
 		if Objects["player"].is_in_playlist(track_widget.id):
@@ -276,28 +276,28 @@ class ChooserWidget(Gtk.Grid):
 	
 	"""
 		Set current selected directory for chooser
-		arg: directory path as string
+		@param directory path as string
 	"""
 	def set_dir(self, directory):
 		self._chooser_btn.set_uri("file://"+directory)
 	
 	"""
 		Set image for action button
-		arg: Gtk.Image
+		@param Gtk.Image
 	"""
 	def set_icon(self, image):
 		self._action_btn.set_image(image)
 		
 	"""
 		Set action callback for button clicked signal
-		arg: func
+		@param func
 	"""
 	def set_action(self, action):
 		self._action = action
 
 	"""
 		Return select directory path
-		ret: path as string
+		@return path as string
 	"""
 	def get_dir(self):
 		path = self._chooser_btn.get_uri()

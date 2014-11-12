@@ -58,7 +58,7 @@ class PopImages(Gtk.Popover):
 
 	"""
 		Populate view
-		arg: searched words as string
+		@param searched words as string
 	"""
 	def populate(self, string):
 		self._thread = True

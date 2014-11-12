@@ -25,7 +25,7 @@ class DatabaseTracks:
 
 	"""
 		Add a new track to database
-		arg: name as string, filepath as string, length as int, tracknumber as int, discnumber as int
+		@param name as string, filepath as string, length as int, tracknumber as int, discnumber as int
 		disknumber as int artist_id as int, album_id as int, mtime as int
 	"""
 	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql = None):
@@ -40,8 +40,8 @@ class DatabaseTracks:
 		
 	"""
 		Get track name for track id
-		arg: Track id as int
-		ret: Name as string
+		@param Track id as int
+		@return Name as string
 	"""
 	def get_name(self, track_id, sql = None):
 		if not sql:
@@ -55,8 +55,8 @@ class DatabaseTracks:
 
 	"""
 		Get album id for track id
-		arg: track id as int
-		ret: album id as int
+		@param track id as int
+		@return album id as int
 	"""
 	def get_album_id(self, track_id, sql = None):
 		if not sql:
@@ -71,8 +71,8 @@ class DatabaseTracks:
 	"""
 		Get mtime for tracks
 		WARNING: Should be called before anything is shown on screen
-		arg: None
-		ret: dict of {filepath as string: mtime as int}
+		@param None
+		@return dict of {filepath as string: mtime as int}
 	"""
 	def get_mtimes(self, sql = None):
 		if not sql:
@@ -88,8 +88,8 @@ class DatabaseTracks:
 
 	"""
 		Get all track informations for track id
-		arg: Track id as int
-		ret: Array of (name as string, filepath as string, length as int, tracknumber as int, album_id as int)]
+		@param Track id as int
+		@return Array of (name as string, filepath as string, length as int, tracknumber as int, album_id as int)]
 	"""
 	def get_infos(self, track_id, sql = None):
 		if not sql:
@@ -103,8 +103,8 @@ class DatabaseTracks:
 	
 	"""
 		Get artist name for track id
-		arg: Track id as int
-		ret: Artist name as string
+		@param Track id as int
+		@return Artist name as string
 	"""
 	def get_artist_name(self, track_id, sql = None):
 		if not sql:
@@ -118,8 +118,8 @@ class DatabaseTracks:
 
 	"""
 		Get artist id for track id
-		arg: Track id as int
-		ret: Artist id as int
+		@param Track id as int
+		@return Artist id as int
 	"""
 	def get_artist_id(self, track_id, sql = None):
 		if not sql:
@@ -133,8 +133,8 @@ class DatabaseTracks:
 
 	"""
 		Get performer id for track id
-		arg: Track id as int
-		ret: Performer id as int
+		@param Track id as int
+		@return Performer id as int
 	"""
 	def get_performer_id(self, track_id, sql = None):
 		if not sql:
@@ -148,8 +148,8 @@ class DatabaseTracks:
 
 	"""
 		Get track filepath for track id
-		arg: Track id as int
-		ret: Filepath as string
+		@param Track id as int
+		@return Filepath as string
 	"""
 	def get_path(self, track_id, sql = None):
 		if not sql:
@@ -163,8 +163,8 @@ class DatabaseTracks:
 
 	"""
 		Get all tracks filepath
-		arg: None
-		ret: Array of filepath as string
+		@param None
+		@return Array of filepath as string
 	"""
 	def get_paths(self, sql = None):
 		if not sql:
@@ -177,8 +177,8 @@ class DatabaseTracks:
 
 	"""
 		Get track length for track id
-		arg: Track id as int
-		ret: length as int
+		@param Track id as int
+		@return length as int
 	"""
 	def get_length(self, id, sql = None):
 		if not sql:
@@ -205,8 +205,8 @@ class DatabaseTracks:
 	
 	"""
 		Get tracks for artist_id where artist_id isn't main artist
-		arg: artist id as int
-		ret: array of (tracks id as int, track name as string)
+		@param artist id as int
+		@return array of (tracks id as int, track name as string)
 	"""
 	def get_as_non_performer(self, artist_id, sql = None):
 		if not sql:
@@ -232,7 +232,7 @@ class DatabaseTracks:
 
 	"""
 		Search for tracks looking like string
-		arg: string
+		@param string
 		return: Arrays of (id as int, name as string)
 	"""
 	def search(self, string, sql = None):
@@ -246,7 +246,7 @@ class DatabaseTracks:
 
 	"""
 		Remove track
-		arg: Track path as string
+		@param Track path as string
 	"""
 	def remove(self, path, sql = None):
 		if not sql:

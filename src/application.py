@@ -149,7 +149,7 @@ class Application(Gtk.Application):
 
 	"""
 		Add a new chooser widget
-		arg: directory path as string
+		@param directory path as string
 	"""
 	def _add_chooser(self, directory = None):
 		chooser = ChooserWidget()
@@ -161,7 +161,7 @@ class Application(Gtk.Application):
 
 	"""
 		Update view setting
-		arg: widget as unused, state as widget state
+		@param widget as unused, state as widget state
 	"""
 	def _update_view_setting(self, widget, state):
 		Objects["settings"].set_value('dark-view',  GLib.Variant('b', state))
@@ -170,14 +170,14 @@ class Application(Gtk.Application):
 
 	"""
 		Update scan setting
-		arg: widget as unused, state as widget state
+		@param widget as unused, state as widget state
 	"""
 	def _update_scan_setting(self, widget, state):
 		Objects["settings"].set_value('startup-scan',  GLib.Variant('b', state))
 
 	"""
 		Update background mode setting
-		arg: widget as unused, state as widget state
+		@param widget as unused, state as widget state
 	"""
 	def _update_background_setting(self, widget, state):
 		if not state and self._delete_signal:
@@ -189,7 +189,7 @@ class Application(Gtk.Application):
 
 	"""
 		Close edit party dialog
-		arg: unused
+		@param unused
 	"""
 	def _edit_settings_close(self, widget):
 		paths = []
@@ -254,7 +254,7 @@ class Application(Gtk.Application):
 
 	"""
 		Update party ids when use change a switch in dialog
-		arg: widget as unused, state as widget state, genre id as int
+		@param widget as unused, state as widget state, genre id as int
 	"""
 	def _party_switch_state(self, widget, state, genre_id):
 		ids = Objects["player"].get_party_ids()
@@ -274,7 +274,7 @@ class Application(Gtk.Application):
 
 	"""
 		Close edit party dialog
-		arg: unused
+		@param unused
 	"""
 	def _edit_party_close(self, widget):
 		self._party_dialog.hide()

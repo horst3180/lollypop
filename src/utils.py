@@ -16,7 +16,7 @@ from gi.repository import Gdk
 
 """
 	Return formated artist name
-	arg: str
+	@param str
 """
 def format_artist_name(name):
 	# Handle language ordering
@@ -29,7 +29,7 @@ def format_artist_name(name):
 
 """
 	Return translate formated artist name
-	arg: str
+	@param str
 """
 def translate_artist_name(name):
 	split = name.split("@@@@")
@@ -39,7 +39,7 @@ def translate_artist_name(name):
 	
 """
 	Return current monitor size
-	ret: (monitor width as int, monitor height as int)
+	@return (monitor width as int, monitor height as int)
 """
 def get_monitor_size():	
 		s = Gdk.Screen.get_default()

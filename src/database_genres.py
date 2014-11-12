@@ -25,7 +25,7 @@ class DatabaseGenres:
 	
 	"""
 		Add a new genre to database
-		arg: Name as string
+		@param Name as string
 	"""
 	def add(self, name, sql = None):
 		if not sql:
@@ -35,8 +35,8 @@ class DatabaseGenres:
 
 	"""
 		Get genre id for name
-		arg: name as string
-		ret: genre id as int
+		@param name as string
+		@return genre id as int
 	"""
 	def get_id(self, name, sql = None):
 		if not sql:
@@ -50,8 +50,8 @@ class DatabaseGenres:
 
 	"""
 		Get genre name for genre id
-		arg: string
-		ret: int
+		@param string
+		@return int
 	"""
 	def get_name(self, genre_id, sql = None):
 		if not sql:
@@ -66,7 +66,7 @@ class DatabaseGenres:
 
 	"""
 		Get all availables albums  for genres
-		ret: Array of id as int
+		@return Array of id as int
 	"""
 	def get_albums(self, genre_id, sql = None):
 		if not sql:
@@ -79,7 +79,7 @@ class DatabaseGenres:
 
 	"""
 		Get all availables genres
-		ret: Array of (id as int, name as string)]
+		@return Array of (id as int, name as string)]
 	"""
 	def get_ids(self, sql = None):
 		if not sql:

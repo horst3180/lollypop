@@ -66,7 +66,7 @@ class View(Gtk.Grid):
 	"""
 		Current song changed
 		Update context and content
-		arg: widget as unused, track id as int
+		@param widget as unused, track id as int
 	"""
 	def current_changed(self, widget, track_id):
 		self._update_content()
@@ -149,7 +149,7 @@ class ArtistView(View):
 
 	"""
 		Update album cover in view
-		arg: album id as int
+		@param album id as int
 	"""
 	def cover_changed(self, widget, album_id):
 		for widget in self._albumbox.get_children():
@@ -157,7 +157,7 @@ class ArtistView(View):
 
 	"""
 		Update view class, dark if dark is True
-		arg: bool
+		@param bool
 	"""
 	def update_class(self, dark):
 		if dark:
@@ -182,7 +182,7 @@ class ArtistView(View):
 	"""
 		Pop an album and add it to the view,
 		repeat operation until album list is empty
-		arg: [album ids as int]
+		@param [album ids as int]
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
@@ -256,7 +256,7 @@ class AlbumView(View):
 	
 	"""
 		Update album cover in view
-		arg: widget as unused, album id as int
+		@param widget as unused, album id as int
 	"""
 	def cover_changed(self, widget, album_id):
 		self._stack.get_visible_child().update_cover(album_id)
@@ -266,7 +266,7 @@ class AlbumView(View):
 
 	"""
 		Update view class, dark if dark is True
-		arg: bool
+		@param bool
 	"""
 	def update_class(self, dark):
 		if dark:
@@ -298,7 +298,7 @@ class AlbumView(View):
 
 	"""
 		populate context view
-		arg: album id as int
+		@param album id as int
 	"""
 	def _populate_context(self, album_id):
 		old_view = self._get_next_view()
@@ -311,7 +311,7 @@ class AlbumView(View):
 			
 	"""
 		Show Context view for activated album
-		arg: flowbox, children
+		@param flowbox, children
 	"""
 	def _on_album_activated(self, flowbox, child):
 		if self._object_id == child.get_child().get_id():
@@ -325,7 +325,7 @@ class AlbumView(View):
 	"""
 		Pop an album and add it to the view,
 		repeat operation until album list is empty
-		arg: [album ids as int]
+		@param [album ids as int]
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:

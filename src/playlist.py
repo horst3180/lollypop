@@ -130,21 +130,21 @@ class PlayListWidget(Gtk.Popover):
 
 	"""
 		Mark as in drag
-		arg: unused
+		@param unused
 	"""
 	def _on_drag_begin(self, widget, context):
 		self._in_drag = True
 		
 	"""
 		Mark as not in drag
-		arg: unused
+		@param unused
 	"""
 	def _on_drag_end(self, widget, context):
 		self._in_drag = False
 
 	"""
 		Delete item if Delete was pressed
-		arg: widget unused, Gtk.Event
+		@param widget unused, Gtk.Event
 	"""
 	def _on_keyboard_event(self, widget, event):
 		if len(Objects["player"].get_playlist()) > 0:
@@ -155,7 +155,7 @@ class PlayListWidget(Gtk.Popover):
 
 	"""
 		Update playlist when a row has been deleted
-		arg: TreePath unused
+		@param TreePath unused
 	"""
 	def _updated_rows(self, path, none):
 		if self.is_visible():
@@ -167,14 +167,14 @@ class PlayListWidget(Gtk.Popover):
 		
 	"""
 		Delete row
-		arg: GtkTreeIter
+		@param GtkTreeIter
 	"""
 	def _delete_row(self, iterator):
 		self._model.remove(iterator)
 
 	"""
 		Play clicked item
-		arg: TreeView, TreePath, TreeViewColumn
+		@param TreeView, TreePath, TreeViewColumn
 	"""
 	def _on_row_activated(self, view, path, column):
 		iterator = self._model.get_iter(path)
@@ -187,7 +187,7 @@ class PlayListWidget(Gtk.Popover):
 			
 	"""
 		Play track for selected iter
-		arg: GtkTreeIter
+		@param GtkTreeIter
 	"""
 	def _play_track(self, iterator):
 		if not self._in_drag:

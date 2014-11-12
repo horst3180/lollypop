@@ -94,7 +94,7 @@ class PopAlbums(Gtk.Popover):
 
 	"""
 		Populate view
-		arg: view, artist id as int, track_id as int
+		@param view, artist id as int, track_id as int
 	"""
 	def _populate(self, view, artist_id, track_id):
 		sql = Objects["db"].get_cursor()
@@ -103,7 +103,7 @@ class PopAlbums(Gtk.Popover):
 
 	"""
 		Remove view
-		arg: view
+		@param view
 	"""
 	def _remove_unused_views(self, view):
 		if view == self._populating_view:
@@ -139,7 +139,7 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Pop an album and add it to the view,
 		repeat operation until album list is empty
-		arg: view, [album ids as int]
+		@param view, [album ids as int]
 	"""
 	def _add_albums(self, view, albums):
 		if self._populating_view != view:

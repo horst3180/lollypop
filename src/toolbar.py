@@ -94,7 +94,7 @@ class Toolbar():
 
 		
 	"""
-		ret: view genres button as GtkToggleButton
+		@return view genres button as GtkToggleButton
 	"""
 	def get_view_genres_btn(self):
 		return self._view_genres_btn
@@ -105,7 +105,7 @@ class Toolbar():
 			- artist/title
 			- reset progress bar
 			- update time/total labels
-		arg: obj as Player, track id as int
+		@param obj as Player, track id as int
 	"""
 	def update_toolbar(self, obj, track_id):
 		if track_id == None:
@@ -146,7 +146,7 @@ class Toolbar():
 
 	"""
 		Save button state
-		arg: widget as GtkToggleButton
+		@param widget as GtkToggleButton
 	"""
 	def _save_genres_btn_state(self, widget):
 		Objects["settings"].set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
@@ -163,7 +163,7 @@ class Toolbar():
 
 	"""
 		Update cover for album_id
-		arg: obj as unused, album id as int
+		@param obj as unused, album id as int
 	"""
 	def _update_cover(self, obj, album_id):
 		current_track_id = Objects["player"].get_current_track_id()
@@ -174,7 +174,7 @@ class Toolbar():
 
 	"""
 		On press, mark player as seeking
-		arg: unused
+		@param unused
 	"""	
 	def _on_progress_press_button(self, scale, data):
 		self._seeking = True
@@ -182,7 +182,7 @@ class Toolbar():
 	"""
 		Callback for scale release button
 		Seek player to scale value
-		arg: scale as Gtk.Scale, data as unused
+		@param scale as Gtk.Scale, data as unused
 	"""	
 	def _on_progress_release_button(self, scale, data):
 		value = scale.get_value()
@@ -192,7 +192,7 @@ class Toolbar():
 	
 	"""
 		Update scale and time label
-		arg: obj as unused, value as int
+		@param obj as unused, value as int
 	"""
 	def _on_position_changed(self, obj, value):
 		if not self._seeking:
@@ -201,7 +201,7 @@ class Toolbar():
 	
 	"""
 		Update buttons and progress bar
-		arg: obj as unused
+		@param obj as unused
 	"""
 	def _playback_status_changed(self, obj):
 		playing = Objects["player"].is_playing()
@@ -217,14 +217,14 @@ class Toolbar():
 
 	"""
 		Previous track on prev button clicked
-	    arg: obj as unused
+	    @param obj as unused
 	"""		
 	def _on_prev_btn_clicked(self, obj):
 		Objects["player"].prev()
 
 	"""
 		Play/Pause on play button clicked
-		arg: obj as unused
+		@param obj as unused
 	"""		
 	def _on_play_btn_clicked(self, obj):
 		if Objects["player"].is_playing():
@@ -236,28 +236,28 @@ class Toolbar():
 
 	"""
 		Next track on next button clicked
-		arg: obj as unused
+		@param obj as unused
 	"""		
 	def _on_next_btn_clicked(self, obj):
 		Objects["player"].next()		
 	
 	"""
 		Show search widget on search button clicked
-		arg: obj as unused
+		@param obj as unused
 	"""
 	def _on_search_btn_clicked(self, obj):
 		self._search.show()
 		
 	"""
 		Show playlist widget on playlist button clicked
-		arg: obj as unused
+		@param obj as unused
 	"""
 	def _on_playlist_btn_clicked(self, obj):
 		self._playlist.show()
 
 	"""
 		Update play button with image and status as tooltip
-		arg: Gtk.Image, str
+		@param Gtk.Image, str
 	"""
 	def _change_play_btn_status(self, image, status):
 		self._play_btn.set_image(image)
@@ -265,14 +265,14 @@ class Toolbar():
 
 	"""
 		Set shuffle mode on if shuffle button active
-		arg: obj as unused
+		@param obj as unused
 	"""
 	def _shuffle_update(self, obj):
 		Objects["player"].set_shuffle(self._shuffle_btn.get_active())
 
 	"""
 		Set party mode on if party button active
-		arg: obj as unused
+		@param obj as unused
 	"""
 	def _on_party_btn_toggled(self, obj):
 		settings = Gtk.Settings.get_default()

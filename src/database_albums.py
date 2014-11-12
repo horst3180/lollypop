@@ -25,7 +25,7 @@ class DatabaseAlbums:
 		
 	"""
 		Add a new album to database
-		arg: Album name as string, artist id as int, genre id as int, year as int, path as string
+		@param Album name as string, artist id as int, genre id as int, year as int, path as string
 	"""
 	def add(self, name, artist_id, genre_id, year, path, popularity, sql = None):
 		if not sql:
@@ -35,7 +35,7 @@ class DatabaseAlbums:
 	
 	"""
 		Set artist id
-		arg: album id as int, artist_id as int
+		@param album id as int, artist_id as int
 	"""
 	def set_artist_id(self, album_id, artist_id, sql):
 		if not sql:
@@ -44,7 +44,7 @@ class DatabaseAlbums:
 
 	"""
 		Set album path for album id
-		arg: Album id as int, path as string
+		@param Album id as int, path as string
 	"""
 	def set_path(self, album_id, path, sql = None):
 		if not sql:
@@ -54,7 +54,7 @@ class DatabaseAlbums:
 	"""
 		Increment popularity field for album id
 		No commit needed
-		arg: int
+		@param int
 	"""
 	def set_more_popular(self, album_id, sql = None):
 		if not sql:
@@ -74,7 +74,7 @@ class DatabaseAlbums:
 		
 		args: Album name as string, artist id(can be None) as int, genre_id as int
 
-		ret: Album id as int
+		@return Album id as int
 	"""
 	def get_id(self, album_name, artist_id, genre_id, sql = None):
 		if not sql:
@@ -96,8 +96,8 @@ class DatabaseAlbums:
 
 	"""
 		Get genre id
-		arg: Album id as int
-		ret: Genre id as int
+		@param Album id as int
+		@return Genre id as int
 	"""
 	def get_genre(self, album_id, sql = None):
 		if not sql:
@@ -111,8 +111,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album name for album id
-		arg: Album id as int
-		ret: Album name as string
+		@param Album id as int
+		@return Album name as string
 	"""
 	def get_name(self, album_id, sql = None):
 		if not sql:
@@ -126,8 +126,8 @@ class DatabaseAlbums:
 
 	"""
 		Get artist name
-		arg: Album id as int
-		ret: Artist name as string
+		@param Album id as int
+		@return Artist name as string
 	"""
 	def get_artist_name(self, album_id, sql = None):
 		if not sql:
@@ -141,8 +141,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album artist id
-		arg: album_id
-		ret: artist id
+		@param album_id
+		@return artist id
 	"""
 	def get_artist_id(self, album_id, sql = None):
 		if not sql:
@@ -157,8 +157,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album perfomers id
-		arg: album_id
-		ret: array of performers id
+		@param album_id
+		@return array of performers id
 	"""
 	def get_performers_id(self, album_id, sql = None):
 		if not sql:
@@ -171,8 +171,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album year for album id
-		arg: Album id as int
-		ret: Album year as string
+		@param Album id as int
+		@return Album year as string
 	"""
 	def get_year(self, album_id, sql = None):
 		if not sql:
@@ -187,8 +187,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album path for album id
-		arg: Album id as int
-		ret: Album path as string
+		@param Album id as int
+		@return Album path as string
 	"""
 	def get_path(self, album_id, sql = None):
 		if not sql:
@@ -202,8 +202,8 @@ class DatabaseAlbums:
 	
 	"""
 		Get albums ids with popularity
-		arg: None
-		ret: Array of album ids as int
+		@param None
+		@return Array of album ids as int
 	"""
 	def get_populars(self, sql = None):
 		if not sql:
@@ -216,8 +216,8 @@ class DatabaseAlbums:
 
 	"""
 		Get album ids for party mode based on genre ids
-		arg: Array of genre ids
-		ret: Array of album ids as int
+		@param Array of genre ids
+		@return Array of album ids as int
 	"""
 	def get_party_ids(self, genre_ids, sql = None):
 		if not sql:
@@ -235,8 +235,8 @@ class DatabaseAlbums:
 	"""
 		Get number of tracks for album_id
 		Will count tracks from albums with same name, artist and a different genre
-		arg: Album id as int
-		ret: count as int
+		@param Album id as int
+		@return count as int
 	"""
 	def get_count(self, album_id, sql = None):
 		if not sql:
@@ -255,8 +255,8 @@ class DatabaseAlbums:
 	"""
 		Get tracks for album id
 		Will search track from albums from same artist with same name and different genre
-		arg: Album id as int, artist_id as int
-		ret: Arrays of tracks id as int
+		@param Album id as int, artist_id as int
+		@return Arrays of tracks id as int
 	"""
 	def get_tracks(self, album_id, sql = None):
 		if not sql:
@@ -274,8 +274,8 @@ class DatabaseAlbums:
 	"""
 		Get tracks informations for album id
 		Will search track from albums from same artist with same name and different genre
-		arg: Album id as int, artist_id as int
-		ret: Arrays of (tracks id as int, name as string, artist id as int, filepath as string, length as int)
+		@param Album id as int, artist_id as int
+		@return Arrays of (tracks id as int, name as string, artist id as int, filepath as string, length as int)
 	"""
 	def get_tracks_infos(self, album_id, sql = None):
 		if not sql:
@@ -294,8 +294,8 @@ class DatabaseAlbums:
 
 	"""
 		Get albums ids
-		arg: Artist id as int/None, genre id as int/None
-		ret: Array of album ids as int
+		@param Artist id as int/None, genre id as int/None
+		@return Array of album ids as int
 	"""
 	def get_ids(self, artist_id = None, genre_id = None, sql = None):
 		if not sql:
@@ -318,11 +318,11 @@ class DatabaseAlbums:
 	"""
 		Get all compilations
 		
-		arg: None
+		@param None
 		or
-		arg: genre id as int
+		@param genre id as int
 		
-		ret: Array of album ids as int
+		@return Array of album ids as int
 	"""
 	def get_compilations(self, genre_id, sql = None):
 		if not sql:
@@ -339,7 +339,7 @@ class DatabaseAlbums:
 
 	"""
 		Search for albums looking like string
-		arg: string
+		@param string
 		return: Array of (id as int, artist_id as int)
 	"""
 	def search(self, string, sql = None):

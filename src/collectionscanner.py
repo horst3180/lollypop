@@ -42,7 +42,7 @@ class CollectionScanner(GObject.GObject):
 
 	"""
 		Update database
-		arg: progress as Gtk.Progress
+		@param progress as Gtk.Progress
 	"""
 	def update(self,  progress):
 		paths = Objects["settings"].get_value('music-path')
@@ -66,7 +66,7 @@ class CollectionScanner(GObject.GObject):
 
 	"""
 		Update progress bar status
-		arg: scanned items as int, total items as int
+		@param scanned items as int, total items as int
 	"""
 	def _update_progress(self, current, total):
 		self._progress.set_fraction(current/total)
@@ -136,7 +136,7 @@ class CollectionScanner(GObject.GObject):
 
 	"""
 		Add new file to db with tag
-		arg: filepath as string, file modification time as int, tag as mutagen.File(easy=True), sql as sqlite cursor
+		@param filepath as string, file modification time as int, tag as mutagen.File(easy=True), sql as sqlite cursor
 	"""
 	def _add2db(self, filepath, mtime, tag, sql):
 		compilation = False

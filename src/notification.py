@@ -48,7 +48,7 @@ class NotificationManager:
 
 	"""
 		Update notification with track_id infos
-		arg: player Player, track id as int
+		@param player Player, track id as int
 	"""
 	def _update_track(self, obj, track_id):
 		album_id = Objects["tracks"].get_album_id(track_id)

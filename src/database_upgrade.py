@@ -29,21 +29,21 @@ class DatabaseUpgrade:
 
 	"""
 		Return upgrade count
-		ret: int
+		@return int
 	"""
 	def count(self):
 		return len(self._UPGRADES)
 
 	"""
 		True if db need a reset
-		ret: bool
+		@return bool
 	"""
 	def reset_needed(self):
 		return self._reset
 
 	"""
 		Upgrade database based on version
-		ret: new db version as int
+		@return new db version as int
 	"""	
 	def do_db_upgrade(self):
 		for i in range(self._version.get_int32()+1, len(self._UPGRADES)+1):

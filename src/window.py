@@ -72,7 +72,7 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Update view class
-		arg: bool
+		@param bool
 	"""
 	def update_view_class(self, dark):
 		view = self._stack.get_visible_child()
@@ -207,7 +207,7 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Init the filter list
-		arg: widget as unused
+		@param widget as unused
 	"""
 	def _init_main_list(self, widget):
 		if self._list_one.widget.is_visible():
@@ -217,7 +217,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list with genres or artist
 		If update, only update list content
-		arg: obj as unused, bool
+		@param obj as unused, bool
 	"""
 	def _setup_list_one(self, obj = None, update = None):
 		if self._list_one_signal:
@@ -257,7 +257,7 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Init list two with artist based on genre
-		arg: obj as unused, genre id as int
+		@param obj as unused, genre id as int
 	"""
 	def _setup_list_two(self, obj, genre_id):
 		if self._list_two_signal:
@@ -278,7 +278,7 @@ class Window(Gtk.ApplicationWindow):
 		
 	"""
 		Update artist view
-		arg: artist id as int, genre id as int
+		@param artist id as int, genre id as int
 	"""
 	def _update_view_artists(self, obj, artist_id, genre_id):
 		if artist_id == ALL or artist_id == POPULARS:
@@ -295,7 +295,7 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Update albums view
-		arg: genre id as int
+		@param genre id as int
 	"""
 	def _update_view_albums(self, genre_id):
 		old_view = self._stack.get_visible_child()
@@ -326,7 +326,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Run collection update on mapped window
 		Pass _update_genre() as collection scanned callback
-		arg: obj as unused, data as unused
+		@param obj as unused, data as unused
 	"""	
 	def _on_mapped_window(self, obj, data):
 		if Objects["tracks"].is_empty():
@@ -340,7 +340,7 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Save paned widget width
-		arg: widget as unused, data as unused
+		@param widget as unused, data as unused
 	"""	
 	def _on_destroyed_window(self, widget):
 		Objects["settings"].set_value("paned-mainlist-width", GLib.Variant('i', self._paned_main_list.get_position()))

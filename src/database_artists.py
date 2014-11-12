@@ -25,7 +25,7 @@ class DatabaseArtists:
 		
 	"""
 		Add a new artist to database
-		arg: Artist name as string
+		@param Artist name as string
 	"""
 	def add(self, name, sql = None):
 		if not sql:
@@ -34,8 +34,8 @@ class DatabaseArtists:
 
 	"""
 		Get artist id
-		arg: Artist name as string
-		ret: Artist id as int
+		@param Artist name as string
+		@return Artist id as int
 	"""
 	def get_id(self, name, sql = None):
 		if not sql:
@@ -50,8 +50,8 @@ class DatabaseArtists:
 
 	"""
 		Get artist name
-		arg: Artist id as int
-		ret: Artist name as string
+		@param Artist id as int
+		@return Artist name as string
 	"""
 	def get_name(self, artist_id, sql = None):
 		if not sql:
@@ -68,7 +68,7 @@ class DatabaseArtists:
 
 	"""
 		Get all availables albums  for artist
-		ret: Array of id as int
+		@return Array of id as int
 	"""
 	def get_albums(self, artist_id, sql = None):
 		if not sql:
@@ -83,11 +83,11 @@ class DatabaseArtists:
 	"""
 		Get all available artists
 		
-		arg: None
+		@param None
 		or
-		arg: Filter genre id as int
+		@param Filter genre id as int
 		
-		ret: Array of (artist id as int, artist name as string)
+		@return Array of (artist id as int, artist name as string)
 	"""
 	def get_ids(self, genre_id, sql = None):
 		if not sql:
@@ -106,8 +106,8 @@ class DatabaseArtists:
 		
 	"""
 		Search for artists looking like string
-		arg: string
-		ret: Array of id as int
+		@param string
+		@return Array of id as int
 	"""
 	def search(self, string, sql = None):
 		if not sql:

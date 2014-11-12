@@ -70,7 +70,7 @@ class Player(GObject.GObject):
 		
 	"""
 		True if player is playing
-		ret: bool
+		@return bool
 	"""
 	def is_playing(self):
 		ok, state, pending = self._playbin.get_state(0)
@@ -83,14 +83,14 @@ class Player(GObject.GObject):
 
 	"""
 		Emit a "cover-changed" signal
-		arg: album id as int
+		@param album id as int
 	"""
 	def announce_cover_update(self, album_id):
 		self.emit("cover-changed", album_id)
 		
 	"""
 		Playback status
-		ret:
+		@return
 			- PlaybackStatus.STOPPED
 			- PlaybackStatus.PLAYING
 			- PlaybackStatus.PAUSED
@@ -112,7 +112,7 @@ class Player(GObject.GObject):
 
 	"""
 		Stop current track, load track id and play it
-		arg: track id as int
+		@param track id as int
 	"""
 	def load(self, track_id):
 		self.stop()
@@ -231,21 +231,21 @@ class Player(GObject.GObject):
 
 	"""
 		Seek current track to position
-		arg: position as seconds
+		@param position as seconds
 	"""
 	def seek(self, position):
 		self._playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
 
 	"""
 		Return current track id
-		ret: track id as int
+		@return track id as int
 	"""
 	def get_current_track_id(self):
 		return self._current_track_id
 
 	"""
 		Set shuffle mode if suffle is True
-		arg: shuffle as bool
+		@param shuffle as bool
 	"""
 	def set_shuffle(self, shuffle):
 		if shuffle:
@@ -263,7 +263,7 @@ class Player(GObject.GObject):
 	"""
 		Set party mode on if party is True
 		Play a new random track if not already playing
-		arg: party as bool
+		@param party as bool
 	"""
 	def set_party(self, party):
 		if party:
@@ -291,28 +291,28 @@ class Player(GObject.GObject):
 	"""
 		Set party ids to ids
 		Party ids are genres_id (and specials ids) used to populate party mode
-		arg: [ids as int]
+		@param [ids as int]
 	"""
 	def set_party_ids(self, ids):
 		self._party_ids = ids
 
 	"""
 		Return party ids
-		ret: [ids as int]
+		@return [ids as int]
 	"""
 	def get_party_ids(self):
 		return self._party_ids
 
 	"""
 		True if party mode on
-		ret: bool
+		@return bool
 	"""
 	def is_party(self):
 		return self._party
 
 	"""
 		Set album list (for next/prev)
-		arg: artist id as int, genre id as int, track id as int
+		@param artist id as int, genre id as int, track id as int
 	"""
 	def set_albums(self, artist_id, genre_id, track_id):
 		filepath = Objects["tracks"].get_path(track_id)
@@ -342,7 +342,7 @@ class Player(GObject.GObject):
 
 	"""
 		Convert seconds to a pretty string
-		arg: seconds as int
+		@param seconds as int
 	"""
 	def seconds_to_string(self, duration):
 		seconds = duration
@@ -353,44 +353,44 @@ class Player(GObject.GObject):
 
 	"""
 		Add track to playlist
-		arg: track id as int
+		@param track id as int
 	"""
 	def add_to_playlist(self, track_id):
 		self._playlist.append(track_id)
 
 	"""
 		Remove track from playlist
-		arg: track id as int
+		@param track id as int
 	"""
 	def del_from_playlist(self, track_id):
 		self._playlist.remove(track_id)
 
 	"""
 		Set playlist
-		arg: [ids as int]
+		@param [ids as int]
 	"""
 	def set_playlist(self, new_playlist):
 		self._playlist = new_playlist
 		self.emit("playlist-changed")
 	"""
 		Return playlist
-		ret: [ids as int]
+		@return [ids as int]
 	"""
 	def get_playlist(self):
 		return self._playlist
 
 	"""
 		True if track_id exist in playlist
-		arg: track id as int
-		ret: bool
+		@param track id as int
+		@return bool
 	"""
 	def is_in_playlist(self, track_id):
 		return track_id in self._playlist
 
 	"""
 		Return track position in playlist
-		arg: track id as int
-		ret: position as int
+		@param track id as int
+		@return position as int
 	"""
 	def get_track_position(self, track_id):
 		return self._playlist.index(track_id)
@@ -438,7 +438,7 @@ class Player(GObject.GObject):
 		Next track in shuffle mode
 		if force, stop current track
 		a fresh sqlite cursor should be pass as sql if we are in a thread
-		arg: bool, sqlite cursor
+		@param bool, sqlite cursor
 	"""
 	def _shuffle_next(self, force = False, sql = None):
 		track_id = self._get_random(sql)
@@ -459,7 +459,7 @@ class Player(GObject.GObject):
 
 	"""
 		Return a random track and make sure it has never been played
-		arg: sqlite cursor
+		@param sqlite cursor
 	"""
 	def _get_random(self, sql = None):
 		for album in sorted(self._albums, key=lambda *args: random.random()):
@@ -524,7 +524,7 @@ class Player(GObject.GObject):
 		
 	"""
 		Load track
-		arg: track id as int, sqlite cursor
+		@param track id as int, sqlite cursor
 	"""
 	def _load_track(self, track_id, sql = None):
 		filepath = Objects["tracks"].get_path(track_id, sql)

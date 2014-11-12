@@ -44,8 +44,8 @@ class AlbumArt:
 
 	"""
 		get cover cache path for album_id
-		arg: album id as int, size as int
-		ret: cover path as string
+		@param album id as int, size as int
+		@return cover path as string
 	"""
 	def get_path(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
@@ -54,8 +54,8 @@ class AlbumArt:
 	
 	"""
 		Look for covers in dir, folder.jpg if exist, any supported image otherwise
-		arg: directory path as string
-		ret: cover file path as string
+		@param directory path as string
+		@return cover file path as string
 	"""
 	def get_art_path(self, directory):
 		try:
@@ -78,7 +78,7 @@ class AlbumArt:
 	
 	"""
 		Return pixbuf for album_id
-		arg: album id as int, pixbuf size as int
+		@param album id as int, pixbuf size as int
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
@@ -136,7 +136,7 @@ class AlbumArt:
 
 	"""
 		Remove cover from cache for album id
-		arg: album id as int, size as int
+		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
@@ -146,8 +146,8 @@ class AlbumArt:
 
 	"""
 		Get arts on google image corresponding to search
-		arg: search words as string
-		ret: [urls as string]
+		@param search words as string
+		@return [urls as string]
 	"""
 	def get_google_arts(self, search):
 		try:
@@ -172,8 +172,8 @@ class AlbumArt:
 
 	"""
 		Return pixbuf for default album
-		arg: size as int
-		ret: pixbuf
+		@param size as int
+		@return pixbuf
 	"""
 	def _get_default_art(self, size):
 		# get a small pixbuf with the given path
@@ -200,7 +200,7 @@ class AlbumArt:
 
 	"""
 		Make an icon frame on pixbuf
-		arg: pixbuf
+		@param pixbuf
 	"""
 	def _make_icon_frame(self, pixbuf):
 		border = 1.5
