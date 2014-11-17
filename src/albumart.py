@@ -49,8 +49,10 @@ class AlbumArt:
 	"""
 	def get_path(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		return "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-	
+		art_path = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		if not os.path.exists(art_path):
+			self.get(album_id, size)
+		return art_path
 	
 	"""
 		Look for covers in dir, folder.jpg if exist, any supported image otherwise
