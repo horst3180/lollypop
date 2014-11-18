@@ -39,8 +39,6 @@ Changes:
 
 Tarball: https://github.com/gnumdk/lollypop-data
 
-ArchLinux: lollypop is in AUR
-
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop1.png)
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop2.png)
 ![Lollypop screenshot](https://github.com/gnumdk/lollypop-data/raw/master/lollypop3.png)
@@ -76,6 +74,17 @@ $ make
 
 \# make install
 
+ARCHLINUX:
+
+Available in Aur
+
+OPENSUSE USERS:
+
+https://build.opensuse.org/project/repository_state/home:gnumdk31/openSUSE_13.2
+
+FEDORA USERS:
+
+https://copr.fedoraproject.org/coprs/gnumdk/lollypop/
 
 UBUNTU USERS:
 
