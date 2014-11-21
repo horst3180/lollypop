@@ -86,14 +86,5 @@ FEDORA USERS:
 
 https://copr.fedoraproject.org/coprs/gnumdk/lollypop/
 
-UBUNTU USERS:
-
-You need to install mutagen last version... Python3-mutagen is missing from Ubuntu
-
-$ sudo apt-get build-dep gnome-music
-
-$ sudo apt-get install python3-pip
-
-$ sudo pip3 install mutagen
-
-$ sudo apt-get install gir1.2-gst-plugins-base-1.0
+DEBIAN/UBUNTU USERS:
+https://github.com/gnumdk/lollypop-data/raw/master/lollypop_0.8.6-1_amd64.deb
