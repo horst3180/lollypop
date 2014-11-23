@@ -155,9 +155,6 @@ class MPRIS(dbus.service.Object):
 		else:
 			return 'Stopped'
 
-	def _get_loop_status(self):
-		return 'Playlist'
-
 	def _get_metadata(self):
 		track_id = Objects["player"].get_current_track_id()
 		if track_id == -1:
