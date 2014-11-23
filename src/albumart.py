@@ -12,12 +12,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 # Many code inspiration from gnome-music at the GNOME project
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, Pango, PangoCairo
 import cairo
 import os, json
 import urllib.request
 import urllib.parse
 from math import pi
+from random import uniform
 from mutagen import File as Idtag
 
 from lollypop.config import *
@@ -125,7 +126,7 @@ class AlbumArt:
 						print(e)
 						pass
 
-					pixbuf = self._get_default_art(size)
+					pixbuf = self._get_default_art(album_id, size)
 			else:
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
 																 size, size)
@@ -133,7 +134,7 @@ class AlbumArt:
 			
 		except Exception as e:
 			print(e)
-			return self._get_default_art(size)
+			return self._get_default_art(album_id, size)
 
 
 	"""
@@ -173,67 +174,30 @@ class AlbumArt:
 
 
 	"""
-		Return pixbuf for default album
-		@param size as int
+		Construct a cover album based on album id
+		@param album id as int
+		@param pixbuf size as int
 		@return pixbuf
 	"""
-	def _get_default_art(self, size):
-		# get a small pixbuf with the given path
-		icon = Gtk.IconTheme.get_default().load_icon('folder-music-symbolic', 
-							     max(size, size) / 4, 0)
-
-		# create an empty pixbuf with the requested size
-		result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
-									  True,
-									  icon.get_bits_per_sample(),
-									  icon.get_width() * 4,
-									  icon.get_height() * 4)
-		result.fill(0xffffffff)
-		icon.composite(result,
-					   icon.get_width() * 3 / 2,
-					   icon.get_height() * 3 / 2,
-					   icon.get_width(),
-					   icon.get_height(),
-					   icon.get_width() * 3 / 2,
-					   icon.get_height() * 3 / 2,
-					   1, 1,
-					   GdkPixbuf.InterpType.NEAREST, 0xff)
-		return self._make_icon_frame(result)
-
-	"""
-		Make an icon frame on pixbuf
-		@param pixbuf
-	"""
-	def _make_icon_frame(self, pixbuf):
-		border = 1.5
-		degrees = pi / 180
-		radius = 3
-
-		w = pixbuf.get_width()
-		h = pixbuf.get_height()
-		new_pixbuf = pixbuf.scale_simple(w - border * 2,
-                                     h - border * 2,
-                                     0)
-
-		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+	def _get_default_art(self, album_id, size):
+		album_name = Objects["albums"].get_name(album_id)
+		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
 		ctx = cairo.Context(surface)
-		ctx.new_sub_path()
-		ctx.arc(w - radius, radius, radius - 0.5, -90 * degrees, 0 * degrees)
-		ctx.arc(w - radius, h - radius, radius - 0.5, 0 * degrees, 90 * degrees)
-		ctx.arc(radius, h - radius, radius - 0.5, 90 * degrees, 180 * degrees)
-		ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
-		ctx.close_path()
-		ctx.set_line_width(0.6)
-		ctx.set_source_rgb(0.2, 0.2, 0.2)
-		ctx.stroke_preserve()
-		ctx.set_source_rgb(1, 1, 1)
+		r = uniform(0.05, 0.9)
+		g = uniform(0.05, 0.9)
+		b = uniform(0.05, 0.9)
+		ctx.set_source_rgba(r, g ,b, 1)
+		ctx.move_to(0, 0)
+		ctx.rectangle(0, 0, size, size)
 		ctx.fill()
-		border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
-
-		new_pixbuf.copy_area(border, border,
-		                     w - border * 4,
-		                     h - border * 4,
-		                     border_pixbuf,
-		                     border * 2, border * 2)
-		return border_pixbuf
+		ctx.save()
+		ctx = cairo.Context(surface)
+		layout = PangoCairo.create_layout(ctx)
+		layout.set_markup('''<span foreground="white" font_desc="Sans %s"><b>%s</b></span>''' % (size/4, album_name[0]))
+		char_width = layout.get_size()[0]/Pango.SCALE
+		char_height = layout.get_size()[1]/Pango.SCALE
+		ctx.move_to(size/2 - char_width/2, size/2 - char_height/2)
+		ctx.save()
+		PangoCairo.show_layout(ctx, layout)
+		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
 
