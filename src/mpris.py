@@ -14,9 +14,10 @@
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository import Gst
 
 from lollypop.config import *
-from lollypop.player import Player, PlaybackStatus
+from lollypop.player import Player
 from lollypop.albumart import AlbumArt
 from lollypop.database import Database
 from lollypop.utils import translate_artist_name
@@ -148,9 +149,9 @@ class MPRIS(dbus.service.Object):
 
 	def _get_status(self):
 		state = Objects["player"].get_status()
-		if state == Player.Status.PLAYING:
+		if state == Gst.State.PLAYING:
 			return 'Playing'
-		elif state == Player.Status.PAUSED:
+		elif state == Gst.State.PAUSED:
 			return 'Paused'
 		else:
 			return 'Stopped'

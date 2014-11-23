@@ -19,18 +19,8 @@ from os import path
 from lollypop.config import *
 from lollypop.database import Database
 
-class PlaybackStatus:
-    PLAYING = 0
-    PAUSED = 1
-    STOPPED = 2
-
 class Player(GObject.GObject):
 
-	class Status:
-		PLAYING = 0
-		PAUSED = 1
-		STOPPED = 2
-	
 	EPSILON = 0.001
 	
 	__gsignals__ = {
@@ -93,25 +83,15 @@ class Player(GObject.GObject):
 		
 	"""
 		Playback status
-		@return
-			- Player.Status.STOPPED
-			- Player.Status.PLAYING
-			- Player.Status.PAUSED
+		@return Gstreamer state
 	"""
 	def get_status(self):
 		ok, state, pending = self._playbin.get_state(0)
 		if ok == Gst.StateChangeReturn.ASYNC:
 			state = pending
 		elif (ok != Gst.StateChangeReturn.SUCCESS):
-			return PlaybackStatus.STOPPED
-
-		if state == Gst.State.PLAYING:
-			return PlaybackStatus.PLAYING
-		elif state == Gst.State.PAUSED:
-			return PlaybackStatus.PAUSED
-		else:
-			return PlaybackStatus.STOPPED
-
+			state = Gst.State.NULL
+		return state
 
 	"""
 		Stop current track, load track id and play it
