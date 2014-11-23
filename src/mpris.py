@@ -87,13 +87,13 @@ class MPRIS(dbus.service.Object):
 
 	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
 						 in_signature='ss', out_signature='v')
-	def Get(self, interface_name, property_name):
-		return self.GetAll(interface_name)[property_name]
+	def Get(self, interface, property_name):
+		return self.GetAll(interface)[property_name]
 
 	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
 						 in_signature='s', out_signature='a{sv}')
-	def GetAll(self, interface_name):
-		if interface_name == self.MPRIS_IFACE:
+	def GetAll(self, interface):
+		if interface == self.MPRIS_IFACE:
 			return {
                 'CanQuit': True,
                 'CanRaise': True,
@@ -108,7 +108,7 @@ class MPRIS(dbus.service.Object):
                     'audio/mpeg'
                 ],
 			}
-		elif interface_name == self.MPRIS_PLAYER_IFACE:
+		elif interface == self.MPRIS_PLAYER_IFACE:
 			return {
                 'PlaybackStatus': self._get_playback_status(),
                 'LoopStatus': 'Playlist',
@@ -130,16 +130,16 @@ class MPRIS(dbus.service.Object):
 			raise dbus.exceptions.DBusException(
 				self.MPRIS_LOLLYPOP,
 				'This object does not implement the %s interface'
-				% interface_name)
+				% interface)
 
 	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
 						 in_signature='ssv')
-	def Set(self, interface_name, property_name, new_value):
+	def Set(self, interface, property_name, new_value):
 		pass
 
 	@dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
 						 signature='sa{sv}as')
-	def PropertiesChanged(self, interface_name, changed_properties,
+	def PropertiesChanged(self, interface, changed_properties,
 						  invalidated_properties):
 		pass
 
