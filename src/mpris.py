@@ -24,63 +24,63 @@ from lollypop.utils import translate_artist_name
 
 from gettext import gettext as _
 
-
-
-class MediaPlayer2Service(dbus.service.Object):
-	MEDIA_PLAYER2_IFACE = 'org.mpris.MediaPlayer2'
-	MEDIA_PLAYER2_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
+class MPRIS(dbus.service.Object):
+	MPRIS_IFACE = 'org.mpris.MediaPlayer2'
+	MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
+	MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
+	MPRIS_PATH = '/org/mpris/MediaPlayer2'
 
 	def __init__(self, app):
 		DBusGMainLoop(set_as_default=True)
-		name = dbus.service.BusName('org.mpris.MediaPlayer2.Lollypop', dbus.SessionBus())
-		dbus.service.Object.__init__(self, name, '/org/mpris/MediaPlayer2')
+		name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
+		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
 		self._app = app
 		Objects["player"].connect('current-changed', self._on_current_changed)
 		Objects["player"].connect('playback-status-changed', self._on_playback_status_changed)
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_IFACE)
 	def Raise(self):
 		self._app.do_activate()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_IFACE)
 	def Quit(self):
 		self._app.quit()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Next(self):
 		Objects["player"].next()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Previous(self):
 		Objects["player"].prev()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Pause(self):
 		Objects["player"].pause()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def PlayPause(self):
 		Objects["player"].play_pause()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Stop(self):
 		Objects["player"].stop()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE)
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Play(self):
 		Objects["player"].play()
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE,
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='ox')
 	def SetPosition(self, track_id, position):
 		pass
 
-	@dbus.service.method(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE,
+	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='s')
 	def OpenUri(self, uri):
 		pass
 
-	@dbus.service.signal(dbus_interface=MEDIA_PLAYER2_PLAYER_IFACE,
+	@dbus.service.signal(dbus_interface=MPRIS_PLAYER_IFACE,
 						 signature='x')
 	def Seeked(self, position):
 		pass
@@ -93,16 +93,14 @@ class MediaPlayer2Service(dbus.service.Object):
 	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
 						 in_signature='s', out_signature='a{sv}')
 	def GetAll(self, interface_name):
-		if interface_name == self.MEDIA_PLAYER2_IFACE:
+		if interface_name == self.MPRIS_IFACE:
 			return {
                 'CanQuit': True,
                 'CanRaise': True,
                 'HasTrackList': False,
                 'Identity': 'Lollypop',
                 'DesktopEntry': 'lollypop',
-                'SupportedUriSchemes': [
-                    'file'
-                ],
+                'SupportedUriSchemes': [],
                 'SupportedMimeTypes': [
                     'application/ogg',
                     'audio/x-vorbis+ogg',
@@ -110,7 +108,7 @@ class MediaPlayer2Service(dbus.service.Object):
                     'audio/mpeg'
                 ],
 			}
-		elif interface_name == self.MEDIA_PLAYER2_PLAYER_IFACE:
+		elif interface_name == self.MPRIS_PLAYER_IFACE:
 			return {
                 'PlaybackStatus': self._get_playback_status(),
                 'LoopStatus': False,
@@ -130,7 +128,7 @@ class MediaPlayer2Service(dbus.service.Object):
 			}
 		else:
 			raise dbus.exceptions.DBusException(
-				'org.mpris.MediaPlayer2.Lollypop',
+				self.MPRIS_LOLLYPOP,
 				'This object does not implement the %s interface'
 				% interface_name)
 
@@ -166,24 +164,23 @@ class MediaPlayer2Service(dbus.service.Object):
 		if track_id == -1:
 			return {}
 
-		t = Objects["tracks"].get_infos(track_id)
-		album_id = t[4]
+		infos = Objects["tracks"].get_infos(track_id)
+		album_id =  infos[4]
 		album = Objects["albums"].get_name(album_id)
 		artist = Objects["tracks"].get_artist_name(track_id)
 		artist = translate_artist_name(artist)
+		performer = Objects["tracks"].get_performer_name(track_id)
+		performer = translate_artist_name(performer)
 		genre_id = Objects["albums"].get_genre(album_id)
 		genre = Objects["genres"].get_name(genre_id)
-		
-		metadata = {
-			'mpris:trackid': '/org/mpris/MediaPlayer2/Track/%s' % track_id,
-			'xesam:url': t[1]
-		}
-
-		metadata['xesam:trackNumber'] = t[3]
-		metadata['xesam:title'] = t[0]
+	
+		metadata = {}	
+		metadata['xesam:trackNumber'] = infos[3]
+		metadata['xesam:title'] = infos[0]
 		metadata['xesam:album'] = album
-		metadata['xesam:artist'] = [artist]
-		metadata['xesam:albumArtist'] = [artist]
+		metadata['xesam:artist'] = artist
+		metadata['xesam:albumArtist'] = performer
+		metadata['mpris:length'] = infos[2]
 		metadata['xesam:genre'] = genre
 		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
 		
@@ -192,7 +189,7 @@ class MediaPlayer2Service(dbus.service.Object):
 
 
 	def _on_current_changed(self, player, data=None):
-		self.PropertiesChanged(self.MEDIA_PLAYER2_PLAYER_IFACE,
+		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
 							   {
 									'Metadata': dbus.Dictionary(self._get_metadata(),
 																signature='sv'),
@@ -202,7 +199,7 @@ class MediaPlayer2Service(dbus.service.Object):
 								[])
 
 	def _on_playback_status_changed(self, data=None):
-		self.PropertiesChanged(self.MEDIA_PLAYER2_PLAYER_IFACE,
+		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
 							   {
 									'PlaybackStatus': self._get_playback_status(),
 							   },

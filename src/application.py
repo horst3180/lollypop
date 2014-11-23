@@ -21,7 +21,7 @@ from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.albumart import AlbumArt
 from lollypop.widgets import ChooserWidget
-from lollypop.mpris import MediaPlayer2Service
+from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
 from lollypop.database_albums import DatabaseAlbums
 from lollypop.database_artists import DatabaseArtists
@@ -81,7 +81,7 @@ class Application(Gtk.Application):
 			self._window = Window(self)
 			if Objects["settings"].get_value('background-mode'):
 				self._delete_signal = self._window.connect('delete-event', self._hide_on_delete)
-			self._service = MediaPlayer2Service(self)
+			self._service = MPRIS(self)
 			self._notifications = NotificationManager()
 		self._window.present()
 
