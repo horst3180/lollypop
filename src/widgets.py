@@ -91,7 +91,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 	def __init__(self, album_id, genre_id, cover_add = True):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
-		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidgetSongs.ui')
+		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
 		
 		self._tracks_ui = []
 		self._tracks = []
@@ -108,7 +108,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 		self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
 		self._ui.get_object('title').set_label(Objects["albums"].get_name(album_id))
 		self._ui.get_object('year').set_label(Objects["albums"].get_year(album_id))
-		self.add(self._ui.get_object('AlbumWidgetSongs'))
+		self.add(self._ui.get_object('ArtistWidget'))
 
 		if cover_add:
 			self._eventbox = self._ui.get_object('eventbox')
@@ -189,7 +189,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			track_widget.title.set_text(name)
 
 			ui.get_object('title').set_alignment(0.0, 0.5)
-			self._ui.get_object('grid2').attach(track_widget,
+			self._ui.get_object('tracks').attach(track_widget,
                     					   int(i / (self._nb_tracks / 2)),
                     					   int(i % (self._nb_tracks / 2)), 1, 1
                 					   )

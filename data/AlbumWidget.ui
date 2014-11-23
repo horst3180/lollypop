@@ -6,25 +6,16 @@
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="margin-bottom">1</property>
-        <style>
-          <class name="cover"/>
-        </style>
       </object>
-
- 
       <object class="GtkLabel" id="title">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="ellipsize">middle</property>
-        <style>
-          <class name="title"/>
-        </style>
         <attributes>
           <attribute name="weight" value="bold"/>
         </attributes>
       </object>
-
       <object class="GtkLabel" id="artist">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -34,5 +25,4 @@
                   <class name="dim-label"/>
         </style>
       </object>
-
 </interface>
