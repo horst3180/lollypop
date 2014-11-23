@@ -19,13 +19,17 @@ from os import path
 from lollypop.config import *
 from lollypop.database import Database
 
-
 class PlaybackStatus:
     PLAYING = 0
     PAUSED = 1
     STOPPED = 2
 
 class Player(GObject.GObject):
+
+	class Status:
+		PLAYING = 0
+		PAUSED = 1
+		STOPPED = 2
 	
 	EPSILON = 0.001
 	
@@ -90,11 +94,11 @@ class Player(GObject.GObject):
 	"""
 		Playback status
 		@return
-			- PlaybackStatus.STOPPED
-			- PlaybackStatus.PLAYING
-			- PlaybackStatus.PAUSED
+			- Player.Status.STOPPED
+			- Player.Status.PLAYING
+			- Player.Status.PAUSED
 	"""
-	def get_playback_status(self):
+	def get_status(self):
 		ok, state, pending = self._playbin.get_state(0)
 		if ok == Gst.StateChangeReturn.ASYNC:
 			state = pending

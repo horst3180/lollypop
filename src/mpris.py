@@ -146,11 +146,11 @@ class MPRIS(dbus.service.Object):
 # PRIVATE             #
 #######################
 
-	def _get_playback_status(self):
-		state = Objects["player"].get_playback_status()
-		if state == PlaybackStatus.PLAYING:
+	def _get_status(self):
+		state = Objects["player"].get_status()
+		if state == Player.Status.PLAYING:
 			return 'Playing'
-		elif state == PlaybackStatus.PAUSED:
+		elif state == Player.Status.PAUSED:
 			return 'Paused'
 		else:
 			return 'Stopped'
@@ -197,6 +197,6 @@ class MPRIS(dbus.service.Object):
 	def _on_playback_status_changed(self, data=None):
 		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
 							   {
-									'PlaybackStatus': self._get_playback_status(),
+									'PlaybackStatus': self._get_status(),
 							   },
 							   [])
