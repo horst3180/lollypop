@@ -183,8 +183,6 @@ class MPRIS(dbus.service.Object):
 		
 		return metadata
 
-
-
 	def _on_current_changed(self, player, data=None):
 		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
 							   {
