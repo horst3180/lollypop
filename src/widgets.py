@@ -269,11 +269,12 @@ class ChooserWidget(Gtk.Grid):
 		self.show()
 	
 	"""
-		Set current selected directory for chooser
+		Set current selected path for chooser
 		@param directory path as string
 	"""
-	def set_dir(self, directory):
-		self._chooser_btn.set_uri("file://"+directory)
+	def set_dir(self, path):
+		if path:
+			self._chooser_btn.set_uri("file://"+path)
 	
 	"""
 		Set image for action button
