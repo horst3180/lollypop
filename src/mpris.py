@@ -36,7 +36,7 @@ class MPRIS(dbus.service.Object):
 		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
 		self._app = app
 		Objects["player"].connect('current-changed', self._on_current_changed)
-		Objects["player"].connect('playback-status-changed', self._on_playback_status_changed)
+		Objects["player"].connect('status-changed', self._on_status_changed)
 
 	@dbus.service.method(dbus_interface=MPRIS_IFACE)
 	def Raise(self):
@@ -195,7 +195,7 @@ class MPRIS(dbus.service.Object):
 								},
 								[])
 
-	def _on_playback_status_changed(self, data=None):
+	def _on_status_changed(self, data=None):
 		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
 							   {
 									'PlaybackStatus': self._get_status(),

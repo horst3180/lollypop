@@ -26,7 +26,7 @@ class Player(GObject.GObject):
 	__gsignals__ = {
         'current-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'playback-status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
@@ -109,7 +109,7 @@ class Player(GObject.GObject):
 		self._playbin.set_state(Gst.State.PLAYING)
 		if not self._timeout:
 			self._timeout = GLib.timeout_add(1000, self._update_position)
-		self.emit("playback-status-changed")
+		self.emit("status-changed")
 
 	"""
 		Change player state to PAUSED
