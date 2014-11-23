@@ -135,13 +135,10 @@ class AlbumWidgetSongs(Gtk.Grid):
 
 			# Update playing label
 			if track_widget.id == track_id:
-				track_widget.title.set_markup('<b>%s</b>' % escape(track_name))
 				track_widget.playing.show()
 			else:
 				if track_widget.playing.is_visible():
 					track_widget.playing.hide()
-					track_widget.title.set_text(track_name)
-
 
 	"""
 		Update cover for album id
@@ -189,9 +186,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			track_widget.id = track_id
 			if not track_id == Objects["player"].get_current_track_id():
 				track_widget.playing.set_no_show_all('True')
-				track_widget.title.set_text(name)
-			else:
-				track_widget.title.set_markup('<b>%s</b>' % escape(name))
+			track_widget.title.set_text(name)
 
 			ui.get_object('title').set_alignment(0.0, 0.5)
 			self._ui.get_object('grid2').attach(track_widget,
