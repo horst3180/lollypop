@@ -19,9 +19,6 @@ You should have received a copy of the GNU General Public License along with Lol
 </property>
     <property name="artists"> 
     Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts 
-    Allan Day &lt;allanpday@gmail.com&gt;
-    Jakub Steiner &lt;jimmac@gmail.com&gt;
-    William Jon McCann &lt;william.jon.mccann@gmail.com&gt;</property>
     <property name="logo_icon_name">lollypop</property>
     <property name="wrap_license">True</property>
   </object>
