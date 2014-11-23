@@ -101,11 +101,7 @@ class MPRIS(dbus.service.Object):
                 'Identity': 'Lollypop',
                 'DesktopEntry': 'lollypop',
                 'SupportedUriSchemes': [],
-                'SupportedMimeTypes': [
-                    'application/ogg',
-                    'audio/x-vorbis+ogg',
-                    'audio/x-flac',
-                    'audio/mpeg'
+                'SupportedMimeTypes': []
                 ],
 			}
 		elif interface == self.MPRIS_PLAYER_IFACE:
