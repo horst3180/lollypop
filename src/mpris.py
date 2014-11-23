@@ -129,7 +129,7 @@ class MPRIS(dbus.service.Object):
 		else:
 			raise dbus.exceptions.DBusException(
 				self.MPRIS_LOLLYPOP,
-				'This object does not implement the %s interface'
+				"Lollypop doesn't handle %s interface"
 				% interface)
 
 	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
@@ -159,7 +159,7 @@ class MPRIS(dbus.service.Object):
 	def _get_metadata(self):
 		track_id = Objects["player"].get_current_track_id()
 		if track_id == -1:
-			return {}
+			return dbus.Dictionary({}, signature='sv')
 
 		infos = Objects["tracks"].get_infos(track_id)
 		album_id =  infos[4]
@@ -181,21 +181,15 @@ class MPRIS(dbus.service.Object):
 		metadata['xesam:genre'] = genre
 		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
 		
-		return metadata
+		return dbus.Dictionary(metadata, signature='sv')
 
 	def _on_current_changed(self, player, data=None):
-		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
-							   {
-									'Metadata': dbus.Dictionary(self._get_metadata(),
-																signature='sv'),
-									'CanPlay': True,
-									'CanPause': True,
-								},
-								[])
+		properties = { 'Metadata': self._get_metadata(),
+					   'CanPlay': True,
+					   'CanPause': True
+					 }
+		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
 
 	def _on_status_changed(self, data=None):
-		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
-							   {
-									'PlaybackStatus': self._get_status(),
-							   },
-							   [])
+		properties = { 'PlaybackStatus': self._get_status() }
+		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
