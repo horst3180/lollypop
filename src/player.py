@@ -116,7 +116,7 @@ class Player(GObject.GObject):
 	"""
 	def pause(self):
 		self._playbin.set_state(Gst.State.PAUSED)
-		self.emit("playback-status-changed")
+		self.emit("status-changed")
 		if self._timeout:
 			GLib.source_remove(self._timeout)
 			self._timeout = None
