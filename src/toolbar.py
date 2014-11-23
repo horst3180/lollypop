@@ -60,7 +60,7 @@ class Toolbar():
 		self._popalbums = PopAlbums()
 		self._popalbums.set_relative_to(infobox)
 	
-		Objects["player"].connect("status-changed", self._playback_status_changed)
+		Objects["player"].connect("status-changed", self._on_status_changed)
 		Objects["player"].connect("current-changed", self.update_toolbar)
 		Objects["player"].connect("cover-changed", self._update_cover)
 		Objects["player"].connect('position-changed', self._on_position_changed)
@@ -202,7 +202,7 @@ class Toolbar():
 		Update buttons and progress bar
 		@param obj as unused
 	"""
-	def _playback_status_changed(self, obj):
+	def _on_status_changed(self, obj):
 		playing = Objects["player"].is_playing()
 
 		self._progress.set_sensitive(playing)
