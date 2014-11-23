@@ -181,7 +181,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 			
 			track_widget.connect("button-release-event", self._track_selected)
 
-			ui.get_object('num').set_markup('<span color=\'grey\'>%d</span>' % len(self._tracks))
+			ui.get_object('num').set_text(str(len(self._tracks)))
 			track_widget.title = ui.get_object('title')
 			track_widget.id = track_id
 			if not track_id == Objects["player"].get_current_track_id():
