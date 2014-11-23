@@ -111,7 +111,7 @@ class MPRIS(dbus.service.Object):
 		elif interface_name == self.MPRIS_PLAYER_IFACE:
 			return {
                 'PlaybackStatus': self._get_playback_status(),
-                'LoopStatus': True,
+                'LoopStatus': 'Playlist',
                 'Rate': dbus.Double(1.0),
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._get_metadata(), signature='sv'),
