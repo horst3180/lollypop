@@ -149,7 +149,8 @@ class PopAlbums(Gtk.Popover):
 		elif len(albums) > 0:
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
-			widget = ArtistWidget(album_id, genre_id, self._width-10, False)
+			#TODO: Understand why - 50 or less is needed
+			widget = ArtistWidget(album_id, genre_id, self._width-50, False)
 			self._widgets.append(widget)
 			widget.show()
 			view.add(widget)
