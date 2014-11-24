@@ -101,9 +101,7 @@ class MPRIS(dbus.service.Object):
                 'CanRaise': True,
                 'HasTrackList': False,
                 'Identity': 'Lollypop',
-                'DesktopEntry': 'lollypop',
-                'SupportedUriSchemes': [],
-                'SupportedMimeTypes': []
+                'DesktopEntry': 'lollypop'
 			}
 		elif interface == self.MPRIS_PLAYER_IFACE:
 			return {
@@ -113,7 +111,7 @@ class MPRIS(dbus.service.Object):
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._get_metadata(), signature='sv'),
                 'Volume': 100.0,
-                'Position': 0.0,
+                'Position': 1.0,
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
                 'CanGoNext': Objects["player"].has_next(),
@@ -174,7 +172,7 @@ class MPRIS(dbus.service.Object):
 		metadata['xesam:album'] = album
 		metadata['xesam:artist'] = artist
 		metadata['xesam:albumArtist'] = performer
-		metadata['mpris:length'] = infos[2]
+		metadata['mpris:length'] = dbus.Int64(infos[2] * 1000000)
 		metadata['xesam:genre'] = genre
 		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
 		
