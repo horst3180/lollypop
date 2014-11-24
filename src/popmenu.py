@@ -27,9 +27,14 @@ class PopMenu(Gio.Menu):
 		Gio.Menu.__init__(self)
 		app = Gio.Application.get_default()
 		wait_list_action = Gio.SimpleAction(name="wait_list_action")
-		wait_list_action.connect('activate', self._add_to_wait_list, track_id)
 		app.add_action(wait_list_action)
-		self.append(_("Add to waiting list"), 'app.wait_list_action')
+		waitlist = Objects["player"].get_waitlist()
+		if track_id in waitlist:
+			wait_list_action.connect('activate', self._del_from_waitlist, track_id)
+			self.append(_("Remove from waiting list"), 'app.wait_list_action')
+		else:
+			wait_list_action.connect('activate', self._add_to_waitlist, track_id)
+			self.append(_("Add to waiting list"), 'app.wait_list_action')
 		
 #######################
 # PRIVATE             #
@@ -41,5 +46,15 @@ class PopMenu(Gio.Menu):
 		@param GVariant as None
 		@param track id as int
 	"""
-	def _add_to_wait_list(self, action, variant, data):
+	def _add_to_waitlist(self, action, variant, data):
 		Objects["player"].add_to_waitlist(data)
+		
+	"""
+		Delete track id from waiting list
+		@param SimpleAction
+		@param GVariant as None
+		@param track id as int
+	"""
+	def _del_from_waitlist(self, action, variant, data):
+		Objects["player"].del_from_waitlist(data)
+		
