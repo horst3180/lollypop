@@ -36,9 +36,11 @@ class LoadingView(Gtk.Grid):
 		self._label.set_label(_("Loading please wait..."))
 		self.add(self._label)
 		self.show_all()
+		
 	def remove_signals(self):
 		pass
-
+	def calculate_content_size(self):
+		pass
 
 """
 	Generic view

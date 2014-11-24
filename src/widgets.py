@@ -172,7 +172,7 @@ class ArtistWidget(Gtk.Grid):
 				
 			# Get track position in waiting list
 			pos = None
-			if Objects["player"].is_in_playlist(track_id):
+			if Objects["player"].is_in_waitlist(track_id):
 				pos = Objects["player"].get_track_position(track_id)
 				
 			if i <= mid_tracks:

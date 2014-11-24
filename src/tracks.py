@@ -192,7 +192,7 @@ class TracksWidget(Gtk.ListBox):
 		Set signals callback
 	"""
 	def do_show(self):
-		Objects["player"].connect("playlist-changed", self._update_pos_label)
+		Objects["player"].connect("waitlist-changed", self._update_pos_label)
 		Gtk.ListBox.do_show(self)
 	
 	"""
@@ -228,7 +228,7 @@ class TracksWidget(Gtk.ListBox):
 	def _update_pos_label(self, widget):
 		for row in self.get_children():
 			track_id = row.get_object_id()
-			if Objects["player"].is_in_playlist(track_id):
+			if Objects["player"].is_in_waitlist(track_id):
 				pos = Objects["player"].get_track_position(track_id)
 				row.set_label('num', '''<span foreground="#72729f9fcfcf" font_desc="Bold">%s</span>''' % str(pos))
 			else:

@@ -42,4 +42,4 @@ class PopMenu(Gio.Menu):
 		@param track id as int
 	"""
 	def _add_to_wait_list(self, action, variant, data):
-		Objects["player"].add_to_playlist(data)
+		Objects["player"].add_to_waitlist(data)

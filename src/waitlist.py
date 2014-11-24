@@ -21,7 +21,7 @@ from lollypop.utils import translate_artist_name, get_monitor_size
 ######################################################################
 ######################################################################
 
-class PlayListWidget(Gtk.Popover):
+class WaitListWidget(Gtk.Popover):
 
 	"""
 		Init Popover ui with a text entry and a scrolled treeview
@@ -72,11 +72,11 @@ class PlayListWidget(Gtk.Popover):
 		self.add(scroll)
 
 	"""
-		Show playlist popover		
-		Populate treeview with current playlist
+		Show waitlist popover		
+		Populate treeview with current waitlist
 	"""
 	def show(self):
-		tracks = Objects["player"].get_playlist()
+		tracks = Objects["player"].get_waitlist()
 		if len(tracks) > 0:
 			for child in self._view.get_children():
 				child.hide()
@@ -139,23 +139,23 @@ class PlayListWidget(Gtk.Popover):
 		@param widget unused, Gtk.Event
 	"""
 	def _on_keyboard_event(self, widget, event):
-		if len(Objects["player"].get_playlist()) > 0:
+		if len(Objects["player"].get_waitlist()) > 0:
 			if event.keyval == 65535:
 				path, column = self._view.get_cursor()
 				iter = self._model.get_iter(path)
 				self._model.remove(iter)
 
 	"""
-		Update playlist when a row has been deleted
+		Update waitlist when a row has been deleted
 		@param TreePath unused
 	"""
 	def _updated_rows(self, path, none):
 		if self.is_visible():
-			new_playlist = []
+			new_waitlist = []
 			for row in self._model:
 				if row[3]:
-					new_playlist.append(row[3])
-			Objects["player"].set_playlist(new_playlist)
+					new_waitlist.append(row[3])
+			Objects["player"].set_waitlist(new_waitlist)
 		
 	"""
 		Delete row
