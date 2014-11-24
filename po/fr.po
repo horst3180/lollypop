@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-07 10:55+0100\n"
+"POT-Creation-Date: 2014-11-24 14:45+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -83,7 +83,7 @@ msgid "INTERNAL"
 msgstr "INTERNE"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/window.py:35
+#: ../src/window.py:34
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -99,66 +99,63 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:113
+#: ../src/application.py:112
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/application.py:226
+#: ../src/application.py:225
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/toolbar.py:211 ../src/toolbar.py:235
+#: ../src/toolbar.py:210 ../src/toolbar.py:234
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:216 ../src/toolbar.py:232 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:215 ../src/toolbar.py:231 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:232 ../src/window.py:273
+#: ../src/window.py:231 ../src/window.py:272
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:234
+#: ../src/window.py:233
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:235
+#: ../src/window.py:234
 msgid "Populars albums"
 msgstr "Albums populaires"
 
-#: ../src/notification.py:39 ../data/headerbar.ui.h:1
+#: ../src/notification.py:38 ../data/headerbar.ui.h:1
 msgid "Previous"
 msgstr "Précédent"
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:3
+#: ../src/notification.py:40 ../data/headerbar.ui.h:3
 msgid "Next"
 msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:63
+#: ../src/notification.py:62
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database_artists.py:60
+#: ../src/database_artists.py:59
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:125
-#: ../src/database_tracks.py:117 ../src/database_genres.py:64
+#: ../src/database_artists.py:66 ../src/database_albums.py:124
+#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
+#: ../src/database_genres.py:63
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:140
+#: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlist.py:36
-msgid "Right click on a song to add it to playlist"
-msgstr "Clique droit sur une chanson pour la rajouter à la liste de lecture"
-
-#: ../src/view.py:37
+#: ../src/view.py:36
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 

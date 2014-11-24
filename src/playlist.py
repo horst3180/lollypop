@@ -32,7 +32,6 @@ class PlayListWidget(Gtk.Popover):
 		self._timeout = None
 		self._in_drag = False
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
-		self._label = Gtk.Label(_("Empty list"))
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
 		self._model.connect("row-deleted", self._updated_rows)
