@@ -59,6 +59,8 @@ class TrackRow(Gtk.ListBoxRow):
 				self.get_style_context().add_class('trackrowplaying')
 			else:
 				widget.clear()
+				self.get_style_context().remove_class('trackrowplaying')
+				self.get_style_context().add_class('trackrow')
 		else:
 			if show:
 				widget.show()
