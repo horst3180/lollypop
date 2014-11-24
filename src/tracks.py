@@ -204,6 +204,14 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def do_get_preferred_width(self):
 		return (self._width, self._width)
+
+	"""
+		Update width
+		@param: width as int
+	"""
+	def update_width(self, width):
+		self._width = width
+		self.queue_resize()
 		
 #######################
 # PRIVATE             #

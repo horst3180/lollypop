@@ -143,7 +143,15 @@ class ArtistWidget(Gtk.Grid):
 	"""     
 	def get_id(self):
 		return self._album_id
-			
+		
+	"""
+		Update content width
+		@param: width as int
+	"""	
+	def update_content_width(self, width):
+		self._tracks_widget1.update_width((width - ART_SIZE_BIG - 50)/2)
+		self._tracks_widget2.update_width((width - ART_SIZE_BIG - 50)/2)
+
 #######################
 # PRIVATE             #
 #######################

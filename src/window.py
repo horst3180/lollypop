@@ -33,6 +33,7 @@ class Window(Gtk.ApplicationWindow):
 					       application=app,
 					       title=_("Lollypop"))
 
+		self._timeout = None
 		self._scanner = CollectionScanner()
 		self._scanner.connect("scan-finished", self._setup_list_one, True)
 
@@ -307,15 +308,29 @@ class Window(Gtk.ApplicationWindow):
 			old_view.remove_signals()
 
 	"""
-		Save new window size/position
+		Delay event
+		@param: widget as Gtk.Window
+		@param: event as Gtk.Event
 	"""		
 	def _on_configure_event(self, widget, event):
+		if self._timeout:
+			GLib.source_remove(self._timeout)
+		self._timeout = GLib.timeout_add(1000, self._do_configure, widget)
+	
+	"""
+		Save window state, update views
+		@param: widget as Gtk.Window
+	"""
+	def _do_configure(self, widget):
+		self._timeout = None
 		size = widget.get_size()
 		Objects["settings"].set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
-
 		position = widget.get_position()
 		Objects["settings"].set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
-
+		view = self._stack.get_visible_child()
+		if view:
+			view.calculate_content_size()
+		
 	"""
 		Save maximised state
 	"""

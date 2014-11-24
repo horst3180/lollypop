@@ -77,6 +77,12 @@ class View(Gtk.Grid):
 	"""
 	def cover_changed(self, widget, album_id):
 		pass
+	
+	"""
+		Calculate content size
+	"""	
+	def calculate_content_size(self):
+		pass
 		
 #######################
 # PRIVATE             #
@@ -163,6 +169,13 @@ class ArtistView(View):
 			self._albumbox.get_style_context().add_class('black')
 		else:
 			self._albumbox.get_style_context().remove_class('black')
+
+	"""
+		Calculate content size
+	"""	
+	def calculate_content_size(self):
+		for widget in self._albumbox.get_children():
+			widget.update_content_width(self.get_allocated_width())
 
 #######################
 # PRIVATE             #
@@ -272,6 +285,14 @@ class AlbumView(View):
 			self._albumbox.get_style_context().add_class('black')
 		else:
 			self._albumbox.get_style_context().remove_class('black')
+
+	"""
+		Calculate content size
+	"""	
+	def calculate_content_size(self):
+		context_widget = self._stack.get_visible_child()
+		if context_widget:
+			context_widget.update_content_width(self.get_allocated_width())
 
 #######################
 # PRIVATE             #
