@@ -201,7 +201,6 @@ class Window(Gtk.ApplicationWindow):
 		self.add(self._paned_main_list)
 		self._paned_main_list.set_position(Objects["settings"].get_value("paned-mainlist-width").get_int32())
 		self._paned_list_view.set_position(Objects["settings"].get_value("paned-listview-width").get_int32())
-		self._paned_list_view.connect('button-release-event', self._on_paned_resize)
 		self._paned_main_list.show()
 		self._paned_list_view.show()
 		self.show()
@@ -323,30 +322,12 @@ class Window(Gtk.ApplicationWindow):
 		@param: widget as Gtk.Window
 	"""
 	def _save_size_position(self, widget):
-		self._update_view_content_size()
+		self._timeout = None
 		size = widget.get_size()
 		Objects["settings"].set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
 		position = widget.get_position()
 		Objects["settings"].set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
-	
-	"""
-		Delay event
-		@param: widget as Gtk.Paned
-		@param: event as Gtk.Event
-	"""	
-	def _on_paned_resize(self, widget, event):
-		if self._timeout:
-			GLib.source_remove(self._timeout)
-		self._timeout = GLib.timeout_add(500, self._update_view_content_size)
 
-	"""
-		Update current view content size
-	"""
-	def _update_view_content_size(self):
-		self._timeout = None
-		view = self._stack.get_visible_child()
-		if view:
-			view.calculate_content_size()
 	"""
 		Save maximised state
 	"""

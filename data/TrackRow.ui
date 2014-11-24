@@ -7,6 +7,7 @@
     <property name="can_focus">False</property>
     <property name="margin_left">10</property>
     <property name="margin_right">20</property>
+    <property name="hexpand">True</property>
     <child>
       <object class="GtkEventBox" id="eventpos">
         <property name="visible">True</property>
