@@ -13,7 +13,6 @@
 
 from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from gi.repository import GdkPixbuf
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.config import *
@@ -77,9 +76,9 @@ class AlbumWidget(Gtk.Grid):
 
 
 """
-	Album widget songs is a pixbuf with album name and tracks list
+	Artist Widget is a pixbuf with album name and tracks list
 """
-class AlbumWidgetSongs(Gtk.Grid):
+class ArtistWidget(Gtk.Grid):
 
 	"""
 		Init album widget songs ui with a complex grid:
@@ -123,12 +122,12 @@ class AlbumWidgetSongs(Gtk.Grid):
 		self._add_tracks(album_id)
 
 	"""
-		Update playing icon on track
+		Update playing track
 		@param track id as int
 	"""
-	def update_play_symbol(self, track_id):
-		self._tracks_widget1.update_play_symbol(track_id)	
-		self._tracks_widget2.update_play_symbol(track_id)
+	def update_playing_track(self, track_id):
+		self._tracks_widget1.update_playing(track_id)	
+		self._tracks_widget2.update_playing(track_id)
 
 	"""
 		Update cover for album id
@@ -154,7 +153,7 @@ class AlbumWidgetSongs(Gtk.Grid):
 		@param album id as int
 	"""
 	def _add_tracks(self, album_id):
-		i = 1       					   
+		i = 1    					   
 		mid_tracks = int(0.5+Objects["albums"].get_count(album_id)/2)
 		for track_id, title, artist_id, filepath, length in Objects["albums"].get_tracks_infos(album_id):
 		

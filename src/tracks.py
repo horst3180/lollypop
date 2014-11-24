@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GObject, Gtk, GLib, GdkPixbuf, Pango
+from cgi import escape
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
@@ -70,6 +71,12 @@ class TrackRow(Gtk.ListBoxRow):
 	def set_label(self, obj, label):
 		self._ui.get_object(obj).set_markup(label)
 
+	"""
+		Get object label
+	"""
+	def get_label(self, obj):
+		return self._ui.get_object(obj).get_text()
+		
 	"""
 		Store current object id
 		@param object id as int
@@ -150,7 +157,6 @@ class TracksWidget(Gtk.ListBox):
 		@param pos as int
 	"""
 	def add_track(self, track_id, num, title, length, pos):
-		track_name = Objects["tracks"].get_name(track_id)
 		track_row = TrackRow()
 		if Objects["player"].get_current_track_id() == track_id:
 			track_row.show_widget('icon', True)
@@ -159,17 +165,17 @@ class TracksWidget(Gtk.ListBox):
 		else:
 			track_row.set_label('num', str(num))
 			track_row.set_number(num)
-		track_row.set_label('title', title)
+		track_row.set_label('title', escape(title))
 		track_row.set_label('duration', seconds_to_string(length))
 		track_row.set_object_id(track_id)
 		track_row.show()
 		self.add(track_row)
 
 	"""
-		Update play symbol if for track_id
+		Update playing track
 		@param track id as int
 	"""
-	def update_play_symbol(self, track_id):
+	def update_playing(self, track_id):
 		for row in self.get_children():
 			if row.get_object_id() == track_id:
 				row.show_widget('icon', True)

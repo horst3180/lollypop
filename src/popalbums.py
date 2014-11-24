@@ -16,7 +16,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 from _thread import start_new_thread
 from time import sleep
 
-from lollypop.widgets import AlbumWidgetSongs
+from lollypop.widgets import ArtistWidget
 from lollypop.config import *
 from lollypop.utils import get_monitor_size
 
@@ -119,7 +119,8 @@ class PopAlbums(Gtk.Popover):
 		view.set_column_spacing(20)
 		view.set_row_spacing(20)
 		view.show()
-		view.get_style_context().add_class('black')
+		if Objects["settings"].get_value('dark-view'):
+			view.get_style_context().add_class('black')
 		return view
 
 	"""

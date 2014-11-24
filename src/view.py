@@ -176,7 +176,7 @@ class ArtistView(View):
 		artist_id = Objects["tracks"].get_artist_id(track_id)
 		if self._albumbox:
 			for widget in self._albumbox.get_children():
-				widget.update_tracks(track_id)
+				widget.update_playing_track(track_id)
 
 	"""
 		Pop an album and add it to the view,
@@ -185,7 +185,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
-			widget = AlbumWidgetSongs(albums.pop(0), self._genre_id)
+			widget = ArtistWidget(albums.pop(0), self._genre_id)
 			widget.show()
 			self._albumbox.add(widget)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
@@ -293,7 +293,7 @@ class AlbumView(View):
 		album_id = Objects["tracks"].get_album_id(track_id)
 		context_widget = self._stack.get_visible_child()
 		if context_widget:
-			context_widget.update_play_symbol(track_id)
+			context_widget.update_playing_track(track_id)
 
 	"""
 		populate context view
@@ -303,7 +303,7 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		view = AlbumWidgetSongs(album_id, self._genre_id)
+		view = ArtistWidget(album_id, self._genre_id)
 		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)

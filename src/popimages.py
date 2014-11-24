@@ -34,7 +34,8 @@ class PopImages(Gtk.Popover):
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._view.connect("child-activated", self._on_activate)
 		self._view.show()
-		self._view.get_style_context().add_class('black')
+		if Objects["settings"].get_value('dark-view'):
+			self._view.get_style_context().add_class('black')
 
 		self.set_property('width-request', 700)
 		self.set_property('height-request', 400)
