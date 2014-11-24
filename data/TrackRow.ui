@@ -81,6 +81,7 @@
       <object class="GtkLabel" id="duration">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
         <style>
           <class name="dim-label"/>
         </style>
