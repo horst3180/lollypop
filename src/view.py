@@ -170,9 +170,9 @@ class ArtistView(View):
 	"""
 	def update_class(self, dark):
 		if dark:
-			self._albumbox.get_style_context().add_class('black')
+			self.get_style_context().add_class('black')
 		else:
-			self._albumbox.get_style_context().remove_class('black')
+			self.get_style_context().remove_class('black')
 
 	"""
 		Calculate content size
@@ -286,9 +286,9 @@ class AlbumView(View):
 	"""
 	def update_class(self, dark):
 		if dark:
-			self._albumbox.get_style_context().add_class('black')
+			self.get_style_context().add_class('black')
 		else:
-			self._albumbox.get_style_context().remove_class('black')
+			self.get_style_context().remove_class('black')
 
 	"""
 		Calculate content size
