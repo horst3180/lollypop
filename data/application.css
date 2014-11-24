@@ -19,3 +19,8 @@ GtkWidget {
 	background-color: @base_color;
   	color: inherit;
 }
+
+.trackrowblack:selected {
+	background-color: @lollypop_base_color;
+	color: @lollypop_text_color;
+}
