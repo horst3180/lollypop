@@ -5,14 +5,15 @@
   <object class="GtkBox" id="row">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_right">50</property>
-    <property name="spacing">10</property>
+    <property name="margin_left">20</property>
+    <property name="margin_right">40</property>
     <child>
       <object class="GtkEventBox" id="eventpos">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
         <property name="margin_left">10</property>
-        <property name="margin_bottom">1</property>
         <property name="above_child">True</property>
         <child>
           <object class="GtkImage" id="menu">
@@ -20,7 +21,6 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.20000000022351741</property>
             <property name="margin_left">10</property>
-            <property name="margin_right">20</property>
             <property name="icon_name">open-menu-symbolic</property>
           </object>
         </child>
