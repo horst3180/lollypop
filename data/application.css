@@ -15,8 +15,13 @@ GtkWidget {
 	background-color: transparent;
 }
 
-.trackrow {
+.trackrow:active {
 	background-color: transparent;
+  	color: inherit;
+}
+
+.trackrow:hover {
+	background-color: alpha(#000000, 0.1);
   	color: inherit;
 }
 
