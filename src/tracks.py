@@ -55,6 +55,8 @@ class TrackRow(Gtk.ListBoxRow):
 		if name == "icon":
 			if show:
 				widget.set_from_icon_name('media-playback-start-symbolic', 1)
+				self.get_style_context().remove_class('trackrow')
+				self.get_style_context().add_class('trackrowplaying')
 			else:
 				widget.clear()
 		else:
