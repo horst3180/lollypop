@@ -12,15 +12,15 @@ GtkWidget {
 }
 
 .trackswidget {
-	background-color: @base_color;
+	background-color: transparent;
 }
 
-.trackrow:selected {
-	background-color: @base_color;
+.trackrow {
+	background-color: transparent;
   	color: inherit;
 }
 
-.trackrowblack:selected {
-	background-color: @lollypop_base_color;
-	color: @lollypop_text_color;
+.trackrow:selected {
+	background-color: transparent;
+  	color: inherit;
 }
