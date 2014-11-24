@@ -31,7 +31,8 @@ class PopAlbums(Gtk.Popover):
 		self._widgets = []
 		self._populating_view = None
 		self._artist_id = None
-
+		self._width = 0
+		
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
@@ -72,8 +73,9 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def do_show(self):
 		width, height = get_monitor_size()
+		self._width = width*0.65
 		self.set_property('height-request', height*0.8)
-		self.set_property('width-request', width*0.65)
+		self.set_property('width-request', self._width)
 		Objects["player"].connect("current-changed", self._update_content)
 		Gtk.Popover.do_show(self)
 	
@@ -147,7 +149,7 @@ class PopAlbums(Gtk.Popover):
 		elif len(albums) > 0:
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
-			widget = ArtistWidget(album_id, genre_id, self.get_allocated_width(), False)
+			widget = ArtistWidget(album_id, genre_id, self._width-10, False)
 			self._widgets.append(widget)
 			widget.show()
 			view.add(widget)
