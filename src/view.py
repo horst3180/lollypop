@@ -122,6 +122,8 @@ class ArtistView(View):
 		self._genre_id = genre_id
 		self._object_id = artist_id
 
+		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+
 		artist_name = Objects["artists"].get_name(artist_id)
 		artist_name = translate_artist_name(artist_name)
 		self._ui.get_object('artist').set_label(artist_name)
@@ -200,7 +202,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
-			widget = ArtistWidget(albums.pop(0), self._genre_id)
+			widget = ArtistWidget(albums.pop(0), self._genre_id, True, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
@@ -326,7 +328,7 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		view = ArtistWidget(album_id, self._genre_id)
+		view = ArtistWidget(album_id, self._genre_id, True, None)
 		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)

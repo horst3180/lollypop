@@ -32,6 +32,8 @@ class PopAlbums(Gtk.Popover):
 		self._populating_view = None
 		self._artist_id = None
 		
+		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
@@ -148,7 +150,7 @@ class PopAlbums(Gtk.Popover):
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
 			#TODO: Understand why - 50 or less is needed
-			widget = ArtistWidget(album_id, genre_id, False)
+			widget = ArtistWidget(album_id, genre_id, False, self._size_group)
 			self._widgets.append(widget)
 			widget.show()
 			view.add(widget)

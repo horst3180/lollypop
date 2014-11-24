@@ -90,8 +90,9 @@ class ArtistWidget(Gtk.Grid):
 		@param genre id as int
 		@param parent width as int
 		@param cover change as bool
+		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, cover_change = True):
+	def __init__(self, album_id, genre_id, cover_change, size_group):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
@@ -102,6 +103,9 @@ class ArtistWidget(Gtk.Grid):
 
 		self._tracks_widget1 = TracksWidget()
 		self._tracks_widget2 = TracksWidget()
+		if size_group:
+			size_group.add_widget(self._tracks_widget1)
+			size_group.add_widget(self._tracks_widget2)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
