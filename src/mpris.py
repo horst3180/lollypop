@@ -104,7 +104,6 @@ class MPRIS(dbus.service.Object):
                 'DesktopEntry': 'lollypop',
                 'SupportedUriSchemes': [],
                 'SupportedMimeTypes': []
-                ],
 			}
 		elif interface == self.MPRIS_PLAYER_IFACE:
 			return {
