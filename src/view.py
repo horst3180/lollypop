@@ -130,7 +130,7 @@ class ArtistView(View):
 
 		self._albumbox = Gtk.Grid()
 		if Objects["settings"].get_value('dark-view'):
-			self._albumbox.get_style_context().add_class('black')
+			self.get_style_context().add_class('black')
 		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
