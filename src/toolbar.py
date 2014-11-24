@@ -256,7 +256,8 @@ class Toolbar():
 
 	"""
 		Update play button with image and status as tooltip
-		@param Gtk.Image, str
+		@param image as Gtk.Image
+		@param status as str
 	"""
 	def _change_play_btn_status(self, image, status):
 		self._play_btn.set_image(image)
