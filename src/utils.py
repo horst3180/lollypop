@@ -36,6 +36,17 @@ def translate_artist_name(name):
 	if len(split) == 2:
 		name = split[1]+" "+split[0]
 	return name
+
+"""
+	Convert seconds to a pretty string
+	@param seconds as int
+"""
+def seconds_to_string(duration):
+	seconds = duration
+	minutes = seconds // 60
+	seconds %= 60
+
+	return '%i:%02i' % (minutes, seconds)
 	
 """
 	Return current monitor size

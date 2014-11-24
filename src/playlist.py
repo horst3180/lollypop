@@ -32,7 +32,7 @@ class PlayListWidget(Gtk.Popover):
 		self._timeout = None
 		self._in_drag = False
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
-		self._label = Gtk.Label(_("Right click on a song to add it to playlist"))
+		self._label = Gtk.Label(_("Empty list"))
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
 		self._model.connect("row-deleted", self._updated_rows)
@@ -64,12 +64,13 @@ class PlayListWidget(Gtk.Popover):
 		self._view.connect('drag-begin', self._on_drag_begin)
 		self._view.connect('drag-end', self._on_drag_end)
 
-		self._scroll = Gtk.ScrolledWindow()
-		self._scroll.set_hexpand(True)
-		self._scroll.set_vexpand(True)
-		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._scroll.add(self._view)
-		self._scroll.show_all()
+		scroll = Gtk.ScrolledWindow()
+		scroll.set_hexpand(True)
+		scroll.set_vexpand(True)
+		scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+		scroll.add(self._view)
+		scroll.show_all()
+		self.add(scroll)
 
 	"""
 		Show playlist popover		
@@ -78,10 +79,10 @@ class PlayListWidget(Gtk.Popover):
 	def show(self):
 		tracks = Objects["player"].get_playlist()
 		if len(tracks) > 0:
-			for child in self.get_children():
+			for child in self._view.get_children():
 				child.hide()
-				self.remove(child)
-			self.add(self._scroll)
+				self._view.remove(child)
+
 			self._view.show()
 			for track_id in tracks:
 				album_id = Objects["tracks"].get_album_id(track_id)
@@ -91,13 +92,6 @@ class PlayListWidget(Gtk.Popover):
 				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
 				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + 
 									track_name, self._del_pixbuf, track_id])
-				
-		else:
-			for child in self.get_children():
-				child.hide()
-				self.remove(child)
-			self.add(self._label)
-			self._label.show()
 		Gtk.Popover.show(self)
 
 	"""

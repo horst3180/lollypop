@@ -19,9 +19,11 @@ app_PYTHON = \
 	view.py\
 	mpris.py\
 	search.py\
+	tracks.py\
 	widgets.py\
 	player.py\
 	popimages.py\
 	popalbums.py\
+	popmenu.py\
 	collectionscanner.py
 

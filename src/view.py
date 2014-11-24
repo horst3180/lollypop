@@ -293,7 +293,7 @@ class AlbumView(View):
 		album_id = Objects["tracks"].get_album_id(track_id)
 		context_widget = self._stack.get_visible_child()
 		if context_widget:
-			context_widget.update_tracks(track_id)
+			context_widget.update_play_symbol(track_id)
 
 	"""
 		populate context view

@@ -32,8 +32,6 @@ class PopAlbums(Gtk.Popover):
 		self._populating_view = None
 		self._artist_id = None
 
-		Objects["player"].connect("current-changed", self._update_content)
-
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
@@ -70,19 +68,21 @@ class PopAlbums(Gtk.Popover):
 			start_new_thread(self._populate, (view , artist_id, track_id))
 
 	"""
-		Resize popover
+		Resize popover and set signals callback
 	"""
 	def do_show(self):
 		width, height = get_monitor_size()
 		self.set_property('height-request', height*0.8)
 		self.set_property('width-request', width*0.65)
+		Objects["player"].connect("current-changed", self._update_content)
 		Gtk.Popover.do_show(self)
 	
 	"""
-		Reset artist id
+		Reset artist id and clean signals callback
 	"""
 	def do_hide(self):
 		self._artist_id = None
+		Objects["player"].disconnect_by_func(self._update_content)
 		Gtk.Popover.do_hide(self)
 		for child in self._stack.get_children():
 			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)

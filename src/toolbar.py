@@ -19,7 +19,7 @@ from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
 from lollypop.playlist import PlayListWidget
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, seconds_to_string
 from lollypop.popalbums import PopAlbums
 
 """
@@ -134,7 +134,7 @@ class Toolbar():
 			self._progress.set_value(0.0)
 			duration = Objects["tracks"].get_length(track_id)
 			self._progress.set_range(0.0, duration * 60)
-			self._total_time_label.set_text(Objects["player"].seconds_to_string(duration))
+			self._total_time_label.set_text(seconds_to_string(duration))
 			self._total_time_label.show()
 			self._timelabel.set_text("0:00")
 			self._timelabel.show()
@@ -196,7 +196,7 @@ class Toolbar():
 	def _on_position_changed(self, obj, value):
 		if not self._seeking:
 			self._progress.set_value(value)
-			self._timelabel.set_text(Objects["player"].seconds_to_string(value/60))
+			self._timelabel.set_text(seconds_to_string(value/60))
 	
 	"""
 		Update buttons and progress bar

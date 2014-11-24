@@ -10,3 +10,12 @@ GtkWidget {
 	background-color: @lollypop_base_color;
 	color: @lollypop_text_color;
 }
+
+.trackswidget {
+	background-color: @base_color;
+}
+
+.trackrow:selected {
+	background-color: @base_color;
+  	color: inherit;
+}

@@ -183,7 +183,8 @@ class Player(GObject.GObject):
 	def next(self, force = True, sql = None):
 		# Look first at user playlist
 		if len(self._playlist) > 0:
-			track_id = self._playlist.pop(0)
+			track_id = self._playlist[0]
+			self.del_from_playlist(track_id)
 			if force:
 				self.load(track_id)
 			else:
@@ -324,30 +325,21 @@ class Player(GObject.GObject):
 		self._albums = []
 
 	"""
-		Convert seconds to a pretty string
-		@param seconds as int
-	"""
-	def seconds_to_string(self, duration):
-		seconds = duration
-		minutes = seconds // 60
-		seconds %= 60
-
-		return '%i:%02i' % (minutes, seconds)
-
-	"""
 		Add track to playlist
 		@param track id as int
 	"""
 	def add_to_playlist(self, track_id):
 		self._playlist.append(track_id)
-
+		self.emit("playlist-changed")
+		
 	"""
 		Remove track from playlist
 		@param track id as int
 	"""
 	def del_from_playlist(self, track_id):
 		self._playlist.remove(track_id)
-
+		self.emit("playlist-changed")
+		
 	"""
 		Set playlist
 		@param [ids as int]
@@ -355,6 +347,7 @@ class Player(GObject.GObject):
 	def set_playlist(self, new_playlist):
 		self._playlist = new_playlist
 		self.emit("playlist-changed")
+		
 	"""
 		Return playlist
 		@return [ids as int]
@@ -376,7 +369,7 @@ class Player(GObject.GObject):
 		@return position as int
 	"""
 	def get_track_position(self, track_id):
-		return self._playlist.index(track_id)
+		return self._playlist.index(track_id)+1
 
 #######################
 # PRIVATE             #

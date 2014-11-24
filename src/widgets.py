@@ -17,6 +17,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.config import *
+from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
 from lollypop.popimages import PopImages
@@ -93,17 +94,22 @@ class AlbumWidgetSongs(Gtk.Grid):
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
 		
-		self._tracks_ui = []
-		self._tracks = []
 		self._artist_id = Objects["albums"].get_artist_id(album_id)
 		self._album_id = album_id
 		self._genre_id = genre_id
 
 		self.set_vexpand(False)
 		self.set_hexpand(False)
-		grid = self._ui.get_object('grid2')
 
-		self._nb_tracks = Objects["albums"].get_count(album_id)
+		self._tracks_widget1 = TracksWidget()
+		self._tracks_widget2 = TracksWidget()
+		self._tracks_widget1.connect('activated', self._on_activated)
+		self._tracks_widget2.connect('activated', self._on_activated)
+		self._ui.get_object('tracks').add(self._tracks_widget1)
+		self._ui.get_object('tracks').add(self._tracks_widget2)
+		self._tracks_widget1.show()
+		self._tracks_widget2.show()
+
 		self._cover = self._ui.get_object('cover')
 		self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
 		self._ui.get_object('title').set_label(Objects["albums"].get_name(album_id))
@@ -114,31 +120,15 @@ class AlbumWidgetSongs(Gtk.Grid):
 			self._eventbox = self._ui.get_object('eventbox')
 			self._eventbox.connect("button-press-event", self._show_web_art)
 
-		Objects["player"].connect("playlist-changed", self._update_pos_labels)
-
 		self._add_tracks(album_id)
 
 	"""
-		Update tracks settings current tracks as bold and adding play symbol
+		Update playing icon on track
 		@param track id as int
 	"""
-	def update_tracks(self, track_id):
-		for track_widget in self._tracks:
-			# Update position label
-			self._update_pos_label(track_widget)
-			
-			track_name = Objects["tracks"].get_name(track_widget.id)
-			# If we are listening to a compilation, prepend artist name
-			if self._artist_id == COMPILATIONS or self._artist_id != Objects["tracks"].get_artist_id(track_widget.id):
-				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
-				track_name =  artist_name + " - " + track_name
-
-			# Update playing label
-			if track_widget.id == track_id:
-				track_widget.playing.show()
-			else:
-				if track_widget.playing.is_visible():
-					track_widget.playing.hide()
+	def update_play_symbol(self, track_id):
+		self._tracks_widget1.update_play_symbol(track_id)	
+		self._tracks_widget2.update_play_symbol(track_id)
 
 	"""
 		Update cover for album id
@@ -164,77 +154,35 @@ class AlbumWidgetSongs(Gtk.Grid):
 		@param album id as int
 	"""
 	def _add_tracks(self, album_id):
-		i = 0
-
-		for track_id, name, artist_id, filepath, length in Objects["albums"].get_tracks_infos(album_id):
+		i = 1       					   
+		mid_tracks = int(0.5+Objects["albums"].get_count(album_id)/2)
+		for track_id, title, artist_id, filepath, length in Objects["albums"].get_tracks_infos(album_id):
+		
 			# If we are listening to a compilation, prepend artist name
 			if self._artist_id == COMPILATIONS or self._artist_id != artist_id:
 				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
-				name =  artist_name + " - " + name
-			ui = Gtk.Builder()
-			self._tracks_ui.append(ui)
-			ui.add_from_resource('/org/gnome/Lollypop/TrackWidget.ui')
-			track_widget = ui.get_object('eventbox1')
-			self._tracks.append(track_widget)
-			track_widget.playing = ui.get_object('image1')
-			track_widget.playing.set_alignment(1, 0.6)
-			
-			track_widget.connect("button-release-event", self._track_selected)
-
-			ui.get_object('num').set_text(str(len(self._tracks)))
-			track_widget.title = ui.get_object('title')
-			track_widget.id = track_id
-			if not track_id == Objects["player"].get_current_track_id():
-				track_widget.playing.set_no_show_all('True')
-			track_widget.title.set_text(name)
-
-			ui.get_object('title').set_alignment(0.0, 0.5)
-			self._ui.get_object('tracks').attach(track_widget,
-                    					   int(i / (self._nb_tracks / 2)),
-                    					   int(i % (self._nb_tracks / 2)), 1, 1
-                					   )
-			ui.get_object('duration').set_text(Objects["player"].seconds_to_string(length))
-			track_widget.play_pos = ui.get_object('play-pos')
-			self._update_pos_label(track_widget)
-			track_widget.show_all()
+				name =  artist_name + " - " + title
+				
+			# Get track position in waiting list
+			pos = None
+			if Objects["player"].is_in_playlist(track_id):
+				pos = Objects["player"].get_track_position(track_id)
+				
+			if i <= mid_tracks:
+				self._tracks_widget1.add_track(track_id, i, title, length, pos) 
+			else:
+				self._tracks_widget2.add_track(track_id, i, title, length, pos) 
 			i += 1
 	
 	"""
-		On track selected, emit "new-playlist" with track_id as arg
+		On track activation, play track
+		@param widget as TracksWidget
+		@param track id as int
 	"""		
-	def _track_selected(self, widget, event):
-		# Left click => Play
-		if event.button == 1:
-			for track_widget in self._tracks:
-				if track_widget == widget:
-					Objects["player"].load(widget.id)
-					if not Objects["player"].is_party():
-						Objects["player"].set_albums(self._artist_id, self._genre_id, widget.id)
-		# Add/Remove to/from playlist		
-		else:
-			if Objects["player"].is_in_playlist(widget.id):
-				Objects["player"].del_from_playlist(widget.id)
-			else:
-				Objects["player"].add_to_playlist(widget.id)
-			self._update_pos_labels()
-
-	"""
-		Update all position labels
-	"""
-	def _update_pos_labels(self, obj = None):
-		for track_widget in self._tracks:
-			self._update_pos_label(track_widget)
-
-	"""
-		Update postion label for track widget
-		@param track widget
-	"""
-	def _update_pos_label(self, track_widget):
-		if Objects["player"].is_in_playlist(track_widget.id):
-			pos = Objects["player"].get_track_position(track_widget.id) + 1
-			track_widget.play_pos.set_text(str(pos))
-		else:
-			track_widget.play_pos.set_text("")
+	def _on_activated(self, widget, track_id):
+		Objects["player"].load(track_id)
+		if not Objects["player"].is_party():
+			Objects["player"].set_albums(self._artist_id, self._genre_id, track_id)
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)
