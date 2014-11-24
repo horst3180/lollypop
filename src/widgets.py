@@ -86,9 +86,12 @@ class ArtistWidget(Gtk.Grid):
 			- Album name
 			- Albums tracks aligned on two columns
 		if cover_add True, let user change album cover
-		@param album id as int, genre id as int, bool
+		@param album id as int
+		@param genre id as int
+		@param parent width as int
+		@param cover change as bool
 	"""
-	def __init__(self, album_id, genre_id, cover_add = True):
+	def __init__(self, album_id, genre_id, width, cover_change = True):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
@@ -97,11 +100,8 @@ class ArtistWidget(Gtk.Grid):
 		self._album_id = album_id
 		self._genre_id = genre_id
 
-		self.set_vexpand(False)
-		self.set_hexpand(False)
-
-		self._tracks_widget1 = TracksWidget()
-		self._tracks_widget2 = TracksWidget()
+		self._tracks_widget1 = TracksWidget((width - ART_SIZE_BIG - 50)/2)
+		self._tracks_widget2 = TracksWidget((width - ART_SIZE_BIG - 50)/2)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
@@ -115,7 +115,7 @@ class ArtistWidget(Gtk.Grid):
 		self._ui.get_object('year').set_label(Objects["albums"].get_year(album_id))
 		self.add(self._ui.get_object('ArtistWidget'))
 
-		if cover_add:
+		if cover_change:
 			self._eventbox = self._ui.get_object('eventbox')
 			self._eventbox.connect("button-press-event", self._show_web_art)
 

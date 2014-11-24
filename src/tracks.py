@@ -143,8 +143,9 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
-	def __init__(self):
+	def __init__(self, width):
 		Gtk.ListBox.__init__(self)
+		self._width = width
 		self.connect("row-activated", self._on_activate)
 		self.get_style_context().add_class('trackswidget')
 
@@ -197,7 +198,13 @@ class TracksWidget(Gtk.ListBox):
 		Objects["player"].disconnect_by_func(self._update_pos_label)
 		Gtk.ListBox.do_hide(self)
 	
-
+	"""
+		Set preferred widget width
+		@return: (width as int, width as int)
+	"""
+	def do_get_preferred_width(self):
+		return (self._width, self._width)
+		
 #######################
 # PRIVATE             #
 #######################
