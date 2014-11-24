@@ -55,7 +55,7 @@ class PopAlbums(Gtk.Popover):
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 		if self._artist_id == artist_id:
 			for widget in self._widgets:
-				widget.update_tracks(track_id)
+				widget.update_playing_track(track_id)
 		else:
 			self._widget = []
 			self._artist_id = artist_id
