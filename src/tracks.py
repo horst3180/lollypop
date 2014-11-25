@@ -227,6 +227,10 @@ class TracksWidget(Gtk.ListBox):
 		@param row as TrackRow
 	"""
 	def _on_activate(self, widget, row):
-		if not row.is_menu_visible():
-			self.emit('activated', row.get_object_id())
+		# Check all row as Gtk seems to be buggy when having an eventbox in a Gtk.ListRow
+		# Sometimes, wrong row get activated signal when clicking on another row's eventbox
+		for row in self.get_children():
+			if row.is_menu_visible():
+				return
+		self.emit('activated', row.get_object_id())
 		
