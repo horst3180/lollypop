@@ -15,7 +15,7 @@ app_PYTHON = \
 	database_upgrade.py\
 	albumart.py\
 	selectionlist.py\
-	waitlist.py\
+	queue.py\
 	view.py\
 	mpris.py\
 	search.py\

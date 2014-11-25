@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
-from lollypop.waitlist import WaitListWidget
+from lollypop.queue import QueueWidget
 from lollypop.utils import translate_artist_name, seconds_to_string
 from lollypop.popalbums import PopAlbums
 
@@ -84,10 +84,10 @@ class Toolbar():
 		self._search = SearchWidget()
 		self._search.set_relative_to(search_button)
 
-		waitlist_button = self._ui.get_object('waitlist-button')
-		waitlist_button.connect("clicked", self._on_waitlist_btn_clicked)
-		self._waitlist = WaitListWidget()
-		self._waitlist.set_relative_to(waitlist_button)
+		queue_button = self._ui.get_object('queue-button')
+		queue_button.connect("clicked", self._on_queue_btn_clicked)
+		self._queue = QueueWidget()
+		self._queue.set_relative_to(queue_button)
 
 		self.header_bar.set_show_close_button(True)
 
@@ -248,11 +248,11 @@ class Toolbar():
 		self._search.show()
 		
 	"""
-		Show waitlist widget on waitlist button clicked
+		Show queue widget on queue button clicked
 		@param obj as unused
 	"""
-	def _on_waitlist_btn_clicked(self, obj):
-		self._waitlist.show()
+	def _on_queue_btn_clicked(self, obj):
+		self._queue.show()
 
 	"""
 		Update play button with image and status as tooltip

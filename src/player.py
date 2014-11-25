@@ -27,7 +27,7 @@ class Player(GObject.GObject):
         'current-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
-        'waitlist-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'queue-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
@@ -48,7 +48,7 @@ class Player(GObject.GObject):
 		self._shuffle_albums_history = []
 		self._party = False
 		self._party_ids = []
-		self._waitlist = []
+		self._queue = []
 
 		self._playbin = Gst.ElementFactory.make('playbin', 'player')
 		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
@@ -181,10 +181,10 @@ class Player(GObject.GObject):
 		a fresh sqlite cursor should be pass as sql if we are in a thread
 	"""
 	def next(self, force = True, sql = None):
-		# Look first at user waitlist
-		if len(self._waitlist) > 0:
-			track_id = self._waitlist[0]
-			self.del_from_waitlist(track_id)
+		# Look first at user queue
+		if len(self._queue) > 0:
+			track_id = self._queue[0]
+			self.del_from_queue(track_id)
 			if force:
 				self.load(track_id)
 			else:
@@ -325,66 +325,66 @@ class Player(GObject.GObject):
 		self._albums = []
 
 	"""
-		Append track to waitlist,
+		Append track to queue,
 		remove previous track if exist
 		@param track id as int
 	"""
-	def append_to_waitlist(self, track_id):
-		if track_id in self._waitlist:
-			self._waitlist.remove(track_id)
-		self._waitlist.append(track_id)
-		self.emit("waitlist-changed")
+	def append_to_queue(self, track_id):
+		if track_id in self._queue:
+			self._queue.remove(track_id)
+		self._queue.append(track_id)
+		self.emit("queue-changed")
 		
 	"""
-		Prepend track to waitlist,
+		Prepend track to queue,
 		remove previous track if exist
 		@param track id as int
 	"""
-	def prepend_to_waitlist(self, track_id):
-		if track_id in self._waitlist:
-			self._waitlist.remove(track_id)
-		self._waitlist.insert(0, track_id)
-		self.emit("waitlist-changed")
+	def prepend_to_queue(self, track_id):
+		if track_id in self._queue:
+			self._queue.remove(track_id)
+		self._queue.insert(0, track_id)
+		self.emit("queue-changed")
 		
 	"""
-		Remove track from waitlist
+		Remove track from queue
 		@param track id as int
 	"""
-	def del_from_waitlist(self, track_id):
-		if track_id in self._waitlist:
-			self._waitlist.remove(track_id)
-			self.emit("waitlist-changed")
+	def del_from_queue(self, track_id):
+		if track_id in self._queue:
+			self._queue.remove(track_id)
+			self.emit("queue-changed")
 		
 	"""
-		Set waitlist
+		Set queue
 		@param [ids as int]
 	"""
-	def set_waitlist(self, new_waitlist):
-		self._waitlist = new_waitlist
-		self.emit("waitlist-changed")
+	def set_queue(self, new_queue):
+		self._queue = new_queue
+		self.emit("queue-changed")
 		
 	"""
-		Return waitlist
+		Return queue
 		@return [ids as int]
 	"""
-	def get_waitlist(self):
-		return self._waitlist
+	def get_queue(self):
+		return self._queue
 
 	"""
-		True if track_id exist in waitlist
+		True if track_id exist in queue
 		@param track id as int
 		@return bool
 	"""
-	def is_in_waitlist(self, track_id):
-		return track_id in self._waitlist
+	def is_in_queue(self, track_id):
+		return track_id in self._queue
 
 	"""
-		Return track position in waitlist
+		Return track position in queue
 		@param track id as int
 		@return position as int
 	"""
 	def get_track_position(self, track_id):
-		return self._waitlist.index(track_id)+1
+		return self._queue.index(track_id)+1
 
 #######################
 # PRIVATE             #
