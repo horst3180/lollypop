@@ -2,7 +2,9 @@ Lollypop
 ========================
 
 Lollypop is a new GNOME music playing application.
-http://gnumdk.github.io/lollypop/
+
+
+For users: http://gnumdk.github.io/lollypop/
 
 
 It provides:
