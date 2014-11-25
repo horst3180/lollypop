@@ -111,8 +111,6 @@ class AlbumArt:
 																   							size,
 															      							False,
 																  							None)
-									pixbuf.savev(CACHE_PATH, "png", [], [])
-									return pixbuf
 								elif tag == "covr":
 									for data in filetag.tags["covr"]:
 										stream = Gio.MemoryInputStream.new_from_data(data, None)
@@ -120,13 +118,12 @@ class AlbumArt:
 																   							size,
 															      							False,
 																  							None)
-										pixbuf.savev(CACHE_PATH, "png", [], [])
-										return pixbuf
 					except Exception as e:
 						print(e)
 						pass
 
-					pixbuf = self._get_default_art(album_id, size)
+					if not pixbuf:
+						pixbuf = self._get_default_art(album_id, size)
 					pixbuf.savev(CACHE_PATH, "png", [], [])
 			else:
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
