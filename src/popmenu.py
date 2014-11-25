@@ -51,7 +51,11 @@ class PopMenu(Gio.Menu):
 				delete = False
 		else:
 			tracks = Objects["albums"].get_tracks(object_id)
-			if not bool(set(waitlist) & set(tracks)):
+			union = set(waitlist) & set(tracks)
+			if len(union) == len(tracks):
+				append = False
+				prepend = False
+			elif not bool(union):
 				delete = False
 		if append:
 			append_wait_list_action.connect('activate', self._append_to_waitlist, object_id)
