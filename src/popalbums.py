@@ -150,7 +150,7 @@ class PopAlbums(Gtk.Popover):
 			album_id = albums.pop(0)
 			genre_id = Objects["albums"].get_genre(album_id)
 			#TODO: Understand why - 50 or less is needed
-			widget = ArtistWidget(album_id, genre_id, False, self._size_group)
+			widget = ArtistWidget(album_id, genre_id, False, False, self._size_group)
 			self._widgets.append(widget)
 			widget.show()
 			view.add(widget)

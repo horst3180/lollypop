@@ -240,9 +240,9 @@ class Player(GObject.GObject):
 		self._shuffle = shuffle
 		if not shuffle and self._current_track_id != -1:
 			album_id = Objects["tracks"].get_album_id(self._current_track_id)
-			artist_id = Objects["artists"].get_id(album_id)
-			genre_id = Objects["albums"].get_genre(album_id)
-			self.set_albums(artist_id, genre_id, self._current_track_id)
+			tracks = Objects["albums"].get_tracks(self._current_track_album_id)
+			self._current_track_album_id = album_id
+			self._current_track_number = tracks.index(self._current_track_id)
 
 	"""
 		Set party mode on if party is True
@@ -270,7 +270,7 @@ class Player(GObject.GObject):
 			album_id = Objects["tracks"].get_album_id(self._current_track_id)
 			artist_id = Objects["artists"].get_id(album_id)
 			genre_id = Objects["albums"].get_genre(album_id)
-			self.set_albums(artist_id, genre_id, self._current_track_id)
+			self.set_albums(artist_id, genre_id, self._current_track_id, True)
 
 	"""
 		Set party ids to ids
@@ -295,10 +295,23 @@ class Player(GObject.GObject):
 		return self._party
 
 	"""
+		Set album as current album list (for next/prev)
+		Set track as current track in album
+		@param album_id as int
+		@param track_id as int
+	"""
+	def set_album(self, album_id, track_id):
+		self._albums = [ album_id ]
+		self._current_track_album_id = album_id
+		tracks = Objects["albums"].get_tracks(album_id)
+		self._current_track_number = tracks.index(track_id) 
+
+	"""
 		Set album list (for next/prev)
+		Set track as current track in albums
 		@param artist id as int, genre id as int, track id as int
 	"""
-	def set_albums(self, artist_id, genre_id, track_id):
+	def set_albums(self, artist_id, genre_id, track_id, full):
 		filepath = Objects["tracks"].get_path(track_id)
 		if path.exists(filepath):
 			self._albums = []
@@ -309,6 +322,8 @@ class Player(GObject.GObject):
 			# We are in popular view, add populars albums
 			elif genre_id == POPULARS:
 				self._albums = Objects["albums"].get_populars()
+			elif not full:
+				self._albums = Objects["albums"].get_ids(artist_id, genre_id)
 			else:
 			# We are in album/artist view, add all albums from current genre
 				self._albums = Objects["albums"].get_compilations(genre_id)

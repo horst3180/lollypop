@@ -213,9 +213,9 @@ class SearchWidget(Gtk.Popover):
 			genre_id = Objects["albums"].get_genre(value_id)
 			# Get first track from album
 			track_id = Objects["albums"].get_tracks(value_id)[0]
-			artist_id = Objects["artists"].get_id(value_id)
 			Objects["player"].load(track_id)
 			if not Objects["player"].is_party():
-				Objects["player"].set_albums(artist_id, genre_id, track_id)
+				album_id = Objects["tracks"].get_album_id(track_id)
+				Objects["player"].set_album(album_id, track_id)
 
 
