@@ -16,6 +16,7 @@ It provides:
 
 === Depends on ===
 - gtk3
+- python3
 - intltool (make)
 - itstool (make)
 - python (make)
@@ -23,6 +24,7 @@ It provides:
 - python-dbus
 - python-gobject
 - python-mutagen
+- python-sqlite
 
 === Building from git ===
 
