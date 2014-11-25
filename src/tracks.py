@@ -28,7 +28,6 @@ class TrackRow(Gtk.ListBoxRow):
 		self._object_id = None
 		self._num = 0
 		self._number = 0
-		self._menu_visible = False
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
 		self._row_widget = self._ui.get_object('row')
@@ -109,13 +108,6 @@ class TrackRow(Gtk.ListBoxRow):
 	"""
 	def get_number(self):
 		return self._number
-		
-	"""
-		Return True if menu is visible
-		@return bool
-	"""
-	def is_menu_visible(self):
-		return self._menu_visible
 
 #######################
 # PRIVATE             #
@@ -125,18 +117,9 @@ class TrackRow(Gtk.ListBoxRow):
 		@param widget as Gtk.Button
 	"""
 	def _pop_menu(self, widget):
-		self._menu_visible = True
 		menu = PopMenu(self._object_id, False)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
-		popover.connect("closed", self._on_pop_closed)
 		popover.show()
-
-	"""
-		Mark menu as not visible
-		@param widget as Gtk.Popover
-	"""
-	def _on_pop_closed(self, widget):
-		self._menu_visible = False
 
 ######################################################################
 ######################################################################
