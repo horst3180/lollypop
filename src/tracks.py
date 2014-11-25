@@ -27,6 +27,7 @@ class TrackRow(Gtk.ListBoxRow):
 		Gtk.ListBoxRow.__init__(self)
 		self._object_id = None
 		self._num = 0
+		self._number = 0
 		self._menu_visible = False
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
@@ -100,14 +101,14 @@ class TrackRow(Gtk.ListBoxRow):
 		@param num as int
 	"""
 	def set_number(self, num):
-		self._position = num
+		self._number = num
 		
 	"""
 		Get track number
 		@return num as int
 	"""
 	def get_number(self):
-		return self._position
+		return self._number
 		
 	"""
 		Return True if menu is visible
@@ -171,7 +172,7 @@ class TracksWidget(Gtk.ListBox):
 			track_row.set_label('num', '''<span foreground="#72729f9fcfcf" font_desc="Bold">%s</span>''' % str(pos))
 		else:
 			track_row.set_label('num', str(num))
-			track_row.set_number(num)
+		track_row.set_number(num)
 		track_row.set_label('title', escape(title))
 		track_row.set_label('duration', seconds_to_string(length))
 		track_row.set_object_id(track_id)
