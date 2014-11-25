@@ -179,9 +179,9 @@ class ArtistWidget(Gtk.Grid):
 				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
 				name =  artist_name + " - " + title
 				
-			# Get track position in waiting list
+			# Get track position in queue
 			pos = None
-			if Objects["player"].is_in_waitlist(track_id):
+			if Objects["player"].is_in_queue(track_id):
 				pos = Objects["player"].get_track_position(track_id)
 				
 			if i <= mid_tracks:

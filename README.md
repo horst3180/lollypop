@@ -15,6 +15,9 @@ It provides:
 - Context artist view
 
 Changes:
+* 0.8.7:
+  - Rewrite artist view
+  - Add new queue options
 * 0.8.6:
   - Fix cover popup placement
   - Fix empty covers in notifications

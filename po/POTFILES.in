@@ -16,7 +16,7 @@ src/database_tracks.py
 src/database_genres.py
 src/albumart.py
 src/selectionlist.py
-src/waitlist.py
+src/queue.py
 src/view.py
 src/popmenu.py
 src/popimages.py
