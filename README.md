@@ -2,6 +2,8 @@ Lollypop
 ========================
 
 Lollypop is a new GNOME music playing application.
+http://gnumdk.github.io/lollypop/
+
 
 It provides:
 - mp3/4, ogg and flac.
