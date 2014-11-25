@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, Pango, PangoCairo
 import cairo
+from cgi import escape
 import os, json
 import urllib.request
 import urllib.parse
@@ -173,30 +174,68 @@ class AlbumArt:
 
 
 	"""
-		Construct a cover album based on album id
+		Construct an empty cover album
 		@param album id as int
 		@param pixbuf size as int
 		@return pixbuf
 	"""
 	def _get_default_art(self, album_id, size):
 		album_name = Objects["albums"].get_name(album_id)
+		artist_id = Objects["albums"].get_artist_id(album_id)
+		artist_name = Objects["artists"].get_name(artist_id)
+		center = size / 2
 		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
 		ctx = cairo.Context(surface)
-		r = uniform(0.05, 0.9)
-		g = uniform(0.05, 0.9)
-		b = uniform(0.05, 0.9)
-		ctx.set_source_rgba(r, g ,b, 1)
+		ctx.save()
+		ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0)
 		ctx.move_to(0, 0)
 		ctx.rectangle(0, 0, size, size)
 		ctx.fill()
 		ctx.save()
-		ctx = cairo.Context(surface)
-		layout = PangoCairo.create_layout(ctx)
-		layout.set_markup('''<span foreground="white" font_desc="Sans %s"><b>%s</b></span>''' % (size/4, album_name[0]))
-		char_width = layout.get_size()[0]/Pango.SCALE
-		char_height = layout.get_size()[1]/Pango.SCALE
-		ctx.move_to(size/2 - char_width/2, size/2 - char_height/2)
+		ctx.arc(center, center, size/2, 0.0, 2.0 * pi);
+		ctx.set_source_rgba(0.0, 0.0, 0.0, 1.0)
+		ctx.fill()
+		ctx.restore()
 		ctx.save()
+		r = uniform(0.05, 0.9)
+		g = uniform(0.05, 0.9)
+		b = uniform(0.05, 0.9)
+		ctx.arc(center, center, size/6.5, 0.0, 2.0 * pi);
+		ctx.set_source_rgba(r, g ,b, 0.8)
+		ctx.fill()
+		ctx.restore()
+		ctx.save()
+		ctx.arc(center, center, size/70, 0.0, 2.0 * pi);
+		ctx.set_source_rgba(1, 1, 1, 1)
+		ctx.fill()
+		ctx.restore()
+		ctx.save()
+		ctx.set_source_rgba(1, 1, 1, 0.2)
+		ctx.set_line_width(1)
+		circle_size = size/6.5
+		while circle_size < size/2:
+			ctx.arc(center, center, circle_size, 0.0, 2.0 * pi);
+			ctx.stroke()
+			circle_size += 2
+		ctx.restore()
+		ctx.save()
+		layout = PangoCairo.create_layout(ctx)
+		layout.set_width(size/6.5*Pango.SCALE)
+		layout.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+		layout.set_markup('''<span foreground="white" font_desc="Sans %s">%s</span>''' % (size/60, escape(artist_name)))
+		string_width = layout.get_size()[0]/Pango.SCALE
+		string_height = layout.get_size()[1]/Pango.SCALE
+		ctx.move_to(center - string_width/2, center - 10 - string_height)
+		PangoCairo.show_layout(ctx, layout)
+		ctx.restore()
+		ctx.save()
+		layout = PangoCairo.create_layout(ctx)
+		layout.set_width(size/6.5*Pango.SCALE)
+		layout.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+		layout.set_markup('''<span foreground="white" font_desc="Sans %s">%s</span>''' % (size/60, escape(album_name)))
+		string_width = layout.get_size()[0]/Pango.SCALE
+		string_height = layout.get_size()[1]/Pango.SCALE
+		ctx.move_to(center - string_width/2, center + 10 - string_height/2)
 		PangoCairo.show_layout(ctx, layout)
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
 
