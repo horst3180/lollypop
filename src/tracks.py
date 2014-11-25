@@ -126,7 +126,7 @@ class TrackRow(Gtk.ListBoxRow):
 	"""
 	def _pop_menu(self, widget):
 		self._menu_visible = True
-		menu = PopMenu(self._object_id)
+		menu = PopMenu(self._object_id, False)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
 		popover.connect("closed", self._on_pop_closed)
 		popover.show()

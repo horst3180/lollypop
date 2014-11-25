@@ -19,6 +19,7 @@ from lollypop.config import *
 from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
+from lollypop.popmenu import PopMenu
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
@@ -122,6 +123,8 @@ class ArtistWidget(Gtk.Grid):
 		if popover:
 			self._eventbox = self._ui.get_object('eventbox')
 			self._eventbox.connect("button-press-event", self._show_web_art)
+			self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
+			self._ui.get_object('menu').show()
 
 		self._add_tracks(album_id)
 
@@ -151,6 +154,16 @@ class ArtistWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Popup menu for album
+		@param widget as Gtk.Button
+		@param album id as int
+	"""
+	def _pop_menu(self, widget, album_id):
+		menu = PopMenu(album_id, True)
+		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+		popover.show()
 
 	"""
 		Add tracks for album_id to Album widget

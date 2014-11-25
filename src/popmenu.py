@@ -22,26 +22,45 @@ from lollypop.config import *
 class PopMenu(Gio.Menu):
 	"""
 		Init menu model
+		@param: object id as int
+		@param: is album as bool
 	"""
-	def __init__(self, track_id):
+	def __init__(self, object_id, is_album):
 		Gio.Menu.__init__(self)
-		
+		self._is_album = is_album
 		app = Gio.Application.get_default()
 
-		wait_list_action = Gio.SimpleAction(name="wait_list_action")
-		app.add_action(wait_list_action)
+		append_wait_list_action = Gio.SimpleAction(name="append_wait_list_action")
+		app.add_action(append_wait_list_action)
 		prepend_wait_list_action = Gio.SimpleAction(name="prepend_wait_list_action")
 		app.add_action(prepend_wait_list_action)
+		del_wait_list_action = Gio.SimpleAction(name="del_wait_list_action")
+		app.add_action(del_wait_list_action)
 		waitlist = Objects["player"].get_waitlist()
-		if track_id in waitlist:
-			wait_list_action.connect('activate', self._del_from_waitlist, track_id)
-			self.append(_("Remove from waiting list"), 'app.wait_list_action')
+		append = True
+		prepend = True
+		delete = True
+		if not is_album:
+			if object_id in waitlist:
+				if len(waitlist) > 0 and waitlist[0] == object_id:
+					prepend = False
+				append = False
+			else:
+				delete = False
 		else:
-			wait_list_action.connect('activate', self._append_to_waitlist, track_id)
-			self.append(_("Add to waiting list"), 'app.wait_list_action')
-			prepend_wait_list_action.connect('activate', self._prepend_to_waitlist, track_id)
-			self.append(_("Next track"), 'app.prepend_wait_list_action')
-		
+			tracks = Objects["albums"].get_tracks(object_id)
+			if not bool(set(waitlist) & set(tracks)):
+				delete = False
+		if append:
+			append_wait_list_action.connect('activate', self._append_to_waitlist, object_id)
+			self.append(_("Add to waiting list"), 'app.append_wait_list_action')
+		if prepend:
+			prepend_wait_list_action.connect('activate', self._prepend_to_waitlist, object_id)
+			self.append(_("Play next"), 'app.prepend_wait_list_action')
+		if delete:
+			del_wait_list_action.connect('activate', self._del_from_waitlist, object_id)
+			self.append(_("Remove from waiting list"), 'app.del_wait_list_action')
+			
 #######################
 # PRIVATE             #
 #######################		
@@ -53,7 +72,11 @@ class PopMenu(Gio.Menu):
 		@param track id as int
 	"""
 	def _append_to_waitlist(self, action, variant, data):
-		Objects["player"].append_to_waitlist(data)
+		if self._is_album:
+			for track_id in Objects["albums"].get_tracks(data):
+				Objects["player"].append_to_waitlist(track_id)
+		else:
+			Objects["player"].append_to_waitlist(data)
 		
 	"""
 		Prepend track id to waiting list
@@ -62,7 +85,11 @@ class PopMenu(Gio.Menu):
 		@param track id as int
 	"""
 	def _prepend_to_waitlist(self, action, variant, data):
-		Objects["player"].prepend_to_waitlist(data)
+		if self._is_album:
+			for track_id in reversed(Objects["albums"].get_tracks(data)):
+				Objects["player"].prepend_to_waitlist(track_id)
+		else:
+			Objects["player"].prepend_to_waitlist(data)
 		
 	"""
 		Delete track id from waiting list
@@ -71,5 +98,9 @@ class PopMenu(Gio.Menu):
 		@param track id as int
 	"""
 	def _del_from_waitlist(self, action, variant, data):
-		Objects["player"].del_from_waitlist(data)
+		if self._is_album:
+			for track_id in Objects["albums"].get_tracks(data):
+				Objects["player"].del_from_waitlist(track_id)
+		else:
+			Objects["player"].del_from_waitlist(data)
 		
