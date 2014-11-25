@@ -89,10 +89,10 @@ class ArtistWidget(Gtk.Grid):
 		@param album id as int
 		@param genre id as int
 		@param parent width as int
-		@param cover change as bool
+		@param popover as bool
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, cover_change, size_group):
+	def __init__(self, album_id, genre_id, popover, size_group):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
@@ -101,8 +101,8 @@ class ArtistWidget(Gtk.Grid):
 		self._album_id = album_id
 		self._genre_id = genre_id
 
-		self._tracks_widget1 = TracksWidget()
-		self._tracks_widget2 = TracksWidget()
+		self._tracks_widget1 = TracksWidget(popover)
+		self._tracks_widget2 = TracksWidget(popover)
 		if size_group:
 			size_group.add_widget(self._tracks_widget1)
 			size_group.add_widget(self._tracks_widget2)
@@ -119,7 +119,7 @@ class ArtistWidget(Gtk.Grid):
 		self._ui.get_object('year').set_label(Objects["albums"].get_year(album_id))
 		self.add(self._ui.get_object('ArtistWidget'))
 
-		if cover_change:
+		if popover:
 			self._eventbox = self._ui.get_object('eventbox')
 			self._eventbox.connect("button-press-event", self._show_web_art)
 

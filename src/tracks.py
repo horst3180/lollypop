@@ -147,8 +147,9 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
-	def __init__(self):
+	def __init__(self, popover):
 		Gtk.ListBox.__init__(self)
+		self._popover = popover
 		self.connect("row-activated", self._on_activate)
 		self.get_style_context().add_class('trackswidget')
 
@@ -162,6 +163,8 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def add_track(self, track_id, num, title, length, pos):
 		track_row = TrackRow()
+		if not self._popover:
+			track_row.show_widget('menu', False)
 		if Objects["player"].get_current_track_id() == track_id:
 			track_row.show_widget('icon', True)
 		if pos:
