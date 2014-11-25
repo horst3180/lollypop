@@ -32,7 +32,7 @@ class TrackRow(Gtk.ListBoxRow):
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
 		self._row_widget = self._ui.get_object('row')
-		self._ui.get_object('eventpos').connect('button-press-event', self._pop_menu)
+		self._ui.get_object('menu').connect('clicked', self._pop_menu)
 		self.add(self._row_widget)
 		self.get_style_context().add_class('trackrow')
 		self.show()
@@ -122,10 +122,9 @@ class TrackRow(Gtk.ListBoxRow):
 #######################
 	"""
 		Popup menu for track
-		@param row
-		@param event
+		@param widget as Gtk.Button
 	"""
-	def _pop_menu(self, row, event):
+	def _pop_menu(self, widget):
 		self._menu_visible = True
 		menu = PopMenu(self._object_id)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
@@ -228,10 +227,5 @@ class TracksWidget(Gtk.ListBox):
 		@param row as TrackRow
 	"""
 	def _on_activate(self, widget, row):
-		# Check all row as Gtk seems to be buggy when having an eventbox in a Gtk.ListRow
-		# Sometimes, wrong row get activated signal when clicking on another row's eventbox
-		for r in self.get_children():
-			if r.is_menu_visible():
-				return
 		self.emit('activated', row.get_object_id())
 		
