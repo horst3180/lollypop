@@ -25,29 +25,44 @@ class PopMenu(Gio.Menu):
 	"""
 	def __init__(self, track_id):
 		Gio.Menu.__init__(self)
+		
 		app = Gio.Application.get_default()
+
 		wait_list_action = Gio.SimpleAction(name="wait_list_action")
 		app.add_action(wait_list_action)
+		prepend_wait_list_action = Gio.SimpleAction(name="prepend_wait_list_action")
+		app.add_action(prepend_wait_list_action)
 		waitlist = Objects["player"].get_waitlist()
 		if track_id in waitlist:
 			wait_list_action.connect('activate', self._del_from_waitlist, track_id)
 			self.append(_("Remove from waiting list"), 'app.wait_list_action')
 		else:
-			wait_list_action.connect('activate', self._add_to_waitlist, track_id)
+			wait_list_action.connect('activate', self._append_to_waitlist, track_id)
 			self.append(_("Add to waiting list"), 'app.wait_list_action')
+			prepend_wait_list_action.connect('activate', self._prepend_to_waitlist, track_id)
+			self.append(_("Next track"), 'app.prepend_wait_list_action')
 		
 #######################
 # PRIVATE             #
 #######################		
 
 	"""
-		Add track id to waiting list
+		Append track id to waiting list
 		@param SimpleAction
 		@param GVariant as None
 		@param track id as int
 	"""
-	def _add_to_waitlist(self, action, variant, data):
-		Objects["player"].add_to_waitlist(data)
+	def _append_to_waitlist(self, action, variant, data):
+		Objects["player"].append_to_waitlist(data)
+		
+	"""
+		Prepend track id to waiting list
+		@param SimpleAction
+		@param GVariant as None
+		@param track id as int
+	"""
+	def _prepend_to_waitlist(self, action, variant, data):
+		Objects["player"].prepend_to_waitlist(data)
 		
 	"""
 		Delete track id from waiting list

@@ -325,11 +325,19 @@ class Player(GObject.GObject):
 		self._albums = []
 
 	"""
-		Add track to waitlist
+		Append track to waitlist
 		@param track id as int
 	"""
-	def add_to_waitlist(self, track_id):
+	def append_to_waitlist(self, track_id):
 		self._waitlist.append(track_id)
+		self.emit("waitlist-changed")
+		
+	"""
+		Prepend track to waitlist
+		@param track id as int
+	"""
+	def prepend_to_waitlist(self, track_id):
+		self._waitlist.insert(0, track_id)
 		self.emit("waitlist-changed")
 		
 	"""

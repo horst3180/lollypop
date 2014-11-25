@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-24 17:49+0100\n"
+"POT-Creation-Date: 2014-11-25 11:18+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -159,9 +159,17 @@ msgstr "Compilation"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popmenu.py:32
+#: ../src/popmenu.py:38
+msgid "Remove from waiting list"
+msgstr "Supprimer de la liste d'attente"
+
+#: ../src/popmenu.py:41
 msgid "Add to waiting list"
 msgstr "Ajouter à la liste d'attente"
+
+#: ../src/popmenu.py:43
+msgid "Next track"
+msgstr "Morceau suivant"
 
 #: ../src/popimages.py:53
 msgid "Select a cover art for this album"
