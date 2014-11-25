@@ -40,6 +40,8 @@ class PopMenu(Gio.Menu):
 		append = True
 		prepend = True
 		delete = True
+		if len(waitlist) == 0:
+			append = False
 		if not is_album:
 			if object_id in waitlist:
 				if len(waitlist) > 0 and waitlist[0] == object_id:
