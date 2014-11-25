@@ -62,7 +62,7 @@ class PopMenu(Gio.Menu):
 			self.append(_("Add to queue"), 'app.append_queue_action')
 		if prepend:
 			prepend_queue_action.connect('activate', self._prepend_to_queue, object_id)
-			self.append(_("Play next"), 'app.prepend_queue_action')
+			self.append(_("Next track"), 'app.prepend_queue_action')
 		if delete:
 			del_queue_action.connect('activate', self._del_from_queue, object_id)
 			self.append(_("Remove from queue"), 'app.del_queue_action')
