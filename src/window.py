@@ -75,9 +75,11 @@ class Window(Gtk.ApplicationWindow):
 		@param bool
 	"""
 	def update_view_class(self, dark):
-		view = self._stack.get_visible_child()
-		if view:
-			view.update_class(dark)
+		if dark:
+			self._stack.get_style_context().add_class('black')
+		else:
+			self._stack.get_style_context().remove_class('black')
+		self._toolbar.update_popalbums_class(dark)
 
 ############
 # Private  #
@@ -184,6 +186,8 @@ class Window(Gtk.ApplicationWindow):
 		self._stack.set_visible_child(loading_view)
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+		if Objects["settings"].get_value('dark-view'):
+			self._stack.get_style_context().add_class('black')
 		self._stack.show()
 
 		self._progress = Gtk.ProgressBar()

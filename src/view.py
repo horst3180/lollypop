@@ -129,8 +129,6 @@ class ArtistView(View):
 		self._ui.get_object('artist').set_label(artist_name)
 
 		self._albumbox = Gtk.Grid()
-		if Objects["settings"].get_value('dark-view'):
-			self.get_style_context().add_class('black')
 		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
@@ -163,16 +161,6 @@ class ArtistView(View):
 	def cover_changed(self, widget, album_id):
 		for widget in self._albumbox.get_children():
 			widget.update_cover(album_id)
-
-	"""
-		Update view class, dark if dark is True
-		@param bool
-	"""
-	def update_class(self, dark):
-		if dark:
-			self.get_style_context().add_class('black')
-		else:
-			self.get_style_context().remove_class('black')
 
 	"""
 		Calculate content size
@@ -221,8 +209,6 @@ class AlbumView(View):
 		self._albumsongs = None
 
 		self._albumbox = Gtk.FlowBox()
-		if Objects["settings"].get_value('dark-view'):
-			self.get_style_context().add_class('black')
 
 		self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._albumbox.connect("child-activated", self._on_album_activated)
@@ -279,16 +265,6 @@ class AlbumView(View):
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
-
-	"""
-		Update view class, dark if dark is True
-		@param bool
-	"""
-	def update_class(self, dark):
-		if dark:
-			self.get_style_context().add_class('black')
-		else:
-			self.get_style_context().remove_class('black')
 
 	"""
 		Calculate content size

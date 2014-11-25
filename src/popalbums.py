@@ -44,6 +44,7 @@ class PopAlbums(Gtk.Popover):
 		self._scroll.set_vexpand(True)
 		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self._scroll.add(self._stack)
+		self.update_view_class(Objects["settings"].get_value('dark-view'))
 		self._scroll.show()
 
 		self.add(self._scroll)	
@@ -89,6 +90,16 @@ class PopAlbums(Gtk.Popover):
 		for child in self._stack.get_children():
 			GLib.idle_add(self._remove_child, child, priority=GLib.PRIORITY_LOW)
 
+	"""
+		Update view class
+		@param bool
+	"""
+	def update_view_class(self, dark):
+		if dark:
+			self._scroll.get_style_context().add_class('black')
+		else:
+			self._scroll.get_style_context().remove_class('black')
+
 #######################
 # PRIVATE             #
 #######################
@@ -121,8 +132,6 @@ class PopAlbums(Gtk.Popover):
 		view.set_column_spacing(20)
 		view.set_row_spacing(20)
 		view.show()
-		if Objects["settings"].get_value('dark-view'):
-			view.get_style_context().add_class('black')
 		return view
 
 	"""
