@@ -86,7 +86,7 @@ class AlbumArt:
 	"""
 	def get(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		CACHE_PATH = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		CACHE_PATH = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		cached = True
 		pixbuf = None
 		try:
@@ -95,7 +95,7 @@ class AlbumArt:
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+					pixbuf.savev(CACHE_PATH, "png", [], [])
 				else:
 					# Try to get from tags
 					try:
@@ -111,7 +111,7 @@ class AlbumArt:
 																   							size,
 															      							False,
 																  							None)
-									pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+									pixbuf.savev(CACHE_PATH, "png", [], [])
 									return pixbuf
 								elif tag == "covr":
 									for data in filetag.tags["covr"]:
@@ -120,13 +120,14 @@ class AlbumArt:
 																   							size,
 															      							False,
 																  							None)
-										pixbuf.savev(CACHE_PATH, "jpeg", ["quality"], ["90"])
+										pixbuf.savev(CACHE_PATH, "png", [], [])
 										return pixbuf
 					except Exception as e:
 						print(e)
 						pass
 
 					pixbuf = self._get_default_art(album_id, size)
+					pixbuf.savev(CACHE_PATH, "png", [], [])
 			else:
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
 																 size, size)
