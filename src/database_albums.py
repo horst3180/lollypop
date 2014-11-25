@@ -329,9 +329,9 @@ class DatabaseAlbums:
 		albums = []
 		result = []
 		if genre_id == ALL or not genre_id:
-			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year")
+			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year, albums.name")
 		else:
-			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year", (genre_id,))
+			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year, albums.name", (genre_id,))
 		for row in result:
 			albums += row
 		return albums
