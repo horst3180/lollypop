@@ -23,7 +23,8 @@ class DatabaseUpgrade:
 		# Here are schema upgrade, key is database version, value function doing shema update
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
-							2: self._db_add_performer_disc
+							2: self._db_add_performer_disc,
+							3: self._db_add_playlists_tables
 						 }
 
 	"""
@@ -65,3 +66,10 @@ class DatabaseUpgrade:
 		self._reset = True
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
+		
+	"""
+		Add playlists tables
+	"""
+	def _db_add_playlists_tables(self):
+		self._sql.execute('''CREATE TABLE playlists (name TEXT NOT NULL)''')
+		self._sql.execute('''CREATE TABLE playlists_ids (playlist_id INT NOT NULL, track_id INT NOT NULL)''')

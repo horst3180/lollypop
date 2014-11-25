@@ -46,6 +46,9 @@ class Database:
 						performer_id INT NOT NULL,
 						album_id INT NOT NULL,
 						mtime INT)'''
+	create_playlists = '''CREATE TABLE playlists (name TEXT NOT NULL)'''
+	create_playlists_ids = '''CREATE TABLE playlists_ids (playlist_id INT NOT NULL,
+							   track_id INT NOT NULL)'''
 	   
 	"""
 		Create database tables or manage update if needed
