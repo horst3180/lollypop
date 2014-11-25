@@ -50,10 +50,15 @@ class AlbumArt:
 	"""
 	def get_path(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		art_path = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		if not os.path.exists(art_path):
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		if os.path.exists(CACHE_PATH_JPG):
+			return CACHE_PATH_JPG
+		elif os.path.exists(CACHE_PATH_PNG):
+			return CACHE_PATH_PNG
+		else:
 			self.get(album_id, size)
-		return art_path
+			return self.get_path(album_id, size)
 	
 	"""
 		Look for covers in dir, folder.jpg if exist, any supported image otherwise
@@ -81,21 +86,29 @@ class AlbumArt:
 	
 	"""
 		Return pixbuf for album_id
+		covers are cached as jpg. Default cover as png to keep alpha channel
 		@param album id as int, pixbuf size as int
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		CACHE_PATH = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		cached = True
 		pixbuf = None
 		try:
-			if not os.path.exists(CACHE_PATH):
+			if os.path.exists(CACHE_PATH_JPG):
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_JPG,
+																	 size, size)
+			elif os.path.exists(CACHE_PATH_PNG):
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_PNG,
+																	 size, size)
+			else:
 				path = self.get_art_path(album_path)
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					pixbuf.savev(CACHE_PATH, "png", [], [])
+					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				else:
 					# Try to get from tags
 					try:
@@ -124,10 +137,11 @@ class AlbumArt:
 
 					if not pixbuf:
 						pixbuf = self._get_default_art(album_id, size)
-					pixbuf.savev(CACHE_PATH, "png", [], [])
-			else:
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
-																 size, size)
+						# Save as png to keep alpha channel
+						pixbuf.savev(CACHE_PATH_PNG, "png", [], [])
+					else:
+						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				
 			return pixbuf
 			
 		except Exception as e:
@@ -141,9 +155,12 @@ class AlbumArt:
 	"""
 	def clean_cache(self, album_id, size):
 		album_path = Objects["albums"].get_path(album_id)
-		cache_path = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		if os.path.exists(cache_path):
-			os.remove(cache_path)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		if os.path.exists(CACHE_PATH_JPG):
+			os.remove(CACHE_PATH_JPG)
+		if os.path.exists(CACHE_PATH_PNG):
+			os.remove(CACHE_PATH_PNG)
 
 	"""
 		Get arts on google image corresponding to search
