@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GLib, GdkPixbuf, Pango
+from gettext import gettext as _
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
@@ -111,11 +112,22 @@ class SearchWidget(Gtk.Popover):
 		grid = Gtk.Grid()
 		grid.set_property("orientation", Gtk.Orientation.VERTICAL)
 
+		label = Gtk.Label(_("Search:"))
+		label.set_property("margin_start", 5)
+		label.set_property("margin_end", 5)
+		label.show()
+		
 		self._text_entry = Gtk.Entry()
 		self._text_entry.connect("changed", self._do_filtering)
 		self._text_entry.set_hexpand(True)
+		self._text_entry.set_property("margin", 5)
 		self._text_entry.show()
-
+		
+		entry_line = Gtk.Grid()
+		entry_line.add(label)
+		entry_line.add(self._text_entry)
+		entry_line.show()
+		
 		self._view = Gtk.ListBox()
 		self._view.connect("row-activated", self._on_activate)	
 		self._view.show()		
@@ -126,7 +138,7 @@ class SearchWidget(Gtk.Popover):
 		self._scroll.add(self._view)
 		self._scroll.show()
 
-		grid.add(self._text_entry)
+		grid.add(entry_line)
 		grid.add(self._scroll)
 		grid.show()
 		self.add(grid)
