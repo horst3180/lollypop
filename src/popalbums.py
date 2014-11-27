@@ -18,7 +18,6 @@ from time import sleep
 
 from lollypop.view import ArtistView
 from lollypop.config import *
-from lollypop.utils import get_monitor_size
 
 class PopAlbums(Gtk.Popover):
 
@@ -62,9 +61,10 @@ class PopAlbums(Gtk.Popover):
 		Resize popover and set signals callback
 	"""
 	def do_show(self):
-		width, height = get_monitor_size()
-		self.set_property('height-request', height*0.8)
-		self.set_property('width-request', width*0.65)
+		size_setting = Objects["settings"].get_value('window-size')
+		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
+			self.set_property('width-request', size_setting[0]*0.65)
+			self.set_property('height-request', size_setting[1]*0.8)
 		Gtk.Popover.do_show(self)
 
 #######################

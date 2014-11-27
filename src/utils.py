@@ -47,13 +47,3 @@ def seconds_to_string(duration):
 	seconds %= 60
 
 	return '%i:%02i' % (minutes, seconds)
-	
-"""
-	Return current monitor size
-	@return (monitor width as int, monitor height as int)
-"""
-def get_monitor_size():	
-		s = Gdk.Screen.get_default()
-		m = s.get_monitor_at_window(s.get_active_window())
-		monitor = s.get_monitor_geometry(m)
-		return (monitor.width, monitor.height)
