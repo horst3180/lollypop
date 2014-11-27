@@ -140,7 +140,6 @@ class ArtistView(View):
 		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
-		self._scrolledWindow.set_hexpand(True)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
 										Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
