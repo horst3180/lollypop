@@ -208,6 +208,7 @@ class AlbumView(View):
 		self._genre_id = genre_id
 		self._artist_id = None
 		self._albumsongs = None
+		self._context_widget = None
 
 		self._albumbox = Gtk.FlowBox()
 
@@ -279,9 +280,8 @@ class AlbumView(View):
 	def _update_context(self):
 		track_id = Objects["player"].get_current_track_id()
 		album_id = Objects["tracks"].get_album_id(track_id)
-		context_widget = self._stack.get_visible_child()
-		if context_widget:
-			context_widget.update_playing_track(track_id)
+		if self._context_widget:
+			self._context_widget.update_playing_track(track_id)
 
 	"""
 		populate context view
@@ -291,12 +291,12 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		widget = ArtistWidget(album_id, self._genre_id, True, True, None)
-		widget.show()			
+		self._context_widget = ArtistWidget(album_id, self._genre_id, True, True, None)
+		self._context_widget.show()			
 		view = Gtk.ScrolledWindow()
 		view.set_min_content_height(250)
 		view.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		view.add(widget)
+		view.add(self._context_widget)
 		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
