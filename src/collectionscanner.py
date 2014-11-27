@@ -37,13 +37,16 @@ class CollectionScanner(GObject.GObject):
 
 		self._in_thread = False
 		self._progress = None
+		self._smooth = False
 		self._popularities = Objects["db"].get_popularities()
 
 	"""
 		Update database
 		@param progress as Gtk.Progress
+		@param smooth as bool, if smooth, try to scan smoothly
 	"""
-	def update(self,  progress):
+	def update(self,  progress, smooth):
+		self._smooth = smooth
 		paths = Objects["settings"].get_value('music-path')
 		if len(paths) == 0:
 			if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
@@ -80,6 +83,7 @@ class CollectionScanner(GObject.GObject):
 		
 	"""
 		Scan music collection for music files
+		@param paths as [string], paths to scan
 	"""
 	def _scan(self, paths):
 		sql = Objects["db"].get_cursor()
@@ -120,6 +124,8 @@ class CollectionScanner(GObject.GObject):
 				print(filepath)
 				print("CollectionScanner::_scan(): %s" %e)
 			i += 1
+			if self._smooth:
+				sleep(0.001)
 
 		# Clean deleted files
 		if i > 0:
