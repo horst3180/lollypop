@@ -34,8 +34,8 @@ class PopAlbums(Gtk.Popover):
 		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
 		self._stack = Gtk.Stack()
-		self._stack.set_transition_duration(500)
-		self._stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
+		self._stack.set_transition_duration(1000)
+		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
 		self.add(self._stack)
 		
