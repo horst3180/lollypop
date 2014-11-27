@@ -24,6 +24,7 @@
         <property name="image">image1</property>
         <property name="relief">none</property>
         <property name="always_show_image">True</property>
+        <property name="opacity">0.7</property>
         <style>
           <class name="menubutton"/>
         </style>
