@@ -64,7 +64,7 @@ class Window(Gtk.ApplicationWindow):
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
-		self._scanner.update(self._progress, True)
+		self._scanner.update(self._progress, False)
 		if old_view:
 			self._stack.remove(old_view)
 			old_view.remove_signals()
