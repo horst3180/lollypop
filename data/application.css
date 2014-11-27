@@ -11,7 +11,7 @@ GtkWidget {
 	color: @lollypop_text_color;
 }
 
-.black GtkScrollbar.trough{
+.black GtkScrollbar.trough {
 	background-color: @lollypop_base_color;
 	color: @lollypop_text_color;
 }

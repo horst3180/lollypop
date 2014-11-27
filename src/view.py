@@ -161,14 +161,7 @@ class ArtistView(View):
 	def cover_changed(self, widget, album_id):
 		for widget in self._albumbox.get_children():
 			widget.update_cover(album_id)
-
-	"""
-		Calculate content size
-	"""	
-	def calculate_content_size(self):
-		for widget in self._albumbox.get_children():
-			widget.update_content_width(self.get_allocated_width())
-
+			
 #######################
 # PRIVATE             #
 #######################
@@ -226,19 +219,13 @@ class AlbumView(View):
 		self._stack = Gtk.Stack()
 		self._stack.set_transition_duration(500)
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-		self._stack.show()
-		
-		self._scrolledContext = Gtk.ScrolledWindow()
-		self._scrolledContext.set_min_content_height(250)
-		self._scrolledContext.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._scrolledContext.add(self._stack)
 
 		separator = Gtk.Separator()
 		separator.show()
 		
 		self.add(self._scrolledWindow)
 		self.add(separator)
-		self.add(self._scrolledContext)
+		self.add(self._stack)
 		self.show()
 
 	"""
@@ -265,14 +252,6 @@ class AlbumView(View):
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
-
-	"""
-		Calculate content size
-	"""	
-	def calculate_content_size(self):
-		context_widget = self._stack.get_visible_child()
-		if context_widget:
-			context_widget.update_content_width(self.get_allocated_width())
 
 #######################
 # PRIVATE             #
@@ -304,7 +283,12 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		view = ArtistWidget(album_id, self._genre_id, True, True, None)
+		widget = ArtistWidget(album_id, self._genre_id, True, True, None)
+		widget.show()			
+		view = Gtk.ScrolledWindow()
+		view.set_min_content_height(250)
+		view.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+		view.add(widget)
 		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
@@ -316,11 +300,11 @@ class AlbumView(View):
 	def _on_album_activated(self, flowbox, child):
 		if self._object_id == child.get_child().get_id():
 			self._object_id = None
-			self._scrolledContext.hide()
+			self._stack.hide()
 		else:
 			self._object_id = child.get_child().get_id()
 			self._populate_context(self._object_id)
-			self._scrolledContext.show()		
+			self._stack.show()		
 	
 	"""
 		Pop an album and add it to the view,
