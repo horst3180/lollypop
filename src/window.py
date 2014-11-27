@@ -138,12 +138,12 @@ class Window(Gtk.ApplicationWindow):
 		Setup window icon, position and size, callback for updating this values
 	"""
 	def _setup_window(self):
-		self.set_size_request(200, 100)
 		self.set_icon_name('lollypop')
 		size_setting = Objects["settings"].get_value('window-size')
 		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
 			self.resize(size_setting[0], size_setting[1])
-
+		else:
+			self.set_size_request(800, 600)
 		position_setting = Objects["settings"].get_value('window-position')
 		if len(position_setting) == 2 \
 			and isinstance(position_setting[0], int) \
