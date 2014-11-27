@@ -54,7 +54,7 @@ class PopAlbums(Gtk.Popover):
 		view = ArtistView(artist_id, None, True)
 		view.connect('finished', self._switch_view)
 		view.populate()
-		self._stack.add(view)
+		
 		view.show()
 
 	"""
@@ -77,12 +77,10 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def _switch_view(self, view):
 		previous = self._stack.get_visible_child()
-		# On first load, view == previous
-		if view != previous:
-			self._stack.set_visible_child(view)
-			if previous:
-				previous.remove_signals()
-				previous.destroy()
+		self._stack.add(view)
+		self._stack.set_visible_child(view)
+		if previous:
+			previous.destroy()
 
 	"""
 		Update the content view
