@@ -45,10 +45,12 @@ GtkWidget {
 	padding-top: 0;
 	padding-bottom: 0;
 	background-color: transparent;
-	color: inherit;
+	color: transparent;
 	background-image: none;
 }
 
 .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
+	color: inherit;
 }
+

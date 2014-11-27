@@ -91,8 +91,7 @@
                 <property name="receives_default">True</property>
                 <property name="image">image</property>
                 <property name="relief">none</property>
-                <property name="always_show_image">True</property>
-                <property name="opacity">0.7</property>
+				<property name="always_show_image">True</property>
                 <style>
                   <class name="menubutton"/>
                 </style>
