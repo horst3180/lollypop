@@ -41,7 +41,6 @@ class PopAlbums(Gtk.Popover):
 		self.add(self._stack)
 		
 		Objects["player"].connect("current-changed", self._update_content)
-		self.update_view_class(Objects["settings"].get_value('dark-view'))
 
 	"""
 		Run _populate in a thread
@@ -50,6 +49,9 @@ class PopAlbums(Gtk.Popover):
 		artist_id = Objects["tracks"].get_performer_id(track_id)
 		if artist_id == -1:
 			artist_id = Objects["tracks"].get_artist_id(track_id)
+		if self._artist_id == artist_id:
+			return
+		self._artist_id = artist_id
 		view = ArtistView(artist_id, None, True)
 		view.connect('finished', self._switch_view)
 		view.populate()
@@ -64,23 +66,6 @@ class PopAlbums(Gtk.Popover):
 		self.set_property('height-request', height*0.8)
 		self.set_property('width-request', width*0.65)
 		Gtk.Popover.do_show(self)
-	
-	"""
-		Reset artist id and clean signals callback
-	"""
-	def do_hide(self):
-		self._artist_id = None
-		Gtk.Popover.do_hide(self)
-		
-	"""
-		Update view class
-		@param bool
-	"""
-	def update_view_class(self, dark):
-		if dark:
-			self._stack.get_style_context().add_class('black')
-		else:
-			self._stack.get_style_context().remove_class('black')
 
 #######################
 # PRIVATE             #

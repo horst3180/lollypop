@@ -59,7 +59,6 @@ class Toolbar():
 		infobox.connect("button-press-event", self._pop_albums)
 		self._popalbums = PopAlbums()
 		self._popalbums.set_relative_to(infobox)
-		self.update_popalbums_class(Objects["settings"].get_value('dark-view'))
 
 		Objects["player"].connect("status-changed", self._on_status_changed)
 		Objects["player"].connect("current-changed", self.update_toolbar)
@@ -139,13 +138,6 @@ class Toolbar():
 			self._total_time_label.show()
 			self._timelabel.set_text("0:00")
 			self._timelabel.show()
-	
-	"""
-		Update popalbums class
-		@param bool
-	"""
-	def update_popalbums_class(self, dark):
-		self._popalbums.update_view_class(dark)
 
 #######################
 # PRIVATE             #
