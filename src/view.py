@@ -140,7 +140,7 @@ class ArtistView(View):
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_hexpand(True)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-						Gtk.PolicyType.AUTOMATIC)
+										Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
 
 		self.add(self._scrolledWindow)

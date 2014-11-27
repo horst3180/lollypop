@@ -96,7 +96,7 @@ class PopAlbums(Gtk.Popover):
 		if view != previous:
 			self._stack.set_visible_child(view)
 			if previous:
-				self._stack.remove(previous)
+				previous.destroy()
 
 	"""
 		Update the content view
