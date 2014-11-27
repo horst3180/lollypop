@@ -50,9 +50,6 @@ class View(Gtk.Grid):
 		Gtk.Grid.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self.set_border_width(0)
-		# Current object, used to handle context/content view
-		self._object_id = None
-
 		Objects["player"].connect("current-changed", self.current_changed)
 		Objects["player"].connect("cover-changed", self.cover_changed)
 
@@ -109,24 +106,33 @@ class View(Gtk.Grid):
 	Artist view is a vertical grid with album songs widgets
 """
 class ArtistView(View):
+	__gsignals__ = {
+        'finished': (GObject.SIGNAL_RUN_FIRST, None, ())
+    }
 
 	"""
 		Init ArtistView ui with a scrolled grid of AlbumWidgetSongs
+		@param: artist id as int
+		@param: genre id as int
+		@param: context as bool
 	"""
-	def __init__(self, artist_id, genre_id):
+	def __init__(self, artist_id, genre_id, context):
 		View.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
-		self._ui = Gtk.Builder()
-		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
 		
+		if not context:
+			self._ui = Gtk.Builder()
+			self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
+			self.add(self._ui.get_object('ArtistView'))
+			artist_name = Objects["artists"].get_name(artist_id)
+			artist_name = translate_artist_name(artist_name)
+			self._ui.get_object('artist').set_label(artist_name)
+
+		self._artist_id = artist_id
 		self._genre_id = genre_id
-		self._object_id = artist_id
+		self._context = context
 
 		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-
-		artist_name = Objects["artists"].get_name(artist_id)
-		artist_name = translate_artist_name(artist_name)
-		self._ui.get_object('artist').set_label(artist_name)
 
 		self._albumbox = Gtk.Grid()
 		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -137,7 +143,6 @@ class ArtistView(View):
 						Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.add(self._albumbox)
 
-		self.add(self._ui.get_object('ArtistView'))
 		self.add(self._scrolledWindow)
 		self.show_all()
 
@@ -146,12 +151,12 @@ class ArtistView(View):
 	"""
 	def populate(self):
 		sql = Objects["db"].get_cursor()
-		if self._object_id == COMPILATIONS:
+		if self._artist_id == COMPILATIONS:
 			albums = Objects["albums"].get_compilations(self._genre_id, sql)
 		elif self._genre_id == ALL:
-			albums = Objects["albums"].get_ids(self._object_id, None, sql)
+			albums = Objects["albums"].get_ids(self._artist_id, None, sql)
 		else:
-			albums = Objects["albums"].get_ids(self._object_id, self._genre_id, sql)
+			albums = Objects["albums"].get_ids(self._artist_id, self._genre_id, sql)
 		GLib.idle_add(self._add_albums, albums)
 
 	"""
@@ -183,10 +188,12 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0:
-			widget = ArtistWidget(albums.pop(0), self._genre_id, False, True, self._size_group)
+			widget = ArtistWidget(albums.pop(0), self._genre_id, False, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+		else:
+			self.emit('finished')
 
 """
 	Album view is a flowbox of albums widgets with album name and artist name
@@ -199,6 +206,7 @@ class AlbumView(View):
 	def __init__(self, genre_id):
 		View.__init__(self)
 		self._genre_id = genre_id
+		self._artist_id = None
 		self._albumsongs = None
 
 		self._albumbox = Gtk.FlowBox()
@@ -298,12 +306,12 @@ class AlbumView(View):
 		@param flowbox, children
 	"""
 	def _on_album_activated(self, flowbox, child):
-		if self._object_id == child.get_child().get_id():
-			self._object_id = None
+		if self._artist_id == child.get_child().get_id():
+			self._artist_id = None
 			self._stack.hide()
 		else:
-			self._object_id = child.get_child().get_id()
-			self._populate_context(self._object_id)
+			self._artist_id = child.get_child().get_id()
+			self._populate_context(self._artist_id)
 			self._stack.show()		
 	
 	"""

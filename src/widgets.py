@@ -90,7 +90,7 @@ class ArtistWidget(Gtk.Grid):
 		@param album id as int
 		@param genre id as int
 		@param parent width as int
-		@param full playlist as bool
+		@param full as bool => Full playlist should be loaded
 		@param popover authorized as bool
 		@param size group as Gtk.SizeGroup
 	"""
