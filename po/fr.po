@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-26 08:21+0100\n"
+"POT-Creation-Date: 2014-11-28 10:05+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -107,23 +107,23 @@ msgstr "Configurer lollypop"
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/toolbar.py:218 ../src/toolbar.py:242
+#: ../src/toolbar.py:210 ../src/toolbar.py:234
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:223 ../src/toolbar.py:239 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:215 ../src/toolbar.py:231 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:236 ../src/window.py:277
+#: ../src/window.py:234 ../src/window.py:275
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:238
+#: ../src/window.py:236
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:239
+#: ../src/window.py:237
 msgid "Populars albums"
 msgstr "Albums populaires"
 
@@ -154,6 +154,10 @@ msgstr "Inconnu"
 #: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr "Compilation"
+
+#: ../src/queue.py:101
+msgid "Empty queue"
+msgstr "File d'attente vide"
 
 #: ../src/view.py:36
 msgid "Loading please wait..."
