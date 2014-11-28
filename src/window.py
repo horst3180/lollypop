@@ -48,9 +48,20 @@ class Window(Gtk.ApplicationWindow):
 			if isinstance(setting, int):
 				ids.append(setting)	
 		Objects["player"].set_party_ids(ids)
-		
-		self.connect("map-event", self._on_mapped_window)
 		self.connect("destroy", self._on_destroyed_window)
+
+	"""
+		Run collection update if needed
+	"""	
+	def setup_view(self):
+		if Objects["tracks"].is_empty():
+			self._scanner.update(self._progress, False)
+			return
+		elif Objects["settings"].get_value('startup-scan'):
+			self._scanner.update(self._progress, True)
+			
+		self._setup_list_one()
+		self._update_view_albums(POPULARS)
 
 	"""
 		Update music database
@@ -335,21 +346,6 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _on_window_state_event(self, widget, event):
 		Objects["settings"].set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
-
-	"""
-		Run collection update on mapped window
-		Pass _update_genre() as collection scanned callback
-		@param obj as unused, data as unused
-	"""	
-	def _on_mapped_window(self, obj, data):
-		if Objects["tracks"].is_empty():
-			self._scanner.update(self._progress, False)
-			return
-		elif Objects["settings"].get_value('startup-scan'):
-			self._scanner.update(self._progress, True)
-			
-		self._setup_list_one()
-		self._update_view_albums(POPULARS)
 
 	"""
 		Save paned widget width

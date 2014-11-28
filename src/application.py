@@ -58,7 +58,6 @@ class Application(Gtk.Application):
 		Objects["art"] = AlbumArt()
 
 		self._window = None
-		self._delete_signal = None
 
 		self.register()
 		if self.get_is_remote():
@@ -78,10 +77,10 @@ class Application(Gtk.Application):
 	def do_activate(self):
 		if not self._window:
 			self._window = Window(self)
-			if Objects["settings"].get_value('background-mode'):
-				self._delete_signal = self._window.connect('delete-event', self._hide_on_delete)
 			self._service = MPRIS(self)
 			self._notifications = NotificationManager()
+			self._window.connect('delete-event', self._hide_on_delete)
+			self._window.setup_view()
 		self._window.present()
 
 	"""
@@ -179,11 +178,6 @@ class Application(Gtk.Application):
 		@param widget as unused, state as widget state
 	"""
 	def _update_background_setting(self, widget, state):
-		if not state and self._delete_signal:
-			self._window.disconnect(self._delete_signal)
-			self._delete_signal = False
-		elif state and not self._delete_signal:
-			self._delete_signal = self._window.connect('delete-event', self._hide_on_delete)
 		Objects["settings"].set_value('background-mode',  GLib.Variant('b', state))
 
 	"""
@@ -287,6 +281,8 @@ class Application(Gtk.Application):
 		Hide window
 	"""
 	def _hide_on_delete(self, widget, event):
+		if not Objects["settings"].get_value('background-mode'):
+			GLib.timeout_add(500, self.quit)
 		return widget.hide_on_delete()
 
 	"""
