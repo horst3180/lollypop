@@ -220,4 +220,3 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def _on_activate(self, widget, row):
 		self.emit('activated', row.get_object_id())
-		Row
