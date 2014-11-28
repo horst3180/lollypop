@@ -63,21 +63,25 @@ class QueueWidget(Gtk.Popover):
 		self._view.connect('drag-begin', self._on_drag_begin)
 		self._view.connect('drag-end', self._on_drag_end)
 
-		scroll = Gtk.ScrolledWindow()
-		scroll.set_hexpand(True)
-		scroll.set_vexpand(True)
-		scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		scroll.add(self._view)
-		scroll.show_all()
-		self.add(scroll)
+		self._scroll = Gtk.ScrolledWindow()
+		self._scroll.set_hexpand(True)
+		self._scroll.set_vexpand(True)
+		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+		self._scroll.add(self._view)
+		self._scroll.show()
 
 	"""
 		Show queue popover		
 		Populate treeview with current queue
 	"""
-	def show(self):
+	def do_show(self):
 		tracks = Objects["player"].get_queue()
 		if len(tracks) > 0:
+			size_setting = Objects["settings"].get_value('window-size')
+			if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
+				self.set_property('width-request', size_setting[0]*0.4)
+				self.set_property('height-request', size_setting[1]*0.8)
+			self.add(self._scroll)
 			for child in self._view.get_children():
 				child.hide()
 				self._view.remove(child)
@@ -91,24 +95,21 @@ class QueueWidget(Gtk.Popover):
 				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
 				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + 
 									track_name, self._del_pixbuf, track_id])
-		Gtk.Popover.show(self)
+		else:
+			self.set_property('width-request', -1)
+			self.set_property('height-request', -1)
+			label = Gtk.Label(_("Empty queue"))
+			label.show()
+			self.add(label)
+		Gtk.Popover.do_show(self)
 
 	"""
 		Clear model
 	"""
 	def do_hide(self):
 		Gtk.Popover.do_hide(self)
+		self.remove(self.get_children()[0])
 		self._model.clear()
-
-	"""
-		Resize popover
-	"""
-	def do_show(self):
-		size_setting = Objects["settings"].get_value('window-size')
-		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
-			self.set_property('width-request', size_setting[0]*0.4)
-			self.set_property('height-request', size_setting[1]*0.8)
-		Gtk.Popover.do_show(self)
 		
 #######################
 # PRIVATE             #
