@@ -119,7 +119,16 @@ class TrackRow(Gtk.ListBoxRow):
 	def _pop_menu(self, widget):
 		menu = PopMenu(self._object_id, False)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+		popover.connect('closed', self._on_closed)
+		self.get_style_context().add_class('trackrowmenu')
 		popover.show()
+	"""
+		Remove selected style
+		@param widget as Gtk.Popover
+	"""
+	def _on_closed(self, widget):
+		self.get_style_context().remove_class('trackrowmenu')
+		
 
 ######################################################################
 ######################################################################
@@ -211,4 +220,4 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def _on_activate(self, widget, row):
 		self.emit('activated', row.get_object_id())
-		
+		Row

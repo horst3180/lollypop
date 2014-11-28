@@ -40,6 +40,16 @@ GtkWidget {
   	color: inherit;
 }
 
+.trackrowmenu {
+	background-color: alpha(#000000, 0.03);
+  	color: inherit;
+}
+
+.trackrowmenu .menubutton{
+	border-color: alpha(#000000, 0.1);
+  	color: inherit;
+}
+
 .menubutton {
 	box-shadow: none;
 	padding-top: 0;
