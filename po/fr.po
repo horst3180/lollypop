@@ -235,7 +235,7 @@ msgstr "Recherche"
 
 #: ../data/headerbar.ui.h:7
 msgid "Queue"
-msgstr "Liste d'attente"
+msgstr "File d'attente"
 
 #: ../data/headerbar.ui.h:8
 msgid "Show genres"
