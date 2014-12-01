@@ -50,11 +50,14 @@ class PopAlbums(Gtk.Popover):
 			artist_id = Objects["tracks"].get_artist_id(track_id)
 		if self._artist_id == artist_id:
 			return
-		self._artist_id = artist_id
+
 		view = ArtistView(artist_id, None, True)
-		view.connect('finished', self._switch_view)
+		if self._artist_id:
+				view.connect('finished', self._switch_view)
+		else:
+			self._switch_view(view)
 		view.populate()
-		
+		self._artist_id = artist_id
 		view.show()
 
 	"""
