@@ -59,6 +59,11 @@ GtkWidget {
 	background-image: none;
 }
 
+.menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+  	color: inherit;
+}
+
 .trackrow:hover .menubutton {
 	border-color: alpha(#000000, 0.1);
   	color: inherit;
