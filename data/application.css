@@ -40,6 +40,17 @@ GtkWidget {
   	color: inherit;
 }
 
+.trackrowplaying .menubutton{
+	background-color: transparent;
+    border-color: transparent;
+  	color: transparent;
+}
+
+.trackrowplaying:hover .menubutton{
+	border-color: alpha(#000000, 0.1);
+  	color: inherit;
+}
+
 /* trackrowmenu is trackrow when menu is shown*/
 .trackrowmenu {
 	background-color: alpha(#000000, 0.03);
