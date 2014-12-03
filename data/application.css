@@ -47,9 +47,14 @@ GtkWidget {
 }
 
 .trackrowplaying:hover .menubutton{
-	border-color: alpha(#000000, 0.1);
+	border-color: transparent;
   	color: inherit;
 }
+
+.trackrowplaying:hover .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+}
+
 
 /* trackrowmenu is trackrow when menu is shown*/
 .trackrowmenu {
@@ -82,7 +87,10 @@ GtkWidget {
 }
 
 .trackrow:hover .menubutton {
-	border-color: alpha(#000000, 0.1);
   	color: inherit;
+}
+
+.trackrow:hover .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
 }
 
