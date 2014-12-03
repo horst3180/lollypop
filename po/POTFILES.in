@@ -28,6 +28,7 @@ src/player.py
 src/collectionscanner.py
 [type: gettext/glade]data/AboutDialog.ui.in
 [type: gettext/glade]data/AlbumWidget.ui
+[type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/app-menu.ui
 [type: gettext/glade]data/ArtistWidget.ui
 [type: gettext/glade]data/TrackRow.ui

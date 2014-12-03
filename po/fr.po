@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-28 10:05+0100\n"
+"POT-Creation-Date: 2014-12-03 17:10+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -99,11 +99,11 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:112
+#: ../src/application.py:111
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/application.py:225
+#: ../src/application.py:219
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
@@ -115,15 +115,15 @@ msgstr "Pause"
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:234 ../src/window.py:275
+#: ../src/window.py:245 ../src/window.py:286
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:236
+#: ../src/window.py:247
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:237
+#: ../src/window.py:248
 msgid "Populars albums"
 msgstr "Albums populaires"
 
@@ -155,7 +155,7 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/queue.py:101
+#: ../src/queue.py:100
 msgid "Empty queue"
 msgstr "File d'attente vide"
 
@@ -189,7 +189,7 @@ msgstr "Sélectionnez une pochette pour cet album"
 msgid "The the"
 msgstr "The the Les les La Le la le"
 
-#: ../src/search.py:115
+#: ../src/search.py:114
 msgid "Search:"
 msgstr "Recherche:"
 

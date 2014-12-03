@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
+from cgi import escape
 
 from lollypop.config import *
 from lollypop.albumart import AlbumArt
@@ -32,13 +33,20 @@ class QueueWidget(Gtk.Popover):
 		self._timeout = None
 		self._in_drag = False
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+		
+		self._ui = Gtk.Builder()
+		self._ui.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
 		self._model.connect("row-deleted", self._updated_rows)
-		self._view = Gtk.TreeView(self._model)
-		self._view.set_property('activate-on-single-click', True)
-		self._view.set_property('reorderable', True)
-		
+
+		self._view = self._ui.get_object('view')
+		self._view.set_model(self._model)
+
+		self._ui.connect_signals(self)
+
+		self._widget = self._ui.get_object('widget')
+
 		renderer0 = Gtk.CellRendererPixbuf()
 		renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
 		column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
@@ -57,18 +65,7 @@ class QueueWidget(Gtk.Popover):
 		self._view.append_column(column0)
 		self._view.append_column(column1)
 		self._view.append_column(column2)
-		self._view.set_headers_visible(False)
-		self._view.connect('row-activated', self._on_row_activated)
-		self._view.connect('key-release-event', self._on_keyboard_event)
-		self._view.connect('drag-begin', self._on_drag_begin)
-		self._view.connect('drag-end', self._on_drag_end)
 
-		self._scroll = Gtk.ScrolledWindow()
-		self._scroll.set_hexpand(True)
-		self._scroll.set_vexpand(True)
-		self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		self._scroll.add(self._view)
-		self._scroll.show()
 
 	"""
 		Show queue popover		
@@ -78,10 +75,12 @@ class QueueWidget(Gtk.Popover):
 		tracks = Objects["player"].get_queue()
 		if len(tracks) > 0:
 			size_setting = Objects["settings"].get_value('window-size')
-			if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
-				self.set_property('width-request', size_setting[0]*0.4)
-				self.set_property('height-request', size_setting[1]*0.8)
-			self.add(self._scroll)
+			if isinstance(size_setting[1], int):
+				self.set_property('height-request', size_setting[1]*0.7)
+			else:
+				self.set_property('height-request', 600)
+			self.set_property('width-request', 400)
+			self.add(self._widget)
 			for child in self._view.get_children():
 				child.hide()
 				self._view.remove(child)
@@ -93,8 +92,8 @@ class QueueWidget(Gtk.Popover):
 				artist_name = Objects["artists"].get_name(artist_id)
 				track_name = Objects["tracks"].get_name(track_id)
 				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
-				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + 
-									track_name, self._del_pixbuf, track_id])
+				self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
+									escape(track_name), self._del_pixbuf, track_id])
 		else:
 			self.set_property('width-request', -1)
 			self.set_property('height-request', -1)
@@ -114,13 +113,6 @@ class QueueWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-
-	"""
-		Clear widget removing every row, use it when widget isn't visible
-	"""
-	def _clear(self):
-		for child in self._view.get_children():
-			child.destroy()
 
 	"""
 		Mark as in drag
@@ -178,7 +170,14 @@ class QueueWidget(Gtk.Popover):
 			else:
 				# We don't want to play if we are starting a drag & drop, so delay
 				GLib.timeout_add(500, self._play_track, iterator)
-			
+	
+	"""
+		Clear queue
+		@param widget as Gtk.Button
+	"""	
+	def _on_button_clicked(self, widget):
+		self._model.clear()
+	
 	"""
 		Play track for selected iter
 		@param GtkTreeIter

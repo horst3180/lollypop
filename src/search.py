@@ -106,7 +106,6 @@ class SearchWidget(Gtk.Popover):
 		
 		self._timeout = None
 
-		self.set_property('height-request', 600)
 		self.set_property('width-request', 400)
 
 		grid = Gtk.Grid()
@@ -150,9 +149,14 @@ class SearchWidget(Gtk.Popover):
 	"""
 		Give focus to text entry on show
 	"""
-	def show(self):
-		Gtk.Popover.show(self)		
+	def do_show(self):
+		size_setting = Objects["settings"].get_value('window-size')
+		if isinstance(size_setting[1], int):
+			self.set_property('height-request', size_setting[1]*0.7)
+		else:
+			self.set_property('height-request', 600)
 		self._text_entry.grab_focus()
+		Gtk.Popover.do_show(self)
 
 	"""
 		Clear widget removing every row

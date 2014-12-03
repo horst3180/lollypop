@@ -68,6 +68,9 @@ class PopAlbums(Gtk.Popover):
 		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
 			self.set_property('width-request', size_setting[0]*0.65)
 			self.set_property('height-request', size_setting[1]*0.8)
+		else:
+			self.set_property('width-request', 600)
+			self.set_property('height-request', 600)
 		Gtk.Popover.do_show(self)
 
 #######################
