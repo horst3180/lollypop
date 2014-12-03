@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 17:17+0100\n"
+"POT-Creation-Date: 2014-12-03 17:29+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -154,10 +154,6 @@ msgstr "Inconnu"
 #: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr "Compilation"
-
-#: ../src/queue.py:100
-msgid "Empty queue"
-msgstr "File d'attente vide"
 
 #: ../src/view.py:36
 msgid "Loading please wait..."

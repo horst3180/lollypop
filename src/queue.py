@@ -29,7 +29,9 @@ class QueueWidget(Gtk.Popover):
 	"""
 	def __init__(self):
 		Gtk.Popover.__init__(self)
-		
+
+		self.set_property('width-request', 400)
+
 		self._timeout = None
 		self._in_drag = False
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
@@ -66,40 +68,28 @@ class QueueWidget(Gtk.Popover):
 		self._view.append_column(column1)
 		self._view.append_column(column2)
 
+		self.add(self._widget)
 
 	"""
 		Show queue popover		
 		Populate treeview with current queue
 	"""
 	def do_show(self):
-		tracks = Objects["player"].get_queue()
-		if len(tracks) > 0:
-			size_setting = Objects["settings"].get_value('window-size')
-			if isinstance(size_setting[1], int):
-				self.set_property('height-request', size_setting[1]*0.7)
-			else:
-				self.set_property('height-request', 600)
-			self.set_property('width-request', 400)
-			self.add(self._widget)
-			for child in self._view.get_children():
-				child.hide()
-				self._view.remove(child)
-
-			self._view.show()
-			for track_id in tracks:
-				album_id = Objects["tracks"].get_album_id(track_id)
-				artist_id = Objects["albums"].get_artist_id(album_id)
-				artist_name = Objects["artists"].get_name(artist_id)
-				track_name = Objects["tracks"].get_name(track_id)
-				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
-				self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
-									escape(track_name), self._del_pixbuf, track_id])
+		size_setting = Objects["settings"].get_value('window-size')
+		if isinstance(size_setting[1], int):
+			self.set_property('height-request', size_setting[1]*0.7)
 		else:
-			self.set_property('width-request', -1)
-			self.set_property('height-request', -1)
-			label = Gtk.Label(_("Empty queue"))
-			label.show()
-			self.add(label)
+			self.set_property('height-request', 600)
+
+		for track_id in Objects["player"].get_queue():
+			album_id = Objects["tracks"].get_album_id(track_id)
+			artist_id = Objects["albums"].get_artist_id(album_id)
+			artist_name = Objects["artists"].get_name(artist_id)
+			track_name = Objects["tracks"].get_name(track_id)
+			art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
+			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
+								escape(track_name), self._del_pixbuf, track_id])
+
 		Gtk.Popover.do_show(self)
 
 	"""
@@ -107,7 +97,6 @@ class QueueWidget(Gtk.Popover):
 	"""
 	def do_hide(self):
 		Gtk.Popover.do_hide(self)
-		self.remove(self.get_children()[0])
 		self._model.clear()
 		
 #######################
