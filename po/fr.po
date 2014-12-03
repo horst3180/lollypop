@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 17:10+0100\n"
+"POT-Creation-Date: 2014-12-03 17:17+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -200,6 +200,14 @@ msgstr "Lecteur de musique pour GNOME"
 #: ../data/AboutDialog.ui.in.h:2
 msgid "Visit Lollypop website"
 msgstr "Visitez le site web de Lollypop"
+
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "File d'attente:"
+
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Vider la file d'attente"
 
 #: ../data/app-menu.ui.h:1
 msgid "_Preferences"
