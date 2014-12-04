@@ -52,11 +52,16 @@ class PopAlbums(Gtk.Popover):
 			return
 
 		view = ArtistView(artist_id, None, True)
+		self._stack.add(view)
 		if self._artist_id:
 				view.connect('finished', self._switch_view)
+				# Destroy hidden view, which are in populate() thread
+				for child in self._stack.get_children():
+					if child != view and self._stack.get_visible_child() != child:
+						child.destroy()
 		else:
 			self._switch_view(view)
-		view.populate()
+		start_new_thread(view.populate, ())
 		self._artist_id = artist_id
 		view.show()
 
@@ -83,9 +88,8 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def _switch_view(self, view):
 		previous = self._stack.get_visible_child()
-		self._stack.add(view)
 		self._stack.set_visible_child(view)
-		if previous:
+		if previous != view:
 			previous.destroy()
 
 	"""
