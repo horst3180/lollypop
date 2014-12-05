@@ -89,7 +89,7 @@ class PopAlbums(Gtk.Popover):
 	def _switch_view(self, view):
 		previous = self._stack.get_visible_child()
 		self._stack.set_visible_child(view)
-		if previous != view:
+		if previous and previous != view:
 			previous.destroy()
 
 	"""
