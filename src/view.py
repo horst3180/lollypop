@@ -258,7 +258,8 @@ class AlbumView(View):
 		@param widget as unused, album id as int
 	"""
 	def cover_changed(self, widget, album_id):
-		self._stack.get_visible_child().update_cover(album_id)
+		if self._context_widget:
+			self._context_widget.update_cover(album_id)
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
