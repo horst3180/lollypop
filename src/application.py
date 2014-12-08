@@ -321,12 +321,12 @@ class Application(Gtk.Application):
 		menu = builder.get_object('app-menu')
 		self.set_app_menu(menu)
 
-		settingsAction = Gio.SimpleAction.new('settings', None)
-		settingsAction.connect('activate', self._edit_settings)
-		self.add_action(settingsAction)
-
 		#TODO: Remove this test later
 		if Gtk.get_minor_version() > 12:
+			settingsAction = Gio.SimpleAction.new('settings', None)
+			settingsAction.connect('activate', self._edit_settings)
+			self.add_action(settingsAction)
+
 			partyAction = Gio.SimpleAction.new('party', None)
 			partyAction.connect('activate', self._edit_party)
 			self.add_action(partyAction)
