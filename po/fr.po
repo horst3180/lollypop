@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 17:29+0100\n"
+"POT-Creation-Date: 2014-12-08 14:49+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -83,7 +83,7 @@ msgid "INTERNAL"
 msgstr "INTERNE"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/window.py:34
+#: ../src/window.py:35
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -107,24 +107,24 @@ msgstr "Configurer lollypop"
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../src/toolbar.py:210 ../src/toolbar.py:234
+#: ../src/toolbar.py:207 ../src/toolbar.py:231
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:215 ../src/toolbar.py:231 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:212 ../src/toolbar.py:228 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:245 ../src/window.py:286
+#: ../src/window.py:257 ../src/window.py:298
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:247
+#: ../src/window.py:259
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:248
-msgid "Populars albums"
+#: ../src/window.py:260
+msgid "Popular albums"
 msgstr "Albums populaires"
 
 #: ../src/notification.py:38 ../data/headerbar.ui.h:1
