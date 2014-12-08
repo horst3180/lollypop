@@ -1,0 +1,269 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-08 14:49+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:1
+msgid "Window size"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:2
+msgid "Window size (width and height)."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:3
+msgid "Window position"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:4
+msgid "Window position (x and y)."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:5
+msgid "Window maximized"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:6
+msgid "Window maximized state."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Enabled genres in party mode"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+msgid "Ids for genres."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+msgid "Music paths"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+msgid "When empty, use XDG_MUSIC_DIR"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "DO NOT MODIFY"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Scan library at startup"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "Do not show genres list"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Show albums/artists view as dark"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15 ../data/SettingsDialog.ui.h:3
+msgid "Continue playback when closed"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
+#: ../src/window.py:35
+msgid "Lollypop"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:2
+msgid "Music Player"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
+msgid "Play and organize your music collection"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:3
+msgid "Music player for the GNOME desktop"
+msgstr ""
+
+#: ../src/application.py:111
+msgid "Configure lollypop"
+msgstr ""
+
+#: ../src/application.py:219
+msgid "Select what will be available in party mode"
+msgstr ""
+
+#: ../src/toolbar.py:207 ../src/toolbar.py:231
+msgid "Pause"
+msgstr ""
+
+#: ../src/toolbar.py:212 ../src/toolbar.py:228 ../data/headerbar.ui.h:2
+msgid "Play"
+msgstr ""
+
+#: ../src/window.py:257 ../src/window.py:298
+msgid "Compilations"
+msgstr ""
+
+#: ../src/window.py:259
+msgid "All artists"
+msgstr ""
+
+#: ../src/window.py:260
+msgid "Popular albums"
+msgstr ""
+
+#: ../src/notification.py:38 ../data/headerbar.ui.h:1
+msgid "Previous"
+msgstr ""
+
+#: ../src/notification.py:40 ../data/headerbar.ui.h:3
+msgid "Next"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist, from to the album
+#: ../src/notification.py:62
+#, python-format
+msgid "by %s, from %s"
+msgstr ""
+
+#: ../src/database_artists.py:59
+msgid "Many artists"
+msgstr ""
+
+#: ../src/database_artists.py:66 ../src/database_albums.py:124
+#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
+#: ../src/database_genres.py:63
+msgid "Unknown"
+msgstr ""
+
+#: ../src/database_albums.py:139
+msgid "Compilation"
+msgstr ""
+
+#: ../src/view.py:36
+msgid "Loading please wait..."
+msgstr ""
+
+#: ../src/popmenu.py:62
+msgid "Add to queue"
+msgstr ""
+
+#: ../src/popmenu.py:66
+msgid "Next tracks"
+msgstr ""
+
+#: ../src/popmenu.py:68
+msgid "Next track"
+msgstr ""
+
+#: ../src/popmenu.py:71
+msgid "Remove from queue"
+msgstr ""
+
+#: ../src/popimages.py:53
+msgid "Select a cover art for this album"
+msgstr ""
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:24
+msgid "The the"
+msgstr ""
+
+#: ../src/search.py:114
+msgid "Search:"
+msgstr ""
+
+#: ../data/AboutDialog.ui.in.h:1
+msgid "A music player for GNOME."
+msgstr ""
+
+#: ../data/AboutDialog.ui.in.h:2
+msgid "Visit Lollypop website"
+msgstr ""
+
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr ""
+
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr ""
+
+#: ../data/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr ""
+
+#: ../data/app-menu.ui.h:2
+msgid "_Edit party mode"
+msgstr ""
+
+#: ../data/app-menu.ui.h:3
+msgid "_Update music"
+msgstr ""
+
+#: ../data/app-menu.ui.h:4
+msgid "_About"
+msgstr ""
+
+#: ../data/app-menu.ui.h:5
+msgid "_Quit"
+msgstr ""
+
+#: ../data/headerbar.ui.h:4
+msgid "Shuffle"
+msgstr ""
+
+#: ../data/headerbar.ui.h:5
+msgid "Party mode"
+msgstr ""
+
+#: ../data/headerbar.ui.h:6
+msgid "Search"
+msgstr ""
+
+#: ../data/headerbar.ui.h:7
+msgid "Queue"
+msgstr ""
+
+#: ../data/headerbar.ui.h:8
+msgid "Show genres"
+msgstr ""
+
+#: ../data/PartyDialog.ui.h:1 ../data/SettingsDialog.ui.h:6
+msgid "Close"
+msgstr ""
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Darken views"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:2
+msgid "Update music on startup"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:4
+msgid "Behaviour"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:5
+msgid "Music"
+msgstr ""
