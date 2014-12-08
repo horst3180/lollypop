@@ -14,6 +14,7 @@
 from gi.repository import Gtk, Gdk, Gio, GLib
 from gettext import gettext as _, ngettext
 from _thread import start_new_thread
+from os import environ
 
 from lollypop.config import Objects
 from lollypop.collectionscanner import CollectionScanner
@@ -180,7 +181,11 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 	
 		self._toolbar = Toolbar()
-		self.set_titlebar(self._toolbar.header_bar)
+		if "GNOME" in environ.get("XDG_CURRENT_DESKTOP"):
+			self.set_titlebar(self._toolbar.header_bar)
+			self._toolbar.header_bar.set_show_close_button(True)
+		else:
+			vgrid.add(self._toolbar.header_bar)		
 		self._toolbar.header_bar.show()
 
 		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)

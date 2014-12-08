@@ -88,9 +88,6 @@ class Toolbar():
 		queue_button.connect("clicked", self._on_queue_btn_clicked)
 		self._queue = QueueWidget()
 		self._queue.set_relative_to(queue_button)
-
-		self.header_bar.set_show_close_button(True)
-
 		
 	"""
 		@return view genres button as GtkToggleButton
