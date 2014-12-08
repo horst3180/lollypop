@@ -257,7 +257,7 @@ class Window(Gtk.ApplicationWindow):
 				items.insert(0, (COMPILATIONS, _("Compilations")))
 
 		items.insert(0, (ALL, _("All artists")))
-		items.insert(0, (POPULARS, _("Populars albums")))
+		items.insert(0, (POPULARS, _("Popular albums")))
 
 		if update:
 			self._list_one.update(items, not active)
