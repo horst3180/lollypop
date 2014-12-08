@@ -329,6 +329,8 @@
         <property name="can_focus">True</property>
         <property name="valign">center</property>
         <property name="halign">center</property>
+        <property name="margin_start">5</property>
+        <property name="margin_end">5</property>
         <property name="width_request">400</property>
         <property name="draw_value">False</property>
       </object>

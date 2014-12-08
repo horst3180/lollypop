@@ -181,15 +181,9 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 	
 		self._toolbar = Toolbar()
-		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
-		if "GNOME" in DESKTOP or "Pantheon" in DESKTOP:
-			self.set_titlebar(self._toolbar.header_bar)
-			self._toolbar.header_bar.set_show_close_button(True)
-		else:
-			vgrid.add(self._toolbar.header_bar)		
 		self._toolbar.header_bar.show()
-
 		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)
+
 		self._list_one = SelectionList("Genre")
 		self._list_two = SelectionList("Artist")
 		self._list_one_signal = None
@@ -211,13 +205,25 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.add(self._progress)
 		vgrid.show()
 
+		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+		if "GNOME" in DESKTOP or "Pantheon" in DESKTOP:
+			self.set_titlebar(self._toolbar.header_bar)
+			self._toolbar.header_bar.set_show_close_button(True)
+			self.add(self._paned_main_list)
+		else:
+			hgrid = Gtk.Grid()
+			hgrid.set_orientation(Gtk.Orientation.VERTICAL)
+			hgrid.add(self._toolbar.header_bar)
+			hgrid.add(self._paned_main_list)
+			hgrid.show()
+			self.add(hgrid)
+
 		separator = Gtk.Separator()
 		separator.show()
 		self._paned_list_view.add1(self._list_two.widget)
 		self._paned_list_view.add2(vgrid)
 		self._paned_main_list.add1(self._list_one.widget)
 		self._paned_main_list.add2(self._paned_list_view)
-		self.add(self._paned_main_list)
 		self._paned_main_list.set_position(Objects["settings"].get_value("paned-mainlist-width").get_int32())
 		self._paned_list_view.set_position(Objects["settings"].get_value("paned-listview-width").get_int32())
 		self._paned_main_list.show()
