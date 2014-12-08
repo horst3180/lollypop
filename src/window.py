@@ -181,7 +181,8 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 	
 		self._toolbar = Toolbar()
-		if "GNOME" in environ.get("XDG_CURRENT_DESKTOP"):
+		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+		if "GNOME" in DESKTOP or "Pantheon" in DESKTOP:
 			self.set_titlebar(self._toolbar.header_bar)
 			self._toolbar.header_bar.set_show_close_button(True)
 		else:
