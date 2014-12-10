@@ -261,7 +261,7 @@ class ChooserWidget(Gtk.Grid):
 		@return path as string
 	"""
 	def get_dir(self):
-		path = self._chooser_btn.get_uri()
+		path =  GLib.uri_unescape_string(self._chooser_btn.get_uri(), None)
 		if path:
 			return path[7:]
 		else:
