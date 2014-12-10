@@ -206,7 +206,7 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.show()
 
 		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
-		if "GNOME" in DESKTOP or "Pantheon" in DESKTOP:
+		if DESKTOP and ("GNOME" in DESKTOP or "Pantheon" in DESKTOP):
 			self.set_titlebar(self._toolbar.header_bar)
 			self._toolbar.header_bar.set_show_close_button(True)
 			self.add(self._paned_main_list)
