@@ -108,7 +108,10 @@ class AlbumArt:
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+					except:
+						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				else:
 					# Try to get from tags
 					try:
@@ -138,9 +141,15 @@ class AlbumArt:
 					if not pixbuf:
 						pixbuf = self._get_default_art(album_id, size)
 						# Save as png to keep alpha channel
-						pixbuf.savev(CACHE_PATH_PNG, "png", [], [])
+						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+							pixbuf.save(CACHE_PATH_PNG, "png", [], [])
+						except:
+							pixbuf.savev(CACHE_PATH_PNG, "png", [], [])
 					else:
-						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+							pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+						except:
+							pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
 			return pixbuf
 			
