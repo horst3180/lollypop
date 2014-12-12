@@ -3,6 +3,15 @@ GtkWidget {
 
 }
 
+GtkTreeView {
+	text-shadow: none
+}
+
+GtkTreeView:hover {
+        background-color: @theme_bg_color;
+        color: @theme_fg_color;
+}
+
 @define-color lollypop_base_color #393F3F;
 @define-color lollypop_text_color #eeeeec;
 
