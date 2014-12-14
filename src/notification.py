@@ -14,7 +14,7 @@
 from gi.repository import GLib, Gtk, Notify
 from gettext import gettext as _
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -39,7 +39,7 @@ class NotificationManager:
 									     self._go_previous, None)
 			self._notification.add_action('media-skip-forward', _("Next"),
 									     self._go_next, None)
-		Objects["player"].connect('current-changed', self._update_track)
+		Objects.player.connect('current-changed', self._update_track)
 
 #######################
 # PRIVATE             #
@@ -50,13 +50,13 @@ class NotificationManager:
 		@param player Player, track id as int
 	"""
 	def _update_track(self, obj, track_id):
-		album_id = Objects["tracks"].get_album_id(track_id)
-		album = Objects["albums"].get_name(album_id)
-		artist = Objects["tracks"].get_artist_name(track_id)
+		album_id = Objects.tracks.get_album_id(track_id)
+		album = Objects.albums.get_name(album_id)
+		artist = Objects.tracks.get_artist_name(track_id)
 		artist = translate_artist_name(artist)
-		title = Objects["tracks"].get_name(track_id)
+		title = Objects.tracks.get_name(track_id)
 		
-		self._notification.set_hint('image-path', GLib.Variant('s', Objects["art"].get_path(album_id, ART_SIZE_BIG)))
+		self._notification.set_hint('image-path', GLib.Variant('s', Objects.art.get_path(album_id, ART_SIZE_BIG)))
 		self._notification.update(title,
 								  # TRANSLATORS: by refers to the artist, from to the album
 								  _("by %s, from %s") % ('<b>' + artist + '</b>',
@@ -72,10 +72,10 @@ class NotificationManager:
 		Callback for notification prev button
 	"""
 	def _go_previous(self, notification, action, data):
-		Objects["player"].prev()
+		Objects.player.prev()
 
 	"""
 		Callback for notification next button
 	"""
 	def _go_next(self, notification, action, data):
-		Objects["player"].next()
+		Objects.player.next()

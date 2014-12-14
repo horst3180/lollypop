@@ -17,7 +17,7 @@ import urllib.request
 import urllib.parse
 from _thread import start_new_thread
 
-from lollypop.config import *
+from lollypop.define import *
 
 class PopMenu(Gio.Menu):
 	"""
@@ -36,7 +36,7 @@ class PopMenu(Gio.Menu):
 		app.add_action(prepend_queue_action)
 		del_queue_action = Gio.SimpleAction(name="del_queue_action")
 		app.add_action(del_queue_action)
-		queue = Objects["player"].get_queue()
+		queue = Objects.player.get_queue()
 		append = True
 		prepend = True
 		delete = True
@@ -50,7 +50,7 @@ class PopMenu(Gio.Menu):
 			else:
 				delete = False
 		else:
-			tracks = Objects["albums"].get_tracks(object_id)
+			tracks = Objects.albums.get_tracks(object_id)
 			union = set(queue) & set(tracks)
 			if len(union) == len(tracks):
 				append = False
@@ -82,10 +82,10 @@ class PopMenu(Gio.Menu):
 	"""
 	def _append_to_queue(self, action, variant, data):
 		if self._is_album:
-			for track_id in Objects["albums"].get_tracks(data):
-				Objects["player"].append_to_queue(track_id)
+			for track_id in Objects.albums.get_tracks(data):
+				Objects.player.append_to_queue(track_id)
 		else:
-			Objects["player"].append_to_queue(data)
+			Objects.player.append_to_queue(data)
 		
 	"""
 		Prepend track id to queue
@@ -95,10 +95,10 @@ class PopMenu(Gio.Menu):
 	"""
 	def _prepend_to_queue(self, action, variant, data):
 		if self._is_album:
-			for track_id in reversed(Objects["albums"].get_tracks(data)):
-				Objects["player"].prepend_to_queue(track_id)
+			for track_id in reversed(Objects.albums.get_tracks(data)):
+				Objects.player.prepend_to_queue(track_id)
 		else:
-			Objects["player"].prepend_to_queue(data)
+			Objects.player.prepend_to_queue(data)
 		
 	"""
 		Delete track id from queue
@@ -108,8 +108,8 @@ class PopMenu(Gio.Menu):
 	"""
 	def _del_from_queue(self, action, variant, data):
 		if self._is_album:
-			for track_id in Objects["albums"].get_tracks(data):
-				Objects["player"].del_from_queue(track_id)
+			for track_id in Objects.albums.get_tracks(data):
+				Objects.player.del_from_queue(track_id)
 		else:
-			Objects["player"].del_from_queue(data)
+			Objects.player.del_from_queue(data)
 		

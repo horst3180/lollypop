@@ -16,7 +16,7 @@ import sqlite3
 import os
 from gi.repository import Gtk, GLib
 
-from lollypop.config import Objects
+from lollypop.define import Objects
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.database_albums import DatabaseAlbums
 from lollypop.database_artists import DatabaseArtists
@@ -64,7 +64,7 @@ class Database:
 		except:
 			exit(-1)
 			
-		db_version = Objects["settings"].get_value('db-version')
+		db_version = Objects.settings.get_value('db-version')
 		upgrade = DatabaseUpgrade(sql, db_version)
 		# Create db schema
 		try:
@@ -73,15 +73,15 @@ class Database:
 			sql.execute(self.create_genres)
 			sql.execute(self.create_tracks)
 			sql.commit()
-			Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.count()))
+			Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.count()))
 		# Upgrade db schema
 		except:
 			try:
 				if db_version.get_int32() < upgrade.count():
-					Objects["settings"].set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
+					Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
 				if upgrade.reset_needed():
 					self._set_popularities(sql)
-					Objects["settings"].set_value('party-ids', GLib.Variant('ai', []))
+					Objects.settings.set_value('party-ids', GLib.Variant('ai', []))
 					sql.execute("DELETE FROM tracks")
 					sql.execute("DELETE FROM albums")
 					sql.execute("DELETE FROM artists")

@@ -18,7 +18,7 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.player import Player
 from lollypop.albumart import AlbumArt
 from lollypop.database import Database
@@ -37,8 +37,8 @@ class MPRIS(dbus.service.Object):
 		name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
 		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
 		self._app = app
-		Objects["player"].connect('current-changed', self._on_current_changed)
-		Objects["player"].connect('status-changed', self._on_status_changed)
+		Objects.player.connect('current-changed', self._on_current_changed)
+		Objects.player.connect('status-changed', self._on_status_changed)
 
 	@dbus.service.method(dbus_interface=MPRIS_IFACE)
 	def Raise(self):
@@ -50,27 +50,27 @@ class MPRIS(dbus.service.Object):
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Next(self):
-		Objects["player"].next()
+		Objects.player.next()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Previous(self):
-		Objects["player"].prev()
+		Objects.player.prev()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Pause(self):
-		Objects["player"].pause()
+		Objects.player.pause()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def PlayPause(self):
-		Objects["player"].play_pause()
+		Objects.player.play_pause()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Stop(self):
-		Objects["player"].stop()
+		Objects.player.stop()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Play(self):
-		Objects["player"].play()
+		Objects.player.play()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='ox')
@@ -143,7 +143,7 @@ class MPRIS(dbus.service.Object):
 #######################
 
 	def _get_status(self):
-		state = Objects["player"].get_status()
+		state = Objects.player.get_status()
 		if state == Gst.State.PLAYING:
 			return 'Playing'
 		elif state == Gst.State.PAUSED:
@@ -152,19 +152,19 @@ class MPRIS(dbus.service.Object):
 			return 'Stopped'
 
 	def _get_metadata(self):
-		track_id = Objects["player"].get_current_track_id()
+		track_id = Objects.player.get_current_track_id()
 		if track_id == -1:
 			return dbus.Dictionary({}, signature='sv')
 
-		infos = Objects["tracks"].get_infos(track_id)
+		infos = Objects.tracks.get_infos(track_id)
 		album_id =  infos[4]
-		album = Objects["albums"].get_name(album_id)
-		artist = Objects["tracks"].get_artist_name(track_id)
+		album = Objects.albums.get_name(album_id)
+		artist = Objects.tracks.get_artist_name(track_id)
 		artist = translate_artist_name(artist)
-		performer = Objects["tracks"].get_performer_name(track_id)
+		performer = Objects.tracks.get_performer_name(track_id)
 		performer = translate_artist_name(performer)
-		genre_id = Objects["albums"].get_genre(album_id)
-		genre = Objects["genres"].get_name(genre_id)
+		genre_id = Objects.albums.get_genre(album_id)
+		genre = Objects.genres.get_name(genre_id)
 	
 		metadata = {}	
 		metadata['xesam:trackNumber'] = infos[3]
@@ -174,7 +174,7 @@ class MPRIS(dbus.service.Object):
 		metadata['xesam:albumArtist'] = performer
 		metadata['mpris:length'] = dbus.Int64(infos[2] * 1000000)
 		metadata['xesam:genre'] = genre
-		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
+		metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(album_id, ART_SIZE_BIG)
 		
 		return dbus.Dictionary(metadata, signature='sv')
 

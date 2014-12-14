@@ -15,7 +15,7 @@ from gettext import gettext as _
 from gi.repository import Gtk, GObject, Gdk, GLib
 from _thread import start_new_thread
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
 from lollypop.queue import QueueWidget
@@ -60,10 +60,10 @@ class Toolbar():
 		self._popalbums = PopAlbums()
 		self._popalbums.set_relative_to(infobox)
 
-		Objects["player"].connect("status-changed", self._on_status_changed)
-		Objects["player"].connect("current-changed", self.update_toolbar)
-		Objects["player"].connect("cover-changed", self._update_cover)
-		Objects["player"].connect('position-changed', self._on_position_changed)
+		Objects.player.connect("status-changed", self._on_status_changed)
+		Objects.player.connect("current-changed", self.update_toolbar)
+		Objects.player.connect("cover-changed", self._update_cover)
+		Objects.player.connect('position-changed', self._on_position_changed)
 
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
 		self._shuffle_btn.connect("toggled", self._shuffle_update)
@@ -76,7 +76,7 @@ class Toolbar():
 		self._next_btn.connect('clicked', self._on_next_btn_clicked)
 		
 		self._view_genres_btn = self._ui.get_object('genres_button')
-		self._view_genres_btn.set_active(not Objects["settings"].get_value('hide-genres'))
+		self._view_genres_btn.set_active(not Objects.settings.get_value('hide-genres'))
 		self._view_genres_btn.connect("toggled", self._save_genres_btn_state)
 
 		search_button = self._ui.get_object('search-button')
@@ -115,21 +115,21 @@ class Toolbar():
 			self._title_label.set_text("")
 			self._artist_label.set_text("")
 		else:
-			album_id = Objects["tracks"].get_album_id(track_id)
-			art = Objects["art"].get(album_id,  ART_SIZE_SMALL)
+			album_id = Objects.tracks.get_album_id(track_id)
+			art = Objects.art.get(album_id,  ART_SIZE_SMALL)
 			if art:
 				self._cover.set_from_pixbuf(art)
 				self._cover.show()
 			else:
 				self._cover.hide()
 			
-			title = Objects["tracks"].get_name(track_id)
-			artist = Objects["tracks"].get_artist_name(track_id)
+			title = Objects.tracks.get_name(track_id)
+			artist = Objects.tracks.get_artist_name(track_id)
 			artist = translate_artist_name(artist)
 			self._title_label.set_text(title)
 			self._artist_label.set_text(artist)
 			self._progress.set_value(0.0)
-			duration = Objects["tracks"].get_length(track_id)
+			duration = Objects.tracks.get_length(track_id)
 			self._progress.set_range(0.0, duration * 60)
 			self._total_time_label.set_text(seconds_to_string(duration))
 			self._total_time_label.show()
@@ -145,14 +145,14 @@ class Toolbar():
 		@param widget as GtkToggleButton
 	"""
 	def _save_genres_btn_state(self, widget):
-		Objects["settings"].set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
+		Objects.settings.set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
 
 	"""
 		Pop albums from current artist in a thread
 	"""
 	def _pop_albums(self, widget, event):
 		if event.button == 1:
-			track_id = Objects["player"].get_current_track_id()
+			track_id = Objects.player.get_current_track_id()
 			if track_id != -1:
 				self._popalbums.populate(track_id)
 				self._popalbums.show()
@@ -162,10 +162,10 @@ class Toolbar():
 		@param obj as unused, album id as int
 	"""
 	def _update_cover(self, obj, album_id):
-		current_track_id = Objects["player"].get_current_track_id()
-		current_album_id = Objects["tracks"].get_album_id(current_track_id)
+		current_track_id = Objects.player.get_current_track_id()
+		current_album_id = Objects.tracks.get_album_id(current_track_id)
 		if current_album_id == album_id:
-			self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_SMALL))
+			self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_SMALL))
 
 
 	"""
@@ -184,7 +184,7 @@ class Toolbar():
 		value = scale.get_value()
 		self._seeking = False
 		self._on_position_changed(None, value)
-		Objects["player"].seek(value/60)
+		Objects.player.seek(value/60)
 	
 	"""
 		Update scale and time label
@@ -200,7 +200,7 @@ class Toolbar():
 		@param obj as unused
 	"""
 	def _on_status_changed(self, obj):
-		playing = Objects["player"].is_playing()
+		playing = Objects.player.is_playing()
 
 		self._progress.set_sensitive(playing)
 		if playing:
@@ -216,18 +216,18 @@ class Toolbar():
 	    @param obj as unused
 	"""		
 	def _on_prev_btn_clicked(self, obj):
-		Objects["player"].prev()
+		Objects.player.prev()
 
 	"""
 		Play/Pause on play button clicked
 		@param obj as unused
 	"""		
 	def _on_play_btn_clicked(self, obj):
-		if Objects["player"].is_playing():
-			Objects["player"].pause()
+		if Objects.player.is_playing():
+			Objects.player.pause()
 			self._change_play_btn_status(self._play_image, _("Play"))
 		else:
-			Objects["player"].play()
+			Objects.player.play()
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 
 	"""
@@ -235,7 +235,7 @@ class Toolbar():
 		@param obj as unused
 	"""		
 	def _on_next_btn_clicked(self, obj):
-		Objects["player"].next()		
+		Objects.player.next()		
 	
 	"""
 		Show search widget on search button clicked
@@ -265,7 +265,7 @@ class Toolbar():
 		@param obj as unused
 	"""
 	def _shuffle_update(self, obj):
-		Objects["player"].set_shuffle(self._shuffle_btn.get_active())
+		Objects.player.set_shuffle(self._shuffle_btn.get_active())
 
 	"""
 		Set party mode on if party button active
@@ -276,4 +276,4 @@ class Toolbar():
 		active = self._party_btn.get_active()
 		self._shuffle_btn.set_sensitive(not active)
 		settings.set_property("gtk-application-prefer-dark-theme", active)
-		Objects["player"].set_party(active)
+		Objects.player.set_party(active)

@@ -21,7 +21,7 @@ from math import pi
 from random import uniform
 from mutagen import File as Idtag
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.database import Database
 
 """
@@ -49,7 +49,7 @@ class AlbumArt:
 		@return cover path as string
 	"""
 	def get_path(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
+		album_path = Objects.albums.get_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		if os.path.exists(CACHE_PATH_JPG):
@@ -91,7 +91,7 @@ class AlbumArt:
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
+		album_path = Objects.albums.get_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		cached = True
@@ -115,8 +115,8 @@ class AlbumArt:
 				else:
 					# Try to get from tags
 					try:
-						for track_id in Objects["albums"].get_tracks(album_id):
-							filepath = Objects["tracks"].get_path(track_id)
+						for track_id in Objects.albums.get_tracks(album_id):
+							filepath = Objects.tracks.get_path(track_id)
 							filetag = Idtag(filepath, easy = False)
 							for tag in filetag.tags:
 								if tag.startswith("APIC:"):
@@ -163,7 +163,7 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
+		album_path = Objects.albums.get_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
 		if os.path.exists(CACHE_PATH_JPG):
@@ -204,9 +204,9 @@ class AlbumArt:
 		@return pixbuf
 	"""
 	def _get_default_art(self, album_id, size):
-		album_name = Objects["albums"].get_name(album_id)
-		artist_id = Objects["albums"].get_artist_id(album_id)
-		artist_name = Objects["artists"].get_name(artist_id)
+		album_name = Objects.albums.get_name(album_id)
+		artist_id = Objects.albums.get_artist_id(album_id)
+		artist_name = Objects.artists.get_name(artist_id)
 		center = size / 2
 		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
 		ctx = cairo.Context(surface)

@@ -11,7 +11,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Objects = {}
+"""
+	This is global object initialised at lollypop start
+	member init order is important!
+"""
+class Objects_:
+	def __init__(self):
+		self.settings = None
+		self.db = None
+		self.sql = None
+		self.albums = None
+		self.artists = None
+		self.genres = None
+		self.tracks = None
+		self.player = None
+		self.art = None
+
+Objects = Objects_()
 
 ART_SIZE_MONSTER = 500
 ART_SIZE_BIG = 200

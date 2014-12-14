@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
 from cgi import escape
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
@@ -75,18 +75,18 @@ class QueueWidget(Gtk.Popover):
 		Populate treeview with current queue
 	"""
 	def do_show(self):
-		size_setting = Objects["settings"].get_value('window-size')
+		size_setting = Objects.settings.get_value('window-size')
 		if isinstance(size_setting[1], int):
 			self.set_property('height-request', size_setting[1]*0.7)
 		else:
 			self.set_property('height-request', 600)
 
-		for track_id in Objects["player"].get_queue():
-			album_id = Objects["tracks"].get_album_id(track_id)
-			artist_id = Objects["albums"].get_artist_id(album_id)
-			artist_name = Objects["artists"].get_name(artist_id)
-			track_name = Objects["tracks"].get_name(track_id)
-			art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
+		for track_id in Objects.player.get_queue():
+			album_id = Objects.tracks.get_album_id(track_id)
+			artist_id = Objects.albums.get_artist_id(album_id)
+			artist_name = Objects.artists.get_name(artist_id)
+			track_name = Objects.tracks.get_name(track_id)
+			art = Objects.art.get(album_id, ART_SIZE_MEDIUM)
 			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
 								escape(track_name), self._del_pixbuf, track_id])
 
@@ -122,7 +122,7 @@ class QueueWidget(Gtk.Popover):
 		@param widget unused, Gtk.Event
 	"""
 	def _on_keyboard_event(self, widget, event):
-		if len(Objects["player"].get_queue()) > 0:
+		if len(Objects.player.get_queue()) > 0:
 			if event.keyval == 65535:
 				path, column = self._view.get_cursor()
 				iter = self._model.get_iter(path)
@@ -138,7 +138,7 @@ class QueueWidget(Gtk.Popover):
 			for row in self._model:
 				if row[3]:
 					new_queue.append(row[3])
-			Objects["player"].set_queue(new_queue)
+			Objects.player.set_queue(new_queue)
 		
 	"""
 		Delete row
@@ -175,4 +175,4 @@ class QueueWidget(Gtk.Popover):
 		if not self._in_drag:
 			value_id = self._model.get_value(iterator, 3)
 			self._model.remove(iterator)
-			Objects["player"].load(value_id)
+			Objects.player.load(value_id)

@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import *
+from lollypop.define import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -28,7 +28,7 @@ class DatabaseArtists:
 	"""
 	def add(self, name, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("INSERT INTO artists (name) VALUES (?)", (name,))
 
 	"""
@@ -38,7 +38,7 @@ class DatabaseArtists:
 	"""
 	def get_id(self, name, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 
 		result = sql.execute("SELECT rowid from artists where name=?", (name,))
 		v = result.fetchone()
@@ -54,7 +54,7 @@ class DatabaseArtists:
 	"""
 	def get_name(self, artist_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		if artist_id == COMPILATIONS:
 			return _("Many artists")
 
@@ -71,7 +71,7 @@ class DatabaseArtists:
 	"""
 	def get_albums(self, artist_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = sql.execute("SELECT rowid FROM albums where artist_id=? order by year",(artist_id,))
 		for row in result:
@@ -90,7 +90,7 @@ class DatabaseArtists:
 	"""
 	def get_ids(self, genre_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		artists = []
 		result = []
 		if genre_id == ALL:
@@ -110,7 +110,7 @@ class DatabaseArtists:
 	"""
 	def search(self, string, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		artists = []
 		result = sql.execute("SELECT rowid FROM artists where name like ? LIMIT 100", ('%'+string+'%',))
 		for row in result:

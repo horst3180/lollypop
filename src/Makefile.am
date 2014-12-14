@@ -1,7 +1,7 @@
 appdir = $(pythondir)/lollypop/
 
 app_PYTHON = \
-	config.py\
+	define.py\
 	application.py\
 	toolbar.py\
 	window.py\

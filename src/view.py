@@ -15,7 +15,7 @@ from gi.repository import Gtk, GObject, Gdk
 from gettext import gettext as _
 from time import sleep
 
-from lollypop.config import Objects
+from lollypop.define import Objects
 from lollypop.database import Database
 from lollypop.widgets import *
 from lollypop.utils import translate_artist_name
@@ -50,17 +50,17 @@ class View(Gtk.Grid):
 		Gtk.Grid.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self.set_border_width(0)
-		if Objects["settings"].get_value('dark-view'):
+		if Objects.settings.get_value('dark-view'):
 			self.get_style_context().add_class('black')
-		Objects["player"].connect("current-changed", self.current_changed)
-		Objects["player"].connect("cover-changed", self.cover_changed)
+		Objects.player.connect("current-changed", self.current_changed)
+		Objects.player.connect("cover-changed", self.cover_changed)
 
 	"""
 		Remove signals on player object
 	"""
 	def remove_signals(self):
-		Objects["player"].disconnect_by_func(self.current_changed)
-		Objects["player"].disconnect_by_func(self.cover_changed)
+		Objects.player.disconnect_by_func(self.current_changed)
+		Objects.player.disconnect_by_func(self.cover_changed)
 
 
 	"""
@@ -126,7 +126,7 @@ class ArtistView(View):
 			self._ui = Gtk.Builder()
 			self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
 			self.add(self._ui.get_object('ArtistView'))
-			artist_name = Objects["artists"].get_name(artist_id)
+			artist_name = Objects.artists.get_name(artist_id)
 			artist_name = translate_artist_name(artist_name)
 			self._ui.get_object('artist').set_label(artist_name)
 
@@ -151,13 +151,13 @@ class ArtistView(View):
 		Populate the view, can be threaded
 	"""
 	def populate(self):
-		sql = Objects["db"].get_cursor()
+		sql = Objects.db.get_cursor()
 		if self._artist_id == COMPILATIONS:
-			albums = Objects["albums"].get_compilations(self._genre_id, sql)
+			albums = Objects.albums.get_compilations(self._genre_id, sql)
 		elif self._genre_id == ALL:
-			albums = Objects["albums"].get_ids(self._artist_id, None, sql)
+			albums = Objects.albums.get_ids(self._artist_id, None, sql)
 		else:
-			albums = Objects["albums"].get_ids(self._artist_id, self._genre_id, sql)
+			albums = Objects.albums.get_ids(self._artist_id, self._genre_id, sql)
 		GLib.idle_add(self._add_albums, albums)
 
 	"""
@@ -176,8 +176,8 @@ class ArtistView(View):
 		Update the content view
 	"""
 	def _update_content(self):
-		track_id = Objects["player"].get_current_track_id()
-		artist_id = Objects["tracks"].get_artist_id(track_id)
+		track_id = Objects.player.get_current_track_id()
+		artist_id = Objects.tracks.get_artist_id(track_id)
 		if self._albumbox:
 			for widget in self._albumbox.get_children():
 				widget.update_playing_track(track_id)
@@ -242,14 +242,14 @@ class AlbumView(View):
 		Populate albums, can be threaded
 	"""	
 	def populate(self):
-		sql = Objects["db"].get_cursor()
+		sql = Objects.db.get_cursor()
 		if self._genre_id == ALL:
-			albums = Objects["albums"].get_ids(None, None, sql)
+			albums = Objects.albums.get_ids(None, None, sql)
 		elif self._genre_id == POPULARS:
-			albums = Objects["albums"].get_populars(sql)
+			albums = Objects.albums.get_populars(sql)
 		else:
-			albums = Objects["albums"].get_compilations(self._genre_id, sql)
-			albums += Objects["albums"].get_ids(None, self._genre_id, sql)
+			albums = Objects.albums.get_compilations(self._genre_id, sql)
+			albums += Objects.albums.get_ids(None, self._genre_id, sql)
 
 		GLib.idle_add(self._add_albums, albums)
 	
@@ -280,8 +280,8 @@ class AlbumView(View):
 		Update the context view
 	"""
 	def _update_context(self):
-		track_id = Objects["player"].get_current_track_id()
-		album_id = Objects["tracks"].get_album_id(track_id)
+		track_id = Objects.player.get_current_track_id()
+		album_id = Objects.tracks.get_album_id(track_id)
 		if self._context_widget:
 			self._context_widget.update_playing_track(track_id)
 

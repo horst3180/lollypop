@@ -15,7 +15,7 @@ from gi.repository import Gtk, GObject, Pango
 
 from lollypop.database import Database
 from lollypop.utils import translate_artist_name
-from lollypop.config import *
+from lollypop.define import *
 
 class SelectionList(GObject.GObject):
 

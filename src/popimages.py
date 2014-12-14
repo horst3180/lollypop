@@ -17,7 +17,7 @@ import urllib.request
 import urllib.parse
 from _thread import start_new_thread
 
-from lollypop.config import *
+from lollypop.define import *
 
 class PopImages(Gtk.Popover):
 
@@ -34,7 +34,7 @@ class PopImages(Gtk.Popover):
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._view.connect("child-activated", self._on_activate)
 		self._view.show()
-		if Objects["settings"].get_value('dark-view'):
+		if Objects.settings.get_value('dark-view'):
 			self._view.get_style_context().add_class('black')
 
 		self.set_property('width-request', 700)
@@ -72,8 +72,8 @@ class PopImages(Gtk.Popover):
 		Same as populate()
 	"""
 	def _populate(self, string):
-		sql = Objects["db"].get_cursor()
-		self._urls = Objects["art"].get_google_arts(string)
+		sql = Objects.db.get_cursor()
+		self._urls = Objects.art.get_google_arts(string)
 		self._add_pixbufs()
 		
 	"""
@@ -122,14 +122,14 @@ class PopImages(Gtk.Popover):
 		Reset cache and use player object to announce cover change
 	"""
 	def _on_activate(self, flowbox, child):
-		album_path = Objects["albums"].get_path(self._album_id)
+		album_path = Objects.albums.get_path(self._album_id)
 		artpath = album_path+"/folder.jpg"
 		pixbuf = self._streams[child.get_child()]
 		pixbuf.savev(artpath, "jpeg", [], [])
-		Objects["art"].clean_cache(self._album_id, ART_SIZE_SMALL)
-		Objects["art"].clean_cache(self._album_id, ART_SIZE_MEDIUM)
-		Objects["art"].clean_cache(self._album_id, ART_SIZE_BIG)
-		Objects["player"].announce_cover_update(self._album_id)
+		Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
+		Objects.art.clean_cache(self._album_id, ART_SIZE_MEDIUM)
+		Objects.art.clean_cache(self._album_id, ART_SIZE_BIG)
+		Objects.player.announce_cover_update(self._album_id)
 		self.hide()
 		self._streams = {}
 		

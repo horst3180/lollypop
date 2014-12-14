@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from time import sleep
 
 from lollypop.view import ArtistView
-from lollypop.config import *
+from lollypop.define import *
 
 class PopAlbums(Gtk.Popover):
 
@@ -39,15 +39,15 @@ class PopAlbums(Gtk.Popover):
 		self._stack.show()
 		self.add(self._stack)
 		
-		Objects["player"].connect("current-changed", self._update_content)
+		Objects.player.connect("current-changed", self._update_content)
 
 	"""
 		Run _populate in a thread
 	"""
 	def populate(self, track_id):
-		artist_id = Objects["tracks"].get_performer_id(track_id)
+		artist_id = Objects.tracks.get_performer_id(track_id)
 		if artist_id == -1:
-			artist_id = Objects["tracks"].get_artist_id(track_id)
+			artist_id = Objects.tracks.get_artist_id(track_id)
 		if self._artist_id == artist_id:
 			return
 
@@ -69,7 +69,7 @@ class PopAlbums(Gtk.Popover):
 		Resize popover and set signals callback
 	"""
 	def do_show(self):
-		size_setting = Objects["settings"].get_value('window-size')
+		size_setting = Objects.settings.get_value('window-size')
 		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
 			self.set_property('width-request', size_setting[0]*0.65)
 			self.set_property('height-request', size_setting[1]*0.8)
@@ -101,9 +101,9 @@ class PopAlbums(Gtk.Popover):
 		if self.is_visible():
 			self.populate(track_id)
 		else:
-			artist_id = Objects["tracks"].get_performer_id(track_id)
+			artist_id = Objects.tracks.get_performer_id(track_id)
 			if artist_id == -1:
-				artist_id = Objects["tracks"].get_artist_id(track_id)
+				artist_id = Objects.tracks.get_artist_id(track_id)
 			if self._artist_id != artist_id:
 				self._artist_id = None
 				current = self._stack.get_visible_child()

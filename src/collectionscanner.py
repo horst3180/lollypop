@@ -19,7 +19,7 @@ from gi.repository import GLib, Gdk, GObject
 from _thread import start_new_thread
 import mutagen
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.utils import format_artist_name
 from lollypop.database import Database
 from lollypop.database_albums import DatabaseAlbums
@@ -38,7 +38,7 @@ class CollectionScanner(GObject.GObject):
 		self._in_thread = False
 		self._progress = None
 		self._smooth = False
-		self._popularities = Objects["db"].get_popularities()
+		self._popularities = Objects.db.get_popularities()
 
 	"""
 		Update database
@@ -47,7 +47,7 @@ class CollectionScanner(GObject.GObject):
 	"""
 	def update(self,  progress, smooth):
 		self._smooth = smooth
-		paths = Objects["settings"].get_value('music-path')
+		paths = Objects.settings.get_value('music-path')
 		if len(paths) == 0:
 			if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
 				paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
@@ -59,7 +59,7 @@ class CollectionScanner(GObject.GObject):
 			progress.show()
 			self._in_thread = True
 			self._compilations = []
-			self._mtimes = Objects["tracks"].get_mtimes()
+			self._mtimes = Objects.tracks.get_mtimes()
 			start_new_thread(self._scan, (paths,))
 
 #######################
@@ -86,9 +86,9 @@ class CollectionScanner(GObject.GObject):
 		@param paths as [string], paths to scan
 	"""
 	def _scan(self, paths):
-		sql = Objects["db"].get_cursor()
+		sql = Objects.db.get_cursor()
 
-		tracks = Objects["tracks"].get_paths(sql)
+		tracks = Objects.tracks.get_paths(sql)
 		new_tracks = []
 		count = 0
 		for path in paths:
@@ -116,7 +116,7 @@ class CollectionScanner(GObject.GObject):
 					# Update tags by removing song and readd it
 					if mtime != self._mtimes[filepath]:
 						tag = mutagen.File(filepath, easy = True)
-						Objects["tracks"].remove(filepath, sql)
+						Objects.tracks.remove(filepath, sql)
 						self._add2db(filepath, mtime, tag, sql)
 					tracks.remove(filepath)
 			
@@ -130,9 +130,9 @@ class CollectionScanner(GObject.GObject):
 		# Clean deleted files
 		if i > 0:
 			for track in tracks:
-				Objects["tracks"].remove(track, sql)
+				Objects.tracks.remove(track, sql)
 
-		Objects["tracks"].clean(sql)
+		Objects.tracks.clean(sql)
 		sql.commit()
 		sql.close()
 		GLib.idle_add(self._notify)
@@ -215,25 +215,25 @@ class CollectionScanner(GObject.GObject):
 			year = 0
 
 		# Get artist id, add it if missing
-		artist_id = Objects["artists"].get_id(artist, sql)
+		artist_id = Objects.artists.get_id(artist, sql)
 		if artist_id == COMPILATIONS:
-			Objects["artists"].add(artist, sql)
-			artist_id = Objects["artists"].get_id(artist, sql)
+			Objects.artists.add(artist, sql)
+			artist_id = Objects.artists.get_id(artist, sql)
 	
 		if performer:
 			# Get performer id, add it if missing
-			performer_id = Objects["artists"].get_id(performer, sql)
+			performer_id = Objects.artists.get_id(performer, sql)
 			if performer_id == COMPILATIONS:
-				Objects["artists"].add(performer, sql)
-				performer_id = Objects["artists"].get_id(performer, sql)
+				Objects.artists.add(performer, sql)
+				performer_id = Objects.artists.get_id(performer, sql)
 		else:
 			performer_id = COMPILATIONS
 
 		# Get genre id, add genre if missing
-		genre_id = Objects["genres"].get_id(genre, sql)
+		genre_id = Objects.genres.get_id(genre, sql)
 		if genre_id == -1:
-			Objects["genres"].add(genre, sql)
-			genre_id = Objects["genres"].get_id(genre, sql)
+			Objects.genres.add(genre, sql)
+			genre_id = Objects.genres.get_id(genre, sql)
 
 
 		#
@@ -241,27 +241,27 @@ class CollectionScanner(GObject.GObject):
 		#
 		# Get albums with this name from this artist/performer
 		if performer_id != COMPILATIONS:
-			album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
+			album_id = Objects.albums.get_id(album, performer_id, genre_id, sql)
 		else:
-			album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+			album_id = Objects.albums.get_id(album, artist_id, genre_id, sql)
 
 		# Track can go in a compilation
 		if performer_id == COMPILATIONS and album_id == -1:
 			# Look if we find a compilation for this name:
-			album_id = Objects["albums"].get_id(album, COMPILATIONS, genre_id, sql)
+			album_id = Objects.albums.get_id(album, COMPILATIONS, genre_id, sql)
 			if album_id == -1:
 				# Search for others album with same name
-				for album_id_ in Objects["albums"].get_id(album, None, genre_id, sql): 
+				for album_id_ in Objects.albums.get_id(album, None, genre_id, sql): 
 					# there is no performer tag, so use it
-					if len(Objects["albums"].get_performers_id(album_id_, sql)) == 0:
+					if len(Objects.albums.get_performers_id(album_id_, sql)) == 0:
 						album_id = album_id_
 						# We need to check if it's an album without performers or 
 						# a compilation ie different artists without performers
-						for track_id_ in Objects["albums"].get_tracks(album_id, sql):
-							artist_id_ = Objects["tracks"].get_artist_id(track_id_, sql)
+						for track_id_ in Objects.albums.get_tracks(album_id, sql):
+							artist_id_ = Objects.tracks.get_artist_id(track_id_, sql)
 							if artist_id_ != artist_id:
 								# Mark it as a compilation
-								Objects["albums"].set_artist_id(album_id, COMPILATIONS, sql)
+								Objects.albums.set_artist_id(album_id, COMPILATIONS, sql)
 								break
 
 		popularity = 0
@@ -270,15 +270,15 @@ class CollectionScanner(GObject.GObject):
 		# Get a new album if none found
 		if album_id == -1:
 			if performer_id != COMPILATIONS:
-				Objects["albums"].add(album, performer_id, genre_id, year, path, popularity, sql)
-				album_id = Objects["albums"].get_id(album, performer_id, genre_id, sql)
+				Objects.albums.add(album, performer_id, genre_id, year, path, popularity, sql)
+				album_id = Objects.albums.get_id(album, performer_id, genre_id, sql)
 			else:
-				Objects["albums"].add(album, artist_id, genre_id, year, path, popularity, sql)
-				album_id = Objects["albums"].get_id(album, artist_id, genre_id, sql)
+				Objects.albums.add(album, artist_id, genre_id, year, path, popularity, sql)
+				album_id = Objects.albums.get_id(album, artist_id, genre_id, sql)
 
 		# Now we have our album id, check if path doesn't change
-		if Objects["albums"].get_path(album_id, sql) != path:
-			Objects["albums"].set_path(album_id, path, sql)
+		if Objects.albums.get_path(album_id, sql) != path:
+			Objects.albums.set_path(album_id, path, sql)
 
 		# Add track to db
-		Objects["tracks"].add(title, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql)
+		Objects.tracks.add(title, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql)

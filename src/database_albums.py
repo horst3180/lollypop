@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import *
+from lollypop.define import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -28,7 +28,7 @@ class DatabaseAlbums:
 	"""
 	def add(self, name, artist_id, genre_id, year, path, popularity, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, path, popularity)\
 		                   VALUES (?, ?, ?, ?, ?, ?)",  (name, artist_id, genre_id, year, path, popularity))
 	
@@ -38,7 +38,7 @@ class DatabaseAlbums:
 	"""
 	def set_artist_id(self, album_id, artist_id, sql):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?", (artist_id, album_id))
 
 	"""
@@ -47,7 +47,7 @@ class DatabaseAlbums:
 	"""
 	def set_path(self, album_id, path, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
                    
 	"""
@@ -57,7 +57,7 @@ class DatabaseAlbums:
 	"""
 	def set_more_popular(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT popularity from albums WHERE rowid=?", (album_id,))
 		pop = result.fetchone()
 		if pop:
@@ -77,7 +77,7 @@ class DatabaseAlbums:
 	"""
 	def get_id(self, album_name, artist_id, genre_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		if artist_id:
 			result = sql.execute("SELECT rowid FROM albums where name=? \
 								  AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
@@ -100,7 +100,7 @@ class DatabaseAlbums:
 	"""
 	def get_genre(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT genre_id FROM albums WHERE rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -115,7 +115,7 @@ class DatabaseAlbums:
 	"""
 	def get_name(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT name FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -130,7 +130,7 @@ class DatabaseAlbums:
 	"""
 	def get_artist_name(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT artists.name from artists,albums where albums.rowid=? AND albums.artist_id == artists.rowid", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -145,7 +145,7 @@ class DatabaseAlbums:
 	"""
 	def get_artist_id(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		performers = []
 		result = sql.execute("SELECT artist_id FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
@@ -161,7 +161,7 @@ class DatabaseAlbums:
 	"""
 	def get_performers_id(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		performers = []
 		result = sql.execute("SELECT performer_id FROM tracks where album_id=? and performer_id!=?", (album_id, COMPILATIONS))
 		for row in result:
@@ -175,7 +175,7 @@ class DatabaseAlbums:
 	"""
 	def get_year(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT year FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -191,7 +191,7 @@ class DatabaseAlbums:
 	"""
 	def get_path(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT path FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -206,7 +206,7 @@ class DatabaseAlbums:
 	"""
 	def get_populars(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = sql.execute("SELECT rowid FROM albums where popularity!=0 ORDER BY popularity DESC LIMIT 100")
 		for row in result:
@@ -220,13 +220,13 @@ class DatabaseAlbums:
 	"""
 	def get_party_ids(self, genre_ids, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		# get popular first
 		if -1 in genre_ids:
 			albums = self.get_populars()
 		for genre_id in genre_ids:
-			for album in Objects["genres"].get_albums(genre_id, sql):
+			for album in Objects.genres.get_albums(genre_id, sql):
 				if album not in albums:
 					albums.append(album)
 		return albums
@@ -239,9 +239,9 @@ class DatabaseAlbums:
 	"""
 	def get_count(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
-		artist_id = Objects["albums"].get_artist_id(album_id, sql)
-		album_name = Objects["albums"].get_name(album_id, sql)
+			sql = Objects.sql
+		artist_id = Objects.albums.get_artist_id(album_id, sql)
+		album_name = Objects.albums.get_name(album_id, sql)
 		result = sql.execute("SELECT COUNT(tracks.rowid) FROM tracks, albums\
 							  WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
@@ -259,10 +259,10 @@ class DatabaseAlbums:
 	"""
 	def get_tracks(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
-		artist_id = Objects["albums"].get_artist_id(album_id, sql)
-		album_name = Objects["albums"].get_name(album_id, sql)
+		artist_id = Objects.albums.get_artist_id(album_id, sql)
+		album_name = Objects.albums.get_name(album_id, sql)
 		result = sql.execute("SELECT tracks.rowid FROM tracks,albums WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
 							  (artist_id, album_name))
@@ -278,10 +278,10 @@ class DatabaseAlbums:
 	"""
 	def get_tracks_infos(self, album_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
-		artist_id = Objects["albums"].get_artist_id(album_id, sql)
-		album_name = Objects["albums"].get_name(album_id, sql)
+		artist_id = Objects.albums.get_artist_id(album_id, sql)
+		album_name = Objects.albums.get_name(album_id, sql)
 		result = sql.execute("SELECT tracks.rowid, tracks.name, tracks.artist_id, tracks.filepath, tracks.length FROM tracks, albums\
 							  WHERE albums.artist_id=? AND albums.name=?\
 							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
@@ -298,7 +298,7 @@ class DatabaseAlbums:
 	"""
 	def get_ids(self, artist_id = None, genre_id = None, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = []
 		if artist_id and genre_id:
@@ -325,7 +325,7 @@ class DatabaseAlbums:
 	"""
 	def get_compilations(self, genre_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = []
 		if genre_id == ALL or not genre_id:
@@ -343,7 +343,7 @@ class DatabaseAlbums:
 	"""
 	def search(self, string, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = sql.execute("SELECT rowid, artist_id FROM albums where name like ? LIMIT 100", ('%'+string+'%',))
 		for row in result:

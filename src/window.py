@@ -16,7 +16,7 @@ from gettext import gettext as _, ngettext
 from _thread import start_new_thread
 from os import environ
 
-from lollypop.config import Objects
+from lollypop.define import Objects
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.database import Database
@@ -43,22 +43,22 @@ class Window(Gtk.ApplicationWindow):
 
 		self._setup_media_keys()
 
-		party_settings = Objects["settings"].get_value('party-ids')
+		party_settings = Objects.settings.get_value('party-ids')
 		ids = []
 		for setting in party_settings:
 			if isinstance(setting, int):
 				ids.append(setting)	
-		Objects["player"].set_party_ids(ids)
+		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
 
 	"""
 		Run collection update if needed
 	"""	
 	def setup_view(self):
-		if Objects["tracks"].is_empty():
+		if Objects.tracks.is_empty():
 			self._scanner.update(self._progress, False)
 			return
-		elif Objects["settings"].get_value('startup-scan'):
+		elif Objects.settings.get_value('startup-scan'):
 			self._scanner.update(self._progress, True)
 			
 		self._setup_list_one()
@@ -138,31 +138,31 @@ class Window(Gtk.ApplicationWindow):
 			return
 		response = parameters.get_child_value(1).get_string()
 		if 'Play' in response:
-			Objects["player"].play_pause()
+			Objects.player.play_pause()
 		elif 'Stop' in response:
-			Objects["player"].stop()
+			Objects.player.stop()
 		elif 'Next' in response:
-			Objects["player"].next()
+			Objects.player.next()
 		elif 'Previous' in response:
-			Objects["player"].prev()
+			Objects.player.prev()
 	
 	"""
 		Setup window icon, position and size, callback for updating this values
 	"""
 	def _setup_window(self):
 		self.set_icon_name('lollypop')
-		size_setting = Objects["settings"].get_value('window-size')
+		size_setting = Objects.settings.get_value('window-size')
 		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
 			self.resize(size_setting[0], size_setting[1])
 		else:
 			self.set_size_request(800, 600)
-		position_setting = Objects["settings"].get_value('window-position')
+		position_setting = Objects.settings.get_value('window-position')
 		if len(position_setting) == 2 \
 			and isinstance(position_setting[0], int) \
 			and isinstance(position_setting[1], int):
 			self.move(position_setting[0], position_setting[1])
 
-		if Objects["settings"].get_value('window-maximized'):
+		if Objects.settings.get_value('window-maximized'):
 			self.maximize()
 
 		self.connect("window-state-event", self._on_window_state_event)
@@ -224,8 +224,8 @@ class Window(Gtk.ApplicationWindow):
 		self._paned_list_view.add2(vgrid)
 		self._paned_main_list.add1(self._list_one.widget)
 		self._paned_main_list.add2(self._paned_list_view)
-		self._paned_main_list.set_position(Objects["settings"].get_value("paned-mainlist-width").get_int32())
-		self._paned_list_view.set_position(Objects["settings"].get_value("paned-listview-width").get_int32())
+		self._paned_main_list.set_position(Objects.settings.get_value("paned-mainlist-width").get_int32())
+		self._paned_list_view.set_position(Objects.settings.get_value("paned-listview-width").get_int32())
 		self._paned_main_list.show()
 		self._paned_list_view.show()
 		self.show()
@@ -249,11 +249,11 @@ class Window(Gtk.ApplicationWindow):
 			self._list_one.disconnect(self._list_one_signal)
 		active = self._toolbar.get_view_genres_btn().get_active()
 		if active:
-			items = Objects["genres"].get_ids()
+			items = Objects.genres.get_ids()
 		else:
 			self._list_two.widget.hide()
-			items = Objects["artists"].get_ids(ALL)
-			if len(Objects["albums"].get_compilations(ALL)) > 0:
+			items = Objects.artists.get_ids(ALL)
+			if len(Objects.albums.get_compilations(ALL)) > 0:
 				items.insert(0, (COMPILATIONS, _("Compilations")))
 
 		items.insert(0, (ALL, _("All artists")))
@@ -293,8 +293,8 @@ class Window(Gtk.ApplicationWindow):
 			self._list_two_signal = None
 		else:
 			
-			values = Objects["artists"].get_ids(genre_id)
-			if len(Objects["albums"].get_compilations(genre_id)) > 0:
+			values = Objects.artists.get_ids(genre_id)
+			if len(Objects.albums.get_compilations(genre_id)) > 0:
 				values.insert(0, (COMPILATIONS, _("Compilations")))
 			self._list_two.populate(values, True)
 			self._list_two.widget.show()
@@ -349,21 +349,21 @@ class Window(Gtk.ApplicationWindow):
 	def _save_size_position(self, widget):
 		self._timeout = None
 		size = widget.get_size()
-		Objects["settings"].set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
+		Objects.settings.set_value('window-size', GLib.Variant('ai', [size[0], size[1]]))
 		position = widget.get_position()
-		Objects["settings"].set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
+		Objects.settings.set_value('window-position', GLib.Variant('ai', [position[0], position[1]]))
 
 	"""
 		Save maximised state
 	"""
 	def _on_window_state_event(self, widget, event):
-		Objects["settings"].set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
+		Objects.settings.set_boolean('window-maximized', 'GDK_WINDOW_STATE_MAXIMIZED' in event.new_window_state.value_names)
 
 	"""
 		Save paned widget width
 		@param widget as unused, data as unused
 	"""	
 	def _on_destroyed_window(self, widget):
-		Objects["settings"].set_value("paned-mainlist-width", GLib.Variant('i', self._paned_main_list.get_position()))
-		Objects["settings"].set_value("paned-listview-width", GLib.Variant('i', self._paned_list_view.get_position()))
+		Objects.settings.set_value("paned-mainlist-width", GLib.Variant('i', self._paned_main_list.get_position()))
+		Objects.settings.set_value("paned-listview-width", GLib.Variant('i', self._paned_list_view.get_position()))
 	
