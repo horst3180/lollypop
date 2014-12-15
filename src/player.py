@@ -501,7 +501,6 @@ class Player(GObject.GObject):
 			self.current.number = tracks.index(self.current.id)
 			self.current.path = Objects.tracks.get_path(self.current.id)
 			self.emit("current-changed")
-			print(self.current.title, self.current.artist)
 			# Add track to shuffle history if needed
 			if self._shuffle or self._party:
 				self._shuffle_tracks_history.append(self.current.id)
