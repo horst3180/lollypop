@@ -277,7 +277,7 @@ class Toolbar():
 	def _update_position(self, value = None):
 		if not self._seeking:
 			if value == None:
-				value = Objects.player.get_position_in_track()
+				value = Objects.player.get_position_in_track()/1000000
 			self._progress.set_value(value)
 			self._timelabel.set_text(seconds_to_string(value/60))
 		return True

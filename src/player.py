@@ -42,6 +42,7 @@ class Player(GObject.GObject):
 	
 	__gsignals__ = {
         'current-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'seeked': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'queue-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
@@ -226,6 +227,7 @@ class Player(GObject.GObject):
 	"""
 	def seek(self, position):
 		self._playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
+		self.emit("seeked", position)
 
 	"""
 		Return current track id
@@ -402,7 +404,7 @@ class Player(GObject.GObject):
 		@return position as int
 	"""
 	def get_position_in_track(self):
-		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000
+		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
 		return position*60
 
 #######################

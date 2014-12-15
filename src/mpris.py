@@ -37,7 +37,9 @@ class MPRIS(dbus.service.Object):
 		name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
 		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
 		self._app = app
+		self._metadata = {}
 		Objects.player.connect('current-changed', self._on_current_changed)
+		Objects.player.connect('seeked', self._on_seeked)
 		Objects.player.connect('status-changed', self._on_status_changed)
 
 	@dbus.service.method(dbus_interface=MPRIS_IFACE)
@@ -75,7 +77,7 @@ class MPRIS(dbus.service.Object):
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='ox')
 	def SetPosition(self, track_id, position):
-		pass
+		Objects.player.seek(position/1000000)
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='s')
@@ -109,17 +111,17 @@ class MPRIS(dbus.service.Object):
                 'LoopStatus': 'Playlist',
                 'Rate': dbus.Double(1.0),
                 'Shuffle': True,
-                'Metadata': dbus.Dictionary(self._get_metadata(), signature='sv'),
-                'Volume': 100.0,
-                'Position': 1.0,
+                'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
+                'Volume': 1.0,
+                'Position': dbus.Int64(Objects.player.get_position_in_track()),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
-                'CanGoNext': True,
-                'CanGoPrevious': True,
-                'CanPlay': True,
-                'CanPause': True,
-                'CanSeek': False,
-                'CanControl': False,
+                'CanGoNext': Objects.player.current.id != None,
+                'CanGoPrevious': Objects.player.current.id != None,
+                'CanPlay': Objects.player.current.id != None,
+                'CanPause': Objects.player.current.id != None,
+                'CanSeek': True,
+                'CanControl': True,
 			}
 		else:
 			raise dbus.exceptions.DBusException(
@@ -151,23 +153,28 @@ class MPRIS(dbus.service.Object):
 		else:
 			return 'Stopped'
 
-	def _get_metadata(self):
+	def _update_metadata(self):
+
 		if Objects.player.current.id == None:
 			return dbus.Dictionary({}, signature='sv')
-	
-		metadata = {}
-		metadata['xesam:trackNumber'] = Objects.player.current.number
-		metadata['xesam:title'] = Objects.player.current.title
-		metadata['xesam:album'] = Objects.player.current.album
-		metadata['xesam:artist'] = Objects.player.current.artist
-		metadata['xesam:albumArtist'] = Objects.player.current.performer
-		metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
-		metadata['xesam:genre'] = Objects.player.current.genre
-		metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
-		return dbus.Dictionary(metadata, signature='sv')
+
+		self._metadata = {}
+		self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
+		self._metadata['xesam:trackNumber'] = Objects.player.current.number
+		self._metadata['xesam:title'] = Objects.player.current.title
+		self._metadata['xesam:album'] = Objects.player.current.album
+		self._metadata['xesam:artist'] = [Objects.player.current.artist]
+		self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
+		self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+		self._metadata['xesam:genre'] = [Objects.player.current.genre]
+		self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
+
+	def _on_seeked(self, player, position):
+		self.Seeked(position * 1000000)
 
 	def _on_current_changed(self, player):
-		properties = { 'Metadata': self._get_metadata(),
+		self._update_metadata()
+		properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
 					   'CanPlay': True,
 					   'CanPause': True
 					 }
