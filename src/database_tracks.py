@@ -253,7 +253,7 @@ class DatabaseTracks:
 		if not sql:
 			sql = Objects.sql
 		tracks = []
-		result = sql.execute("SELECT rowid, name FROM tracks where name like ? LIMIT 100", ('%'+string+'%',))
+		result = sql.execute("SELECT rowid, name FROM tracks where name like ? LIMIT 25", ('%'+string+'%',))
 		for row in result:
 			tracks += (row,)
 		return tracks

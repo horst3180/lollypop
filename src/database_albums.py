@@ -345,7 +345,7 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects.sql
 		albums = []
-		result = sql.execute("SELECT rowid, artist_id FROM albums where name like ? LIMIT 100", ('%'+string+'%',))
+		result = sql.execute("SELECT rowid, artist_id FROM albums where name like ? LIMIT 25", ('%'+string+'%',))
 		for row in result:
 			albums += (row,)
 		return albums
