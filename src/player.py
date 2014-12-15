@@ -59,7 +59,7 @@ class Player(GObject.GObject):
 		self._next_id = None # Track in playbin queue
 		self._albums = [] # Albums in current playlist
 		self._shuffle = False
-		self._shuffle_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history) FIXME
+		self._shuffle_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
 		self._shuffle_albums_history = [] # Albums already played
 		self._party = False
 		self._party_ids = []
