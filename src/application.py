@@ -61,7 +61,7 @@ class Application(Gtk.Application):
 
 		self._window = None
 
-		self.register()
+		self.register(None)
 		if self.get_is_remote():
 			Gdk.notify_startup_complete()
 		
