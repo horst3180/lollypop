@@ -32,6 +32,8 @@ class SearchRow(Gtk.ListBoxRow):
 		self._artist = self._ui.get_object('artist')
 		self._item = self._ui.get_object('item')
 		self._cover = self._ui.get_object('cover')
+		self._ui.get_object('add').connect('clicked', self._on_add_clicked)
+		self._ui.get_object('next').connect('clicked', self._on_next_clicked)
 		self.add(self._row_widget)
 
 		self.show()
@@ -92,6 +94,34 @@ class SearchRow(Gtk.ListBoxRow):
 	"""
 	def is_track(self):
 		return self._is_track
+
+#######################
+# PRIVATE             #
+#######################
+
+	"""
+		Add track to queue
+		@param button as Gtk.Button
+	"""
+	def _on_add_clicked(self, button):
+		if self._is_track:
+			Objects.player.append_to_queue(self._object_id)
+		else:
+			for track in Objects.albums.get_tracks(self._object_id):
+				Objects.player.append_to_queue(track)
+		button.hide()
+
+	"""
+		Prepend track to queue
+		@param button as Gtk.Button
+	"""
+	def _on_next_clicked(self, button):
+		if self._is_track:
+			Objects.player.prepend_to_queue(self._object_id)
+		else:
+			for track in reversed(Objects.albums.get_tracks(self._object_id)):
+				Objects.player.prepend_to_queue(track)
+		button.hide()
 
 ######################################################################
 ######################################################################
