@@ -526,7 +526,7 @@ class Player(GObject.GObject):
 		if on_stream_about_to_finish never get send  
 	"""
 	def _on_bus_eos(self, bus, message):
-		self.load(self.current.id)
+		self.load(self._next_id)
 		
 
 	"""
