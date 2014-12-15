@@ -52,32 +52,15 @@ class View(Gtk.Grid):
 		self.set_border_width(0)
 		if Objects.settings.get_value('dark-view'):
 			self.get_style_context().add_class('black')
-		Objects.player.connect("current-changed", self.current_changed)
-		Objects.player.connect("cover-changed", self.cover_changed)
+		Objects.player.connect("current-changed", self._on_current_changed)
+		Objects.player.connect("cover-changed", self._on_cover_changed)
 
 	"""
 		Remove signals on player object
 	"""
 	def remove_signals(self):
-		Objects.player.disconnect_by_func(self.current_changed)
-		Objects.player.disconnect_by_func(self.cover_changed)
-
-
-	"""
-		Current song changed
-		Update context and content
-		@param widget as unused, track id as int
-	"""
-	def current_changed(self, widget, track_id):
-		self._update_content()
-		self._update_context()
-
-	"""
-		Update album cover in view
-		Do nothing here
-	"""
-	def cover_changed(self, widget, album_id):
-		pass
+		Objects.player.disconnect_by_func(self._on_current_changed)
+		Objects.player.disconnect_by_func(self._on_cover_changed)
 	
 	"""
 		Calculate content size
@@ -90,17 +73,33 @@ class View(Gtk.Grid):
 #######################
 
 	"""
+		Current song changed
+		Update context and content
+		@param player as Player
+	"""
+	def _on_current_changed(self, player):
+		self._update_content(player)
+		self._update_context(player)
+
+	"""
+		Update album cover in view
+		Do nothing here
+	"""
+	def _on_cover_changed(self, widget, album_id):
+		pass
+
+	"""
 		Update content view
 		Do nothing here
 	"""
-	def _update_content(self):
+	def _update_content(self, player):
 		pass
 
 	"""
 		Update context view
 		Do nothing here
 	"""
-	def _update_context(self):
+	def _update_context(self, player):
 		pass
 
 
@@ -160,27 +159,27 @@ class ArtistView(View):
 			albums = Objects.albums.get_ids(self._artist_id, self._genre_id, sql)
 		GLib.idle_add(self._add_albums, albums)
 
-	"""
-		Update album cover in view
-		@param album id as int
-	"""
-	def cover_changed(self, widget, album_id):
-		for widget in self._albumbox.get_children():
-			widget.update_cover(album_id)
-			
+		
 #######################
 # PRIVATE             #
 #######################
 
 	"""
-		Update the content view
+		Update album cover in view
+		@param album id as int
 	"""
-	def _update_content(self):
-		track_id = Objects.player.get_current_track_id()
-		artist_id = Objects.tracks.get_artist_id(track_id)
+	def _on_cover_changed(self, widget, album_id):
+		for widget in self._albumbox.get_children():
+			widget.update_cover(album_id)
+
+	"""
+		Update the content view
+		@param player as Player
+	"""
+	def _update_content(self, player):
 		if self._albumbox:
 			for widget in self._albumbox.get_children():
-				widget.update_playing_track(track_id)
+				widget.update_playing_track(player.current.id)
 
 	"""
 		Pop an album and add it to the view,
@@ -252,21 +251,22 @@ class AlbumView(View):
 			albums += Objects.albums.get_ids(None, self._genre_id, sql)
 
 		GLib.idle_add(self._add_albums, albums)
+
+#######################
+# PRIVATE             #
+#######################
 	
 	"""
 		Update album cover in view
 		@param widget as unused, album id as int
 	"""
-	def cover_changed(self, widget, album_id):
+	def _on_cover_changed(self, widget, album_id):
 		if self._context_widget:
 			self._context_widget.update_cover(album_id)
 		for child in self._albumbox.get_children():
 			for widget in child.get_children():
 				widget.update_cover(album_id)
 
-#######################
-# PRIVATE             #
-#######################
 	"""
 		Return next view
 	"""
@@ -278,12 +278,11 @@ class AlbumView(View):
 
 	"""
 		Update the context view
+		@param player as Player
 	"""
-	def _update_context(self):
-		track_id = Objects.player.get_current_track_id()
-		album_id = Objects.tracks.get_album_id(track_id)
+	def _update_context(self, player):
 		if self._context_widget:
-			self._context_widget.update_playing_track(track_id)
+			self._context_widget.update_playing_track(player.current.id)
 
 	"""
 		populate context view

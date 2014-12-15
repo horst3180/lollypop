@@ -232,6 +232,6 @@ class SearchWidget(Gtk.Popover):
 			Objects.player.load(track_id)
 			if not Objects.player.is_party():
 				album_id = Objects.tracks.get_album_id(track_id)
-				Objects.player.set_album(album_id, track_id)
+				Objects.player.set_album(album_id)
 
 

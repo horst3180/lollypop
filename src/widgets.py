@@ -200,7 +200,7 @@ class ArtistWidget(Gtk.Grid):
 	def _on_activated(self, widget, track_id):
 		Objects.player.load(track_id)
 		if not Objects.player.is_party():
-			Objects.player.set_albums(self._artist_id, self._genre_id, track_id, self._full)
+			Objects.player.set_albums(self._artist_id, self._genre_id, self._full)
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)

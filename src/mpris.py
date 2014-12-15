@@ -152,33 +152,21 @@ class MPRIS(dbus.service.Object):
 			return 'Stopped'
 
 	def _get_metadata(self):
-		track_id = Objects.player.get_current_track_id()
-		if track_id == -1:
+		if Objects.player.current.id == None:
 			return dbus.Dictionary({}, signature='sv')
-
-		infos = Objects.tracks.get_infos(track_id)
-		album_id =  infos[4]
-		album = Objects.albums.get_name(album_id)
-		artist = Objects.tracks.get_artist_name(track_id)
-		artist = translate_artist_name(artist)
-		performer = Objects.tracks.get_performer_name(track_id)
-		performer = translate_artist_name(performer)
-		genre_id = Objects.albums.get_genre(album_id)
-		genre = Objects.genres.get_name(genre_id)
 	
-		metadata = {}	
-		metadata['xesam:trackNumber'] = infos[3]
-		metadata['xesam:title'] = infos[0]
-		metadata['xesam:album'] = album
-		metadata['xesam:artist'] = artist
-		metadata['xesam:albumArtist'] = performer
-		metadata['mpris:length'] = dbus.Int64(infos[2] * 1000000)
-		metadata['xesam:genre'] = genre
-		metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(album_id, ART_SIZE_BIG)
-		
+		metadata = {}
+		metadata['xesam:trackNumber'] = Objects.player.current.number
+		metadata['xesam:title'] = Objects.player.current.title
+		metadata['xesam:album'] = Objects.player.current.album
+		metadata['xesam:artist'] = Objects.player.current.artist
+		metadata['xesam:albumArtist'] = Objects.player.current.performer
+		metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+		metadata['xesam:genre'] = Objects.player.current.genre
+		metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
 		return dbus.Dictionary(metadata, signature='sv')
 
-	def _on_current_changed(self, player, data=None):
+	def _on_current_changed(self, player):
 		properties = { 'Metadata': self._get_metadata(),
 					   'CanPlay': True,
 					   'CanPause': True

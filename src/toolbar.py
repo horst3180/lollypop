@@ -19,7 +19,7 @@ from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
 from lollypop.queue import QueueWidget
-from lollypop.utils import translate_artist_name, seconds_to_string
+from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
 
 """
@@ -31,8 +31,9 @@ class Toolbar():
 		Init toolbar/headerbar ui
 	"""
 	def __init__(self):
-		self._seeking = False
-
+		self._seeking = False # Prevent updating progress while seeking
+		self._timeout = None # Update pogress position
+		
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
 		self.header_bar = self._ui.get_object('header-bar')
@@ -61,9 +62,8 @@ class Toolbar():
 		self._popalbums.set_relative_to(infobox)
 
 		Objects.player.connect("status-changed", self._on_status_changed)
-		Objects.player.connect("current-changed", self.update_toolbar)
+		Objects.player.connect("current-changed", self._on_current_changed)
 		Objects.player.connect("cover-changed", self._update_cover)
-		Objects.player.connect('position-changed', self._on_position_changed)
 
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
 		self._shuffle_btn.connect("toggled", self._shuffle_update)
@@ -94,47 +94,6 @@ class Toolbar():
 	"""
 	def get_view_genres_btn(self):
 		return self._view_genres_btn
-
-	"""
-		Update toolbar items with track_id informations:
-			- Cover
-			- artist/title
-			- reset progress bar
-			- update time/total labels
-		@param obj as Player, track id as int
-	"""
-	def update_toolbar(self, obj, track_id):
-		if track_id == None:
-			self._cover.hide()
-			self._timelabel.hide()
-			self._total_time_label.hide()
-			self._prev_btn.set_sensitive(False)
-			self._progress.set_sensitive(False)
-			self._play_btn.set_sensitive(False)
-			self._next_btn.set_sensitive(False)
-			self._title_label.set_text("")
-			self._artist_label.set_text("")
-		else:
-			album_id = Objects.tracks.get_album_id(track_id)
-			art = Objects.art.get(album_id,  ART_SIZE_SMALL)
-			if art:
-				self._cover.set_from_pixbuf(art)
-				self._cover.show()
-			else:
-				self._cover.hide()
-			
-			title = Objects.tracks.get_name(track_id)
-			artist = Objects.tracks.get_artist_name(track_id)
-			artist = translate_artist_name(artist)
-			self._title_label.set_text(title)
-			self._artist_label.set_text(artist)
-			self._progress.set_value(0.0)
-			duration = Objects.tracks.get_length(track_id)
-			self._progress.set_range(0.0, duration * 60)
-			self._total_time_label.set_text(seconds_to_string(duration))
-			self._total_time_label.show()
-			self._timelabel.set_text("0:00")
-			self._timelabel.show()
 
 #######################
 # PRIVATE             #
@@ -183,17 +142,45 @@ class Toolbar():
 	def _on_progress_release_button(self, scale, data):
 		value = scale.get_value()
 		self._seeking = False
-		self._on_position_changed(None, value)
+		self._update_position(value)
 		Objects.player.seek(value/60)
 	
+	
 	"""
-		Update scale and time label
-		@param obj as unused, value as int
+		Update toolbar items with track_id informations:
+			- Cover
+			- artist/title
+			- reset progress bar
+			- update time/total labels
+		@param player as Player
 	"""
-	def _on_position_changed(self, obj, value):
-		if not self._seeking:
-			self._progress.set_value(value)
-			self._timelabel.set_text(seconds_to_string(value/60))
+	def _on_current_changed(self, player):
+		if player.current.id == None:
+			self._cover.hide()
+			self._timelabel.hide()
+			self._total_time_label.hide()
+			self._prev_btn.set_sensitive(False)
+			self._progress.set_sensitive(False)
+			self._play_btn.set_sensitive(False)
+			self._next_btn.set_sensitive(False)
+			self._title_label.set_text("")
+			self._artist_label.set_text("")
+		else:
+			art = Objects.art.get(player.current.album_id,  ART_SIZE_SMALL)
+			if art:
+				self._cover.set_from_pixbuf(art)
+				self._cover.show()
+			else:
+				self._cover.hide()
+			
+			self._title_label.set_text(player.current.title)
+			self._artist_label.set_text(player.current.artist)
+			self._progress.set_value(0.0)
+			self._progress.set_range(0.0, player.current.duration * 60)
+			self._total_time_label.set_text(seconds_to_string(player.current.duration))
+			self._total_time_label.show()
+			self._timelabel.set_text("0:00")
+			self._timelabel.show()
 	
 	"""
 		Update buttons and progress bar
@@ -204,11 +191,16 @@ class Toolbar():
 
 		self._progress.set_sensitive(playing)
 		if playing:
+			if not self._timeout:
+				self._timeout = GLib.timeout_add(1000, self._update_position)
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 			self._prev_btn.set_sensitive(True)
 			self._play_btn.set_sensitive(True)
 			self._next_btn.set_sensitive(True)
 		else:
+			if self._timeout:
+				GLib.source_remove(self._timeout)
+				self._timeout = None
 			self._change_play_btn_status(self._play_image, _("Play"))
 
 	"""
@@ -277,3 +269,15 @@ class Toolbar():
 		self._shuffle_btn.set_sensitive(not active)
 		settings.set_property("gtk-application-prefer-dark-theme", active)
 		Objects.player.set_party(active)
+		
+	"""
+		Update progress bar position
+		@param value as int
+	"""
+	def _update_position(self, value = None):
+		if not self._seeking:
+			if value == None:
+				value = Objects.player.get_position_in_track()
+			self._progress.set_value(value)
+			self._timelabel.set_text(seconds_to_string(value/60))
+		return True

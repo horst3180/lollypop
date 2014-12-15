@@ -39,7 +39,7 @@ class NotificationManager:
 									     self._go_previous, None)
 			self._notification.add_action('media-skip-forward', _("Next"),
 									     self._go_next, None)
-		Objects.player.connect('current-changed', self._update_track)
+		Objects.player.connect('current-changed', self._on_current_changed)
 
 #######################
 # PRIVATE             #
@@ -47,20 +47,14 @@ class NotificationManager:
 
 	"""
 		Update notification with track_id infos
-		@param player Player, track id as int
+		@param player Player
 	"""
-	def _update_track(self, obj, track_id):
-		album_id = Objects.tracks.get_album_id(track_id)
-		album = Objects.albums.get_name(album_id)
-		artist = Objects.tracks.get_artist_name(track_id)
-		artist = translate_artist_name(artist)
-		title = Objects.tracks.get_name(track_id)
-		
-		self._notification.set_hint('image-path', GLib.Variant('s', Objects.art.get_path(album_id, ART_SIZE_BIG)))
-		self._notification.update(title,
+	def _on_current_changed(self, player):
+		self._notification.set_hint('image-path', GLib.Variant('s', Objects.art.get_path(player.current.album_id, ART_SIZE_BIG)))
+		self._notification.update(player.current.title,
 								  # TRANSLATORS: by refers to the artist, from to the album
-								  _("by %s, from %s") % ('<b>' + artist + '</b>',
-														 '<i>' + album + '</i>'),
+								  _("by %s, from %s") % ('<b>' + player.current.artist + '</b>',
+														 '<i>' + player.current.album + '</i>'),
 								  'lollypop')
 		try:
 			self._notification.show()
