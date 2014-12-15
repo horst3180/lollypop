@@ -157,7 +157,7 @@ class TracksWidget(Gtk.ListBox):
 		track_row = TrackRow()
 		if not self._popover:
 			track_row.show_widget('menu', False)
-		if Objects.player.get_current_track_id() == track_id:
+		if Objects.player.current.id == track_id:
 			track_row.show_widget('icon', True)
 		if pos:
 			track_row.set_label('num', '''<span foreground="#72729f9fcfcf" font_desc="Bold">%s</span>''' % str(pos))

@@ -228,13 +228,6 @@ class Player(GObject.GObject):
 		self.emit("seeked", position)
 
 	"""
-		Return current track id
-		@return track id as int
-	"""
-	def get_current_track_id(self):
-		return self.current.id
-
-	"""
 		Set shuffle mode if suffle is True
 		@param shuffle as bool
 	"""
@@ -508,6 +501,7 @@ class Player(GObject.GObject):
 			self.current.number = tracks.index(self.current.id)
 			self.current.path = Objects.tracks.get_path(self.current.id)
 			self.emit("current-changed")
+			print(self.current.title, self.current.artist)
 			# Add track to shuffle history if needed
 			if self._shuffle or self._party:
 				self._shuffle_tracks_history.append(self.current.id)

@@ -111,7 +111,7 @@ class Toolbar():
 	"""
 	def _pop_albums(self, widget, event):
 		if event.button == 1:
-			track_id = Objects.player.get_current_track_id()
+			track_id = Objects.player.current.id
 			if track_id != -1:
 				self._popalbums.populate(track_id)
 				self._popalbums.show()
@@ -121,9 +121,7 @@ class Toolbar():
 		@param obj as unused, album id as int
 	"""
 	def _update_cover(self, obj, album_id):
-		current_track_id = Objects.player.get_current_track_id()
-		current_album_id = Objects.tracks.get_album_id(current_track_id)
-		if current_album_id == album_id:
+		if Objects.player.current.album_id == album_id:
 			self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_SMALL))
 
 
