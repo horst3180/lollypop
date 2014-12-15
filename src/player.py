@@ -131,13 +131,11 @@ class Player(GObject.GObject):
 		self._playbin.set_state(Gst.State.PAUSED)
 		self.emit("status-changed")
 			
-
 	"""
 		Change player state to STOPPED
 	"""
 	def stop(self):
 		self._playbin.set_state(Gst.State.NULL)
-		self.emit("status-changed")
 
 	"""
 		Set PLAYING if PAUSED

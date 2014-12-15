@@ -116,10 +116,10 @@ class MPRIS(dbus.service.Object):
                 'Position': dbus.Int64(Objects.player.get_position_in_track()),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
-                'CanGoNext': Objects.player.current.id != None,
-                'CanGoPrevious': Objects.player.current.id != None,
-                'CanPlay': Objects.player.current.id != None,
-                'CanPause': Objects.player.current.id != None,
+                'CanGoNext': True,
+                'CanGoPrevious': True,
+                'CanPlay': True,
+                'CanPause': True,
                 'CanSeek': True,
                 'CanControl': True,
 			}
@@ -154,11 +154,8 @@ class MPRIS(dbus.service.Object):
 			return 'Stopped'
 
 	def _update_metadata(self):
-
 		if Objects.player.current.id == None:
 			return dbus.Dictionary({}, signature='sv')
-
-		self._metadata = {}
 		self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
 		self._metadata['xesam:trackNumber'] = Objects.player.current.number
 		self._metadata['xesam:title'] = Objects.player.current.title
@@ -167,17 +164,16 @@ class MPRIS(dbus.service.Object):
 		self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
 		self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
 		self._metadata['xesam:genre'] = [Objects.player.current.genre]
+		self._metadata['xesam:url'] = "file://"+Objects.player.current.path
 		self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
+	
 
 	def _on_seeked(self, player, position):
 		self.Seeked(position * 1000000)
 
 	def _on_current_changed(self, player):
 		self._update_metadata()
-		properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
-					   'CanPlay': True,
-					   'CanPause': True
-					 }
+		properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv') }
 		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
 
 	def _on_status_changed(self, data=None):
