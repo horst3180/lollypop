@@ -214,7 +214,9 @@ class ArtistWidget(Gtk.Grid):
 		popover.show()
 
 
-
+"""
+	Widget used to let user select a collection folder
+"""
 class ChooserWidget(Gtk.Grid):
 	
 	def __init__(self):

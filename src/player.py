@@ -485,8 +485,10 @@ class Player(GObject.GObject):
 	def _on_stream_start(self, bus, message):
 		self.current.id = self._next_id
 		if self.current.id == None:
+			# We are in trouble, go next
 			self.next()
 		else:
+			# Update current track
 			self.current.title = Objects.tracks.get_name(self.current.id)
 			self.current.album_id = Objects.tracks.get_album_id(self.current.id)
 			self.current.album = Objects.albums.get_name(self.current.album_id)
