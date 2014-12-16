@@ -120,6 +120,7 @@ class SearchObject:
 	def __init__(self):
 		self.artist = None
 		self.title = None
+		self.count = -1
 		self.id = None
 		self.album_id = None
 		self.is_track = False
@@ -265,6 +266,7 @@ class SearchWidget(Gtk.Popover):
 			search_obj = SearchObject()
 			search_obj.artist = Objects.artists.get_name(artist_id, sql)
 			search_obj.title = Objects.albums.get_name(album_id, sql)
+			search_obj.count = Objects.albums.get_count(album_id, sql)
 			search_obj.id = album_id
 			search_obj.album_id = album_id
 			results.append(search_obj)
@@ -296,6 +298,8 @@ class SearchWidget(Gtk.Popover):
 			if not self._exists(result):
 				search_row = SearchRow()
 				search_row.set_artist(result.artist)
+				if result.count != -1:
+					result.title += " (%s)" % result.count
 				search_row.set_title(result.title)
 				search_row.set_cover(Objects.art.get(result.album_id, ART_SIZE_MEDIUM))
 				search_row.id = result.id
