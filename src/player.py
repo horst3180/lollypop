@@ -537,7 +537,7 @@ class Player(GObject.GObject):
 		self.current.number = tracks.index(self.current.id)
 		self.current.path = Objects.tracks.get_path(self.current.id, sql)
 		if path.exists(self.current.path):
-			self._playbin.set_property('uri', "file://" + self.current.path)
+			self._playbin.set_property('uri', GLib.filename_to_uri(self.current.path))
 		else:
 			print("File doesn't exist: ", self.current.path)
 			self.next(True, sql)
