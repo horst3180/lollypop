@@ -230,7 +230,8 @@ class SearchWidget(Gtk.Popover):
 				GLib.source_remove(self._timeout)
 			self._timeout = GLib.timeout_add(100, self._do_filtering_thread)
 		else:
-			self._stop_thread = True
+			if self._timeout:
+				GLib.source_remove(self._timeout)
 			self._clear([])
 
 	"""
@@ -238,11 +239,8 @@ class SearchWidget(Gtk.Popover):
 	"""
 	def _do_filtering_thread(self):
 		self._timeout = None
-		if not self._stop_thread:
-			self._in_thread = True
-			start_new_thread(self._really_do_filtering, ())
-		else:
-			self._stop_thread = False
+		self._in_thread = True
+		start_new_thread(self._really_do_filtering, ())
 
 	"""
 		Populate treeview searching items in db based on text entry current text
