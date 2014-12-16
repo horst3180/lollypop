@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 from gettext import gettext as _
+from _thread import start_new_thread
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
@@ -24,8 +25,8 @@ class SearchRow(Gtk.ListBoxRow):
 	"""
 	def __init__(self):
 		Gtk.ListBoxRow.__init__(self)
-		self._object_id = None
-		self._is_track = False
+		self.id = None
+		self.is_track = False
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
 		self._row_widget = self._ui.get_object('row')
@@ -58,7 +59,7 @@ class SearchRow(Gtk.ListBoxRow):
 		Set item label
 		@param item name as string
 	"""
-	def set_item(self, name):
+	def set_title(self, name):
 		self._item.set_text(name)
 
 	"""
@@ -68,36 +69,25 @@ class SearchRow(Gtk.ListBoxRow):
 	def set_cover(self, pixbuf):
 		self._cover.set_from_pixbuf(pixbuf)
 
-	"""
-		Store current object id
-		@param object id as int
-	"""
-	def set_object_id(self, object_id):
-		self._object_id = object_id
-
-	"""
-		Get object id
-		@return Current object id as int
-	"""
-	def get_object_id(self):
-		return self._object_id
-
-	"""
-		Mark object as a track
-	"""
-	def track(self):
-		self._is_track = True
-
-	"""
-		True if it's a track
-		@return bool
-	"""
-	def is_track(self):
-		return self._is_track
-
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Return True if item exist results
+		@param: items as array of searchObject
+	"""
+	def _exists(self, items):
+		found = False
+		for item in items:
+			if item.is_track and self.is_track:
+				if item.id == self.id:
+					found = True
+					break
+			elif not item.is_track and not self.is_track:
+				if item.id == self.id:
+					found = True
+					break
+		return found
 
 	"""
 		Add track to queue
@@ -126,6 +116,17 @@ class SearchRow(Gtk.ListBoxRow):
 ######################################################################
 ######################################################################
 
+class SearchObject:
+	def __init__(self):
+		self.artist = None
+		self.title = None
+		self.id = None
+		self.album_id = None
+		self.is_track = False
+
+######################################################################
+######################################################################
+
 class SearchWidget(Gtk.Popover):
 
 	"""
@@ -134,6 +135,8 @@ class SearchWidget(Gtk.Popover):
 	def __init__(self):
 		Gtk.Popover.__init__(self)
 		
+		self._in_thread = False
+		self._stop_thread = False
 		self._timeout = None
 
 		self.set_property('width-request', 400)
@@ -189,71 +192,133 @@ class SearchWidget(Gtk.Popover):
 		self._text_entry.grab_focus()
 
 	"""
-		Clear widget removing every row
+		Remove row not existing in view, thread safe
 	"""
-	def _clear(self):
+	def _clear(self, results):
+		length = len(results)
 		for child in self._view.get_children():
-			child.destroy()
+			if length == 0 or not child._exists(results):
+				GLib.idle_add(child.destroy)
+
+	"""
+		Return True if item exist in rows
+		@param: item as SearchObject
+	"""
+	def _exists(self, item):
+		found = False
+		for child in self._view.get_children():
+			if item.is_track and child.is_track:
+				if item.id == child.id:
+					found = True
+					break
+			elif not item.is_track and not child.is_track:
+				if item.id == child.id:
+					found = True
+					break
+		return found
 
 	"""
 		Timeout filtering, call _really_do_filterting() after a small timeout
 	"""	
-	def _do_filtering(self, data):
-		if self._timeout:
-			GLib.source_remove(self._timeout)
+	def _do_filtering(self, data = None):
+		if self._in_thread:
+			self._stop_thread = True
+			GLib.timeout_add(100, self._do_filtering)
+
 		if self._text_entry.get_text() != "":
-			self._timeout = GLib.timeout_add(500, self._really_do_filtering)
+			if self._timeout:
+				GLib.source_remove(self._timeout)
+			self._timeout = GLib.timeout_add(100, self._do_filtering_thread)
 		else:
-			self._clear()
+			self._stop_thread = True
+			self._clear([])
+
+	"""
+		Just run _really_do_filtering in a thread
+	"""
+	def _do_filtering_thread(self):
+		self._timeout = None
+		if not self._stop_thread:
+			self._in_thread = True
+			start_new_thread(self._really_do_filtering, ())
+		else:
+			self._stop_thread = False
 
 	"""
 		Populate treeview searching items in db based on text entry current text
 	"""
 	def _really_do_filtering(self):
-		self._timeout = None
-		self._clear()
+		sql = Objects.db.get_cursor()
+		results = []
+
 		searched = self._text_entry.get_text()
 
-		albums = Objects.albums.search(searched)
+		albums = Objects.albums.search(searched, sql)
 		tracks_non_performer = []
 		
-		for artist_id in Objects.artists.search(searched):
-			for album_id in Objects.albums.get_ids(artist_id, None):
+		for artist_id in Objects.artists.search(searched, sql):
+			for album_id in Objects.albums.get_ids(artist_id, None, sql):
 				if (album_id, artist_id) not in albums:
 					albums.append((album_id, artist_id))
-			for track_id, track_name in Objects.tracks.get_as_non_performer(artist_id):
+			for track_id, track_name in Objects.tracks.get_as_non_performer(artist_id, sql):
 				tracks_non_performer.append((track_id, track_name))
 
 		for album_id, artist_id in albums:
-			artist_name = Objects.artists.get_name(artist_id)
-			album_name = Objects.albums.get_name(album_id)
-			search_row = SearchRow()
-			search_row.set_artist(artist_name)
-			search_row.set_item(album_name)
-			search_row.set_cover(Objects.art.get(album_id,  ART_SIZE_MEDIUM))
-			search_row.set_object_id(album_id)			
-			self._view.add(search_row)
+			search_obj = SearchObject()
+			search_obj.artist = Objects.artists.get_name(artist_id, sql)
+			search_obj.title = Objects.albums.get_name(album_id, sql)
+			search_obj.id = album_id
+			search_obj.album_id = album_id
+			results.append(search_obj)
 
-		for track_id, track_name in Objects.tracks.search(searched)+tracks_non_performer:
-			album_id = Objects.tracks.get_album_id(track_id)
-			artist_id = Objects.tracks.get_artist_id(track_id)
-			artist_name = Objects.artists.get_name(artist_id)
-			search_row = SearchRow()
-			search_row.set_artist(artist_name)
-			search_row.set_item(track_name)
-			search_row.set_cover(Objects.art.get(album_id, ART_SIZE_MEDIUM))
-			search_row.set_object_id(track_id)
-			search_row.track()
-			self._view.add(search_row)
+		for track_id, track_name in Objects.tracks.search(searched, sql)+tracks_non_performer:
+			artist_id = Objects.tracks.get_artist_id(track_id, sql)
+			search_obj = SearchObject()
+			search_obj.artist = Objects.artists.get_name(artist_id, sql)
+			search_obj.title = track_name
+			search_obj.id = track_id
+			search_obj.album_id = Objects.tracks.get_album_id(track_id, sql)
+			search_obj.is_track = True
+			results.append(search_obj)
 
-		
+		if not self._stop_thread:
+			self._clear(results)
+			GLib.idle_add(self._add_rows, results)
+		else:
+			self._in_thread = False
+			self._stop_thread = False
+			
+	"""
+		Add a rows recursively
+		@param results as array of SearchObject
+	"""
+	def _add_rows(self, results):
+		if len(results) > 0:
+			result = results.pop(0)
+			if not self._exists(result):
+				search_row = SearchRow()
+				search_row.set_artist(result.artist)
+				search_row.set_title(result.title)
+				search_row.set_cover(Objects.art.get(result.album_id, ART_SIZE_MEDIUM))
+				search_row.id = result.id
+				search_row.is_track = result.is_track
+				self._view.add(search_row)
+			if self._stop_thread:
+				self._in_thread = False
+				self._stop_thread = False
+			else:
+				GLib.idle_add(self._add_rows, results)
+		else:
+			self._in_thread = False
+			self._stop_thread = False
+
 	"""
 		Play searched item when selected
 		If item is an album, play first track
 	"""
 	def _on_activate(self, widget, row):
-		value_id = row.get_object_id()
-		if row.is_track():
+		value_id = row.id
+		if row.is_track:
 			Objects.player.load(value_id)
 		else:
 			genre_id = Objects.albums.get_genre(value_id)
