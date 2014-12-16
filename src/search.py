@@ -94,10 +94,10 @@ class SearchRow(Gtk.ListBoxRow):
 		@param button as Gtk.Button
 	"""
 	def _on_add_clicked(self, button):
-		if self._is_track:
-			Objects.player.append_to_queue(self._object_id)
+		if self.is_track:
+			Objects.player.append_to_queue(self.id)
 		else:
-			for track in Objects.albums.get_tracks(self._object_id):
+			for track in Objects.albums.get_tracks(self.id):
 				Objects.player.append_to_queue(track)
 		button.hide()
 
@@ -106,10 +106,10 @@ class SearchRow(Gtk.ListBoxRow):
 		@param button as Gtk.Button
 	"""
 	def _on_next_clicked(self, button):
-		if self._is_track:
-			Objects.player.prepend_to_queue(self._object_id)
+		if self.is_track:
+			Objects.player.prepend_to_queue(self.id)
 		else:
-			for track in reversed(Objects.albums.get_tracks(self._object_id)):
+			for track in reversed(Objects.albums.get_tracks(self.id)):
 				Objects.player.prepend_to_queue(track)
 		button.hide()
 
