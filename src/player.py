@@ -56,7 +56,6 @@ class Player(GObject.GObject):
 		Gst.init(None)
 
 		self.current = CurrentTrack()
-		self._next_id = None # Track in playbin queue
 		self._albums = [] # Albums in current playlist
 		self._shuffle = False
 		self._shuffle_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
@@ -483,45 +482,28 @@ class Player(GObject.GObject):
 		Emit "current-changed" to notify others components
 	"""
 	def _on_stream_start(self, bus, message):
-		self.current.id = self._next_id
-		if self.current.id == None:
-			# We are in trouble, go next
-			self.next()
-		else:
-			# Update current track
-			self.current.title = Objects.tracks.get_name(self.current.id)
-			self.current.album_id = Objects.tracks.get_album_id(self.current.id)
-			self.current.album = Objects.albums.get_name(self.current.album_id)
-			self.current.performer_id = Objects.tracks.get_performer_id(self.current.id)
-			self.current.performer = translate_artist_name(Objects.artists.get_name(self.current.performer_id))
-			self.current.artist_id = Objects.tracks.get_artist_id(self.current.id)
-			self.current.artist = translate_artist_name(Objects.artists.get_name(self.current.artist_id))
-			self.current.genre_id = Objects.albums.get_genre(self.current.album_id)
-			self.current.genre = Objects.genres.get_name(self.current.genre_id)
-			self.current.duration = Objects.tracks.get_length(self.current.id)
-			tracks = Objects.albums.get_tracks(self.current.album_id)
-			self.current.number = tracks.index(self.current.id)
-			self.current.path = Objects.tracks.get_path(self.current.id)
-			self.emit("current-changed")
-			# Add track to shuffle history if needed
-			if self._shuffle or self._party:
-				self._shuffle_tracks_history.append(self.current.id)
+		self.emit("current-changed")
+		# Add track to shuffle history if needed
+		if self._shuffle or self._party:
+			self._shuffle_tracks_history.append(self.current.id)
 
 
 	"""
 		On error, next()
 	"""
 	def _on_bus_error(self, bus, message):
-		self.next()
+		print("Error playing: ", self.current.path)
+		sql = Objects.db.get_cursor()
+		self.next(True, sql)
+		return False
 		
 	"""
 		On eos, force loading if queue fails,
 		if on_stream_about_to_finish never get send  
 	"""
 	def _on_bus_eos(self, bus, message):
-		self.load(self._next_id)
+		self.load(self.current.id)
 		
-
 	"""
 		When stream is about to finish, switch to next track without gap
 	"""
@@ -540,9 +522,22 @@ class Player(GObject.GObject):
 		@param track id as int, sqlite cursor
 	"""
 	def _load_track(self, track_id, sql = None):
-		filepath = Objects.tracks.get_path(track_id, sql)
-		if path.exists(filepath):
-			self._next_id = track_id
-			self._playbin.set_property('uri', "file://" + filepath)
+		self.current.id = track_id
+		self.current.title = Objects.tracks.get_name(self.current.id, sql)
+		self.current.album_id = Objects.tracks.get_album_id(self.current.id, sql)
+		self.current.album = Objects.albums.get_name(self.current.album_id, sql)
+		self.current.performer_id = Objects.tracks.get_performer_id(self.current.id, sql)
+		self.current.performer = translate_artist_name(Objects.artists.get_name(self.current.performer_id, sql))
+		self.current.artist_id = Objects.tracks.get_artist_id(self.current.id, sql)
+		self.current.artist = translate_artist_name(Objects.artists.get_name(self.current.artist_id, sql))
+		self.current.genre_id = Objects.albums.get_genre(self.current.album_id, sql)
+		self.current.genre = Objects.genres.get_name(self.current.genre_id, sql)
+		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
+		tracks = Objects.albums.get_tracks(self.current.album_id, sql)
+		self.current.number = tracks.index(self.current.id)
+		self.current.path = Objects.tracks.get_path(self.current.id, sql)
+		if path.exists(self.current.path):
+			self._playbin.set_property('uri', "file://" + self.current.path)
 		else:
-			self._next_id = None
+			print("File doesn't exist: ", self.current.path)
+			self.next(True, sql)
