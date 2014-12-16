@@ -493,8 +493,7 @@ class Player(GObject.GObject):
 	"""
 	def _on_bus_error(self, bus, message):
 		print("Error playing: ", self.current.path)
-		sql = Objects.db.get_cursor()
-		self.next(True, sql)
+		self.next(True)
 		return False
 		
 	"""
