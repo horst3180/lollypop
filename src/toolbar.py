@@ -56,10 +56,10 @@ class Toolbar():
 		self._title_label = self._ui.get_object('title')
 		self._artist_label = self._ui.get_object('artist')
 		self._cover = self._ui.get_object('cover')
-		infobox = self._ui.get_object('infobox')	
-		infobox.connect("button-press-event", self._pop_albums)
+		self._infobox = self._ui.get_object('infobox')	
+		self._infobox.connect("button-press-event", self._pop_albums)
 		self._popalbums = PopAlbums()
-		self._popalbums.set_relative_to(infobox)
+		self._popalbums.set_relative_to(self._infobox)
 
 		Objects.player.connect("status-changed", self._on_status_changed)
 		Objects.player.connect("current-changed", self._on_current_changed)
@@ -88,7 +88,7 @@ class Toolbar():
 		queue_button.connect("clicked", self._on_queue_btn_clicked)
 		self._queue = QueueWidget()
 		self._queue.set_relative_to(queue_button)
-		
+
 	"""
 		@return view genres button as GtkToggleButton
 	"""
@@ -154,6 +154,7 @@ class Toolbar():
 	"""
 	def _on_current_changed(self, player):
 		if player.current.id == None:
+			self._infobox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 			self._cover.hide()
 			self._timelabel.hide()
 			self._total_time_label.hide()
@@ -164,6 +165,7 @@ class Toolbar():
 			self._title_label.set_text("")
 			self._artist_label.set_text("")
 		else:
+			self._infobox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 			art = Objects.art.get(player.current.album_id,  ART_SIZE_SMALL)
 			if art:
 				self._cover.set_from_pixbuf(art)
