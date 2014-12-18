@@ -243,8 +243,7 @@ class AlbumView(View):
 	def populate(self):
 		sql = Objects.db.get_cursor()
 		if self._genre_id == ALL:
-			albums = Objects.albums.get_compilations(None, sql)
-			albums += Objects.albums.get_ids(None, None, sql)
+			albums = Objects.albums.get_ids(None, None, sql)
 		elif self._genre_id == POPULARS:
 			albums = Objects.albums.get_populars(sql)
 		else:
