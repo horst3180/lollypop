@@ -204,8 +204,10 @@ class ArtistWidget(Gtk.Grid):
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)
+		@param: widget as eventbox
+		@param: data as unused
 	"""
-	def _show_web_art(self, obj, data):
+	def _show_web_art(self, widget, data):
 		artist = Objects.artists.get_name(self._artist_id)
 		album = Objects.albums.get_name(self._album_id)
 		popover = PopImages(self._album_id)
