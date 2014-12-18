@@ -249,10 +249,10 @@ class SearchWidget(Gtk.Popover):
 	def _really_do_filtering(self):
 		sql = Objects.db.get_cursor()
 		results = []
+		albums = []
 
 		searched = self._text_entry.get_text()
 
-		albums = Objects.albums.search(searched, sql)
 		tracks_non_performer = []
 		
 		for artist_id in Objects.artists.search(searched, sql):
@@ -261,6 +261,8 @@ class SearchWidget(Gtk.Popover):
 					albums.append((album_id, artist_id))
 			for track_id, track_name in Objects.tracks.get_as_non_performer(artist_id, sql):
 				tracks_non_performer.append((track_id, track_name))
+
+		albums += Objects.albums.search(searched, sql)
 
 		for album_id, artist_id in albums:
 			search_obj = SearchObject()
