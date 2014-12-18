@@ -179,7 +179,7 @@ class ArtistWidget(Gtk.Grid):
 			# If we are listening to a compilation, prepend artist name
 			if self._artist_id == COMPILATIONS or self._artist_id != artist_id:
 				artist_name = translate_artist_name(Objects.tracks.get_artist_name(track_id))
-				name =  artist_name + " - " + title
+				title =  artist_name + " - " + title
 				
 			# Get track position in queue
 			pos = None
