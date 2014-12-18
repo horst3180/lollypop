@@ -323,7 +323,7 @@ class SearchWidget(Gtk.Popover):
 		if row.is_track:
 			Objects.player.load(value_id)
 		else:
-			genre_id = Objects.albums.get_genre(value_id)
+			genre_id = Objects.albums.get_genre_id(value_id)
 			# Get first track from album
 			track_id = Objects.albums.get_tracks(value_id)[0]
 			Objects.player.load(track_id)

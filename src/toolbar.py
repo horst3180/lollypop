@@ -111,9 +111,8 @@ class Toolbar():
 	"""
 	def _pop_albums(self, widget, event):
 		if event.button == 1:
-			track_id = Objects.player.current.id
-			if track_id:
-				self._popalbums.populate(track_id)
+			if Objects.player.current.id:
+				self._popalbums.populate()
 				self._popalbums.show()
 
 	"""

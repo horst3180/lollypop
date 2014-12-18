@@ -30,6 +30,7 @@ class PopAlbums(Gtk.Popover):
 		self._widgets = []
 		self._populating_view = None
 		self._artist_id = None
+		self._genre_id = None
 		
 		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
@@ -44,14 +45,17 @@ class PopAlbums(Gtk.Popover):
 	"""
 		Run _populate in a thread
 	"""
-	def populate(self, track_id):
-		artist_id = Objects.tracks.get_performer_id(track_id)
-		if artist_id == -1:
-			artist_id = Objects.tracks.get_artist_id(track_id)
-		if self._artist_id == artist_id:
+	def populate(self):
+		genre_id = None
+		artist_id = Objects.albums.get_artist_id(Objects.player.current.album_id)
+		if artist_id == COMPILATIONS:
+			genre_id =  Objects.albums.get_genre_id(Objects.player.current.album_id)
+
+		# View already populated
+		if self._artist_id == artist_id and self._genre_id == genre_id:
 			return
 
-		view = ArtistView(artist_id, None, True)
+		view = ArtistView(artist_id, genre_id, True)
 		self._stack.add(view)
 		if self._artist_id:
 				view.connect('finished', self._switch_view)
@@ -63,6 +67,7 @@ class PopAlbums(Gtk.Popover):
 			self._switch_view(view)
 		start_new_thread(view.populate, ())
 		self._artist_id = artist_id
+		self._genre_id = genre_id
 		view.show()
 
 	"""

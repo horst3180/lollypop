@@ -98,7 +98,7 @@ class DatabaseAlbums:
 		@param Album id as int
 		@return Genre id as int
 	"""
-	def get_genre(self, album_id, sql = None):
+	def get_genre_id(self, album_id, sql = None):
 		if not sql:
 			sql = Objects.sql
 		result = sql.execute("SELECT genre_id FROM albums WHERE rowid=?", (album_id,))

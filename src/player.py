@@ -268,7 +268,7 @@ class Player(GObject.GObject):
 				track_id = self._get_random()
 				self.load(track_id)
 		else:
-			genre_id = Objects.albums.get_genre(self.current.album_id)
+			genre_id = Objects.albums.get_genre_id(self.current.album_id)
 			self.set_albums(self.current.artist_id, genre_id, True)
 
 	"""
@@ -530,7 +530,7 @@ class Player(GObject.GObject):
 		self.current.performer = translate_artist_name(Objects.artists.get_name(self.current.performer_id, sql))
 		self.current.artist_id = Objects.tracks.get_artist_id(self.current.id, sql)
 		self.current.artist = translate_artist_name(Objects.artists.get_name(self.current.artist_id, sql))
-		self.current.genre_id = Objects.albums.get_genre(self.current.album_id, sql)
+		self.current.genre_id = Objects.albums.get_genre_id(self.current.album_id, sql)
 		self.current.genre = Objects.genres.get_name(self.current.genre_id, sql)
 		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
 		tracks = Objects.albums.get_tracks(self.current.album_id, sql)
