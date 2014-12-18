@@ -238,12 +238,13 @@ class AlbumView(View):
 		self.show()
 
 	"""
-		Populate albums, can be threaded
+		Populate albums, thread safe
 	"""	
 	def populate(self):
 		sql = Objects.db.get_cursor()
 		if self._genre_id == ALL:
-			albums = Objects.albums.get_ids(None, None, sql)
+			albums = Objects.albums.get_compilations(None, sql)
+			albums += Objects.albums.get_ids(None, None, sql)
 		elif self._genre_id == POPULARS:
 			albums = Objects.albums.get_populars(sql)
 		else:
