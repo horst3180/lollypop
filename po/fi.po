@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-08 14:49+0100\n"
+"POT-Creation-Date: 2014-12-18 21:09+0100\n"
 "PO-Revision-Date: 2014-12-08 20:45+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
+"language/fi/)\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -99,19 +100,15 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/application.py:111
+#: ../src/application.py:113
 msgid "Configure lollypop"
 msgstr "Lollypopin asetukset"
 
-#: ../src/application.py:219
-msgid "Select what will be available in party mode"
-msgstr "Valitse mitä biletilassa on käytettävissä"
-
-#: ../src/toolbar.py:207 ../src/toolbar.py:231
+#: ../src/toolbar.py:196 ../src/toolbar.py:223
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/toolbar.py:212 ../src/toolbar.py:228 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:204 ../src/toolbar.py:220 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Toista"
 
@@ -136,7 +133,7 @@ msgid "Next"
 msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:62
+#: ../src/notification.py:56
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
@@ -159,7 +156,7 @@ msgstr "Kokoelma"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/popmenu.py:62
+#: ../src/popmenu.py:62 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
@@ -167,7 +164,7 @@ msgstr "Lisää jonoon"
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:68
+#: ../src/popmenu.py:68 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Seuraava kappale"
 
@@ -185,7 +182,7 @@ msgstr "Valitse kansikuva tälle levylle"
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:114
+#: ../src/search.py:148
 msgid "Search:"
 msgstr "Etsi:"
 
@@ -210,18 +207,14 @@ msgid "_Preferences"
 msgstr "_Asetukset"
 
 #: ../data/app-menu.ui.h:2
-msgid "_Edit party mode"
-msgstr "_Muokkaa biletilaa"
-
-#: ../data/app-menu.ui.h:3
 msgid "_Update music"
 msgstr "_Päivitä musiikki"
 
-#: ../data/app-menu.ui.h:4
+#: ../data/app-menu.ui.h:3
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../data/app-menu.ui.h:5
+#: ../data/app-menu.ui.h:4
 msgid "_Quit"
 msgstr "_Lopeta"
 
@@ -229,7 +222,7 @@ msgstr "_Lopeta"
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: ../data/headerbar.ui.h:5
+#: ../data/headerbar.ui.h:5 ../data/SettingsDialog.ui.h:9
 msgid "Party mode"
 msgstr "Biletila"
 
@@ -245,11 +238,7 @@ msgstr "Jono"
 msgid "Show genres"
 msgstr "Näytä tyylilajit"
 
-#: ../data/PartyDialog.ui.h:1 ../data/SettingsDialog.ui.h:6
-msgid "Close"
-msgstr "Sulje"
-
-#: ../data/SearchRow.ui.h:1
+#: ../data/SearchRow.ui.h:3
 msgid "artist"
 msgstr "esittäjä"
 
@@ -262,9 +251,29 @@ msgid "Update music on startup"
 msgstr "Päivitä musiikki käynnistyessä"
 
 #: ../data/SettingsDialog.ui.h:4
+#, fuzzy
+msgid "Configure lollypop behaviour"
+msgstr "Lollypopin asetukset"
+
+#: ../data/SettingsDialog.ui.h:5
 msgid "Behaviour"
 msgstr "Toiminta"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
+msgid "Select music folders"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:7
 msgid "Music"
 msgstr "Musiikki"
+
+#: ../data/SettingsDialog.ui.h:8
+msgid "Select what will be available in party mode"
+msgstr "Valitse mitä biletilassa on käytettävissä"
+
+#: ../data/SettingsDialog.ui.h:10
+msgid "Close"
+msgstr "Sulje"
+
+#~ msgid "_Edit party mode"
+#~ msgstr "_Muokkaa biletilaa"
