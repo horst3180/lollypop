@@ -155,7 +155,8 @@ class Player(GObject.GObject):
 		track_id = None
 		if self._shuffle or self._party:
 			try:
-				track_id = self._shuffle_tracks_history[-1]
+				track_id = self._shuffle_tracks_history[-2]
+				self._shuffle_tracks_history.pop()
 				self._shuffle_tracks_history.pop()
 			except Exception as e:
 				track_id = None
