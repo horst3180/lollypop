@@ -46,6 +46,10 @@ class LoadingView(Gtk.Grid):
 	Generic view
 """
 class View(Gtk.Grid):
+	__gsignals__ = {
+        'finished': (GObject.SIGNAL_RUN_FIRST, None, ())
+    }
+    
 	def __init__(self):
 		Gtk.Grid.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -54,7 +58,8 @@ class View(Gtk.Grid):
 			self.get_style_context().add_class('black')
 		Objects.player.connect("current-changed", self._on_current_changed)
 		Objects.player.connect("cover-changed", self._on_cover_changed)
-
+		self._stop = False # Stop populate thread
+		
 	"""
 		Remove signals on player object
 	"""
@@ -102,15 +107,17 @@ class View(Gtk.Grid):
 	def _update_context(self, player):
 		pass
 
+	"""
+		Stop populate thread
+	"""
+	def stop(self):
+		self._stop = True
+		
 
 """
 	Artist view is a vertical grid with album songs widgets
 """
 class ArtistView(View):
-	__gsignals__ = {
-        'finished': (GObject.SIGNAL_RUN_FIRST, None, ())
-    }
-
 	"""
 		Init ArtistView ui with a scrolled grid of AlbumWidgetSongs
 		@param: artist id as int
@@ -187,12 +194,13 @@ class ArtistView(View):
 		@param [album ids as int]
 	"""
 	def _add_albums(self, albums):
-		if len(albums) > 0:
+		if len(albums) > 0 and not self._stop:
 			widget = ArtistWidget(albums.pop(0), self._genre_id, False, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
 		else:
+			self._stop = False
 			self.emit('finished')
 
 """
@@ -321,9 +329,11 @@ class AlbumView(View):
 		@param [album ids as int]
 	"""
 	def _add_albums(self, albums):
-		if len(albums) > 0:
+		if len(albums) > 0 and not self._stop:
 			widget = AlbumWidget(albums.pop(0))
 			widget.show()
 			self._albumbox.insert(widget, -1)
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
-
+		else:
+			self._stop = False
+			self.emit('finished')

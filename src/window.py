@@ -315,6 +315,7 @@ class Window(Gtk.ApplicationWindow):
 			start_new_thread(view.populate, ())
 			self._stack.set_visible_child(view)
 			if old_view:
+				old_view.stop()
 				self._stack.remove(old_view)
 				old_view.remove_signals()
 
@@ -329,6 +330,7 @@ class Window(Gtk.ApplicationWindow):
 		start_new_thread(view.populate, ())
 		self._stack.set_visible_child(view)
 		if old_view:
+			old_view.stop()
 			self._stack.remove(old_view)
 			old_view.remove_signals()
 
