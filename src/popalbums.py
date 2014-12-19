@@ -104,7 +104,7 @@ class PopAlbums(Gtk.Popover):
 	"""
 	def _update_content(self, player):
 		if self.is_visible():
-			self.populate(player.current.id)
+			self.populate()
 		else:
 			artist_id = Objects.tracks.get_performer_id(player.current.id)
 			if artist_id == -1:
