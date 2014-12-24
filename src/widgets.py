@@ -211,7 +211,7 @@ class ArtistWidget(Gtk.Grid):
 		artist = Objects.artists.get_name(self._artist_id)
 		album = Objects.albums.get_name(self._album_id)
 		popover = PopImages(self._album_id)
-		popover.set_relative_to(obj)
+		popover.set_relative_to(widget)
 		popover.populate(artist + " " + album)
 		popover.show()
 
