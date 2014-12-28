@@ -473,7 +473,7 @@ class Player(GObject.GObject):
 			# No new tracks for this album, remove it
 			self._albums.remove(album)
 			self._shuffle_albums_history.append(album)
-			for track in Objects.albums.get_tracks(album):
+			for track in Objects.albums.get_tracks(album, sql):
 				self._shuffle_tracks_history.remove(track)
 
 		return None
