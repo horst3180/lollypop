@@ -165,13 +165,15 @@ class QueueWidget(Gtk.Popover):
 		@param TreeView, TreePath, TreeViewColumn
 	"""
 	def _on_row_activated(self, view, path, column):
+		if self._timeout:
+			return
 		iterator = self._model.get_iter(path)
 		if iterator:
 			if column.get_title() == "pixbuf2":
 				self._delete_row(iterator)
 			else:
 				# We don't want to play if we are starting a drag & drop, so delay
-				GLib.timeout_add(500, self._play_track, iterator)
+				self._timeout = GLib.timeout_add(500, self._play_track, iterator)
 	
 	"""
 		Clear queue
@@ -185,6 +187,7 @@ class QueueWidget(Gtk.Popover):
 		@param GtkTreeIter
 	"""
 	def _play_track(self, iterator):
+		self._timeout = None
 		if not self._in_drag:
 			value_id = self._model.get_value(iterator, 3)
 			self._model.remove(iterator)
