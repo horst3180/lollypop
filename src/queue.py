@@ -90,6 +90,7 @@ class QueueWidget(Gtk.Popover):
 			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
 								escape(track_name), self._del_pixbuf, track_id])
 
+		Objects.player.connect("current-changed", self._on_current_changed)
 		Gtk.Popover.do_show(self)
 
 	"""
@@ -98,10 +99,22 @@ class QueueWidget(Gtk.Popover):
 	def do_hide(self):
 		Gtk.Popover.do_hide(self)
 		self._model.clear()
+		Objects.player.disconnect_by_func(self._on_current_changed)
 		
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Pop first item in queue if it's current track id
+		@param player object
+	"""
+	def _on_current_changed(self, player):
+		if len(self._model) > 0:
+			row = self._model[0]
+			if row[3] == player.current.id:
+				iter = self._model.get_iter(row.path)
+				self._model.remove(iter)
 
 	"""
 		Mark as in drag
