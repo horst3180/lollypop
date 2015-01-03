@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 16:20+0100\n"
+"POT-Creation-Date: 2015-01-03 17:22+0100\n"
 "PO-Revision-Date: 2015-01-01 09:56+0000\n"
 "Last-Translator: karlinux <karlinux47@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -104,29 +104,11 @@ msgstr "Reproductor de música para el escritorio GNOME"
 msgid "Configure lollypop"
 msgstr "Configurar lollypop"
 
-#: ../src/toolbar.py:133
-msgid "Randomly play artist's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:135
-msgid "Randomly play album's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:137
-#, fuzzy
-msgid "Randomly play popular album's tracks"
-msgstr "Álbumes populares"
-
-#: ../src/toolbar.py:139
-#, fuzzy
-msgid "Randomly play genre's tracks"
-msgstr "Álbumes populares"
-
-#: ../src/toolbar.py:209 ../src/toolbar.py:236
+#: ../src/toolbar.py:194 ../src/toolbar.py:221
 msgid "Pause"
 msgstr "Pausar"
 
-#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:202 ../src/toolbar.py:218 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Reproducir"
 
@@ -174,7 +156,7 @@ msgstr "Recopilación"
 msgid "Loading please wait..."
 msgstr "Cargando, paciencia..."
 
-#: ../src/popmenu.py:36
+#: ../src/popmenu.py:56
 #, fuzzy
 msgid "Only play this album"
 msgstr "Álbumes populares"
@@ -296,3 +278,11 @@ msgstr "Seleccione lo que estará disponible en el modo fiesta"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Close"
 msgstr "Cerrar"
+
+#, fuzzy
+#~ msgid "Randomly play popular album's tracks"
+#~ msgstr "Álbumes populares"
+
+#, fuzzy
+#~ msgid "Randomly play genre's tracks"
+#~ msgstr "Álbumes populares"

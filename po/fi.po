@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 16:20+0100\n"
+"POT-Creation-Date: 2015-01-03 17:22+0100\n"
 "PO-Revision-Date: 2014-12-19 10:46+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -104,29 +104,11 @@ msgstr "Musiikkisoitin Gnome-työpöydälle"
 msgid "Configure lollypop"
 msgstr "Lollypopin asetukset"
 
-#: ../src/toolbar.py:133
-msgid "Randomly play artist's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:135
-msgid "Randomly play album's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:137
-#, fuzzy
-msgid "Randomly play popular album's tracks"
-msgstr "Suositut levyt"
-
-#: ../src/toolbar.py:139
-#, fuzzy
-msgid "Randomly play genre's tracks"
-msgstr "Suositut levyt"
-
-#: ../src/toolbar.py:209 ../src/toolbar.py:236
+#: ../src/toolbar.py:194 ../src/toolbar.py:221
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:202 ../src/toolbar.py:218 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Toista"
 
@@ -174,7 +156,7 @@ msgstr "Kokoelma"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/popmenu.py:36
+#: ../src/popmenu.py:56
 #, fuzzy
 msgid "Only play this album"
 msgstr "Suositut levyt"
@@ -296,3 +278,11 @@ msgstr "Valitse mitä biletilassa on käytettävissä"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Close"
 msgstr "Sulje"
+
+#, fuzzy
+#~ msgid "Randomly play popular album's tracks"
+#~ msgstr "Suositut levyt"
+
+#, fuzzy
+#~ msgid "Randomly play genre's tracks"
+#~ msgstr "Suositut levyt"

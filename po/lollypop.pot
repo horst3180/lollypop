@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 16:20+0100\n"
+"POT-Creation-Date: 2015-01-03 17:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,27 +102,11 @@ msgstr ""
 msgid "Configure lollypop"
 msgstr ""
 
-#: ../src/toolbar.py:133
-msgid "Randomly play artist's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:135
-msgid "Randomly play album's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:137
-msgid "Randomly play popular album's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:139
-msgid "Randomly play genre's tracks"
-msgstr ""
-
-#: ../src/toolbar.py:209 ../src/toolbar.py:236
+#: ../src/toolbar.py:194 ../src/toolbar.py:221
 msgid "Pause"
 msgstr ""
 
-#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:202 ../src/toolbar.py:218 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr ""
 
@@ -170,7 +154,7 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/popmenu.py:36
+#: ../src/popmenu.py:56
 msgid "Only play this album"
 msgstr ""
 
