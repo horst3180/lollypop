@@ -440,7 +440,7 @@ class Player(GObject.GObject):
 	"""
 		Next track in shuffle mode
 		if force, stop current track
-		a fresh sqlite cursor should be pass as sql if we are in a thread
+		a fresh sqlite cursor should be passed as sql if we are in a thread
 		@param bool, sqlite cursor
 	"""
 	def _shuffle_next(self, force = False, sql = None):
