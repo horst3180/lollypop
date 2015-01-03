@@ -60,7 +60,7 @@ class Player(GObject.GObject):
 		self._shuffle = False
 		self._shuffle_tracks_history = [] # Tracks already played
 		self._shuffle_albums_history = [] # Albums already played
-		self._shuffle_albums_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
+		self._shuffle_album_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
 		self._party = False
 		self._party_ids = []
 		self._queue = []
@@ -250,6 +250,7 @@ class Player(GObject.GObject):
 		else:
 			self._rgvolume.props.album_mode = 1
 		self._shuffle_albums_history = []
+		self._shuffle_album_tracks_history = []
 		self._shuffle_tracks_history = []
 		self._shuffle = shuffle
 		if not shuffle and self.current.id:
@@ -484,13 +485,13 @@ class Player(GObject.GObject):
 			if not album in self._shuffle_albums_history:
 				tracks = Objects.albums.get_tracks(album, sql)
 				for track in sorted(tracks, key=lambda *args: random.random()):
-					if not track in self._shuffle_albums_tracks_history:
-						self._shuffle_albums_tracks_history.append(track)
+					if not track in self._shuffle_album_tracks_history:
+						self._shuffle_album_tracks_history.append(track)
 						return track
 			# No new tracks for this album, remove it
 			self._albums.remove(album)
 			self._shuffle_albums_history.append(album)
-			self._shuffle_albums_tracks_history = []
+			self._shuffle_album_tracks_history = []
 
 		return None
 
