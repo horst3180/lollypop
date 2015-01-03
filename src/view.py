@@ -198,6 +198,7 @@ class ArtistView(View):
 			widget = ArtistWidget(albums.pop(0), self._genre_id, False, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
+			widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
 		else:
 			self._stop = False
@@ -321,7 +322,8 @@ class AlbumView(View):
 		else:
 			self._artist_id = child.get_child().get_id()
 			self._populate_context(self._artist_id)
-			self._stack.show()		
+			self._stack.show()
+			self._context_widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 	
 	"""
 		Pop an album and add it to the view,

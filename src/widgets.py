@@ -123,8 +123,8 @@ class ArtistWidget(Gtk.Grid):
 		self.add(self._ui.get_object('ArtistWidget'))
 
 		if popover:
-			self._eventbox = self._ui.get_object('eventbox')
-			self._eventbox.connect("button-press-event", self._show_web_art)
+			self.eventbox = self._ui.get_object('eventbox')
+			self.eventbox.connect("button-press-event", self._show_web_art)
 			self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
 			self._ui.get_object('menu').show()
 
