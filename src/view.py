@@ -198,7 +198,8 @@ class ArtistView(View):
 			widget = ArtistWidget(albums.pop(0), self._genre_id, False, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
-			widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+			if widget.eventbox:
+				widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
 		else:
 			self._stop = False

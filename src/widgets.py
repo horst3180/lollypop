@@ -127,7 +127,8 @@ class ArtistWidget(Gtk.Grid):
 			self.eventbox.connect("button-press-event", self._show_web_art)
 			self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
 			self._ui.get_object('menu').show()
-
+		else:
+			self.eventbox = None
 		self._add_tracks(album_id)
 
 	"""
