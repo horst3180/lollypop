@@ -195,7 +195,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0 and not self._stop:
-			widget = ArtistWidget(albums.pop(0), self._genre_id, False, not self._context, self._size_group)
+			widget = ArtistWidget(albums.pop(0), self._genre_id, True, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			if widget.eventbox:
@@ -302,7 +302,7 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		self._context_widget = ArtistWidget(album_id, self._genre_id, True, True, None)
+		self._context_widget = ArtistWidget(album_id, self._genre_id, False, True, None)
 		self._context_widget.show()			
 		view = Gtk.ScrolledWindow()
 		view.set_min_content_height(250)

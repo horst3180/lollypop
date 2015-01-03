@@ -90,11 +90,11 @@ class ArtistWidget(Gtk.Grid):
 		@param album id as int
 		@param genre id as int
 		@param parent width as int
-		@param full as bool => Full playlist should be loaded, else only artist
+		@param limit_to_artist as bool => Only load artist albums on play
 		@param popover authorized as bool
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, full, popover, size_group):
+	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
@@ -102,7 +102,7 @@ class ArtistWidget(Gtk.Grid):
 		self._artist_id = Objects.albums.get_artist_id(album_id)
 		self._album_id = album_id
 		self._genre_id = genre_id
-		self._full = full
+		self._limit_to_artist = limit_to_artist
 
 		self._tracks_widget1 = TracksWidget(popover)
 		self._tracks_widget2 = TracksWidget(popover)
@@ -201,7 +201,7 @@ class ArtistWidget(Gtk.Grid):
 	def _on_activated(self, widget, track_id):
 		Objects.player.load(track_id)
 		if not Objects.player.is_party():
-			Objects.player.set_albums(self._artist_id, self._genre_id, self._full)
+			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)

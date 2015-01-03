@@ -321,9 +321,9 @@ class Player(GObject.GObject):
 		Set track as current track in albums
 		@param artist id as int
 		@param genre id as int
-		@param full as bool => False only load artist context
+		@param limit_to_artist as bool => only load artist tracks
 	"""
-	def set_albums(self, artist_id, genre_id, full):
+	def set_albums(self, artist_id, genre_id, limit_to_artist):
 		self._shuffle_album = False
 		self._albums = []
 		# We are in all artists
@@ -337,7 +337,7 @@ class Player(GObject.GObject):
 		elif genre_id == POPULARS:
 			self._albums = Objects.albums.get_populars()
 			self.emit("context-changed", SHUFFLE_POPULARS)
-		elif not full:
+		elif limit_to_artist:
 			self._albums = Objects.albums.get_ids(artist_id, genre_id)
 			self.emit("context-changed", SHUFFLE_ARTIST)
 		else:
