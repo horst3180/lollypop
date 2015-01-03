@@ -114,6 +114,7 @@ class Toolbar():
 			if Objects.player.current.id:
 				self._popalbums.populate()
 				self._popalbums.show()
+				return True
 
 	"""
 		Update cover for album_id
