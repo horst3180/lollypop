@@ -29,11 +29,9 @@ class PopMenu(Gio.Menu):
 		Gio.Menu.__init__(self)
 		self._is_album = is_album
 		app = Gio.Application.get_default()
-
+		#FIXME How signal connect works when called many times
 		play_album_action = Gio.SimpleAction(name="play_album_action")
-		play_album_action.connect('activate', self._play_album, object_id)
 		app.add_action(play_album_action)
-		self.append(_("Play album"), 'app.play_album_action')
 		append_queue_action = Gio.SimpleAction(name="append_queue_action")
 		app.add_action(append_queue_action)
 		prepend_queue_action = Gio.SimpleAction(name="prepend_queue_action")
@@ -54,6 +52,8 @@ class PopMenu(Gio.Menu):
 			else:
 				delete = False
 		else:
+			play_album_action.connect('activate', self._play_album, object_id)
+			self.append(_("Only play this album"), 'app.play_album_action')
 			tracks = Objects.albums.get_tracks(object_id)
 			union = set(queue) & set(tracks)
 			if len(union) == len(tracks):

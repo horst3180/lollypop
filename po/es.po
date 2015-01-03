@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 15:54+0100\n"
+"POT-Creation-Date: 2015-01-03 16:20+0100\n"
 "PO-Revision-Date: 2015-01-01 09:56+0000\n"
 "Last-Translator: karlinux <karlinux47@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -176,7 +176,7 @@ msgstr "Cargando, paciencia..."
 
 #: ../src/popmenu.py:36
 #, fuzzy
-msgid "Play album"
+msgid "Only play this album"
 msgstr "Álbumes populares"
 
 #: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
