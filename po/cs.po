@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 15:15+0100\n"
+"POT-Creation-Date: 2015-01-03 15:54+0100\n"
 "PO-Revision-Date: 2014-12-22 23:41+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -104,11 +104,29 @@ msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 msgid "Configure lollypop"
 msgstr "Nastavit Lollypop"
 
-#: ../src/toolbar.py:195 ../src/toolbar.py:222
+#: ../src/toolbar.py:133
+msgid "Randomly play artist's tracks"
+msgstr ""
+
+#: ../src/toolbar.py:135
+msgid "Randomly play album's tracks"
+msgstr ""
+
+#: ../src/toolbar.py:137
+#, fuzzy
+msgid "Randomly play popular album's tracks"
+msgstr "Oblíbená alba"
+
+#: ../src/toolbar.py:139
+#, fuzzy
+msgid "Randomly play genre's tracks"
+msgstr "Oblíbená alba"
+
+#: ../src/toolbar.py:209 ../src/toolbar.py:236
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Přehrát"
 
@@ -156,24 +174,24 @@ msgstr "Kompilace"
 msgid "Loading please wait..."
 msgstr "Nahrává se. Počkejte, prosím..."
 
-#: ../src/popmenu.py:35
+#: ../src/popmenu.py:36
 #, fuzzy
 msgid "Play album"
 msgstr "Oblíbená alba"
 
-#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmenu.py:69
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmenu.py:74
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 

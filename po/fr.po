@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 15:15+0100\n"
+"POT-Creation-Date: 2015-01-03 15:54+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -103,11 +103,27 @@ msgstr "Lecteur de musique pour le bureau GNOME"
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/toolbar.py:195 ../src/toolbar.py:222
+#: ../src/toolbar.py:133
+msgid "Randomly play artist's tracks"
+msgstr "Lire les morceaux de l'artiste aléatoirement"
+
+#: ../src/toolbar.py:135
+msgid "Randomly play album's tracks"
+msgstr "Lire les morceaux de l'album aléatoirement"
+
+#: ../src/toolbar.py:137
+msgid "Randomly play popular album's tracks"
+msgstr "Lire les morceaux des albums populaires aléatoirement"
+
+#: ../src/toolbar.py:139
+msgid "Randomly play genre's tracks"
+msgstr "Lire les morceaux de ce genre aléatoirement"
+
+#: ../src/toolbar.py:209 ../src/toolbar.py:236
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
@@ -155,23 +171,23 @@ msgstr "Compilation"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popmenu.py:35
+#: ../src/popmenu.py:36
 msgid "Play album"
 msgstr "Lire l'album"
 
-#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
-#: ../src/popmenu.py:69
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:74
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 

@@ -45,7 +45,8 @@ class Player(GObject.GObject):
         'seeked': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'queue-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+        'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+		'context-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
 	"""
@@ -318,7 +319,9 @@ class Player(GObject.GObject):
 	"""
 		Set album list (for next/prev)
 		Set track as current track in albums
-		@param artist id as int, genre id as int
+		@param artist id as int
+		@param genre id as int
+		@param full as bool => False only load artist context
 	"""
 	def set_albums(self, artist_id, genre_id, full):
 		self._shuffle_album = False
@@ -329,15 +332,19 @@ class Player(GObject.GObject):
 			self._albums += Objects.albums.get_ids()
 			# In all artists, we are in album shuffle mode
 			self._shuffle_album = True
+			self.emit("context-changed", SHUFFLE_ALBUMS)
 		# We are in popular view, add populars albums
 		elif genre_id == POPULARS:
 			self._albums = Objects.albums.get_populars()
+			self.emit("context-changed", SHUFFLE_POPULARS)
 		elif not full:
 			self._albums = Objects.albums.get_ids(artist_id, genre_id)
+			self.emit("context-changed", SHUFFLE_ARTIST)
 		else:
 			# We are in album/artist view, add all albums from current genre
 			self._albums = Objects.albums.get_compilations(genre_id)
 			self._albums += Objects.albums.get_ids(None, genre_id)
+			self.emit("context-changed", SHUFFLE_GENRE)
 
 	"""
 		Empty albums list

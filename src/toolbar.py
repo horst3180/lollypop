@@ -64,6 +64,7 @@ class Toolbar():
 		Objects.player.connect("status-changed", self._on_status_changed)
 		Objects.player.connect("current-changed", self._on_current_changed)
 		Objects.player.connect("cover-changed", self._update_cover)
+		Objects.player.connect("context-changed", self._update_shuffle_tooltip)
 
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
 		self._shuffle_btn.connect("toggled", self._shuffle_update)
@@ -123,6 +124,19 @@ class Toolbar():
 		if Objects.player.current.album_id == album_id:
 			self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_SMALL))
 
+	"""
+		Update shuffle tooltip
+		@param shuffle mode as int
+	"""
+	def _update_shuffle_tooltip(self, player, mode):
+		if mode == SHUFFLE_ARTIST:
+			self._shuffle_btn.set_tooltip_text(_("Randomly play artist's tracks"))
+		elif mode == SHUFFLE_ALBUMS:
+			self._shuffle_btn.set_tooltip_text(_("Randomly play album's tracks"))
+		elif mode == SHUFFLE_POPULARS:
+			self._shuffle_btn.set_tooltip_text(_("Randomly play popular album's tracks"))
+		elif mode == SHUFFLE_GENRE:
+			self._shuffle_btn.set_tooltip_text(_("Randomly play genre's tracks"))
 
 	"""
 		On press, mark player as seeking

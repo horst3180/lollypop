@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 15:15+0100\n"
+"POT-Creation-Date: 2015-01-03 15:54+0100\n"
 "PO-Revision-Date: 2015-01-01 19:16+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -105,11 +105,29 @@ msgstr ""
 msgid "Configure lollypop"
 msgstr "Preferencje Lollypop"
 
-#: ../src/toolbar.py:195 ../src/toolbar.py:222
+#: ../src/toolbar.py:133
+msgid "Randomly play artist's tracks"
+msgstr ""
+
+#: ../src/toolbar.py:135
+msgid "Randomly play album's tracks"
+msgstr ""
+
+#: ../src/toolbar.py:137
+#, fuzzy
+msgid "Randomly play popular album's tracks"
+msgstr "Popularne albumy"
+
+#: ../src/toolbar.py:139
+#, fuzzy
+msgid "Randomly play genre's tracks"
+msgstr "Popularne albumy"
+
+#: ../src/toolbar.py:209 ../src/toolbar.py:236
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
 
-#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:217 ../src/toolbar.py:233 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
@@ -157,24 +175,24 @@ msgstr "Składanka"
 msgid "Loading please wait..."
 msgstr "Wczytywanie, proszę czekać..."
 
-#: ../src/popmenu.py:35
+#: ../src/popmenu.py:36
 #, fuzzy
 msgid "Play album"
 msgstr "Popularne albumy"
 
-#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:69
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr "Odtwórz jako następne"
 
-#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Odtwórz jako następny"
 
-#: ../src/popmenu.py:74
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr ""
 
