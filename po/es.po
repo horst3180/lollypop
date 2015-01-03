@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # karlinux <karlinux47@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-18 21:09+0100\n"
+"POT-Creation-Date: 2015-01-03 15:15+0100\n"
 "PO-Revision-Date: 2015-01-01 09:56+0000\n"
 "Last-Translator: karlinux <karlinux47@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
+"language/es/)\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -103,11 +104,11 @@ msgstr "Reproductor de música para el escritorio GNOME"
 msgid "Configure lollypop"
 msgstr "Configurar lollypop"
 
-#: ../src/toolbar.py:196 ../src/toolbar.py:223
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr "Pausar"
 
-#: ../src/toolbar.py:204 ../src/toolbar.py:220 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Reproducir"
 
@@ -155,19 +156,24 @@ msgstr "Recopilación"
 msgid "Loading please wait..."
 msgstr "Cargando, paciencia..."
 
-#: ../src/popmenu.py:62 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:35
+#, fuzzy
+msgid "Play album"
+msgstr "Álbumes populares"
+
+#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Añadir a la cola"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:69
 msgid "Next tracks"
 msgstr "Próximas pistas"
 
-#: ../src/popmenu.py:68 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Próxima pista"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:74
 msgid "Remove from queue"
 msgstr "Suprimir de la cola"
 

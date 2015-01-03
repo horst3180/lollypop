@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-18 21:09+0100\n"
+"POT-Creation-Date: 2015-01-03 15:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,11 +102,11 @@ msgstr ""
 msgid "Configure lollypop"
 msgstr ""
 
-#: ../src/toolbar.py:196 ../src/toolbar.py:223
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr ""
 
-#: ../src/toolbar.py:204 ../src/toolbar.py:220 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr ""
 
@@ -154,19 +154,23 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/popmenu.py:62 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:35
+msgid "Play album"
+msgstr ""
+
+#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:69
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:68 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:74
 msgid "Remove from queue"
 msgstr ""
 

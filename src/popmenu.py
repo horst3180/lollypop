@@ -30,6 +30,10 @@ class PopMenu(Gio.Menu):
 		self._is_album = is_album
 		app = Gio.Application.get_default()
 
+		play_album_action = Gio.SimpleAction(name="play_album_action")
+		play_album_action.connect('activate', self._play_album, object_id)
+		app.add_action(play_album_action)
+		self.append(_("Play album"), 'app.play_album_action')
 		append_queue_action = Gio.SimpleAction(name="append_queue_action")
 		app.add_action(append_queue_action)
 		prepend_queue_action = Gio.SimpleAction(name="prepend_queue_action")
@@ -75,41 +79,50 @@ class PopMenu(Gio.Menu):
 #######################		
 
 	"""
-		Append track id to queue
+		Play album
 		@param SimpleAction
 		@param GVariant as None
-		@param track id as int
+		@param album id as int
 	"""
-	def _append_to_queue(self, action, variant, data):
+	def _play_album(self, action, variant, album_id):
+		Objects.player.play_album(album_id)
+
+	"""
+		Append track to queue
+		@param SimpleAction
+		@param GVariant as None
+		@param album id as int
+	"""
+	def _append_to_queue(self, action, variant, album_id):
 		if self._is_album:
-			for track_id in Objects.albums.get_tracks(data):
+			for track_id in Objects.albums.get_tracks(album_id):
 				Objects.player.append_to_queue(track_id)
 		else:
-			Objects.player.append_to_queue(data)
+			Objects.player.append_to_queue(album_id)
 		
 	"""
 		Prepend track id to queue
 		@param SimpleAction
 		@param GVariant as None
-		@param track id as int
+		@param album id as int
 	"""
-	def _prepend_to_queue(self, action, variant, data):
+	def _prepend_to_queue(self, action, variant, album_id):
 		if self._is_album:
-			for track_id in reversed(Objects.albums.get_tracks(data)):
+			for track_id in reversed(Objects.albums.get_tracks(album_id)):
 				Objects.player.prepend_to_queue(track_id)
 		else:
-			Objects.player.prepend_to_queue(data)
+			Objects.player.prepend_to_queue(album_id)
 		
 	"""
 		Delete track id from queue
 		@param SimpleAction
 		@param GVariant as None
-		@param track id as int
+		@param album id as int
 	"""
-	def _del_from_queue(self, action, variant, data):
+	def _del_from_queue(self, action, variant, album_id):
 		if self._is_album:
-			for track_id in Objects.albums.get_tracks(data):
+			for track_id in Objects.albums.get_tracks(album_id):
 				Objects.player.del_from_queue(track_id)
 		else:
-			Objects.player.del_from_queue(data)
+			Objects.player.del_from_queue(album_id)
 		

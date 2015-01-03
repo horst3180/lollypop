@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # fri, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-18 21:09+0100\n"
+"POT-Creation-Date: 2015-01-03 15:15+0100\n"
 "PO-Revision-Date: 2014-12-22 23:41+0000\n"
 "Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
+"cs/)\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -103,11 +104,11 @@ msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 msgid "Configure lollypop"
 msgstr "Nastavit Lollypop"
 
-#: ../src/toolbar.py:196 ../src/toolbar.py:223
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/toolbar.py:204 ../src/toolbar.py:220 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:2
 msgid "Play"
 msgstr "Přehrát"
 
@@ -155,19 +156,24 @@ msgstr "Kompilace"
 msgid "Loading please wait..."
 msgstr "Nahrává se. Počkejte, prosím..."
 
-#: ../src/popmenu.py:62 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:35
+#, fuzzy
+msgid "Play album"
+msgstr "Oblíbená alba"
+
+#: ../src/popmenu.py:65 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:69
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmenu.py:68 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:71 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:74
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 

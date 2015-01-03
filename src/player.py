@@ -229,6 +229,18 @@ class Player(GObject.GObject):
 		self._playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
 		self.emit("seeked", position)
 
+
+	"""
+		Play album
+		@param album id as int
+	"""
+	def play_album(self, album_id):
+		# Get first track from album
+		track_id = Objects.albums.get_tracks(album_id)[0]
+		Objects.player.load(track_id)
+		if not Objects.player.is_party():
+			Objects.player.set_album(album_id)
+
 	"""
 		Set shuffle mode if suffle is True
 		@param shuffle as bool
