@@ -58,11 +58,13 @@ class Player(GObject.GObject):
 		self.current = CurrentTrack()
 		self._albums = [] # Albums in current playlist
 		self._shuffle = False
-		self._shuffle_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
+		self._shuffle_tracks_history = [] # Tracks already played
 		self._shuffle_albums_history = [] # Albums already played
+		self._shuffle_albums_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
 		self._party = False
 		self._party_ids = []
 		self._queue = []
+		self._shuffle_album = False # True if we are in album shuffle mode
 
 		self._playbin = Gst.ElementFactory.make('playbin', 'player')
 		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
@@ -307,11 +309,14 @@ class Player(GObject.GObject):
 		@param artist id as int, genre id as int
 	"""
 	def set_albums(self, artist_id, genre_id, full):
+		self._shuffle_album = False
 		self._albums = []
-		# We are in All artists
+		# We are in all artists
 		if genre_id == ALL or artist_id == ALL:
 			self._albums = Objects.albums.get_compilations(ALL)
 			self._albums += Objects.albums.get_ids()
+			# In all artists, we are in album shuffle mode
+			self._shuffle_album = True
 		# We are in popular view, add populars albums
 		elif genre_id == POPULARS:
 			self._albums = Objects.albums.get_populars()
@@ -461,22 +466,38 @@ class Player(GObject.GObject):
 
 	"""
 		Return a random track and make sure it has never been played
-		@param sqlite cursor
+		@param sqlite cursor as sql if running in a thread
 	"""
 	def _get_random(self, sql = None):
+		if self._shuffle_album and self.current.album_id in self._albums:
+			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
+			for track in sorted(tracks, key=lambda *args: random.random()):
+					if not track in self._shuffle_albums_tracks_history:
+						self._shuffle_albums_tracks_history.append(track)
+						return track
+			# No new tracks for this album, remove it
+			self._shuffle_clean(self.current.album_id, sql)
+
 		for album in sorted(self._albums, key=lambda *args: random.random()):
 			if not album in self._shuffle_albums_history:
 				tracks = Objects.albums.get_tracks(album, sql)
 				for track in sorted(tracks, key=lambda *args: random.random()):
-					if not track in self._shuffle_tracks_history:
+					if not track in self._shuffle_albums_tracks_history:
+						self._shuffle_albums_tracks_history.append(track)
 						return track
 			# No new tracks for this album, remove it
-			self._albums.remove(album)
-			self._shuffle_albums_history.append(album)
-			for track in Objects.albums.get_tracks(album, sql):
-				self._shuffle_tracks_history.remove(track)
+			self._shuffle_clean(album, sql)
 
 		return None
+
+	"""
+		Remove album for shuffle albums/tracks history
+		@param album_id as int, sqlite cursor as sql if running in a thread
+	"""
+	def _shuffle_clean(self, album_id, sql):
+		self._albums.remove(album_id)
+		self._shuffle_albums_history.append(album_id)
+		self._shuffle_albums_tracks_history = []
 
 	"""
 		On stream start
