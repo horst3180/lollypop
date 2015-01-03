@@ -198,7 +198,7 @@ class Player(GObject.GObject):
 		# Get a random album/track
 		elif self._shuffle or self._party:
 			self._shuffle_next(force, sql)
-		elif self.current.number != -1:
+		elif self.current.number != None:
 			track_id = None
 			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
 			if self.current.number + 1 >= len(tracks): #next album
