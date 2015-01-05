@@ -66,7 +66,6 @@ class Toolbar():
 		Objects.player.connect("cover-changed", self._update_cover)
 
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
-		self._shuffle_btn.connect("toggled", self._shuffle_update)
 
 		self._party_btn = self._ui.get_object('party-button')
 		self._party_btn.connect("toggled", self._on_party_btn_toggled)
@@ -250,13 +249,6 @@ class Toolbar():
 	def _change_play_btn_status(self, image, status):
 		self._play_btn.set_image(image)
 		self._play_btn.set_tooltip_text(status)
-
-	"""
-		Set shuffle mode on if shuffle button active
-		@param obj as unused
-	"""
-	def _shuffle_update(self, obj):
-		Objects.player.set_shuffle(self._shuffle_btn.get_active())
 
 	"""
 		Set party mode on if party button active

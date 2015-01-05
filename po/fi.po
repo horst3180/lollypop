@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-03 17:22+0100\n"
+"POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: 2014-12-19 10:46+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -83,6 +83,18 @@ msgstr "Jatka toistoa, kun sovellus suljetaan"
 msgid "INTERNAL"
 msgstr ""
 
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#, fuzzy
+msgid "Shuffle mode"
+msgstr "Sekoita"
+
+#. Translators: Don't translate allowed values, just the description in the brackets
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/window.py:35
 msgid "Lollypop"
@@ -100,15 +112,15 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/application.py:113
+#: ../src/application.py:114
 msgid "Configure lollypop"
 msgstr "Lollypopin asetukset"
 
-#: ../src/toolbar.py:194 ../src/toolbar.py:221
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/toolbar.py:202 ../src/toolbar.py:218 ../data/headerbar.ui.h:2
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Toista"
 
@@ -124,11 +136,11 @@ msgstr "Kaikki esittäjät"
 msgid "Popular albums"
 msgstr "Suositut levyt"
 
-#: ../src/notification.py:38 ../data/headerbar.ui.h:1
+#: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Edellinen"
 
-#: ../src/notification.py:40 ../data/headerbar.ui.h:3
+#: ../src/notification.py:40 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr "Seuraava"
 
@@ -223,23 +235,38 @@ msgstr "_Tietoja"
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../data/headerbar.ui.h:4
+#: ../data/headerbar.ui.h:1
+#, fuzzy
+msgid "No shuffle"
+msgstr "Sekoita"
+
+#: ../data/headerbar.ui.h:2
+#, fuzzy
+msgid "Shuffle albums"
+msgstr "Sekoita"
+
+#: ../data/headerbar.ui.h:3
+#, fuzzy
+msgid "Shuffle tracks"
+msgstr "Sekoita"
+
+#: ../data/headerbar.ui.h:7
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: ../data/headerbar.ui.h:5 ../data/SettingsDialog.ui.h:9
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
 msgid "Party mode"
 msgstr "Biletila"
 
-#: ../data/headerbar.ui.h:6
+#: ../data/headerbar.ui.h:9
 msgid "Search"
 msgstr "Etsi"
 
-#: ../data/headerbar.ui.h:7
+#: ../data/headerbar.ui.h:10
 msgid "Queue"
 msgstr "Jono"
 
-#: ../data/headerbar.ui.h:8
+#: ../data/headerbar.ui.h:11
 msgid "Show genres"
 msgstr "Näytä tyylilajit"
 

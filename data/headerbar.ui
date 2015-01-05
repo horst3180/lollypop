@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="lollypop">
   <!-- interface-requires gtk+ 3.10 -->
+  <menu id="shuffle-menu">
+    <item>
+      <attribute name="label" translatable="yes">No shuffle</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">none</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle albums</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">albums</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle tracks</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">tracks</attribute>
+    </item>
+  </menu>
   <object class="GtkHeaderBar" id="header-bar">
     <property name="visible">True</property>
     <property name="vexpand">False</property>
@@ -185,10 +202,11 @@
       </object>
     </child>
     <child>
-      <object class="GtkToggleButton" id="shuffle-button">
+      <object class="GtkMenuButton" id="shuffle-button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-	<property name="valign">center</property>
+		<property name="menu_model">shuffle-menu</property>
+	    <property name="valign">center</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Shuffle</property>
         <style>
