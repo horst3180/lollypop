@@ -66,6 +66,9 @@ class Toolbar():
 		Objects.player.connect("cover-changed", self._update_cover)
 
 		self._shuffle_btn = self._ui.get_object('shuffle-button')
+		self._shuffle_btn_image = self._ui.get_object('shuffle-button-image')
+		self._set_shuffle_icon()
+		Objects.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
 		self._party_btn = self._ui.get_object('party-button')
 		self._party_btn.connect("toggled", self._on_party_btn_toggled)
@@ -97,6 +100,23 @@ class Toolbar():
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Set shuffle icon
+	"""
+	def _set_shuffle_icon(self):
+		shuffle = Objects.settings.get_enum('shuffle')
+		if shuffle == SHUFFLE_NONE:
+			self._shuffle_btn_image.set_from_icon_name("media-playlist-consecutive-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+		else:
+			self._shuffle_btn_image.set_from_icon_name("media-playlist-shuffle-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+
+	"""
+		Mark shuffle button as active when shuffle active
+		@param settings as Gio.Settings, value as str
+	"""
+	def _shuffle_btn_aspect(self, settings, value):
+		self._set_shuffle_icon()
 
 	"""
 		Save button state
