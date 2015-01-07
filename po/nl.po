@@ -3,8 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>, 2015
-# karlinux <karlinux47@gmail.com>, 2014-2015
+# Nathan, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
@@ -12,76 +11,76 @@ msgstr ""
 "POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
-msgstr "Tamaño de la ventana"
+msgstr "Venstergrootte"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:2
 msgid "Window size (width and height)."
-msgstr "Tamaño de la ventana (largo y ancho)."
+msgstr "Venstergrootte (breedte en hoogte)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr "Posición de la ventana"
+msgstr "Vensterpositie"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr "Posición de la ventana (x e y)."
+msgstr "Vensterpositie (x en y)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Window maximized"
-msgstr "Ventana maximizada"
+msgstr "Venster gemaximaliseerd"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Window maximized state."
-msgstr "Ventana maximizada"
+msgstr "Venster is gemaximaliseerd."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
-msgstr "Habilitar generos en modo fiesta"
+msgstr "Genres in feestmodus aangezet."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Ids for genres."
-msgstr "Id por género"
+msgstr "ID's voor genres."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Music paths"
-msgstr "Dirección de la música"
+msgstr "Muziekpaden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr "Utilice XDG_MUSIC_DIR si está vacio"
+msgstr "Gebruik XDG_MUSIC_DIR wanneer leeg"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "DO NOT MODIFY"
-msgstr "NO MODIFICAR"
+msgstr "NIET WIJZIGEN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Scan library at startup"
-msgstr "Escanear la biblioteca al inicio"
+msgstr "Bibliotheek scannen bij opstarten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Do not show genres list"
-msgstr "No mostrar la lista de género"
+msgstr "Geef lijst met genres niet weer"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Show albums/artists view as dark"
-msgstr "Mostrar la vista de álbumes/artistas en vista oscura"
+msgstr "Geef albums/artiesten met donker thema weer"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15 ../data/SettingsDialog.ui.h:3
 msgid "Continue playback when closed"
-msgstr "Continuar con la reproducción cuando esté cerrado"
+msgstr "Doorgaan met afspelen wanneer gesloten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "INTERNAL"
-msgstr "INTERNO"
+msgstr "INTERN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Shuffle mode"
@@ -103,137 +102,137 @@ msgstr "Lollypop"
 
 #: ../data/lollypop.desktop.in.h:2
 msgid "Music Player"
-msgstr "Reproductor de Música"
+msgstr "Muziekspeler"
 
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
-msgstr "Reproduzca y organice su colección de música"
+msgstr "Je muziekverzameling beluisteren en beheren"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Music player for the GNOME desktop"
-msgstr "Reproductor de música para el escritorio GNOME"
+msgstr "Muziekspeler voor de GNOME-desktop"
 
 #: ../src/application.py:114
 msgid "Configure lollypop"
-msgstr "Configurar lollypop"
+msgstr "Lollypop aanpassen"
 
 #: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
-msgstr "Pausar"
+msgstr "Pauzeren"
 
 #: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
 msgid "Play"
-msgstr "Reproducir"
+msgstr "Afspelen"
 
 #: ../src/window.py:257 ../src/window.py:298
 msgid "Compilations"
-msgstr "Recopilaciones"
+msgstr "Compilaties"
 
 #: ../src/window.py:259
 msgid "All artists"
-msgstr "Todos los artistas"
+msgstr "Alle artiesten"
 
 #: ../src/window.py:260
 msgid "Popular albums"
-msgstr "Álbumes populares"
+msgstr "Populaire albums"
 
 #: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
-msgstr "Anterior"
+msgstr "Vorige"
 
 #: ../src/notification.py:40 ../data/headerbar.ui.h:6
 msgid "Next"
-msgstr "Siguiente"
+msgstr "Volgende"
 
 #. TRANSLATORS: by refers to the artist, from to the album
 #: ../src/notification.py:56
 #, python-format
 msgid "by %s, from %s"
-msgstr "de %s, desde %s"
+msgstr "door %s, van %s"
 
 #: ../src/database_artists.py:59
 msgid "Many artists"
-msgstr "Muchos artistas"
+msgstr "Veel artiesten"
 
 #: ../src/database_artists.py:66 ../src/database_albums.py:124
 #: ../src/database_tracks.py:116 ../src/database_tracks.py:131
 #: ../src/database_genres.py:63
 msgid "Unknown"
-msgstr "Desconocido"
+msgstr "Onbekend"
 
 #: ../src/database_albums.py:139
 msgid "Compilation"
-msgstr "Recopilación"
+msgstr "Compilatie"
 
 #: ../src/view.py:36
 msgid "Loading please wait..."
-msgstr "Cargando, paciencia..."
+msgstr "Bezig met laden, gelieve te wachten..."
 
 #: ../src/popmenu.py:56
 msgid "Only play this album"
-msgstr "Sólo reproducir este álbum"
+msgstr "Alleen dit album afspelen"
 
 #: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
-msgstr "Añadir a la cola"
+msgstr "Toevoegen aan wachtrij"
 
 #: ../src/popmenu.py:70
 msgid "Next tracks"
-msgstr "Próximas pistas"
+msgstr "Volgende nummers"
 
 #: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
-msgstr "Próxima pista"
+msgstr "Volgend nummer"
 
 #: ../src/popmenu.py:75
 msgid "Remove from queue"
-msgstr "Suprimir de la cola"
+msgstr "Verwijderen uit wachtrij"
 
 #: ../src/popimages.py:53
 msgid "Select a cover art for this album"
-msgstr "Seleccionar una carátula para el álbum"
+msgstr "Een albumhoes voor dit album selecteren"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:24
 msgid "The the"
-msgstr "The the Les les La Le la le los el"
+msgstr "The the"
 
 #: ../src/search.py:148
 msgid "Search:"
-msgstr "Búsqueda:"
+msgstr "Zoeken:"
 
 #: ../data/AboutDialog.ui.in.h:1
 msgid "A music player for GNOME."
-msgstr "Reproductor de música para GNOME"
+msgstr "Een muziekspeler voor GNOME."
 
 #: ../data/AboutDialog.ui.in.h:2
 msgid "Visit Lollypop website"
-msgstr "Visite la página web de Lollypop"
+msgstr "Bezoek de website van Lollypop"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
-msgstr "Cola:"
+msgstr "Wachtrij:"
 
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
-msgstr "Borrar cola"
+msgstr "Wachtrij wissen"
 
 #: ../data/app-menu.ui.h:1
 msgid "_Preferences"
-msgstr "_Preferencias"
+msgstr "_Voorkeuren"
 
 #: ../data/app-menu.ui.h:2
 msgid "_Update music"
-msgstr "_Actualizar la música"
+msgstr "Muziek _updaten"
 
 #: ../data/app-menu.ui.h:3
 msgid "_About"
-msgstr "_Acerca"
+msgstr "_Over"
 
 #: ../data/app-menu.ui.h:4
 msgid "_Quit"
-msgstr "_Salir"
+msgstr "_Afsluiten"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -249,56 +248,56 @@ msgstr ""
 
 #: ../data/headerbar.ui.h:7
 msgid "Shuffle"
-msgstr "Aleatorio"
+msgstr "Willekeurig"
 
 #: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
 msgid "Party mode"
-msgstr "Modo fiesta"
+msgstr "Feestmodus"
 
 #: ../data/headerbar.ui.h:9
 msgid "Search"
-msgstr "Búsqueda"
+msgstr "Zoeken"
 
 #: ../data/headerbar.ui.h:10
 msgid "Queue"
-msgstr "Cola"
+msgstr "Wachtrij"
 
 #: ../data/headerbar.ui.h:11
 msgid "Show genres"
-msgstr "Mostrar géneros"
+msgstr "Toon genres"
 
 #: ../data/SearchRow.ui.h:3
 msgid "artist"
-msgstr "artista"
+msgstr "artiest"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"
-msgstr "Vista oscura"
+msgstr "Maak weergaves donkerder"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
-msgstr "Actualizar la música al inicio"
+msgstr "Update muziek bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:4
 msgid "Configure lollypop behaviour"
-msgstr "Configurar el comportamiento de lollypop"
+msgstr "Pas gedrag van lollypop aan"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Behaviour"
-msgstr "Comportamiento"
+msgstr "Gedrag"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Select music folders"
-msgstr "Seleccionar las carpetas de música"
+msgstr "Selecteer muziekmappen"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Music"
-msgstr "Música"
+msgstr "Muziek"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Select what will be available in party mode"
-msgstr "Seleccione lo que estará disponible en el modo fiesta"
+msgstr "Selecteer wat beschikbaar is in feestmodus"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Close"
-msgstr "Cerrar"
+msgstr "Sluiten"

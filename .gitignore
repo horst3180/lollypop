@@ -1,5 +1,6 @@
 *~
 libgd/
+.tx
 /*.bak
 /*.lo
 /*.o

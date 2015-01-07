@@ -1,22 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
-# Jiri Grönroos <jiri.gronroos@iki.fi>, 2014
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-05 17:36+0100\n"
-"PO-Revision-Date: 2014-12-19 10:46+0000\n"
+"PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
-"language/fi/)\n"
-"Language: fi\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -73,7 +72,7 @@ msgstr "Älä näytä tyylilajiluetteloa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Show albums/artists view as dark"
-msgstr "Näytä levyjen/esittäjien näkymä tummana"
+msgstr "Näytä albumien/esittäjien näkymä tummana"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15 ../data/SettingsDialog.ui.h:3
 msgid "Continue playback when closed"
@@ -84,16 +83,17 @@ msgid "INTERNAL"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-#, fuzzy
 msgid "Shuffle mode"
-msgstr "Sekoita"
+msgstr "Sekoitustila"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Arvo määrittää sekoitetaanko kappaleet/albumit. Sallitut arvot ovat seuraavat: \"none\" (ei sekoitusta), \"tracks\" (sekoita kappaleet), \"albums\" (sekoita albumit)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/window.py:35
@@ -134,7 +134,7 @@ msgstr "Kaikki esittäjät"
 
 #: ../src/window.py:260
 msgid "Popular albums"
-msgstr "Suositut levyt"
+msgstr "Suositut albumit"
 
 #: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
@@ -169,9 +169,8 @@ msgid "Loading please wait..."
 msgstr "Ladataan..."
 
 #: ../src/popmenu.py:56
-#, fuzzy
 msgid "Only play this album"
-msgstr "Suositut levyt"
+msgstr "Toista vain tämä albumi"
 
 #: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
@@ -191,7 +190,7 @@ msgstr "Poista jonosta"
 
 #: ../src/popimages.py:53
 msgid "Select a cover art for this album"
-msgstr "Valitse kansikuva tälle levylle"
+msgstr "Valitse kansikuva tälle albumille"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -236,19 +235,16 @@ msgid "_Quit"
 msgstr "_Lopeta"
 
 #: ../data/headerbar.ui.h:1
-#, fuzzy
 msgid "No shuffle"
-msgstr "Sekoita"
+msgstr "Ei sekoitusta"
 
 #: ../data/headerbar.ui.h:2
-#, fuzzy
 msgid "Shuffle albums"
-msgstr "Sekoita"
+msgstr "Sekoita albumit"
 
 #: ../data/headerbar.ui.h:3
-#, fuzzy
 msgid "Shuffle tracks"
-msgstr "Sekoita"
+msgstr "Sekoita kappaleet"
 
 #: ../data/headerbar.ui.h:7
 msgid "Shuffle"
@@ -305,11 +301,3 @@ msgstr "Valitse mitä biletilassa on käytettävissä"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Close"
 msgstr "Sulje"
-
-#, fuzzy
-#~ msgid "Randomly play popular album's tracks"
-#~ msgstr "Suositut levyt"
-
-#, fuzzy
-#~ msgid "Randomly play genre's tracks"
-#~ msgstr "Suositut levyt"
