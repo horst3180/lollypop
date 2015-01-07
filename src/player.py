@@ -61,7 +61,7 @@ class Player(GObject.GObject):
 		self._shuffle = Objects.settings.get_enum('shuffle')
 		self._shuffle_tracks_history = [] # Tracks already played
 		self._shuffle_albums_history = [] # Albums already played
-		self._shuffle_album_tracks_history = [] # Tracks already played for available albums (not in _shuffle_albums_history)
+		self._shuffle_album_tracks_history = [] # Tracks already played for current album
 		self._party = False
 		self._party_ids = []
 		self._queue = []
