@@ -1,0 +1,12 @@
+[main]
+host = https://www.transifex.com
+
+[lollypop.lollypop]
+file_filter = po/<lang>.po
+source_file = po/lollypop.pot
+source_lang = en
+trans.de = po/de.po
+trans.it = po/it.po
+trans.nl = po/nl.po
+type = PO
+
