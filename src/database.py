@@ -34,6 +34,7 @@ class Database:
 						genre_id INT NOT NULL,
 						year INT NOT NULL,
 						path TEXT NOT NULL,
+						md5 TEXT,
 						popularity INT NOT NULL)'''
 	create_artists = '''CREATE TABLE artists (name TEXT NOT NULL)'''
 	create_genres = '''CREATE TABLE genres (name TEXT NOT NULL)'''

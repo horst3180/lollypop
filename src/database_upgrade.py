@@ -23,7 +23,8 @@ class DatabaseUpgrade:
 		# Here are schema upgrade, key is database version, value function doing shema update
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
-							2: self._db_add_performer_disc
+							2: self._db_add_performer_disc,
+							3: self._db_add_album_md5
 						 }
 
 	"""
@@ -65,3 +66,9 @@ class DatabaseUpgrade:
 		self._reset = True
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
+
+	"""
+		Add album md5 used to get an unique cache cover
+	"""
+	def _db_add_album_md5(self):
+		self._sql.execute("ALTER TABLE albums ADD COLUMN md5 TEXT")

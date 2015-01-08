@@ -49,9 +49,10 @@ class AlbumArt:
 		@return cover path as string
 	"""
 	def get_path(self, album_id, size):
-		album_path = Objects.albums.get_path(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			return CACHE_PATH_JPG
 		elif os.path.exists(CACHE_PATH_PNG):
@@ -62,15 +63,21 @@ class AlbumArt:
 	
 	"""
 		Look for covers in dir, folder.jpg if exist, any supported image otherwise
-		@param directory path as string
+		@param album id as int
 		@return cover file path as string
 	"""
-	def get_art_path(self, directory):
+	def get_art_path(self, album_id):
+		album_path = Objects.albums.get_path(album_id)
+		album_name = Objects.albums.get_name(album_id)
+		artist_name = Objects.albums.get_artist_name(album_id)
 		try:
-			if os.path.exists(directory+"/folder.jpg"):
-				return directory+"/folder.jpg"
-		
-			for file in os.listdir (directory):
+			if os.path.exists(album_path+"/folder.jpg"):
+				return album_path+"/folder.jpg"
+			# Used when having muliple albums in same folder
+			elif os.path.exists(album_path+"/folder_"+artist_name+"_"+album_name+".jpg"):
+				return album_path+"/folder_"+artist_name+"_"+album_name+".jpg"
+
+			for file in os.listdir (album_path):
 				lowername = file.lower()
 				supported = False
 				for mime in self._mimes:
@@ -78,7 +85,7 @@ class AlbumArt:
 						supported = True
 						break	
 				if (supported):
-					return "%s/%s" % (directory, file)
+					return "%s/%s" % (album_path, file)
 
 			return None
 		except:
@@ -91,9 +98,10 @@ class AlbumArt:
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
-		album_path = Objects.albums.get_path(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
 		cached = True
 		pixbuf = None
 		try:
@@ -104,7 +112,7 @@ class AlbumArt:
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_PNG,
 																	 size, size)
 			else:
-				path = self.get_art_path(album_path)
+				path = self.get_art_path(album_id)
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
@@ -163,9 +171,10 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		album_path = Objects.albums.get_path(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			os.remove(CACHE_PATH_JPG)
 		if os.path.exists(CACHE_PATH_PNG):

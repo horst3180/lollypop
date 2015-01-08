@@ -15,6 +15,7 @@ from gettext import gettext as _, ngettext
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 import urllib.request
 import urllib.parse
+import os
 from _thread import start_new_thread
 
 from lollypop.define import *
@@ -123,13 +124,27 @@ class PopImages(Gtk.Popover):
 	"""
 	def _on_activate(self, flowbox, child):
 		album_path = Objects.albums.get_path(self._album_id)
-		artpath = album_path+"/folder.jpg"
-		pixbuf = self._streams[child.get_child()]
-		pixbuf.savev(artpath, "jpeg", [], [])
-		Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
-		Objects.art.clean_cache(self._album_id, ART_SIZE_MEDIUM)
-		Objects.art.clean_cache(self._album_id, ART_SIZE_BIG)
-		Objects.player.announce_cover_update(self._album_id)
+		path_count = Objects.albums.get_path_count(album_path)
+		album_name = Objects.albums.get_name(self._album_id)
+		artist_name = Objects.albums.get_artist_name(self._album_id)
+		try:
+			# Many albums with same path, suffix with artist_album name
+			if path_count > 1:
+				artpath = album_path+"/folder_"+artist_name+"_"+album_name+".jpg"
+				if os.path.exists(album_path+"/folder.jpg"):
+					os.remove(album_path+"/folder.jpg")
+			else:
+				artpath = album_path+"/folder.jpg"
+			pixbuf = self._streams[child.get_child()]
+			pixbuf.savev(artpath, "jpeg", [], [])
+			Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
+			Objects.art.clean_cache(self._album_id, ART_SIZE_MEDIUM)
+			Objects.art.clean_cache(self._album_id, ART_SIZE_BIG)
+			Objects.player.announce_cover_update(self._album_id)
+		except Exception as e:
+			print("Check rights on ", album_path)
+			print(e)
+			pass
 		self.hide()
 		self._streams = {}
 		

@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-
+from hashlib import md5
 from lollypop.define import *
 
 """
@@ -192,13 +192,27 @@ class DatabaseAlbums:
 	def get_path(self, album_id, sql = None):
 		if not sql:
 			sql = Objects.sql
-		result = sql.execute("SELECT path FROM albums where rowid=?", (album_id,))
+		result = sql.execute("SELECT path FROM albums WHERE rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
 			return v[0]
 
 		return ""
 	
+	"""
+		Count album having path as album path
+	"""
+	def get_path_count(self, path, sql = None):
+		if not sql:
+			sql = Objects.sql
+
+		result = sql.execute("SELECT count(path) FROM albums WHERE path=?", (path,))
+		v = result.fetchone()
+		if v and len(v) > 0:
+			return v[0]
+
+		return 1
+
 	"""
 		Get albums ids with popularity
 		@param None
@@ -335,6 +349,26 @@ class DatabaseAlbums:
 		for row in result:
 			albums += row
 		return albums
+
+	"""
+		Get md5 for album, calculate an unique string for this album
+		@param: album id as int
+	"""
+	def get_md5(self, album_id, sql = None):
+		if not sql:
+			sql = Objects.sql
+		result = sql.execute("SELECT md5 FROM albums WHERE rowid=?", (album_id,))
+		v = result.fetchone()
+		if v and len(v) > 0 and v[0] != None:
+			return v[0]
+		else:
+			# Calculate missing md5
+			album_string = self.get_path(album_id, sql)+str(album_id)
+			md5_string = md5(album_string.encode('utf-8')).hexdigest()
+			sql.execute("UPDATE albums SET md5=? WHERE rowid=?", (md5_string, album_id))
+			sql.commit()
+			return md5_string
+			
 
 	"""
 		Search for albums looking like string
