@@ -40,11 +40,15 @@ class PopImages(Gtk.Popover):
 
 		self.set_property('width-request', 700)
 		self.set_property('height-request', 400)
+
+		viewport = Gtk.Viewport()
+		viewport.add(self._view)
+		viewport.set_property("valign", Gtk.Align.START)
 		self._scroll = Gtk.ScrolledWindow()
 		self._scroll.set_hexpand(True)
 		self._scroll.set_vexpand(True)
 		self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-		self._scroll.add(self._view)
+		self._scroll.add(viewport)
 
 		grid = Gtk.Grid()
 		grid.set_orientation(Gtk.Orientation.VERTICAL)
