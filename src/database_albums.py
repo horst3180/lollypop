@@ -363,7 +363,7 @@ class DatabaseAlbums:
 			return v[0]
 		else:
 			# Calculate missing md5
-			album_string = self.get_path(album_id, sql)+str(album_id)
+			album_string = self.get_path(album_id, sql) + self.get_name(album_id, sql)
 			md5_string = md5(album_string.encode('utf-8')).hexdigest()
 			sql.execute("UPDATE albums SET md5=? WHERE rowid=?", (md5_string, album_id))
 			sql.commit()
