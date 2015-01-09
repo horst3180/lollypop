@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 12:08+0100\n"
+"POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: 2014-09-20 00:32+0200\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -113,27 +113,27 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:127
+#: ../src/application.py:114
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:264 ../src/window.py:305
+#: ../src/window.py:257 ../src/window.py:298
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:266
+#: ../src/window.py:259
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:267
+#: ../src/window.py:260
 msgid "Popular albums"
 msgstr "Albums populaires"
 
@@ -151,17 +151,17 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database_artists.py:60
+#: ../src/database_artists.py:59
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:125
-#: ../src/database_tracks.py:117 ../src/database_tracks.py:132
-#: ../src/database_genres.py:64
+#: ../src/database_artists.py:66 ../src/database_albums.py:124
+#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
+#: ../src/database_genres.py:63
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:140
+#: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -169,31 +169,27 @@ msgstr "Compilation"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:56
 msgid "Only play this album"
 msgstr "Lire seulement cet album"
 
-#: ../src/popmenu.py:69
-msgid "Add to playlists"
-msgstr "Ajouter à la liste de lecture"
-
-#: ../src/popmenu.py:73 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
-#: ../src/popmenu.py:77
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:79 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:82
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/popimages.py:58
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 

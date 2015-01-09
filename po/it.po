@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
@@ -9,15 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 12:08+0100\n"
+"POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: 2015-01-06 11:31+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
-"language/it/)\n"
-"Language: it\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -88,15 +87,14 @@ msgstr "INTERNO"
 msgid "Shuffle mode"
 msgstr "Modalità mescola"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Questo valore identifica se mischiare tracce/album. I valori consentiti "
-"sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album"
-"\" (album casuale)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Questo valore identifica se mischiare tracce/album. I valori consentiti sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album\" (album casuale)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/window.py:35
@@ -115,27 +113,27 @@ msgstr "Esegui e organizza la tua collezione musicale"
 msgid "Music player for the GNOME desktop"
 msgstr "Riproduttore musicale per il desktop GNOME"
 
-#: ../src/application.py:127
+#: ../src/application.py:114
 msgid "Configure lollypop"
 msgstr "Configura Lollypop"
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Esegui"
 
-#: ../src/window.py:264 ../src/window.py:305
+#: ../src/window.py:257 ../src/window.py:298
 msgid "Compilations"
 msgstr "Compilation"
 
-#: ../src/window.py:266
+#: ../src/window.py:259
 msgid "All artists"
 msgstr "Tutti gli artisti"
 
-#: ../src/window.py:267
+#: ../src/window.py:260
 msgid "Popular albums"
 msgstr "Album popolari"
 
@@ -153,17 +151,17 @@ msgstr "Successivo"
 msgid "by %s, from %s"
 msgstr "di %s, da %s"
 
-#: ../src/database_artists.py:60
+#: ../src/database_artists.py:59
 msgid "Many artists"
 msgstr "Molti artisti"
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:125
-#: ../src/database_tracks.py:117 ../src/database_tracks.py:132
-#: ../src/database_genres.py:64
+#: ../src/database_artists.py:66 ../src/database_albums.py:124
+#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
+#: ../src/database_genres.py:63
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: ../src/database_albums.py:140
+#: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -171,31 +169,27 @@ msgstr "Compilation"
 msgid "Loading please wait..."
 msgstr "Caricando, attendere..."
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:56
 msgid "Only play this album"
 msgstr "Esegui solo questo album"
 
-#: ../src/popmenu.py:69
-msgid "Add to playlists"
-msgstr ""
-
-#: ../src/popmenu.py:73 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Aggiungi alla coda"
 
-#: ../src/popmenu.py:77
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr "Prossime tracce"
 
-#: ../src/popmenu.py:79 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Possima traccia"
 
-#: ../src/popmenu.py:82
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr "Rimuovi dalla coda"
 
-#: ../src/popimages.py:58
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr "Seleziona una copertina per questo album"
 

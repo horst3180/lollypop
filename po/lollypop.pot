@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 12:08+0100\n"
+"POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,27 +109,27 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:127
+#: ../src/application.py:114
 msgid "Configure lollypop"
 msgstr ""
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:195 ../src/toolbar.py:222
 msgid "Pause"
 msgstr ""
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:264 ../src/window.py:305
+#: ../src/window.py:257 ../src/window.py:298
 msgid "Compilations"
 msgstr ""
 
-#: ../src/window.py:266
+#: ../src/window.py:259
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:267
+#: ../src/window.py:260
 msgid "Popular albums"
 msgstr ""
 
@@ -147,17 +147,17 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/database_artists.py:60
+#: ../src/database_artists.py:59
 msgid "Many artists"
 msgstr ""
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:125
-#: ../src/database_tracks.py:117 ../src/database_tracks.py:132
-#: ../src/database_genres.py:64
+#: ../src/database_artists.py:66 ../src/database_albums.py:124
+#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
+#: ../src/database_genres.py:63
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:140
+#: ../src/database_albums.py:139
 msgid "Compilation"
 msgstr ""
 
@@ -165,31 +165,27 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:56
 msgid "Only play this album"
 msgstr ""
 
-#: ../src/popmenu.py:69
-msgid "Add to playlists"
-msgstr ""
-
-#: ../src/popmenu.py:73 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:77
+#: ../src/popmenu.py:70
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:79 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:82
+#: ../src/popmenu.py:75
 msgid "Remove from queue"
 msgstr ""
 
-#: ../src/popimages.py:58
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr ""
 
