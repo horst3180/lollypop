@@ -77,7 +77,6 @@ class PopImages(Gtk.Popover):
 		Same as populate()
 	"""
 	def _populate(self, string):
-		sql = Objects.db.get_cursor()
 		self._urls = Objects.art.get_google_arts(string)
 		self._add_pixbufs()
 		

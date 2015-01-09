@@ -62,6 +62,7 @@ class Application(Gtk.Application):
 		Objects.art = AlbumArt()
 		self.add_action(Objects.settings.create_action('shuffle'))
 		self._window = None
+		self._settings_dialog = None
 
 		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
 		if DESKTOP and "GNOME" in DESKTOP:
@@ -104,6 +105,8 @@ class Application(Gtk.Application):
 	"""
 	def quit(self, action=None, param=None):
 		Objects.player.stop()
+		Objects.sql.execute("VACUUM")
+		Objects.sql.close()
 		self._window.destroy()
 
 #######################
@@ -117,7 +120,7 @@ class Application(Gtk.Application):
 		Dialog to let user choose available options
 	"""
 	def _edit_settings(self, action, param):
-		if not self._window:
+		if not self._window or self._settings_dialog:
 			return
 		self._choosers = []
 		builder = Gtk.Builder()
@@ -244,6 +247,7 @@ class Application(Gtk.Application):
 		Objects.settings.set_value('music-path', GLib.Variant('as', paths))
 		self._settings_dialog.hide()
 		self._settings_dialog.destroy()
+		self._settings_dialog = None
 		if set(previous) != set(paths):
 			self._window.update_db()
 
