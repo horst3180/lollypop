@@ -102,7 +102,7 @@ class PopMenu(Gio.Menu):
 		@param is album as bool
 	"""
 	def _add_to_playlists(self, action, variant, object_id, is_album):
-		popup = PlaylistPopup()
+		popup = PlaylistPopup(object_id, is_album)
 		popup.show()
 
 	"""

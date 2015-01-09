@@ -26,6 +26,7 @@ class DatabaseTracks:
 		Add a new track to database
 		@param name as string, filepath as string, length as int, tracknumber as int, discnumber as int
 		disknumber as int artist_id as int, album_id as int, mtime as int
+		@warning: commit needed
 	"""
 	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql = None):
 		if not sql:

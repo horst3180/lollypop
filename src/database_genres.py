@@ -25,6 +25,7 @@ class DatabaseGenres:
 	"""
 		Add a new genre to database
 		@param Name as string
+		@warning: commit needed
 	"""
 	def add(self, name, sql = None):
 		if not sql:

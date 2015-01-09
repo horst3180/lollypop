@@ -25,6 +25,7 @@ class DatabaseArtists:
 	"""
 		Add a new artist to database
 		@param Artist name as string
+		@warning: commit needed
 	"""
 	def add(self, name, sql = None):
 		if not sql:

@@ -25,6 +25,7 @@ class DatabaseAlbums:
 	"""
 		Add a new album to database
 		@param Album name as string, artist id as int, genre id as int, year as int, path as string
+		@warning: commit needed
 	"""
 	def add(self, name, artist_id, genre_id, year, path, popularity, sql = None):
 		if not sql:

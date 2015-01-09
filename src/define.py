@@ -24,6 +24,7 @@ class Objects_:
 		self.artists = None
 		self.genres = None
 		self.tracks = None
+		self.playlists = None
 		self.player = None
 		self.art = None
 
