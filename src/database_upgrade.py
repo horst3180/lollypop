@@ -24,8 +24,7 @@ class DatabaseUpgrade:
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc,
-							3: self._db_add_album_md5,
-							4: self._db_add_primary_key
+							3: self._db_add_primary_key
 						 }
 
 	"""
@@ -65,12 +64,6 @@ class DatabaseUpgrade:
 	"""
 	def _db_add_performer_disc(self):
 		self._reset = True
-
-	"""
-		Add album md5 used to get an unique cache cover
-	"""
-	def _db_add_album_md5(self):
-		self._sql.execute("ALTER TABLE albums ADD COLUMN md5 TEXT")
 
 	"""
 		Add primary key to table, needed if we want sqlite to take care of rowid on VACUUM
