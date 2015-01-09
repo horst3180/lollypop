@@ -83,6 +83,8 @@ class Database:
 			sql.execute(self.create_artists)
 			sql.execute(self.create_genres)
 			sql.execute(self.create_tracks)
+			sql.execute(self.create_playlists)
+			sql.execute(self.create_playlists_ids)
 			sql.commit()
 			Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.count()))
 		# Upgrade db schema
@@ -97,10 +99,14 @@ class Database:
 					sql.execute("DROP TABLE albums")
 					sql.execute("DROP TABLE artists")
 					sql.execute("DROP TABLE genres")
+					sql.execute("DROP TABLE playlists")
+					sql.execute("DROP TABLE playlists_ids")
 					sql.execute(self.create_albums)
 					sql.execute(self.create_artists)
 					sql.execute(self.create_genres)
 					sql.execute(self.create_tracks)
+					sql.execute(self.create_playlists)
+					sql.execute(self.create_playlists_ids)
 					sql.commit()
 			except Exception as e:
 				print(e)
