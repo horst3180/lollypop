@@ -29,16 +29,23 @@ class Database:
 	LOCAL_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop"
 	DB_PATH = "%s/lollypop.db" % LOCAL_PATH
 
-	create_albums = '''CREATE TABLE albums (name TEXT NOT NULL,
+	"""
+		SQLite documentation:
+			 In SQLite, a column with type INTEGER PRIMARY KEY is an alias for the ROWID
+		Here, we define an id INT PRIMARY KEY but never feed it, this make VACUUM not destroy rowids...
+	"""
+	create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
+						name TEXT NOT NULL,
 						artist_id INT NOT NULL,
 						genre_id INT NOT NULL,
 						year INT NOT NULL,
 						path TEXT NOT NULL,
 						md5 TEXT,
 						popularity INT NOT NULL)'''
-	create_artists = '''CREATE TABLE artists (name TEXT NOT NULL)'''
-	create_genres = '''CREATE TABLE genres (name TEXT NOT NULL)'''
-	create_tracks = '''CREATE TABLE tracks (name TEXT NOT NULL,
+	create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
+	create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
+	create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+						name TEXT NOT NULL,
 						filepath TEXT NOT NULL,
 						length INT,
 						tracknumber INT,
@@ -83,10 +90,14 @@ class Database:
 				if upgrade.reset_needed():
 					self._set_popularities(sql)
 					Objects.settings.set_value('party-ids', GLib.Variant('ai', []))
-					sql.execute("DELETE FROM tracks")
-					sql.execute("DELETE FROM albums")
-					sql.execute("DELETE FROM artists")
-					sql.execute("DELETE FROM genres")
+					sql.execute("DROP TABLE tracks")
+					sql.execute("DROP TABLE albums")
+					sql.execute("DROP TABLE artists")
+					sql.execute("DROP TABLE genres")
+					sql.execute(self.create_albums)
+					sql.execute(self.create_artists)
+					sql.execute(self.create_genres)
+					sql.execute(self.create_tracks)
 					sql.commit()
 			except Exception as e:
 				print(e)
