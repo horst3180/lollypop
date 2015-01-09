@@ -49,10 +49,9 @@ class AlbumArt:
 		@return cover path as string
 	"""
 	def get_path(self, album_id, size):
-		# Encode album path + album id using md5
-		md5_string = Objects.albums.get_md5(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
+		path = self._get_cache_path(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			return CACHE_PATH_JPG
 		elif os.path.exists(CACHE_PATH_PNG):
@@ -98,10 +97,9 @@ class AlbumArt:
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
-		# Encode album path + album id using md5
-		md5_string = Objects.albums.get_md5(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
+		path = self._get_cache_path(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		cached = True
 		pixbuf = None
 		try:
@@ -171,10 +169,9 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		# Encode album path + album id using md5
-		md5_string = Objects.albums.get_md5(album_id)
-		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
+		path = self._get_cache_path()
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			os.remove(CACHE_PATH_JPG)
 		if os.path.exists(CACHE_PATH_PNG):
@@ -204,6 +201,16 @@ class AlbumArt:
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Get a uniq string for album
+		@param: album id as int
+	"""
+	def _get_cache_path(self, album_id):
+		path = Objects.albums.get_name(album_id) + "_" + \
+			   Objects.albums.get_artist_name(album_id) + "_" + \
+			   Objects.albums.get_genre_name(album_id)
+		return path[0:240].replace ("/", "_")
 
 
 	"""
