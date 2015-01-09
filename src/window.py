@@ -93,6 +93,13 @@ class Window(Gtk.ApplicationWindow):
 		else:
 			current_view.get_style_context().remove_class('black')
 
+	"""
+		Add an application menu to window
+		@parma: menu as Gio.Menu
+	"""
+	def setup_menu(self, menu):
+		self._toolbar.setup_menu_btn(menu)
+
 ############
 # Private  #
 ############

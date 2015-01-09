@@ -201,6 +201,30 @@
         </child>
       </object>
     </child>
+	<child>
+      <object class="GtkMenuButton" id="settings-button">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+	    <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
+        <property name="tooltip_text" translatable="yes">Shuffle</property>
+        <style>
+	      <class name="image-button"/>
+	    </style>
+	    <child>
+	      <object class="GtkImage" id="settings-button-image">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+			<property name="icon-name">open-menu-symbolic</property>
+	        <property name="icon-size">1</property>
+	      </object>
+	    </child>
+      </object>
+      <packing>
+        	<property name="pack_type">end</property>
+      </packing>
+    </child>
     <child>
       <object class="GtkMenuButton" id="shuffle-button">
         <property name="visible">True</property>
@@ -208,6 +232,7 @@
 		<property name="menu_model">shuffle-menu</property>
 	    <property name="valign">center</property>
         <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
         <property name="tooltip_text" translatable="yes">Shuffle</property>
         <style>
 	      <class name="image-button"/>

@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify
 from gettext import gettext as _
+from os import environ
 
 from lollypop.define import Objects
 from lollypop.window import Window
@@ -72,7 +73,6 @@ class Application(Gtk.Application):
 	def do_startup(self):
 		Gtk.Application.do_startup(self)
 		Notify.init("Lollypop")
-		self._build_app_menu()
 
 	"""
 		Activate window and create it if missing
@@ -84,6 +84,12 @@ class Application(Gtk.Application):
 			self._notifications = NotificationManager()
 			self._window.connect('delete-event', self._hide_on_delete)
 			self._window.setup_view()
+			menu = self._setup_app_menu()
+			DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+			if DESKTOP and "GNOME" in DESKTOP:
+				self.set_app_menu(menu)
+			else:
+				self._window.setup_menu(menu)
 		self._window.present()
 
 	"""
@@ -291,15 +297,15 @@ class Application(Gtk.Application):
 		dialog.destroy()
 
 	"""
-		Build gnome-shell application menu
+		Setup application menu
+		@return menu as Gio.Menu
 	"""
-	def _build_app_menu(self):
+	def _setup_app_menu(self):
 		builder = Gtk.Builder()
 
 		builder.add_from_resource('/org/gnome/Lollypop/app-menu.ui')
 
 		menu = builder.get_object('app-menu')
-		self.set_app_menu(menu)
 
 		#TODO: Remove this test later
 		if Gtk.get_minor_version() > 12:
@@ -318,3 +324,5 @@ class Application(Gtk.Application):
 		quitAction = Gio.SimpleAction.new('quit', None)
 		quitAction.connect('activate', self.quit)
 		self.add_action(quitAction)
+
+		return menu

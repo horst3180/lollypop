@@ -91,11 +91,20 @@ class Toolbar():
 		self._queue = QueueWidget()
 		self._queue.set_relative_to(queue_button)
 
+		self._settings_button = self._ui.get_object('settings-button')
+
 	"""
 		@return view genres button as GtkToggleButton
 	"""
 	def get_view_genres_btn(self):
 		return self._view_genres_btn
+
+	"""
+		Add an application menu to menu button
+		@parma: menu as Gio.Menu
+	"""
+	def setup_menu_btn(self, menu):
+		self._settings_button.set_menu_model(menu)
 
 #######################
 # PRIVATE             #
