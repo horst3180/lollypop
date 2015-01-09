@@ -63,6 +63,12 @@ class Application(Gtk.Application):
 		self.add_action(Objects.settings.create_action('shuffle'))
 		self._window = None
 
+		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+		if DESKTOP and "GNOME" in DESKTOP:
+			self._appmenu = True
+		else:
+			self._appmenu = False
+
 		self.register(None)
 		if self.get_is_remote():
 			Gdk.notify_startup_complete()
@@ -73,6 +79,9 @@ class Application(Gtk.Application):
 	def do_startup(self):
 		Gtk.Application.do_startup(self)
 		Notify.init("Lollypop")
+		if self._appmenu:
+			menu = self._setup_app_menu()
+			self.set_app_menu(menu)
 
 	"""
 		Activate window and create it if missing
@@ -84,11 +93,9 @@ class Application(Gtk.Application):
 			self._notifications = NotificationManager()
 			self._window.connect('delete-event', self._hide_on_delete)
 			self._window.setup_view()
-			menu = self._setup_app_menu()
-			DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
-			if DESKTOP and "GNOME" in DESKTOP:
-				self.set_app_menu(menu)
-			else:
+
+			if not self._appmenu:
+				menu = self._setup_app_menu()
 				self._window.setup_menu(menu)
 		self._window.present()
 

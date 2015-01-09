@@ -104,6 +104,7 @@ class Toolbar():
 		@parma: menu as Gio.Menu
 	"""
 	def setup_menu_btn(self, menu):
+		self._settings_button.show()
 		self._settings_button.set_menu_model(menu)
 
 #######################

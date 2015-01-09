@@ -203,7 +203,7 @@
     </child>
 	<child>
       <object class="GtkMenuButton" id="settings-button">
-        <property name="visible">True</property>
+        <property name="visible">False</property>
         <property name="can_focus">True</property>
 	    <property name="valign">center</property>
         <property name="receives_default">True</property>
