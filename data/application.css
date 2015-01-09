@@ -3,10 +3,40 @@ GtkWidget {
 
 }
 
+GtkTreeView {
+	text-shadow: none
+}
+
+GtkTreeView:selected {
+        background-color: alpha(@theme_bg_color, 0.9);
+        color: @theme_fg_color;
+}
+
+GtkTreeView:hover {
+        background-color: alpha(@theme_bg_color, 0.7);
+        color: @theme_fg_color;
+}
+
+Gtk.ListBoxRow .menubutton {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
+Gtk.ListBoxRow .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+}
+
+
 @define-color lollypop_base_color #393F3F;
 @define-color lollypop_text_color #eeeeec;
 
 .black {
+	background-color: @lollypop_base_color;
+	color: @lollypop_text_color;
+}
+
+.black GtkScrollbar.trough {
 	background-color: @lollypop_base_color;
 	color: @lollypop_text_color;
 }
@@ -35,9 +65,57 @@ GtkWidget {
   	color: inherit;
 }
 
+.trackrowplaying .menubutton{
+	background-color: transparent;
+    border-color: transparent;
+  	color: transparent;
+}
+
+.trackrowplaying:hover .menubutton{
+	border-color: transparent;
+  	color: inherit;
+}
+
+.trackrowplaying:hover .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+}
+
+
+/* trackrowmenu is trackrow when menu is shown*/
+.trackrowmenu {
+	background-color: alpha(#000000, 0.03);
+  	color: inherit;
+}
+
+.trackrowmenu .menubutton{
+	border-color: alpha(#000000, 0.1);
+  	color: inherit;
+}
+
 .menubutton {
+	box-shadow: none;
 	padding-top: 0;
 	padding-bottom: 0;
-	background-color: inherit;
-	color: inherit;
+	background-image: none;
+    color: inherit;
 }
+
+.menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+  	color: inherit;
+}
+
+.trackrow .menubutton {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
+.trackrow:hover .menubutton {
+  	color: inherit;
+}
+
+.trackrow:hover .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+}
+

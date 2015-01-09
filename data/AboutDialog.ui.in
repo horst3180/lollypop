@@ -6,7 +6,7 @@
     <property name="modal">True</property>
     <property name="program_name" translatable="no">Lollypop</property>
     <property name="version">@PACKAGE_VERSION@</property>
-    <property name="copyright" translatable="no">Copyright © 2014 Cédric Bellegarde</property>
+    <property name="copyright" translatable="no">Copyright © 2014-2015 Cédric Bellegarde</property>
     <property name="comments" translatable="yes">A music player for GNOME.</property>
     <property name="website">@PACKAGE_URL@</property>
     <property name="website_label" translatable="yes">Visit Lollypop website</property>

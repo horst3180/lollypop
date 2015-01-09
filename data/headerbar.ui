@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="lollypop">
   <!-- interface-requires gtk+ 3.10 -->
+  <menu id="shuffle-menu">
+    <item>
+      <attribute name="label" translatable="yes">No shuffle</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">none</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle albums</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">albums</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle tracks</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">tracks</attribute>
+    </item>
+  </menu>
   <object class="GtkHeaderBar" id="header-bar">
     <property name="visible">True</property>
     <property name="vexpand">False</property>
@@ -9,6 +26,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin-start">10</property>
+        <property name="margin-end">20</property>
         <child>
           <object class="GtkButton" id="previous_button">
             <property name="width_request">42</property>
@@ -111,7 +129,6 @@
             <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="margin-start">20</property>
             <property name="spacing">8</property>
             <child>
               <object class="GtkImage" id="cover">
@@ -184,12 +201,38 @@
         </child>
       </object>
     </child>
+	<child>
+      <object class="GtkMenuButton" id="settings-button">
+        <property name="visible">False</property>
+        <property name="can_focus">True</property>
+	    <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
+        <property name="tooltip_text" translatable="yes">Shuffle</property>
+        <style>
+	      <class name="image-button"/>
+	    </style>
+	    <child>
+	      <object class="GtkImage" id="settings-button-image">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+			<property name="icon-name">open-menu-symbolic</property>
+	        <property name="icon-size">1</property>
+	      </object>
+	    </child>
+      </object>
+      <packing>
+        	<property name="pack_type">end</property>
+      </packing>
+    </child>
     <child>
-      <object class="GtkToggleButton" id="shuffle-button">
+      <object class="GtkMenuButton" id="shuffle-button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-	<property name="valign">center</property>
+		<property name="menu_model">shuffle-menu</property>
+	    <property name="valign">center</property>
         <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
         <property name="tooltip_text" translatable="yes">Shuffle</property>
         <style>
 	      <class name="image-button"/>
@@ -198,7 +241,6 @@
 	      <object class="GtkImage" id="shuffle-button-image">
 	        <property name="visible">True</property>
 	        <property name="can_focus">False</property>
-	        <property name="icon-name">media-playlist-shuffle-symbolic</property>
 	        <property name="icon-size">1</property>
 	      </object>
 	    </child>
@@ -329,6 +371,8 @@
         <property name="can_focus">True</property>
         <property name="valign">center</property>
         <property name="halign">center</property>
+        <property name="margin_start">5</property>
+        <property name="margin_end">5</property>
         <property name="width_request">400</property>
         <property name="draw_value">False</property>
       </object>

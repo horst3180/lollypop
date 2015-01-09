@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from gi.repository import GdkPixbuf
 from gettext import gettext as _
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
@@ -43,12 +43,12 @@ class AlbumWidget(Gtk.Grid):
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 		
 		self._cover = self._ui.get_object('cover')
-		self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
+		self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
 
-		album_name = Objects["albums"].get_name(album_id)
+		album_name = Objects.albums.get_name(album_id)
 		title = self._ui.get_object('title')	
 		title.set_label(album_name)
-		artist_name = Objects["albums"].get_artist_name(album_id)
+		artist_name = Objects.albums.get_artist_name(album_id)
 		artist_name = translate_artist_name(artist_name)
 		artist = self._ui.get_object('artist')
 		artist.set_label(artist_name)
@@ -66,7 +66,7 @@ class AlbumWidget(Gtk.Grid):
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
-			self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
+			self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
 
 	"""
 		Return album id for widget
@@ -90,17 +90,19 @@ class ArtistWidget(Gtk.Grid):
 		@param album id as int
 		@param genre id as int
 		@param parent width as int
-		@param popover as bool
+		@param limit_to_artist as bool => Only load artist albums on play
+		@param popover authorized as bool
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, popover, size_group):
+	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group):
 		Gtk.Grid.__init__(self)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
 		
-		self._artist_id = Objects["albums"].get_artist_id(album_id)
+		self._artist_id = Objects.albums.get_artist_id(album_id)
 		self._album_id = album_id
 		self._genre_id = genre_id
+		self._limit_to_artist = limit_to_artist
 
 		self._tracks_widget1 = TracksWidget(popover)
 		self._tracks_widget2 = TracksWidget(popover)
@@ -115,17 +117,18 @@ class ArtistWidget(Gtk.Grid):
 		self._tracks_widget2.show()
 
 		self._cover = self._ui.get_object('cover')
-		self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
-		self._ui.get_object('title').set_label(Objects["albums"].get_name(album_id))
-		self._ui.get_object('year').set_label(Objects["albums"].get_year(album_id))
+		self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
+		self._ui.get_object('title').set_label(Objects.albums.get_name(album_id))
+		self._ui.get_object('year').set_label(Objects.albums.get_year(album_id))
 		self.add(self._ui.get_object('ArtistWidget'))
 
 		if popover:
-			self._eventbox = self._ui.get_object('eventbox')
-			self._eventbox.connect("button-press-event", self._show_web_art)
+			self.eventbox = self._ui.get_object('eventbox')
+			self.eventbox.connect("button-press-event", self._show_web_art)
 			self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
 			self._ui.get_object('menu').show()
-
+		else:
+			self.eventbox = None
 		self._add_tracks(album_id)
 
 	"""
@@ -142,7 +145,7 @@ class ArtistWidget(Gtk.Grid):
 	"""
 	def update_cover(self, album_id):
 		if self._album_id == album_id:
-			self._cover.set_from_pixbuf(Objects["art"].get(album_id, ART_SIZE_BIG))
+			self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
 	
 	"""
 		Return album id for widget
@@ -171,18 +174,18 @@ class ArtistWidget(Gtk.Grid):
 	"""
 	def _add_tracks(self, album_id):
 		i = 1    					   
-		mid_tracks = int(0.5+Objects["albums"].get_count(album_id)/2)
-		for track_id, title, artist_id, filepath, length in Objects["albums"].get_tracks_infos(album_id):
+		mid_tracks = int(0.5+Objects.albums.get_count(album_id)/2)
+		for track_id, title, artist_id, filepath, length in Objects.albums.get_tracks_infos(album_id):
 		
 			# If we are listening to a compilation, prepend artist name
 			if self._artist_id == COMPILATIONS or self._artist_id != artist_id:
-				artist_name = translate_artist_name(Objects["tracks"].get_artist_name(track_id))
-				name =  artist_name + " - " + title
+				artist_name = translate_artist_name(Objects.tracks.get_artist_name(track_id))
+				title =  artist_name + " - " + title
 				
 			# Get track position in queue
 			pos = None
-			if Objects["player"].is_in_queue(track_id):
-				pos = Objects["player"].get_track_position(track_id)
+			if Objects.player.is_in_queue(track_id):
+				pos = Objects.player.get_track_position(track_id)
 				
 			if i <= mid_tracks:
 				self._tracks_widget1.add_track(track_id, i, title, length, pos) 
@@ -196,23 +199,27 @@ class ArtistWidget(Gtk.Grid):
 		@param track id as int
 	"""		
 	def _on_activated(self, widget, track_id):
-		Objects["player"].load(track_id)
-		if not Objects["player"].is_party():
-			Objects["player"].set_albums(self._artist_id, self._genre_id, track_id)
+		Objects.player.load(track_id)
+		if not Objects.player.is_party():
+			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)
+		@param: widget as eventbox
+		@param: data as unused
 	"""
-	def _show_web_art(self, obj, data):
-		artist = Objects["artists"].get_name(self._artist_id)
-		album = Objects["albums"].get_name(self._album_id)
+	def _show_web_art(self, widget, data):
+		artist = Objects.artists.get_name(self._artist_id)
+		album = Objects.albums.get_name(self._album_id)
 		popover = PopImages(self._album_id)
-		popover.set_relative_to(obj)
+		popover.set_relative_to(widget)
 		popover.populate(artist + " " + album)
 		popover.show()
 
 
-
+"""
+	Widget used to let user select a collection folder
+"""
 class ChooserWidget(Gtk.Grid):
 	
 	def __init__(self):
@@ -259,7 +266,7 @@ class ChooserWidget(Gtk.Grid):
 		@return path as string
 	"""
 	def get_dir(self):
-		path = self._chooser_btn.get_uri()
+		path =  GLib.uri_unescape_string(self._chooser_btn.get_uri(), None)
 		if path:
 			return path[7:]
 		else:

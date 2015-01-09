@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -47,13 +47,3 @@ def seconds_to_string(duration):
 	seconds %= 60
 
 	return '%i:%02i' % (minutes, seconds)
-	
-"""
-	Return current monitor size
-	@return (monitor width as int, monitor height as int)
-"""
-def get_monitor_size():	
-		s = Gdk.Screen.get_default()
-		m = s.get_monitor_at_window(s.get_active_window())
-		monitor = s.get_monitor_geometry(m)
-		return (monitor.width, monitor.height)

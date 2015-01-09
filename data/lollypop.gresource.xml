@@ -5,13 +5,14 @@
     <file preprocess="xml-stripblanks">app-menu.ui</file>
     <file preprocess="xml-stripblanks">SearchRow.ui</file>
     <file preprocess="xml-stripblanks">TrackRow.ui</file>
+    <file preprocess="xml-stripblanks">QueueWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistWidget.ui</file>
+    <file preprocess="xml-stripblanks">PlaylistPopup.ui</file>
     <file>application.css</file>
     <file preprocess="xml-stripblanks">AlbumWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">headerbar.ui</file>
     <file preprocess="xml-stripblanks">Loading.ui</file>
-    <file preprocess="xml-stripblanks">PartyDialog.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>
   </gresource>
 </gresources>

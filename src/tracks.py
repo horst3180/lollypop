@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
 from gi.repository import GObject, Gtk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.popmenu import PopMenu
 from lollypop.utils import translate_artist_name, seconds_to_string
@@ -119,7 +119,16 @@ class TrackRow(Gtk.ListBoxRow):
 	def _pop_menu(self, widget):
 		menu = PopMenu(self._object_id, False)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+		popover.connect('closed', self._on_closed)
+		self.get_style_context().add_class('trackrowmenu')
 		popover.show()
+	"""
+		Remove selected style
+		@param widget as Gtk.Popover
+	"""
+	def _on_closed(self, widget):
+		self.get_style_context().remove_class('trackrowmenu')
+		
 
 ######################################################################
 ######################################################################
@@ -148,7 +157,7 @@ class TracksWidget(Gtk.ListBox):
 		track_row = TrackRow()
 		if not self._popover:
 			track_row.show_widget('menu', False)
-		if Objects["player"].get_current_track_id() == track_id:
+		if Objects.player.current.id == track_id:
 			track_row.show_widget('icon', True)
 		if pos:
 			track_row.set_label('num', '''<span foreground="#72729f9fcfcf" font_desc="Bold">%s</span>''' % str(pos))
@@ -177,14 +186,14 @@ class TracksWidget(Gtk.ListBox):
 		Set signals callback
 	"""
 	def do_show(self):
-		Objects["player"].connect("queue-changed", self._update_pos_label)
+		Objects.player.connect("queue-changed", self._update_pos_label)
 		Gtk.ListBox.do_show(self)
 	
 	"""
 		Clean signals callback
 	"""
 	def do_hide(self):	
-		Objects["player"].disconnect_by_func(self._update_pos_label)
+		Objects.player.disconnect_by_func(self._update_pos_label)
 		Gtk.ListBox.do_hide(self)
 		
 #######################
@@ -198,8 +207,8 @@ class TracksWidget(Gtk.ListBox):
 	def _update_pos_label(self, widget):
 		for row in self.get_children():
 			track_id = row.get_object_id()
-			if Objects["player"].is_in_queue(track_id):
-				pos = Objects["player"].get_track_position(track_id)
+			if Objects.player.is_in_queue(track_id):
+				pos = Objects.player.get_track_position(track_id)
 				row.set_label('num', '''<span foreground="#72729f9fcfcf" font_desc="Bold">%s</span>''' % str(pos))
 			else:
 				row.set_label('num', str(row.get_number()))
@@ -211,4 +220,3 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def _on_activate(self, widget, row):
 		self.emit('activated', row.get_object_id())
-		

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # Copyright (C) 2010 Jonathan Matthew (replay gain code)
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,16 +16,33 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GObject, Gst, GstAudio
 import random
 from os import path
 
-from lollypop.config import *
+from lollypop.define import *
+from lollypop.utils import translate_artist_name
 from lollypop.database import Database
+
+class CurrentTrack:
+	def __init__(self):
+		self.id = None
+		self.title = None
+		self.album_id = None
+		self.album = None
+		self.artist_id = None
+		self.artist = None
+		self.performer_id = None
+		self.performer = None
+		self.genre_id = None
+		self.genre = None
+		self.number = None
+		self.duration = None
+		self.path = None
 
 class Player(GObject.GObject):
 
 	EPSILON = 0.001
 	
 	__gsignals__ = {
-        'current-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'position-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'current-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'seeked': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'queue-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
@@ -38,14 +55,13 @@ class Player(GObject.GObject):
 		GObject.GObject.__init__(self)
 		Gst.init(None)
 
-		self._current_track_number = -1
-		self._current_track_album_id = -1
-		self._current_track_id = -1
-		self._albums = []
-		self._timeout = None
-		self._shuffle = False
-		self._shuffle_tracks_history = []
-		self._shuffle_albums_history = []
+		self.current = CurrentTrack()
+		self._albums = [] # Albums in current playlist
+		self._albums_backup = None # Use by shuffle albums to restore playlist before shuffle
+		self._shuffle = Objects.settings.get_enum('shuffle')
+		self._shuffle_tracks_history = [] # Tracks already played
+		self._shuffle_albums_history = [] # Albums already played
+		self._shuffle_album_tracks_history = [] # Tracks already played for current album
 		self._party = False
 		self._party_ids = []
 		self._queue = []
@@ -54,6 +70,7 @@ class Player(GObject.GObject):
 		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
 		self._rg_setup()
 		
+		Objects.settings.connect('changed::shuffle', self._set_shuffle)
 		
 		self._bus = self._playbin.get_bus()
 		self._bus.add_signal_watch()
@@ -107,8 +124,6 @@ class Player(GObject.GObject):
 	"""
 	def play(self):
 		self._playbin.set_state(Gst.State.PLAYING)
-		if not self._timeout:
-			self._timeout = GLib.timeout_add(1000, self._update_position)
 		self.emit("status-changed")
 
 	"""
@@ -117,18 +132,12 @@ class Player(GObject.GObject):
 	def pause(self):
 		self._playbin.set_state(Gst.State.PAUSED)
 		self.emit("status-changed")
-		if self._timeout:
-			GLib.source_remove(self._timeout)
-			self._timeout = None
-
+			
 	"""
 		Change player state to STOPPED
 	"""
 	def stop(self):
 		self._playbin.set_state(Gst.State.NULL)
-		if self._timeout:
-			GLib.source_remove(self._timeout)
-			self._timeout = None
 
 	"""
 		Set PLAYING if PAUSED
@@ -147,28 +156,28 @@ class Player(GObject.GObject):
 	"""
 	def prev(self):
 		track_id = None
-		if self._shuffle or self._party:
+		if self._shuffle == SHUFFLE_TRACKS or self._party:
 			try:
 				track_id = self._shuffle_tracks_history[-2]
 				self._shuffle_tracks_history.pop()
 				self._shuffle_tracks_history.pop()
 			except Exception as e:
 				track_id = None
-		elif self._current_track_number != -1:
-			tracks = Objects["albums"].get_tracks(self._current_track_album_id)
-			if self._current_track_number <=0 : #Prev album
-				pos = self._albums.index(self._current_track_album_id)
+		elif self.current.number != -1:
+			tracks = Objects.albums.get_tracks(self.current.album_id)
+			if self.current.number <= 0 : #Prev album
+				pos = self._albums.index(self.current.album_id)
 				if pos - 1 < 0: #we are on last album, go to first
 					pos = len(self._albums) - 1
 				else:
 					pos -= 1
-				self._current_track_album_id = self._albums[pos]
-				tracks = Objects["albums"].get_tracks(self._current_track_album_id)
-				self._current_track_number = len(tracks) - 1
-				track_id = tracks[self._current_track_number]
+				self.current.album_id = self._albums[pos]
+				tracks = Objects.albums.get_tracks(self.current.album_id)
+				self.current.number = len(tracks) - 1
+				track_id = tracks[self.current.number]
 			else:
-				self._current_track_number -= 1
-				track_id = tracks[self._current_track_number]
+				self.current.number -= 1
+				track_id = tracks[self.current.number]
 	
 		if track_id:			
 			self.load(track_id)
@@ -190,23 +199,23 @@ class Player(GObject.GObject):
 			else:
 				self._load_track(track_id, sql)
 		# Get a random album/track
-		elif self._shuffle or self._party:
+		elif self._shuffle == SHUFFLE_TRACKS or self._party:
 			self._shuffle_next(force, sql)
-		elif self._current_track_number != -1:
+		elif self.current.number != None:
 			track_id = None
-			tracks = Objects["albums"].get_tracks(self._current_track_album_id, sql)
-			if self._current_track_number + 1 >= len(tracks): #next album
-				pos = self._albums.index(self._current_track_album_id)
+			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
+			if self.current.number + 1 >= len(tracks): #next album
+				pos = self._albums.index(self.current.album_id)
 				if pos +1 >= len(self._albums): #we are on last album, go to first
 					pos = 0
 				else:
 					pos += 1
-				self._current_track_album_id = self._albums[pos]
-				self._current_track_number = 0
-				track_id = Objects["albums"].get_tracks(self._albums[pos], sql)[0]
+				self.current.album_id = self._albums[pos]
+				self.current.number = 0
+				track_id = Objects.albums.get_tracks(self._albums[pos], sql)[0]
 			else:
-				self._current_track_number += 1
-				track_id = tracks[self._current_track_number]
+				self.current.number += 1
+				track_id = tracks[self.current.number]
 
 			if force:
 				self.load(track_id)
@@ -219,30 +228,19 @@ class Player(GObject.GObject):
 	"""
 	def seek(self, position):
 		self._playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, position * Gst.SECOND)
+		self.emit("seeked", position)
+
 
 	"""
-		Return current track id
-		@return track id as int
+		Play album
+		@param album id as int
 	"""
-	def get_current_track_id(self):
-		return self._current_track_id
-
-	"""
-		Set shuffle mode if suffle is True
-		@param shuffle as bool
-	"""
-	def set_shuffle(self, shuffle):
-		if shuffle:
-			self._rgvolume.props.album_mode = 0
-		else:
-			self._rgvolume.props.album_mode = 1
-		self._shuffle_tracks_history = []
-		self._shuffle = shuffle
-		if not shuffle and self._current_track_id != -1:
-			album_id = Objects["tracks"].get_album_id(self._current_track_id)
-			artist_id = Objects["artists"].get_id(album_id)
-			genre_id = Objects["albums"].get_genre(album_id)
-			self.set_albums(artist_id, genre_id, self._current_track_id)
+	def play_album(self, album_id):
+		# Get first track from album
+		track_id = Objects.albums.get_tracks(album_id)[0]
+		Objects.player.load(track_id)
+		if not Objects.player.is_party():
+			Objects.player.set_album(album_id)
 
 	"""
 		Set party mode on if party is True
@@ -258,19 +256,16 @@ class Player(GObject.GObject):
 		self._shuffle_tracks_history = []
 		if party:
 			if len(self._party_ids) > 0:
-				self._albums = Objects["albums"].get_party_ids(self._party_ids)
+				self._albums = Objects.albums.get_party_ids(self._party_ids)
 			else:
-				self._albums = Objects["albums"].get_ids()
+				self._albums = Objects.albums.get_ids()
 			# Start a new song if not playing
 			if not self.is_playing():
 				track_id = self._get_random()
 				self.load(track_id)
-				self._current_track_album_id = Objects["tracks"].get_album_id(track_id)
 		else:
-			album_id = Objects["tracks"].get_album_id(self._current_track_id)
-			artist_id = Objects["artists"].get_id(album_id)
-			genre_id = Objects["albums"].get_genre(album_id)
-			self.set_albums(artist_id, genre_id, self._current_track_id)
+			genre_id = Objects.albums.get_genre_id(self.current.album_id)
+			self.set_albums(self.current.artist_id, genre_id, True)
 
 	"""
 		Set party ids to ids
@@ -295,28 +290,38 @@ class Player(GObject.GObject):
 		return self._party
 
 	"""
-		Set album list (for next/prev)
-		@param artist id as int, genre id as int, track id as int
+		Set album as current album list (for next/prev)
+		Set track as current track in album
+		@param album_id as int
 	"""
-	def set_albums(self, artist_id, genre_id, track_id):
-		filepath = Objects["tracks"].get_path(track_id)
-		if path.exists(filepath):
-			self._albums = []
-			# We are in All artists
-			if genre_id == ALL or artist_id == ALL:
-				self._albums = Objects["albums"].get_compilations(ALL)
-				self._albums += Objects["albums"].get_ids()
-			# We are in popular view, add populars albums
-			elif genre_id == POPULARS:
-				self._albums = Objects["albums"].get_populars()
-			else:
+	def set_album(self, album_id):
+		self._albums = [ album_id ]
+
+	"""
+		Set album list (for next/prev)
+		Set track as current track in albums
+		@param artist id as int
+		@param genre id as int
+		@param limit_to_artist as bool => only load artist tracks
+	"""
+	def set_albums(self, artist_id, genre_id, limit_to_artist):
+		self._albums = []
+		# We are in all artists
+		if genre_id == ALL or artist_id == ALL:
+			self._albums = Objects.albums.get_compilations(ALL)
+			self._albums += Objects.albums.get_ids()
+		# We are in popular view, add populars albums
+		elif genre_id == POPULARS:
+			self._albums = Objects.albums.get_populars()
+		elif limit_to_artist:
+			self._albums = Objects.albums.get_ids(artist_id, genre_id)
+		else:
 			# We are in album/artist view, add all albums from current genre
-				self._albums = Objects["albums"].get_compilations(genre_id)
-				self._albums += Objects["albums"].get_ids(None, genre_id)
-			album_id = Objects["tracks"].get_album_id(track_id)
-			tracks = Objects["albums"].get_tracks(album_id)
-			self._current_track_number = tracks.index(track_id) 
-			self._current_track_album_id = album_id
+			self._albums = Objects.albums.get_compilations(genre_id)
+			self._albums += Objects.albums.get_ids(None, genre_id)
+
+		# Shuffle album list if needed
+		self._shuffle_playlist()
 
 	"""
 		Empty albums list
@@ -386,9 +391,56 @@ class Player(GObject.GObject):
 	def get_track_position(self, track_id):
 		return self._queue.index(track_id)+1
 
+	"""
+		Return bin playback position
+		@return position as int
+	"""
+	def get_position_in_track(self):
+		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
+		return position*60
+
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Shuffle/Un-shuffle playlist based on shuffle setting
+	"""
+	def _shuffle_playlist(self):
+		# Shuffle album list or restore unshuffled list
+		if self._shuffle == SHUFFLE_ALBUMS:
+			self._albums_backup = list(self._albums)
+			random.shuffle(self._albums)
+		elif self._shuffle == SHUFFLE_NONE:
+			if self._albums_backup:
+				self._albums = self._albums_backup
+				self._albums_backup = None
+
+	"""
+		Set shuffle mode to gettings value
+		@param settings as Gio.Settings, value as str
+	"""
+	def _set_shuffle(self, settings, value):
+		self._shuffle = Objects.settings.get_enum('shuffle')
+		self._shuffle_albums_history = []
+		self._shuffle_album_tracks_history = []
+		self._shuffle_tracks_history = []
+
+		if self._shuffle == SHUFFLE_TRACKS:
+			self._rgvolume.props.album_mode = 0
+		else:
+			self._rgvolume.props.album_mode = 1
+		
+		# Shuffle album list or restore unshuffled list
+		self._shuffle_playlist()
+
+		if not self._shuffle != SHUFFLE_TRACKS and self.current.id:
+			tracks = Objects.albums.get_tracks(self.current.album_id)
+			self.current.number = tracks.index(self.current.id)
+		elif self.current.id:
+			self._shuffle_tracks_history.append(self.current.id)
+			
+
 
 	"""
 		Setup replaygain
@@ -428,18 +480,17 @@ class Player(GObject.GObject):
 	"""
 		Next track in shuffle mode
 		if force, stop current track
-		a fresh sqlite cursor should be pass as sql if we are in a thread
+		a fresh sqlite cursor should be passed as sql if we are in a thread
 		@param bool, sqlite cursor
 	"""
 	def _shuffle_next(self, force = False, sql = None):
 		track_id = self._get_random(sql)
-		self._current_track_album_id = Objects["tracks"].get_album_id(track_id, sql)
 		# Need to clear history
 		if not track_id:
 			self._albums = self._shuffle_albums_history
 			self._shuffle_tracks_history = []
 			self._shuffle_albums_history = []
-			self._shuffle_next()
+			self._shuffle_next(force)
 			return
 
 		if force:
@@ -450,75 +501,83 @@ class Player(GObject.GObject):
 
 	"""
 		Return a random track and make sure it has never been played
-		@param sqlite cursor
+		@param sqlite cursor as sql if running in a thread
 	"""
 	def _get_random(self, sql = None):
 		for album in sorted(self._albums, key=lambda *args: random.random()):
 			if not album in self._shuffle_albums_history:
-				tracks = Objects["albums"].get_tracks(album, sql)
+				tracks = Objects.albums.get_tracks(album, sql)
 				for track in sorted(tracks, key=lambda *args: random.random()):
-					if not track in self._shuffle_tracks_history:
+					if not track in self._shuffle_album_tracks_history:
+						self._shuffle_album_tracks_history.append(track)
 						return track
 			# No new tracks for this album, remove it
 			self._albums.remove(album)
 			self._shuffle_albums_history.append(album)
+			self._shuffle_album_tracks_history = []
+
 		return None
 
 	"""
 		On stream start
 		Emit "current-changed" to notify others components
-		Add track to shuffle history if needed
 	"""
 	def _on_stream_start(self, bus, message):
-		self.emit("current-changed", self._current_track_id)
-		self._duration = Objects["tracks"].get_length(self._current_track_id)
+		self.emit("current-changed")
+		# Add track to shuffle history if needed
 		if self._shuffle or self._party:
-			self._shuffle_tracks_history.append(self._current_track_id)
+			self._shuffle_tracks_history.append(self.current.id)
+
 
 	"""
 		On error, next()
 	"""
 	def _on_bus_error(self, bus, message):
-		self.next()
+		print("Error playing: ", self.current.path)
+		self.next(True)
+		return False
 		
 	"""
 		On eos, force loading if queue fails,
 		if on_stream_about_to_finish never get send  
 	"""
 	def _on_bus_eos(self, bus, message):
-		self.load(self._current_track_id)
+		self.load(self.current.id)
 		
-
 	"""
 		When stream is about to finish, switch to next track without gap
 	"""
 	def _on_stream_about_to_finish(self, obj):
-		self._previous_track_id = self._current_track_id
+		self._previous_track_id = self.current.id
 		# We are in a thread, we need to create a new cursor
-		sql = Objects["db"].get_cursor()
+		sql = Objects.db.get_cursor()
 		self.next(False, sql)
 		# Add populariy if we listen to the song
-		album_id = Objects["tracks"].get_album_id(self._previous_track_id, sql)
-		Objects["albums"].set_more_popular(album_id, sql)
-
+		album_id = Objects.tracks.get_album_id(self._previous_track_id, sql)
+		Objects.albums.set_more_popular(album_id, sql)
 		sql.close()
-
-	"""
-		Call progress callback with new position
-	"""
-	def _update_position(self):
-		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000
-
-		if position > 0:
-			self.emit("position-changed", position*60)
-		return True
 		
 	"""
 		Load track
 		@param track id as int, sqlite cursor
 	"""
 	def _load_track(self, track_id, sql = None):
-		filepath = Objects["tracks"].get_path(track_id, sql)
-		if path.exists(filepath):
-			self._current_track_id = track_id
-			self._playbin.set_property('uri', "file://" + filepath)
+		self.current.id = track_id
+		self.current.title = Objects.tracks.get_name(self.current.id, sql)
+		self.current.album_id = Objects.tracks.get_album_id(self.current.id, sql)
+		self.current.album = Objects.albums.get_name(self.current.album_id, sql)
+		self.current.performer_id = Objects.tracks.get_performer_id(self.current.id, sql)
+		self.current.performer = translate_artist_name(Objects.artists.get_name(self.current.performer_id, sql))
+		self.current.artist_id = Objects.tracks.get_artist_id(self.current.id, sql)
+		self.current.artist = translate_artist_name(Objects.artists.get_name(self.current.artist_id, sql))
+		self.current.genre_id = Objects.albums.get_genre_id(self.current.album_id, sql)
+		self.current.genre = Objects.genres.get_name(self.current.genre_id, sql)
+		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
+		tracks = Objects.albums.get_tracks(self.current.album_id, sql)
+		self.current.number = tracks.index(self.current.id)
+		self.current.path = Objects.tracks.get_path(self.current.id, sql)
+		if path.exists(self.current.path):
+			self._playbin.set_property('uri', GLib.filename_to_uri(self.current.path))
+		else:
+			print("File doesn't exist: ", self.current.path)
+			self.next(True, sql)

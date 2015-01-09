@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +21,7 @@ from math import pi
 from random import uniform
 from mutagen import File as Idtag
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.database import Database
 
 """
@@ -49,23 +49,35 @@ class AlbumArt:
 		@return cover path as string
 	"""
 	def get_path(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
-		art_path = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		if not os.path.exists(art_path):
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
+		if os.path.exists(CACHE_PATH_JPG):
+			return CACHE_PATH_JPG
+		elif os.path.exists(CACHE_PATH_PNG):
+			return CACHE_PATH_PNG
+		else:
 			self.get(album_id, size)
-		return art_path
+			return self.get_path(album_id, size)
 	
 	"""
 		Look for covers in dir, folder.jpg if exist, any supported image otherwise
-		@param directory path as string
+		@param album id as int
 		@return cover file path as string
 	"""
-	def get_art_path(self, directory):
+	def get_art_path(self, album_id):
+		album_path = Objects.albums.get_path(album_id)
+		album_name = Objects.albums.get_name(album_id)
+		artist_name = Objects.albums.get_artist_name(album_id)
 		try:
-			if os.path.exists(directory+"/folder.jpg"):
-				return directory+"/folder.jpg"
-		
-			for file in os.listdir (directory):
+			if os.path.exists(album_path+"/folder.jpg"):
+				return album_path+"/folder.jpg"
+			# Used when having muliple albums in same folder
+			elif os.path.exists(album_path+"/folder_"+artist_name+"_"+album_name+".jpg"):
+				return album_path+"/folder_"+artist_name+"_"+album_name+".jpg"
+
+			for file in os.listdir (album_path):
 				lowername = file.lower()
 				supported = False
 				for mime in self._mimes:
@@ -73,7 +85,7 @@ class AlbumArt:
 						supported = True
 						break	
 				if (supported):
-					return "%s/%s" % (directory, file)
+					return "%s/%s" % (album_path, file)
 
 			return None
 		except:
@@ -81,26 +93,38 @@ class AlbumArt:
 	
 	"""
 		Return pixbuf for album_id
+		covers are cached as jpg. Default cover as png to keep alpha channel
 		@param album id as int, pixbuf size as int
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
-		CACHE_PATH = "%s/%s_%s.png" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
 		cached = True
 		pixbuf = None
 		try:
-			if not os.path.exists(CACHE_PATH):
-				path = self.get_art_path(album_path)
+			if os.path.exists(CACHE_PATH_JPG):
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_JPG,
+																	 size, size)
+			elif os.path.exists(CACHE_PATH_PNG):
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_PNG,
+																	 size, size)
+			else:
+				path = self.get_art_path(album_id)
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					pixbuf.savev(CACHE_PATH, "png", [], [])
+					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+					except:
+						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				else:
 					# Try to get from tags
 					try:
-						for track_id in Objects["albums"].get_tracks(album_id):
-							filepath = Objects["tracks"].get_path(track_id)
+						for track_id in Objects.albums.get_tracks(album_id):
+							filepath = Objects.tracks.get_path(track_id)
 							filetag = Idtag(filepath, easy = False)
 							for tag in filetag.tags:
 								if tag.startswith("APIC:"):
@@ -124,10 +148,17 @@ class AlbumArt:
 
 					if not pixbuf:
 						pixbuf = self._get_default_art(album_id, size)
-					pixbuf.savev(CACHE_PATH, "png", [], [])
-			else:
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH,
-																 size, size)
+						# Save as png to keep alpha channel
+						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+							pixbuf.save(CACHE_PATH_PNG, "png", [], [])
+						except:
+							pixbuf.savev(CACHE_PATH_PNG, "png", [], [])
+					else:
+						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+							pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+						except:
+							pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				
 			return pixbuf
 			
 		except Exception as e:
@@ -140,10 +171,14 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		album_path = Objects["albums"].get_path(album_id)
-		cache_path = "%s/%s_%s.jpg" % (self._CACHE_PATH, album_path.replace("/", "_"), size)
-		if os.path.exists(cache_path):
-			os.remove(cache_path)
+		# Encode album path + album id using md5
+		md5_string = Objects.albums.get_md5(album_id)
+		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, md5_string, size)
+		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, md5_string, size)
+		if os.path.exists(CACHE_PATH_JPG):
+			os.remove(CACHE_PATH_JPG)
+		if os.path.exists(CACHE_PATH_PNG):
+			os.remove(CACHE_PATH_PNG)
 
 	"""
 		Get arts on google image corresponding to search
@@ -178,9 +213,9 @@ class AlbumArt:
 		@return pixbuf
 	"""
 	def _get_default_art(self, album_id, size):
-		album_name = Objects["albums"].get_name(album_id)
-		artist_id = Objects["albums"].get_artist_id(album_id)
-		artist_name = Objects["artists"].get_name(artist_id)
+		album_name = Objects.albums.get_name(album_id)
+		artist_id = Objects.albums.get_artist_id(album_id)
+		artist_name = Objects.artists.get_name(artist_id)
 		center = size / 2
 		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
 		ctx = cairo.Context(surface)

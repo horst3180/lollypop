@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import Objects
+from lollypop.define import Objects
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -28,7 +28,7 @@ class DatabaseGenres:
 	"""
 	def add(self, name, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("INSERT INTO genres (name) VALUES (?)", (name,))
 		
 
@@ -39,7 +39,7 @@ class DatabaseGenres:
 	"""
 	def get_id(self, name, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT rowid from genres where name=?", (name,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -54,7 +54,7 @@ class DatabaseGenres:
 	"""
 	def get_name(self, genre_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT name from genres where rowid=?", (genre_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -69,7 +69,7 @@ class DatabaseGenres:
 	"""
 	def get_albums(self, genre_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		albums = []
 		result = sql.execute("SELECT rowid FROM albums where genre_id=?",(genre_id,))
 		for row in result:
@@ -82,7 +82,7 @@ class DatabaseGenres:
 	"""
 	def get_ids(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		genres = []
 		result = sql.execute("SELECT rowid, name FROM genres ORDER BY name COLLATE NOCASE")
 		for row in result:

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -13,10 +13,11 @@
 
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
+from cgi import escape
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.albumart import AlbumArt
-from lollypop.utils import translate_artist_name, get_monitor_size
+from lollypop.utils import translate_artist_name
 
 ######################################################################
 ######################################################################
@@ -28,17 +29,26 @@ class QueueWidget(Gtk.Popover):
 	"""
 	def __init__(self):
 		Gtk.Popover.__init__(self)
-		
+
+		self.set_property('width-request', 400)
+
 		self._timeout = None
 		self._in_drag = False
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+		
+		self._ui = Gtk.Builder()
+		self._ui.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
 		self._model.connect("row-deleted", self._updated_rows)
-		self._view = Gtk.TreeView(self._model)
-		self._view.set_property('activate-on-single-click', True)
-		self._view.set_property('reorderable', True)
-		
+
+		self._view = self._ui.get_object('view')
+		self._view.set_model(self._model)
+
+		self._ui.connect_signals(self)
+
+		self._widget = self._ui.get_object('widget')
+
 		renderer0 = Gtk.CellRendererPixbuf()
 		renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
 		column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
@@ -57,41 +67,31 @@ class QueueWidget(Gtk.Popover):
 		self._view.append_column(column0)
 		self._view.append_column(column1)
 		self._view.append_column(column2)
-		self._view.set_headers_visible(False)
-		self._view.connect('row-activated', self._on_row_activated)
-		self._view.connect('key-release-event', self._on_keyboard_event)
-		self._view.connect('drag-begin', self._on_drag_begin)
-		self._view.connect('drag-end', self._on_drag_end)
 
-		scroll = Gtk.ScrolledWindow()
-		scroll.set_hexpand(True)
-		scroll.set_vexpand(True)
-		scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-		scroll.add(self._view)
-		scroll.show_all()
-		self.add(scroll)
+		self.add(self._widget)
 
 	"""
 		Show queue popover		
 		Populate treeview with current queue
 	"""
-	def show(self):
-		tracks = Objects["player"].get_queue()
-		if len(tracks) > 0:
-			for child in self._view.get_children():
-				child.hide()
-				self._view.remove(child)
+	def do_show(self):
+		size_setting = Objects.settings.get_value('window-size')
+		if isinstance(size_setting[1], int):
+			self.set_property('height-request', size_setting[1]*0.7)
+		else:
+			self.set_property('height-request', 600)
 
-			self._view.show()
-			for track_id in tracks:
-				album_id = Objects["tracks"].get_album_id(track_id)
-				artist_id = Objects["albums"].get_artist_id(album_id)
-				artist_name = Objects["artists"].get_name(artist_id)
-				track_name = Objects["tracks"].get_name(track_id)
-				art = Objects["art"].get(album_id, ART_SIZE_MEDIUM)
-				self._model.append([art, "<b>"+translate_artist_name(artist_name) + "</b>\n" + 
-									track_name, self._del_pixbuf, track_id])
-		Gtk.Popover.show(self)
+		for track_id in Objects.player.get_queue():
+			album_id = Objects.tracks.get_album_id(track_id)
+			artist_id = Objects.albums.get_artist_id(album_id)
+			artist_name = Objects.artists.get_name(artist_id)
+			track_name = Objects.tracks.get_name(track_id)
+			art = Objects.art.get(album_id, ART_SIZE_MEDIUM)
+			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
+								escape(track_name), self._del_pixbuf, track_id])
+
+		Objects.player.connect("current-changed", self._on_current_changed)
+		Gtk.Popover.do_show(self)
 
 	"""
 		Clear model
@@ -99,26 +99,22 @@ class QueueWidget(Gtk.Popover):
 	def do_hide(self):
 		Gtk.Popover.do_hide(self)
 		self._model.clear()
-
-	"""
-		Resize popover
-	"""
-	def do_show(self):
-		width, height = get_monitor_size()
-		self.set_property('height-request', height*0.8)
-		self.set_property('width-request', width*0.4)
-		Gtk.Popover.do_show(self)
+		Objects.player.disconnect_by_func(self._on_current_changed)
 		
 #######################
 # PRIVATE             #
 #######################
 
 	"""
-		Clear widget removing every row, use it when widget isn't visible
+		Pop first item in queue if it's current track id
+		@param player object
 	"""
-	def _clear(self):
-		for child in self._view.get_children():
-			child.destroy()
+	def _on_current_changed(self, player):
+		if len(self._model) > 0:
+			row = self._model[0]
+			if row[3] == player.current.id:
+				iter = self._model.get_iter(row.path)
+				self._model.remove(iter)
 
 	"""
 		Mark as in drag
@@ -139,7 +135,7 @@ class QueueWidget(Gtk.Popover):
 		@param widget unused, Gtk.Event
 	"""
 	def _on_keyboard_event(self, widget, event):
-		if len(Objects["player"].get_queue()) > 0:
+		if len(Objects.player.get_queue()) > 0:
 			if event.keyval == 65535:
 				path, column = self._view.get_cursor()
 				iter = self._model.get_iter(path)
@@ -155,7 +151,7 @@ class QueueWidget(Gtk.Popover):
 			for row in self._model:
 				if row[3]:
 					new_queue.append(row[3])
-			Objects["player"].set_queue(new_queue)
+			Objects.player.set_queue(new_queue)
 		
 	"""
 		Delete row
@@ -169,20 +165,30 @@ class QueueWidget(Gtk.Popover):
 		@param TreeView, TreePath, TreeViewColumn
 	"""
 	def _on_row_activated(self, view, path, column):
+		if self._timeout:
+			return
 		iterator = self._model.get_iter(path)
 		if iterator:
 			if column.get_title() == "pixbuf2":
 				self._delete_row(iterator)
 			else:
 				# We don't want to play if we are starting a drag & drop, so delay
-				GLib.timeout_add(500, self._play_track, iterator)
-			
+				self._timeout = GLib.timeout_add(500, self._play_track, iterator)
+	
+	"""
+		Clear queue
+		@param widget as Gtk.Button
+	"""	
+	def _on_button_clicked(self, widget):
+		self._model.clear()
+	
 	"""
 		Play track for selected iter
 		@param GtkTreeIter
 	"""
 	def _play_track(self, iterator):
+		self._timeout = None
 		if not self._in_drag:
 			value_id = self._model.get_value(iterator, 3)
 			self._model.remove(iterator)
-			Objects["player"].load(value_id)
+			Objects.player.load(value_id)

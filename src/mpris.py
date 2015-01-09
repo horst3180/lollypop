@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # Copyright (c) 2013 Arnel A. Borja <kyoushuu@yahoo.com>
 # Copyright (c) 2013 Vadim Rutkovsky <vrutkovs@redhat.com>
 # This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.config import *
+from lollypop.define import *
 from lollypop.player import Player
 from lollypop.albumart import AlbumArt
 from lollypop.database import Database
@@ -37,8 +37,10 @@ class MPRIS(dbus.service.Object):
 		name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
 		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
 		self._app = app
-		Objects["player"].connect('current-changed', self._on_current_changed)
-		Objects["player"].connect('status-changed', self._on_status_changed)
+		self._metadata = {}
+		Objects.player.connect('current-changed', self._on_current_changed)
+		Objects.player.connect('seeked', self._on_seeked)
+		Objects.player.connect('status-changed', self._on_status_changed)
 
 	@dbus.service.method(dbus_interface=MPRIS_IFACE)
 	def Raise(self):
@@ -50,32 +52,32 @@ class MPRIS(dbus.service.Object):
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Next(self):
-		Objects["player"].next()
+		Objects.player.next()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Previous(self):
-		Objects["player"].prev()
+		Objects.player.prev()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Pause(self):
-		Objects["player"].pause()
+		Objects.player.pause()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def PlayPause(self):
-		Objects["player"].play_pause()
+		Objects.player.play_pause()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Stop(self):
-		Objects["player"].stop()
+		Objects.player.stop()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
 	def Play(self):
-		Objects["player"].play()
+		Objects.player.play()
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='ox')
 	def SetPosition(self, track_id, position):
-		pass
+		Objects.player.seek(position/1000000)
 
 	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
 						 in_signature='s')
@@ -109,17 +111,17 @@ class MPRIS(dbus.service.Object):
                 'LoopStatus': 'Playlist',
                 'Rate': dbus.Double(1.0),
                 'Shuffle': True,
-                'Metadata': dbus.Dictionary(self._get_metadata(), signature='sv'),
-                'Volume': 100.0,
-                'Position': 1.0,
+                'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
+                'Volume': 1.0,
+                'Position': dbus.Int64(Objects.player.get_position_in_track()),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
                 'CanGoNext': True,
                 'CanGoPrevious': True,
                 'CanPlay': True,
                 'CanPause': True,
-                'CanSeek': False,
-                'CanControl': False,
+                'CanSeek': True,
+                'CanControl': True,
 			}
 		else:
 			raise dbus.exceptions.DBusException(
@@ -143,7 +145,7 @@ class MPRIS(dbus.service.Object):
 #######################
 
 	def _get_status(self):
-		state = Objects["player"].get_status()
+		state = Objects.player.get_status()
 		if state == Gst.State.PLAYING:
 			return 'Playing'
 		elif state == Gst.State.PAUSED:
@@ -151,38 +153,27 @@ class MPRIS(dbus.service.Object):
 		else:
 			return 'Stopped'
 
-	def _get_metadata(self):
-		track_id = Objects["player"].get_current_track_id()
-		if track_id == -1:
+	def _update_metadata(self):
+		if Objects.player.current.id == None:
 			return dbus.Dictionary({}, signature='sv')
-
-		infos = Objects["tracks"].get_infos(track_id)
-		album_id =  infos[4]
-		album = Objects["albums"].get_name(album_id)
-		artist = Objects["tracks"].get_artist_name(track_id)
-		artist = translate_artist_name(artist)
-		performer = Objects["tracks"].get_performer_name(track_id)
-		performer = translate_artist_name(performer)
-		genre_id = Objects["albums"].get_genre(album_id)
-		genre = Objects["genres"].get_name(genre_id)
+		self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
+		self._metadata['xesam:trackNumber'] = Objects.player.current.number
+		self._metadata['xesam:title'] = Objects.player.current.title
+		self._metadata['xesam:album'] = Objects.player.current.album
+		self._metadata['xesam:artist'] = [Objects.player.current.artist]
+		self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
+		self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+		self._metadata['xesam:genre'] = [Objects.player.current.genre]
+		self._metadata['xesam:url'] = "file://"+Objects.player.current.path
+		self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
 	
-		metadata = {}	
-		metadata['xesam:trackNumber'] = infos[3]
-		metadata['xesam:title'] = infos[0]
-		metadata['xesam:album'] = album
-		metadata['xesam:artist'] = artist
-		metadata['xesam:albumArtist'] = performer
-		metadata['mpris:length'] = dbus.Int64(infos[2] * 1000000)
-		metadata['xesam:genre'] = genre
-		metadata['mpris:artUrl'] = "file://"+Objects["art"].get_path(album_id, ART_SIZE_BIG)
-		
-		return dbus.Dictionary(metadata, signature='sv')
 
-	def _on_current_changed(self, player, data=None):
-		properties = { 'Metadata': self._get_metadata(),
-					   'CanPlay': True,
-					   'CanPause': True
-					 }
+	def _on_seeked(self, player, position):
+		self.Seeked(position * 1000000)
+
+	def _on_current_changed(self, player):
+		self._update_metadata()
+		properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv') }
 		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
 
 	def _on_status_changed(self, data=None):

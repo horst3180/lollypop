@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -24,7 +24,8 @@ class DatabaseUpgrade:
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc,
-							3: self._db_add_playlists_tables
+							3: self._db_add_album_md5,
+							4: self._db_add_playlists_tables
 						 }
 
 	"""
@@ -66,7 +67,13 @@ class DatabaseUpgrade:
 		self._reset = True
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN performer_id INT")
 		self._sql.execute("ALTER TABLE tracks ADD COLUMN discnumber INT")
-		
+
+	"""
+		Add album md5 used to get an unique cache cover
+	"""
+	def _db_add_album_md5(self):
+		self._sql.execute("ALTER TABLE albums ADD COLUMN md5 TEXT")
+
 	"""
 		Add playlists tables
 	"""

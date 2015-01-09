@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.config import *
+from lollypop.define import *
 
 """
 	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
@@ -29,7 +29,7 @@ class DatabaseTracks:
 	"""
 	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
 					discnumber, artist_id, performer_id, album_id, mtime) VALUES\
 					(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
@@ -44,7 +44,7 @@ class DatabaseTracks:
 	"""
 	def get_name(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT name FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -59,7 +59,7 @@ class DatabaseTracks:
 	"""
 	def get_album_id(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT album_id FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -75,7 +75,7 @@ class DatabaseTracks:
 	"""
 	def get_mtimes(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		mtimes = {}
 		sql.row_factory = self._dict_factory
 		result = sql.execute("SELECT filepath, mtime FROM tracks")
@@ -92,7 +92,7 @@ class DatabaseTracks:
 	"""
 	def get_infos(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
 		result = sql.execute("SELECT name, filepath, length, tracknumber, album_id FROM tracks WHERE rowid=?" , (track_id,))
 		v = result.fetchone()
@@ -107,7 +107,7 @@ class DatabaseTracks:
 	"""
 	def get_artist_name(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT artists.name from artists,tracks where tracks.rowid=? and tracks.artist_id=artists.rowid", (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -122,7 +122,7 @@ class DatabaseTracks:
 	"""
 	def get_performer_name(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT artists.name from artists,tracks where tracks.rowid=? and tracks.performer_id=artists.rowid", (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -137,7 +137,7 @@ class DatabaseTracks:
 	"""
 	def get_artist_id(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT artist_id from tracks where tracks.rowid=?", (track_id,))
 		v = result.fetchone()
 
@@ -152,7 +152,7 @@ class DatabaseTracks:
 	"""
 	def get_performer_id(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT performer_id from tracks where tracks.rowid=?", (track_id,))
 		v = result.fetchone()
 
@@ -167,7 +167,7 @@ class DatabaseTracks:
 	"""
 	def get_path(self, track_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT filepath FROM tracks where rowid=?", (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -182,7 +182,7 @@ class DatabaseTracks:
 	"""
 	def get_paths(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
 		result = sql.execute("SELECT filepath FROM tracks;")
 		for row in result:
@@ -196,7 +196,7 @@ class DatabaseTracks:
 	"""
 	def get_length(self, id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT length FROM tracks where rowid=?", (id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -209,7 +209,7 @@ class DatabaseTracks:
 	"""
 	def is_empty(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
 		v = result.fetchone()
 		if v and len(v) > 0:
@@ -224,7 +224,7 @@ class DatabaseTracks:
 	"""
 	def get_as_non_performer(self, artist_id, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
 		result = sql.execute("SELECT rowid, name FROM tracks where artist_id=?\
 							  and performer_id!=artist_id and performer_id!=?", (artist_id, COMPILATIONS))
@@ -238,7 +238,7 @@ class DatabaseTracks:
 	"""
 	def clean(self, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("DELETE FROM albums WHERE NOT EXISTS (SELECT rowid FROM tracks where albums.rowid = tracks.album_id)")
 		sql.execute("DELETE FROM artists WHERE NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.artist_id)\
                                            AND NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.performer_id)")
@@ -251,9 +251,9 @@ class DatabaseTracks:
 	"""
 	def search(self, string, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		tracks = []
-		result = sql.execute("SELECT rowid, name FROM tracks where name like ? LIMIT 100", ('%'+string+'%',))
+		result = sql.execute("SELECT rowid, name FROM tracks where name like ? LIMIT 25", ('%'+string+'%',))
 		for row in result:
 			tracks += (row,)
 		return tracks
@@ -264,7 +264,7 @@ class DatabaseTracks:
 	"""
 	def remove(self, path, sql = None):
 		if not sql:
-			sql = Objects["sql"]
+			sql = Objects.sql
 		sql.execute("DELETE FROM tracks WHERE filepath=?", (path,))
 	
 #######################

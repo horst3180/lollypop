@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-    <enum id="org.gnome.Lollypop.RepeatType">
-        <value nick="none" value="0"/>
-        <value nick="song" value="1"/>
-        <value nick="all" value="2"/>
-        <value nick="shuffle" value="3"/>
+    <enum id="org.gnome.Lollypop.Shuffle">
+       <value nick="none" value="0"/>
+       <value nick="tracks" value="1"/>
+       <value nick="albums" value="2"/>
     </enum>
     <schema path="/org/gnome/Lollypop/" id="org.gnome.Lollypop" gettext-domain="lollypop">
         <key type="ai" name="window-size">
@@ -66,6 +65,12 @@
             <default>200</default>
             <summary>INTERNAL</summary>
             <description></description>
+        </key>
+        <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
+            <default>'none'</default>
+            <summary>Shuffle mode</summary>
+            <!-- Translators: Don't translate allowed values, just the description in the brackets -->
+            <description>Value identifies whether to shuffle tracks/albums. Allowed values are: "none" (shuffle off), "tracks" (shuffle tracks), "albums" (shuffle albums).</description>
         </key>
     </schema>
 </schemalist>

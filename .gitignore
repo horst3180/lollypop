@@ -55,7 +55,6 @@ libgd/
 /po/Makefile.in
 /po/Makefile.in.in
 /po/POTFILES
-/po/lollypop.pot
 /po/stamp-it
 /so_locations
 /stamp-h1
