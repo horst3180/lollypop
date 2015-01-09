@@ -210,7 +210,7 @@ class AlbumArt:
 		path = Objects.albums.get_name(album_id) + "_" + \
 			   Objects.albums.get_artist_name(album_id) + "_" + \
 			   Objects.albums.get_genre_name(album_id)
-		return path[0:250].replace ("/", "_")
+		return path[0:240].replace ("/", "_")
 
 
 	"""
