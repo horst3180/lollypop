@@ -226,9 +226,13 @@ class Application(Gtk.Application):
 				path = chooser.get_dir()
 				if path and not path in paths:
 					paths.append(path)
+
+		previous = Objects.settings.get_value('music-path')
 		Objects.settings.set_value('music-path', GLib.Variant('as', paths))
 		self._settings_dialog.hide()
 		self._settings_dialog.destroy()
+		if set(previous) != set(paths):
+			self._window.update_db()
 
 	"""
 		Update party ids when use change a switch in dialog
