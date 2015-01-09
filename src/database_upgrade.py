@@ -84,5 +84,5 @@ class DatabaseUpgrade:
 		Add playlists tables
 	"""
 	def _db_add_playlists_tables(self):
-		self._sql.execute('''CREATE TABLE playlists (name TEXT NOT NULL)''')
+		self._sql.execute('''CREATE TABLE playlists (id INTEGER PRIMARY KEY, name TEXT NOT NULL)''')
 		self._sql.execute('''CREATE TABLE playlists_ids (playlist_id INT NOT NULL, track_id INT NOT NULL)''')
