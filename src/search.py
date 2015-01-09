@@ -289,7 +289,9 @@ class SearchWidget(Gtk.Popover):
 		else:
 			self._in_thread = False
 			self._stop_thread = False
-			
+
+		sql.close()
+
 	"""
 		Add a rows recursively
 		@param results as array of SearchObject

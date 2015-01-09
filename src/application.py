@@ -105,7 +105,7 @@ class Application(Gtk.Application):
 	"""
 	def quit(self, action=None, param=None):
 		Objects.player.stop()
-		Objects.sql.execute("VACUUM")
+		Objects.sql.close()
 		self._window.destroy()
 
 #######################
