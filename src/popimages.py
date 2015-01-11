@@ -109,10 +109,11 @@ class PopImages(Gtk.Popover):
 	"""
 	def _add_pixbuf(self, stream):
 		try:
-			pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_MONSTER,
+			stream_pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_MONSTER,
 															   ART_SIZE_MONSTER,
 														       False,
 															   None)
+			pixbuf = Objects.art.make_icon_frame(stream_pixbuf)
 			image = Gtk.Image()
 			self._streams[image] = pixbuf
 			image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG, ART_SIZE_BIG, 2))

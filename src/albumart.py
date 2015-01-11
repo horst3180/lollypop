@@ -151,11 +151,11 @@ class AlbumArt:
 					except:
 						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
-			return self._make_icon_frame(pixbuf, size)
+			return self.make_icon_frame(pixbuf, size)
 			
 		except Exception as e:
 			print(e)
-			return self._make_icon_frame(self._get_default_icon(size), size)
+			return self.make_icon_frame(self._get_default_icon(size), size)
 
 
 	"""
@@ -189,26 +189,12 @@ class AlbumArt:
 			
 		return urls
 
-#######################
-# PRIVATE             #
-#######################
-
-	"""
-		Get a uniq string for album
-		@param: album id as int
-	"""
-	def _get_cache_path(self, album_id):
-		path = Objects.albums.get_name(album_id) + "_" + \
-			   Objects.albums.get_artist_name(album_id) + "_" + \
-			   Objects.albums.get_genre_name(album_id)
-		return path[0:240].replace ("/", "_")
-
 	"""
 		Draw an icon frame around pixbuf, code forked Gnome Music, see copyright header
 		@param: pixbuf source as Gdk.Pixbuf
 		@param: size as int
 	"""
-	def _make_icon_frame(self, pixbuf, size):
+	def make_icon_frame(self, pixbuf, size):
 		border = 4
 		degrees = pi / 180
 		radius = 3
@@ -239,6 +225,21 @@ class AlbumArt:
 	                     border_pixbuf,
 	                     border, border)
 		return border_pixbuf
+
+
+#######################
+# PRIVATE             #
+#######################
+
+	"""
+		Get a uniq string for album
+		@param: album id as int
+	"""
+	def _get_cache_path(self, album_id):
+		path = Objects.albums.get_name(album_id) + "_" + \
+			   Objects.albums.get_artist_name(album_id) + "_" + \
+			   Objects.albums.get_genre_name(album_id)
+		return path[0:240].replace ("/", "_")
 
 	"""
 		Construct an empty cover album, code forked Gnome Music, see copyright header

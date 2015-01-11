@@ -58,8 +58,8 @@ class Application(Gtk.Application):
 		Objects.genres = DatabaseGenres()
 		Objects.tracks = DatabaseTracks()	
 		Objects.player = Player()
-
 		Objects.art = AlbumArt()
+
 		self.add_action(Objects.settings.create_action('shuffle'))
 		self._window = None
 		self._settings_dialog = None
