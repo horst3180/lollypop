@@ -119,7 +119,7 @@ class AlbumArt:
 				else:
 					try:
 						for track_id in Objects.albums.get_tracks(album_id):
-							pixbuf = self._pixbuf_from_tags(track_id)
+							pixbuf = self._pixbuf_from_tags(track_id, size)
 							# We found a cover in tags
 							if pixbuf:
 								break
@@ -217,9 +217,10 @@ class AlbumArt:
 #######################
 	"""
 		Return cover from tags
-		@param track id as int 
+		@param track id as int
+		@param size as int
 	"""
-	def _pixbuf_from_tags(self, track_id):
+	def _pixbuf_from_tags(self, track_id, size):
 		pixbuf = None
 		filepath = Objects.tracks.get_path(track_id)
 		filetag = Idtag(filepath, easy = False)
@@ -234,6 +235,7 @@ class AlbumArt:
 										      					   False,
 										  						   None)
 			elif tag == "covr":
+					data = filetag.tags["covr"]
 					if len(data) > 0:
 						stream = Gio.MemoryInputStream.new_from_data(data[0], None)
 						pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
