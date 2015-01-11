@@ -227,7 +227,7 @@ class AlbumArt:
 
 
 		# No border on small covers, looks ugly
-		if size < ART_SIZE_BIG or not Objects.settings.get_value('styled-covers'):
+		if size < ART_SIZE_BIG or not Objects.settings.get_value('stylized-covers'):
 			return pixbuf
 
 		border = 3
@@ -272,7 +272,7 @@ class AlbumArt:
 				                      icon.get_bits_per_sample(),
 				                      size,
 				                      size)
-		result.fill(0x4c4c4cff)
+		result.fill(0xffffffff)
 		icon.composite(result,
 				       icon_size * 3 / 2,
 				       icon_size * 3 / 2,
