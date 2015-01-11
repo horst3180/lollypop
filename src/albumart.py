@@ -155,7 +155,7 @@ class AlbumArt:
 			
 		except Exception as e:
 			print(e)
-			return self._get_default_icon(size)
+			return self._make_icon_frame(self._get_default_icon(size), size)
 
 
 	"""
