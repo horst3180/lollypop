@@ -30,11 +30,15 @@ class DatabaseTracks:
 	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql = None):
 		if not sql:
 			sql = Objects.sql
-		sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
-					discnumber, artist_id, performer_id, album_id, mtime) VALUES\
-					(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
-					(name, filepath, length, tracknumber, discnumber,\
-					artist_id, performer_id, album_id, mtime))
+		# Invalid encoding in filenames may raise an exception
+		try:
+			sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
+						discnumber, artist_id, performer_id, album_id, mtime) VALUES\
+						(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
+						(name, filepath, length, tracknumber, discnumber,\
+						artist_id, performer_id, album_id, mtime))
+		except:
+			pass
 		
 		
 	"""
