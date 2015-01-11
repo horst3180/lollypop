@@ -125,7 +125,7 @@ class AlbumArt:
 								break
 					except Exception as e:
 						print(e)
-						return self.make_icon_frame(self._get_default_icon(size), size)
+						return self._make_icon_frame(self._get_default_icon(size), size)
 
 				# No cover, use default one
 				if not pixbuf:
@@ -136,11 +136,11 @@ class AlbumArt:
 				except:
 					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
-			return self.make_icon_frame(pixbuf, size)
+			return self._make_icon_frame(pixbuf, size)
 			
 		except Exception as e:
 			print(e)
-			return self.make_icon_frame(self._get_default_icon(size), size)
+			return self._make_icon_frame(self._get_default_icon(size), size)
 
 
 	"""
@@ -148,7 +148,7 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		path = self._get_cache_path()
+		path = self._get_cache_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			os.remove(CACHE_PATH_JPG)
@@ -173,44 +173,6 @@ class AlbumArt:
 			urls.append(item['url'])
 			
 		return urls
-
-	"""
-		Draw an icon frame around pixbuf, code forked Gnome Music, see copyright header
-		@param: pixbuf source as Gdk.Pixbuf
-		@param: size as int
-	"""
-	def make_icon_frame(self, pixbuf, size):
-		border = 3
-		degrees = pi / 180
-		radius = 3
-
-		# No border on small covers, looks ugly
-		if (size < ART_SIZE_BIG):
-			return pixbuf
-
-		surface_size = size + border * 2
-		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, surface_size, surface_size)
-		ctx = cairo.Context(surface)
-		ctx.new_sub_path()
-		ctx.arc(surface_size - radius, radius, radius - 0.5, -90 * degrees, 0 * degrees)
-		ctx.arc(surface_size - radius, surface_size - radius, radius - 0.5, 0 * degrees, 90 * degrees)
-		ctx.arc(radius, surface_size - radius, radius - 0.5, 90 * degrees, 180 * degrees)
-		ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
-		ctx.close_path()
-		ctx.set_line_width(0.6)
-		ctx.set_source_rgb(0.2, 0.2, 0.2)
-		ctx.stroke_preserve()
-		ctx.set_source_rgb(1, 1, 1)
-		ctx.fill()
-		border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface_size, surface_size)
-
-		pixbuf.copy_area(0, 0,
-	                     size,
-	                     size,
-	                     border_pixbuf,
-	                     border, border)
-		return border_pixbuf
-
 
 #######################
 # PRIVATE             #
@@ -255,12 +217,50 @@ class AlbumArt:
 			   Objects.albums.get_genre_name(album_id)
 		return path[0:240].replace ("/", "_")
 
+
+	"""
+		Draw an icon frame around pixbuf, code forked Gnome Music, see copyright header
+		@param: pixbuf source as Gdk.Pixbuf
+		@param: size as int
+	"""
+	def _make_icon_frame(self, pixbuf, size):
+		border = 3
+		degrees = pi / 180
+		radius = 3
+
+		# No border on small covers, looks ugly
+		if (size < ART_SIZE_BIG):
+			return pixbuf
+
+		surface_size = size + border * 2
+		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, surface_size, surface_size)
+		ctx = cairo.Context(surface)
+		ctx.new_sub_path()
+		ctx.arc(surface_size - radius, radius, radius - 0.5, -90 * degrees, 0 * degrees)
+		ctx.arc(surface_size - radius, surface_size - radius, radius - 0.5, 0 * degrees, 90 * degrees)
+		ctx.arc(radius, surface_size - radius, radius - 0.5, 90 * degrees, 180 * degrees)
+		ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
+		ctx.close_path()
+		ctx.set_line_width(0.6)
+		ctx.set_source_rgb(0.2, 0.2, 0.2)
+		ctx.stroke_preserve()
+		ctx.set_source_rgb(1, 1, 1)
+		ctx.fill()
+		border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface_size, surface_size)
+
+		pixbuf.copy_area(0, 0,
+	                     size,
+	                     size,
+	                     border_pixbuf,
+	                     border, border)
+		return border_pixbuf
+
+
 	"""
 		Construct an empty cover album, code forked Gnome Music, see copyright header
 		@param size as int
 		@return pixbuf as Gdk.Pixbuf
-	"""
-	
+	"""	
 	def _get_default_icon(self, size):
 		# get a small pixbuf with the given path
 		icon_size = size / 4
