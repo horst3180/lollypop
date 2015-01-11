@@ -1,5 +1,11 @@
 #!/usr/bin/python
 # Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2013 Vadim Rutkovsky <vrutkovs@redhat.com>
+# Copyright (c) 2013 Arnel A. Borja <kyoushuu@yahoo.com>
+# Copyright (c) 2013 Seif Lotfy <seif@lotfy.com>
+# Copyright (c) 2013 Guillaume Quintard <guillaume.quintard@gmail.com>
+# Copyright (c) 2013 Lubosz Sarnecki <lubosz@gmail.com>
+# Copyright (c) 2013 Sai Suman Prayaga <suman.sai14@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -51,11 +57,8 @@ class AlbumArt:
 	def get_path(self, album_id, size):
 		path = self._get_cache_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			return CACHE_PATH_JPG
-		elif os.path.exists(CACHE_PATH_PNG):
-			return CACHE_PATH_PNG
 		else:
 			self.get(album_id, size)
 			return self.get_path(album_id, size)
@@ -91,23 +94,19 @@ class AlbumArt:
 		    pass
 	
 	"""
-		Return pixbuf for album_id
-		covers are cached as jpg. Default cover as png to keep alpha channel
+		Return pixbuf for album_id,	covers are cached as jpg.
 		@param album id as int, pixbuf size as int
 		return: pixbuf
 	"""
 	def get(self, album_id, size):
 		path = self._get_cache_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		cached = True
 		pixbuf = None
+
 		try:
 			if os.path.exists(CACHE_PATH_JPG):
 				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_JPG,
-																	 size, size)
-			elif os.path.exists(CACHE_PATH_PNG):
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_PNG,
 																	 size, size)
 			else:
 				path = self.get_art_path(album_id)
@@ -145,23 +144,18 @@ class AlbumArt:
 						pass
 
 					if not pixbuf:
-						pixbuf = self._get_default_art(album_id, size)
-						# Save as png to keep alpha channel
-						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-							pixbuf.save(CACHE_PATH_PNG, "png", [], [])
-						except:
-							pixbuf.savev(CACHE_PATH_PNG, "png", [], [])
-					else:
-						try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-							pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-						except:
-							pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+						pixbuf = self._get_default_icon(size)
+					
+					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+					except:
+						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
-			return pixbuf
+			return self._make_icon_frame(pixbuf, size)
 			
 		except Exception as e:
 			print(e)
-			return self._get_default_art(album_id, size)
+			return self._get_default_icon(size)
 
 
 	"""
@@ -171,11 +165,8 @@ class AlbumArt:
 	def clean_cache(self, album_id, size):
 		path = self._get_cache_path()
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
-		CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			os.remove(CACHE_PATH_JPG)
-		if os.path.exists(CACHE_PATH_PNG):
-			os.remove(CACHE_PATH_PNG)
 
 	"""
 		Get arts on google image corresponding to search
@@ -212,70 +203,68 @@ class AlbumArt:
 			   Objects.albums.get_genre_name(album_id)
 		return path[0:240].replace ("/", "_")
 
+	"""
+		Draw an icon frame around pixbuf, code forked Gnome Music, see copyright header
+		@param: pixbuf source as Gdk.Pixbuf
+		@param: size as int
+	"""
+	def _make_icon_frame(self, pixbuf, size):
+		border = 4
+		degrees = pi / 180
+		radius = 3
+
+		# No border on small covers, looks ugly
+		if (size < ART_SIZE_BIG):
+			return pixbuf
+
+		surface_size = size + border * 2
+		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, surface_size, surface_size)
+		ctx = cairo.Context(surface)
+		ctx.new_sub_path()
+		ctx.arc(surface_size - radius, radius, radius - 0.5, -90 * degrees, 0 * degrees)
+		ctx.arc(surface_size - radius, surface_size - radius, radius - 0.5, 0 * degrees, 90 * degrees)
+		ctx.arc(radius, surface_size - radius, radius - 0.5, 90 * degrees, 180 * degrees)
+		ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
+		ctx.close_path()
+		ctx.set_line_width(0.6)
+		ctx.set_source_rgb(0.2, 0.2, 0.2)
+		ctx.stroke_preserve()
+		ctx.set_source_rgb(1, 1, 1)
+		ctx.fill()
+		border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface_size, surface_size)
+
+		pixbuf.copy_area(0, 0,
+	                     size,
+	                     size,
+	                     border_pixbuf,
+	                     border, border)
+		return border_pixbuf
 
 	"""
-		Construct an empty cover album
-		@param album id as int
-		@param pixbuf size as int
-		@return pixbuf
+		Construct an empty cover album, code forked Gnome Music, see copyright header
+		@param size as int
+		@return pixbuf as Gdk.Pixbuf
 	"""
-	def _get_default_art(self, album_id, size):
-		album_name = Objects.albums.get_name(album_id)
-		artist_id = Objects.albums.get_artist_id(album_id)
-		artist_name = Objects.artists.get_name(artist_id)
-		center = size / 2
-		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
-		ctx = cairo.Context(surface)
-		ctx.save()
-		ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0)
-		ctx.move_to(0, 0)
-		ctx.rectangle(0, 0, size, size)
-		ctx.fill()
-		ctx.save()
-		ctx.arc(center, center, size/2, 0.0, 2.0 * pi);
-		ctx.set_source_rgba(0.0, 0.0, 0.0, 1.0)
-		ctx.fill()
-		ctx.restore()
-		ctx.save()
-		r = uniform(0.05, 0.9)
-		g = uniform(0.05, 0.9)
-		b = uniform(0.05, 0.9)
-		ctx.arc(center, center, size/6.5, 0.0, 2.0 * pi);
-		ctx.set_source_rgba(r, g ,b, 0.8)
-		ctx.fill()
-		ctx.restore()
-		ctx.save()
-		ctx.arc(center, center, size/70, 0.0, 2.0 * pi);
-		ctx.set_source_rgba(1, 1, 1, 1)
-		ctx.fill()
-		ctx.restore()
-		ctx.save()
-		ctx.set_source_rgba(1, 1, 1, 0.2)
-		ctx.set_line_width(1)
-		circle_size = size/6.5
-		while circle_size < size/2:
-			ctx.arc(center, center, circle_size, 0.0, 2.0 * pi);
-			ctx.stroke()
-			circle_size += 2
-		ctx.restore()
-		ctx.save()
-		layout = PangoCairo.create_layout(ctx)
-		layout.set_width(size/6.5*Pango.SCALE)
-		layout.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-		layout.set_markup('''<span foreground="white" font_desc="Sans %s">%s</span>''' % (size/60, escape(artist_name)))
-		string_width = layout.get_size()[0]/Pango.SCALE
-		string_height = layout.get_size()[1]/Pango.SCALE
-		ctx.move_to(center - string_width/2, center - 10 - string_height)
-		PangoCairo.show_layout(ctx, layout)
-		ctx.restore()
-		ctx.save()
-		layout = PangoCairo.create_layout(ctx)
-		layout.set_width(size/6.5*Pango.SCALE)
-		layout.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-		layout.set_markup('''<span foreground="white" font_desc="Sans %s">%s</span>''' % (size/60, escape(album_name)))
-		string_width = layout.get_size()[0]/Pango.SCALE
-		string_height = layout.get_size()[1]/Pango.SCALE
-		ctx.move_to(center - string_width/2, center + 10 - string_height/2)
-		PangoCairo.show_layout(ctx, layout)
-		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
+	
+	def _get_default_icon(self, size):
+		# get a small pixbuf with the given path
+		icon_size = size / 4
+		icon = Gtk.IconTheme.get_default().load_icon('folder-music-symbolic', icon_size, 0)
+		# create an empty pixbuf with the requested size
+		result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
+				                      True,
+				                      icon.get_bits_per_sample(),
+				                      size,
+				                      size)
+		result.fill(0x4c4c4cff)
+		icon.composite(result,
+				       icon_size * 3 / 2,
+				       icon_size * 3 / 2,
+				       icon_size,
+				       icon_size,
+				       icon_size * 3 / 2,
+				       icon_size * 3 / 2,
+				       1, 1,
+				       GdkPixbuf.InterpType.NEAREST, 255)
+		return result
 
