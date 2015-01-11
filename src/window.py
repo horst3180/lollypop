@@ -212,6 +212,7 @@ class Window(Gtk.ApplicationWindow):
 		vgrid.add(self._progress)
 		vgrid.show()
 
+		# Only set headerbar on Gnome Shell and Pantheon Shell
 		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
 		if DESKTOP and ("GNOME" in DESKTOP or "Pantheon" in DESKTOP):
 			self.set_titlebar(self._toolbar.header_bar)
