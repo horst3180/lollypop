@@ -132,11 +132,14 @@ class Application(Gtk.Application):
 		switch_scan.set_state(Objects.settings.get_value('startup-scan'))
 		switch_view = builder.get_object('switch_view')
 		switch_view.set_state(Objects.settings.get_value('dark-view'))
+		switch_styled = builder.get_object('switch_styled')
+		switch_styled.set_state(Objects.settings.get_value('styled-covers'))
 		switch_background = builder.get_object('switch_background')
 		switch_background.set_state(Objects.settings.get_value('background-mode'))
 		close_button = builder.get_object('close_btn')
 		switch_scan.connect('state-set', self._update_scan_setting)
 		switch_view.connect('state-set', self._update_view_setting)
+		switch_styled.connect('state-set', self._update_styled_setting)
 		switch_background.connect('state-set', self._update_background_setting)
 		close_button.connect('clicked', self._edit_settings_close)
 		main_chooser_box = builder.get_object('main_chooser_box')
@@ -176,6 +179,8 @@ class Application(Gtk.Application):
 		x = 0
 		for genre_id, genre in genres:
 			label = Gtk.Label()
+			label.set_property('margin-start', 10)
+			label.set_property('halign', Gtk.Align.START)
 			label.set_text(genre)
 			switch = Gtk.Switch()
 			if genre_id in ids:
@@ -225,6 +230,13 @@ class Application(Gtk.Application):
 	"""
 	def _update_background_setting(self, widget, state):
 		Objects.settings.set_value('background-mode',  GLib.Variant('b', state))
+	
+	"""
+		Update styled covers setting
+		@param widget as unused, state as widget state
+	"""
+	def _update_styled_setting(self, widget, state):
+		Objects.settings.set_value('styled-covers',  GLib.Variant('b', state))
 
 	"""
 		Close edit party dialog

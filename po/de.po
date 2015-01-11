@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Mark Gerlach, 2015
 # Noah Hüsser <yatekii@yatekii.ch>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-05 17:36+0100\n"
-"PO-Revision-Date: 2015-01-06 10:31+0000\n"
-"Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
+"PO-Revision-Date: 2015-01-09 14:54+0000\n"
+"Last-Translator: Noah Hüsser <yatekii@yatekii.ch>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,7 +85,7 @@ msgstr "INTERN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Shuffle mode"
-msgstr ""
+msgstr "Zufallsmodus"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
@@ -93,7 +94,7 @@ msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
 "albums)."
-msgstr ""
+msgstr "Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks\" (zufälliger Titel), \"albums\" (zufälliges Album)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/window.py:35
@@ -170,7 +171,7 @@ msgstr "Laden, bitte warten..."
 
 #: ../src/popmenu.py:56
 msgid "Only play this album"
-msgstr ""
+msgstr "Spiele nur dieses Album"
 
 #: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
@@ -236,15 +237,15 @@ msgstr "_Beenden"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
-msgstr ""
+msgstr "Kein Zufall"
 
 #: ../data/headerbar.ui.h:2
 msgid "Shuffle albums"
-msgstr ""
+msgstr "Zufälliges Album"
 
 #: ../data/headerbar.ui.h:3
 msgid "Shuffle tracks"
-msgstr ""
+msgstr "Zufälliger Titel"
 
 #: ../data/headerbar.ui.h:7
 msgid "Shuffle"

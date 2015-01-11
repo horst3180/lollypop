@@ -224,14 +224,15 @@ class AlbumArt:
 		@param: size as int
 	"""
 	def _make_icon_frame(self, pixbuf, size):
+
+
+		# No border on small covers, looks ugly
+		if size < ART_SIZE_BIG or not Objects.settings.get_value('styled-covers'):
+			return pixbuf
+
 		border = 3
 		degrees = pi / 180
 		radius = 3
-
-		# No border on small covers, looks ugly
-		if (size < ART_SIZE_BIG):
-			return pixbuf
-
 		surface_size = size + border * 2
 		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, surface_size, surface_size)
 		ctx = cairo.Context(surface)
