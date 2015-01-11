@@ -38,6 +38,8 @@ class AlbumWidget(Gtk.Grid):
 		Gtk.Grid.__init__(self)
 		self._album_id = album_id
 
+		self.set_property("margin", 5)
+
 		self.set_orientation(Gtk.Orientation.VERTICAL)
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
@@ -96,6 +98,8 @@ class ArtistWidget(Gtk.Grid):
 	"""
 	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group):
 		Gtk.Grid.__init__(self)
+		self.set_property("margin", 5)
+
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
 		
