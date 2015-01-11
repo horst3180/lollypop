@@ -105,42 +105,29 @@ class AlbumArt:
 		pixbuf = None
 
 		try:
+			# Look in cache
 			if os.path.exists(CACHE_PATH_JPG):
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_JPG,
-																	 size, size)
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_JPG,
+																size, size)
 			else:
 				path = self.get_art_path(album_id)
+				# Look in album folder
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
+				# Try to get from tags
 				else:
-					# Try to get from tags
 					try:
 						for track_id in Objects.albums.get_tracks(album_id):
-							filepath = Objects.tracks.get_path(track_id)
-							filetag = Idtag(filepath, easy = False)
-							for tag in filetag.tags:
-								if tag.startswith("APIC:"):
-									audiotag = filetag.tags[tag]
-									# TODO check type by pref
-									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
-									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
-																					   size,
-																   					   size,
-															      					   False,
-															  						   None)
-								elif tag == "covr":
-									for data in filetag.tags["covr"]:
-										stream = Gio.MemoryInputStream.new_from_data(data, None)
-										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
-																						   size,
-																   						   size,
-															      						   False,
-																  						   None)
+							pixbuf = self._pixbuf_from_tags(track_id)
+							# We found a cover in tags
+							if pixbuf:
+								break
 					except Exception as e:
 						print(e)
 						return self.make_icon_frame(self._get_default_icon(size), size)
 
+				# No cover, use default one
 				if not pixbuf:
 					pixbuf = self._get_default_icon(size)
 				
@@ -193,7 +180,7 @@ class AlbumArt:
 		@param: size as int
 	"""
 	def make_icon_frame(self, pixbuf, size):
-		border = 4
+		border = 3
 		degrees = pi / 180
 		radius = 3
 
@@ -228,10 +215,37 @@ class AlbumArt:
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Return cover from tags
+		@param track id as int 
+	"""
+	def _pixbuf_from_tags(self, track_id):
+		pixbuf = None
+		filepath = Objects.tracks.get_path(track_id)
+		filetag = Idtag(filepath, easy = False)
+		for tag in filetag.tags:
+			if tag.startswith("APIC:"):
+				audiotag = filetag.tags[tag]
+				# TODO check type by pref
+				stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+				pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																   size,
+											   					   size,
+										      					   False,
+										  						   None)
+			elif tag == "covr":
+					if len(data) > 0:
+						stream = Gio.MemoryInputStream.new_from_data(data[0], None)
+						pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																		   size,
+												   						   size,
+											      						   False,
+												  						   None)
+		return pixbuf
 
 	"""
 		Get a uniq string for album
-		@param: album id as int
+		@param album id as int
 	"""
 	def _get_cache_path(self, album_id):
 		path = Objects.albums.get_name(album_id) + "_" + \
