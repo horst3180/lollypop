@@ -113,10 +113,6 @@ class AlbumArt:
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-					except:
-						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				else:
 					# Try to get from tags
 					try:
@@ -128,28 +124,30 @@ class AlbumArt:
 									audiotag = filetag.tags[tag]
 									# TODO check type by pref
 									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
-									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
-																   							size,
-															      							False,
-																  							None)
+									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																					   size,
+																   					   size,
+															      					   False,
+															  						   None)
 								elif tag == "covr":
 									for data in filetag.tags["covr"]:
 										stream = Gio.MemoryInputStream.new_from_data(data, None)
-										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
-																   							size,
-															      							False,
-																  							None)
+										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																						   size,
+																   						   size,
+															      						   False,
+																  						   None)
 					except Exception as e:
 						print(e)
-						pass
+						return self.make_icon_frame(self._get_default_icon(size), size)
 
-					if not pixbuf:
-						pixbuf = self._get_default_icon(size)
-					
-					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-					except:
-						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				if not pixbuf:
+					pixbuf = self._get_default_icon(size)
+				
+				try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+					pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				except:
+					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
 			return self.make_icon_frame(pixbuf, size)
 			
