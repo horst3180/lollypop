@@ -360,8 +360,10 @@ class DatabaseAlbums:
 			sql = Objects.sql
 		albums = []
 		result = []
+		# Get all compilations
 		if genre_id == ALL or not genre_id:
 			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.name, albums.year")
+		# Get compilation for genre id
 		else:
 			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.name, albums.year", (genre_id,))
 		for row in result:
