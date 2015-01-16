@@ -157,8 +157,12 @@ class CollectionScanner(GObject.GObject):
 		else:
 			artist = "Unknown"
 
-		if "performer" in keys:
-			performer = format_artist_name(tag["performer"][0])	
+		# Vorbis comment uses albumartist for original artist
+		# Id3tag uses performer for original artist
+		if "albumartist" in keys:
+			performer = format_artist_name(tag["albumartist"][0])
+		elif "performer" in keys:
+			performer = format_artist_name(tag["performer"][0])
 		else:
 			performer = None
 
