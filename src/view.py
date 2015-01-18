@@ -303,7 +303,7 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		self._context_widget = ArtistWidget(album_id, self._genre_id, False, True, None)
+		self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True, None)
 		self._context_widget.show()			
 		view = Gtk.ScrolledWindow()
 		view.set_min_content_height(250)
