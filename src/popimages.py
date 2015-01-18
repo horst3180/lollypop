@@ -29,7 +29,6 @@ class PopImages(Gtk.Popover):
 		Gtk.Popover.__init__(self)
 		
 		self._album_id = album_id
-		self._streams = {}
 
 		self._view = Gtk.FlowBox()
 		self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -110,16 +109,16 @@ class PopImages(Gtk.Popover):
 	def _add_pixbuf(self, stream):
 		try:
 			pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_MONSTER,
-															   ART_SIZE_MONSTER,
-														       False,
-															   None)
+																	  ART_SIZE_MONSTER,
+																	  False,
+																	  None)
 			image = Gtk.Image()
-			self._streams[image] = pixbuf
 			image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG, ART_SIZE_BIG, 2))
 			image.show()
 			self._view.add(image)
-		except:
-			pass #Format error
+		except Exception as e:
+			print(e)
+			pass
 		
 	"""
 		Use pixbuf as cover
@@ -138,8 +137,12 @@ class PopImages(Gtk.Popover):
 					os.remove(album_path+"/folder.jpg")
 			else:
 				artpath = album_path+"/folder.jpg"
-			pixbuf = self._streams[child.get_child()]
-			pixbuf.savev(artpath, "jpeg", [], [])
+			# Flowboxitem => image =>  pixbuf
+			pixbuf = child.get_child().get_pixbuf()
+			try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+				pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
+			except:
+				pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
 			Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
 			Objects.art.clean_cache(self._album_id, ART_SIZE_MEDIUM)
 			Objects.art.clean_cache(self._album_id, ART_SIZE_BIG)

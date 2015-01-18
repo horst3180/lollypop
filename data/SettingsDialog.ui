@@ -36,6 +36,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
+                    <property name="margin_left">5</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Darken views</property>
                     <property name="ellipsize">end</property>
@@ -50,6 +51,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
+                    <property name="margin_left">5</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Update music on startup</property>
                   </object>
@@ -83,6 +85,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
+                    <property name="margin_left">5</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Continue playback when closed</property>
                   </object>

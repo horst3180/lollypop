@@ -330,12 +330,16 @@ class DatabaseAlbums:
 			sql = Objects.sql
 		albums = []
 		result = []
+		# Get albums for artist id and genre id
 		if artist_id and genre_id:
 			result = sql.execute("SELECT rowid FROM albums WHERE artist_id=? and genre_id=? ORDER BY year, name", (artist_id, genre_id))
+		# Get albums for all artists
 		elif not artist_id and not genre_id:
 			result = sql.execute("SELECT albums.rowid FROM albums,artists  WHERE artists.rowid=albums.artist_id ORDER BY artists.name COLLATE NOCASE, albums.year")
+		# Get albums for genre
 		elif not artist_id:
 			result = sql.execute("SELECT albums.rowid FROM albums, artists WHERE genre_id=? and artists.rowid=artist_id ORDER BY artists.name COLLATE NOCASE, albums.year", (genre_id,))
+		# Get albums for artist
 		elif not genre_id:
 			result = sql.execute("SELECT DISTINCT rowid FROM albums WHERE artist_id=? GROUP BY name ORDER BY year, name", (artist_id,))
 			
@@ -357,10 +361,12 @@ class DatabaseAlbums:
 			sql = Objects.sql
 		albums = []
 		result = []
+		# Get all compilations
 		if genre_id == ALL or not genre_id:
-			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.year, albums.name")
+			result = sql.execute("SELECT albums.rowid FROM albums WHERE artist_id=-1 ORDER BY albums.name, albums.year")
+		# Get compilation for genre id
 		else:
-			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.year, albums.name", (genre_id,))
+			result = sql.execute("SELECT albums.rowid FROM albums WHERE genre_id=? and artist_id=-1 ORDER BY albums.name, albums.year", (genre_id,))
 		for row in result:
 			albums += row
 		return albums

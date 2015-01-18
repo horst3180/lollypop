@@ -105,57 +105,42 @@ class AlbumArt:
 		pixbuf = None
 
 		try:
+			# Look in cache
 			if os.path.exists(CACHE_PATH_JPG):
-				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size (CACHE_PATH_JPG,
-																	 size, size)
+				pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_JPG,
+																size, size)
 			else:
 				path = self.get_art_path(album_id)
+				# Look in album folder
 				if path:
 					pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale (path,
 																	  size, size, False)
-					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-					except:
-						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				# Try to get from tags
 				else:
-					# Try to get from tags
 					try:
 						for track_id in Objects.albums.get_tracks(album_id):
-							filepath = Objects.tracks.get_path(track_id)
-							filetag = Idtag(filepath, easy = False)
-							for tag in filetag.tags:
-								if tag.startswith("APIC:"):
-									audiotag = filetag.tags[tag]
-									# TODO check type by pref
-									stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
-									pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
-																   							size,
-															      							False,
-																  							None)
-								elif tag == "covr":
-									for data in filetag.tags["covr"]:
-										stream = Gio.MemoryInputStream.new_from_data(data, None)
-										pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, size,
-																   							size,
-															      							False,
-																  							None)
+							pixbuf = self._pixbuf_from_tags(track_id, size)
+							# We found a cover in tags
+							if pixbuf:
+								break
 					except Exception as e:
 						print(e)
-						pass
+						return self._make_icon_frame(self._get_default_icon(size), size)
 
-					if not pixbuf:
-						pixbuf = self._get_default_icon(size)
-					
-					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-					except:
-						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				# No cover, use default one
+				if not pixbuf:
+					pixbuf = self._get_default_icon(size)
+				
+				try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+					pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				except:
+					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
 			return self._make_icon_frame(pixbuf, size)
 			
 		except Exception as e:
 			print(e)
-			return self._get_default_icon(size)
+			return self._make_icon_frame(self._get_default_icon(size), size)
 
 
 	"""
@@ -163,7 +148,7 @@ class AlbumArt:
 		@param album id as int, size as int
 	"""
 	def clean_cache(self, album_id, size):
-		path = self._get_cache_path()
+		path = self._get_cache_path(album_id)
 		CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
 		if os.path.exists(CACHE_PATH_JPG):
 			os.remove(CACHE_PATH_JPG)
@@ -192,10 +177,39 @@ class AlbumArt:
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Return cover from tags
+		@param track id as int
+		@param size as int
+	"""
+	def _pixbuf_from_tags(self, track_id, size):
+		pixbuf = None
+		filepath = Objects.tracks.get_path(track_id)
+		filetag = Idtag(filepath, easy = False)
+		for tag in filetag.tags:
+			if tag.startswith("APIC:"):
+				audiotag = filetag.tags[tag]
+				# TODO check type by pref
+				stream = Gio.MemoryInputStream.new_from_data(audiotag.data, None)
+				pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																   size,
+											   					   size,
+										      					   False,
+										  						   None)
+			elif tag == "covr":
+					data = filetag.tags["covr"]
+					if len(data) > 0:
+						stream = Gio.MemoryInputStream.new_from_data(data[0], None)
+						pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, 
+																		   size,
+												   						   size,
+											      						   False,
+												  						   None)
+		return pixbuf
 
 	"""
 		Get a uniq string for album
-		@param: album id as int
+		@param album id as int
 	"""
 	def _get_cache_path(self, album_id):
 		path = Objects.albums.get_name(album_id) + "_" + \
@@ -203,20 +217,22 @@ class AlbumArt:
 			   Objects.albums.get_genre_name(album_id)
 		return path[0:240].replace ("/", "_")
 
+
 	"""
 		Draw an icon frame around pixbuf, code forked Gnome Music, see copyright header
 		@param: pixbuf source as Gdk.Pixbuf
 		@param: size as int
 	"""
 	def _make_icon_frame(self, pixbuf, size):
-		border = 4
-		degrees = pi / 180
-		radius = 3
+
 
 		# No border on small covers, looks ugly
-		if (size < ART_SIZE_BIG):
+		if size < ART_SIZE_BIG or not Objects.settings.get_value('stylized-covers'):
 			return pixbuf
 
+		border = 3
+		degrees = pi / 180
+		radius = 3
 		surface_size = size + border * 2
 		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, surface_size, surface_size)
 		ctx = cairo.Context(surface)
@@ -240,12 +256,12 @@ class AlbumArt:
 	                     border, border)
 		return border_pixbuf
 
+
 	"""
 		Construct an empty cover album, code forked Gnome Music, see copyright header
 		@param size as int
 		@return pixbuf as Gdk.Pixbuf
-	"""
-	
+	"""	
 	def _get_default_icon(self, size):
 		# get a small pixbuf with the given path
 		icon_size = size / 4
@@ -256,7 +272,7 @@ class AlbumArt:
 				                      icon.get_bits_per_sample(),
 				                      size,
 				                      size)
-		result.fill(0x4c4c4cff)
+		result.fill(0xffffffff)
 		icon.composite(result,
 				       icon_size * 3 / 2,
 				       icon_size * 3 / 2,

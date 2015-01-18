@@ -58,8 +58,8 @@ class Application(Gtk.Application):
 		Objects.tracks = DatabaseTracks()	
 		Objects.playlists = DatabasePlaylists()
 		Objects.player = Player()
-
 		Objects.art = AlbumArt()
+
 		self.add_action(Objects.settings.create_action('shuffle'))
 		self._window = None
 		self._settings_dialog = None
@@ -176,6 +176,8 @@ class Application(Gtk.Application):
 		x = 0
 		for genre_id, genre in genres:
 			label = Gtk.Label()
+			label.set_property('margin-start', 10)
+			label.set_property('halign', Gtk.Align.START)
 			label.set_text(genre)
 			switch = Gtk.Switch()
 			if genre_id in ids:
