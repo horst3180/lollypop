@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
+from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango, TotemPlParser
 from gettext import gettext as _, ngettext 
 
 import os
@@ -33,6 +33,7 @@ class PlaylistsManager:
 
 	def __init__(self):
 		self._playlists = [] #Cache
+		self._parser = TotemPlParser.Parser()
 		# Create playlists directory if missing
 		if not os.path.exists(self.PLAYLISTS_PATH):
 			try:
@@ -62,7 +63,11 @@ class PlaylistsManager:
 		@return array of track id as int
 	"""
 	def get_tracks(self, playlist):
-		return []
+		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+playlist)
+		tracks = []
+		if self._parser.can_parse_from_uri(playlist_path, False):
+			pass
+		return tracks
 
 	"""
 		Add track to playlist
@@ -70,7 +75,8 @@ class PlaylistsManager:
 		@param playlist name as str
 	"""
 	def add_track(self, track_id, playlist):
-		pass
+		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+playlist)
+		path = Object.tracks.get_path(track_id)
 
 	"""
 		Remove track from playlist

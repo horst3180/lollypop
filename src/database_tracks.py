@@ -58,6 +58,21 @@ class DatabaseTracks:
 		return ""
 
 	"""
+		Get track path for track id
+		@param Track id as int
+		@return Path as string
+	"""
+	def get_path(self, track_id, sql = None):
+		if not sql:
+			sql = Objects.sql
+		result = sql.execute("SELECT filepath FROM tracks where rowid=?", (track_id,))
+		v = result.fetchone()
+		if v and len(v) > 0:
+			return v[0]
+
+		return ""
+
+	"""
 		Get album id for track id
 		@param track id as int
 		@return album id as int
