@@ -79,9 +79,9 @@ class AlbumWidget(Gtk.Grid):
 
 
 """
-	Artist Widget is a pixbuf with album name and tracks list
+	Album detailed Widget is a pixbuf with album name and tracks list
 """
-class ArtistWidget(Gtk.Grid):
+class AlbumDetailedWidget(Gtk.Grid):
 
 	"""
 		Init album widget songs ui with a complex grid:
@@ -101,7 +101,7 @@ class ArtistWidget(Gtk.Grid):
 		self.set_property("margin", 5)
 
 		self._ui = Gtk.Builder()
-		self._ui.add_from_resource('/org/gnome/Lollypop/ArtistWidget.ui')
+		self._ui.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
 		
 		self._artist_id = Objects.albums.get_artist_id(album_id)
 		self._album_id = album_id
@@ -124,7 +124,7 @@ class ArtistWidget(Gtk.Grid):
 		self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
 		self._ui.get_object('title').set_label(Objects.albums.get_name(album_id))
 		self._ui.get_object('year').set_label(Objects.albums.get_year(album_id))
-		self.add(self._ui.get_object('ArtistWidget'))
+		self.add(self._ui.get_object('AlbumDetailedWidget'))
 
 		if popover:
 			self.eventbox = self._ui.get_object('eventbox')
@@ -220,6 +220,23 @@ class ArtistWidget(Gtk.Grid):
 		popover.populate(artist + " " + album)
 		popover.show()
 
+
+"""
+	Playlist Widget is a grid with playlist title and a flowbox of album covers
+"""
+class PlaylistWidget(Gtk.Grid):
+	"""
+		Init playlist widget
+		@param playlist id as int
+	"""
+	def __init__(self):
+		Gtk.Grid.__init__(self)
+		self.set_property("orientation", Gtk.Orientation.VERTICAL)
+		self.set_property("margin", 5)
+
+		self._ui = Gtk.Builder()
+		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
+		
 
 """
 	Widget used to let user select a collection folder

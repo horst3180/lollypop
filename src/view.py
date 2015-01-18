@@ -195,7 +195,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0 and not self._stop:
-			widget = ArtistWidget(albums.pop(0), self._genre_id, True, not self._context, self._size_group)
+			widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, not self._context, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			if widget.eventbox:
@@ -341,3 +341,31 @@ class AlbumView(View):
 		else:
 			self._stop = False
 			self.emit('finished')
+
+
+"""
+	Playlist view is a vertical grid with album's covers
+"""
+class PlaylistView(View):
+	"""
+		Init PlaylistView ui with a scrolled grid of PlaylistWidgets
+	"""
+	def __init__(self):
+		View.__init__(self)
+		self.set_property("orientation", Gtk.Orientation.VERTICAL)
+		
+		self._scrolledWindow = Gtk.ScrolledWindow()
+		self._scrolledWindow.set_vexpand(True)
+		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+										Gtk.PolicyType.AUTOMATIC)
+		self._scrolledWindow.add(self._albumbox)
+
+		self.add(self._scrolledWindow)
+		self.show_all()
+
+	
+#######################
+# PRIVATE             #
+#######################
+
+

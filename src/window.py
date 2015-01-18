@@ -256,8 +256,10 @@ class Window(Gtk.ApplicationWindow):
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
 		active = self._toolbar.get_view_genres_btn().get_active()
+		# We show genres
 		if active:
 			items = Objects.genres.get_ids()
+		# We show all artists
 		else:
 			self._list_two.widget.hide()
 			items = Objects.artists.get_ids(ALL)
@@ -265,6 +267,7 @@ class Window(Gtk.ApplicationWindow):
 				items.insert(0, (COMPILATIONS, _("Compilations")))
 
 		items.insert(0, (ALL, _("All artists")))
+		items.insert(0, (PLAYLISTS, _("Playlists")))
 		items.insert(0, (POPULARS, _("Popular albums")))
 
 		if update:
@@ -296,7 +299,7 @@ class Window(Gtk.ApplicationWindow):
 		if self._list_two_signal:
 			self._list_two.disconnect(self._list_two_signal)
 
-		if genre_id == POPULARS:
+		if genre_id in [POPULARS, PLAYLISTS]:
 			self._list_two.widget.hide()
 			self._list_two_signal = None
 		else:
@@ -307,7 +310,11 @@ class Window(Gtk.ApplicationWindow):
 			self._list_two.populate(values, True)
 			self._list_two.widget.show()
 			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_artists, genre_id)
-		self._update_view_albums(genre_id)
+
+		if genre_id == PLAYLISTS:
+			self._update_view_playlists()
+		else:
+			self._update_view_albums(genre_id)
 		
 	"""
 		Update artist view
@@ -316,6 +323,8 @@ class Window(Gtk.ApplicationWindow):
 	def _update_view_artists(self, obj, artist_id, genre_id):
 		if artist_id == ALL or artist_id == POPULARS:
 			self._update_view_albums(artist_id)
+		elif artist_id == PLAYLISTS:
+			self._update_view_playlists()
 		else:
 			old_view = self._stack.get_visible_child()
 			view = ArtistView(artist_id, genre_id, False)
@@ -337,6 +346,20 @@ class Window(Gtk.ApplicationWindow):
 		self._stack.add(view)
 		start_new_thread(view.populate, ())
 		self._stack.set_visible_child(view)
+		if old_view:
+			old_view.stop()
+			self._stack.remove(old_view)
+			old_view.remove_signals()
+
+	"""
+		Update playlist view
+	"""
+	def _update_view_playlists(self):
+		old_view = self._stack.get_visible_child()
+#		view = AlbumView(genre_id)
+#		self._stack.add(view)
+#		start_new_thread(view.populate, ())
+#		self._stack.set_visible_child(view)
 		if old_view:
 			old_view.stop()
 			self._stack.remove(old_view)

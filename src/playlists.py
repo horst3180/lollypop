@@ -13,7 +13,6 @@
 
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
-from cgi import escape
 
 from lollypop.define import *
 from lollypop.database_playlists import DatabasePlaylists
@@ -127,7 +126,7 @@ class PlaylistPopup:
 			path, column = self._view.get_cursor()
 			iterator = self._model.get_iter(path)
 			self._deleted_path = path
-			self._infobar_label.set_text("Remove %s playlist?" % self._model.get_value(iterator, 1))
+			self._infobar_label.set_text(_("Remove %s playlist?") % self._model.get_value(iterator, 1))
 			self._infobar.show()
 
 	"""
