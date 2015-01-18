@@ -24,8 +24,7 @@ class DatabaseUpgrade:
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc,
-							3: self._db_add_primary_key,
-							4: self._db_add_playlists_tables
+							3: self._db_add_primary_key
 						 }
 
 	"""
@@ -71,10 +70,3 @@ class DatabaseUpgrade:
 	"""
 	def _db_add_primary_key(self):
 		self._reset = True
-
-	"""
-		Add playlists tables
-	"""
-	def _db_add_playlists_tables(self):
-		self._sql.execute('''CREATE TABLE playlists (id INTEGER PRIMARY KEY, name TEXT NOT NULL)''')
-		self._sql.execute('''CREATE TABLE playlists_ids (playlist_id INT NOT NULL, track_id INT NOT NULL)''')

@@ -14,14 +14,51 @@
 from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _, ngettext 
 
+import os
+
 from lollypop.define import *
-from lollypop.database_playlists import DatabasePlaylists
 from lollypop.albumart import AlbumArt
 from lollypop.utils import translate_artist_name
 
 ######################################################################
 ######################################################################
 
+
+"""
+	Playlists manager: add, remove, list, append, ...
+"""
+class PlaylistsManager:
+
+	PLAYLISTS_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop/playlists"
+
+	def __init__(self):
+		self._playlists = [] #Cache
+		# Create playlists directory if missing
+		if not os.path.exists(self.PLAYLISTS_PATH):
+			try:
+				os.mkdir(self.PLAYLISTS_PATH)
+			except Exception as e:
+				print("Lollypop::PlaylistsManager::init: %s" % e)
+
+	"""
+		Return availables playlists
+		@return array of (id, string)
+	"""
+	def get(self):
+		self._playlists = []
+		try:
+			index = 0
+			for filename in os.listdir(self.PLAYLISTS_PATH):
+				item = (index, filename)
+				self._playlists.append(item)
+				index += 1		
+		except Exception as e:
+			print("Lollypop::PlaylistManager::get: %s" % e)
+		return self._playlists
+
+"""
+	Dialog for adding/removing a song to/from a playlist
+"""
 class PlaylistPopup:
 
 	"""

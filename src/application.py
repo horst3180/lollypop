@@ -27,7 +27,7 @@ from lollypop.database_albums import DatabaseAlbums
 from lollypop.database_artists import DatabaseArtists
 from lollypop.database_genres import DatabaseGenres
 from lollypop.database_tracks import DatabaseTracks
-from lollypop.database_playlists import DatabasePlaylists
+from lollypop.playlists import PlaylistsManager
 
 class Application(Gtk.Application):
 
@@ -55,8 +55,8 @@ class Application(Gtk.Application):
 		Objects.albums = DatabaseAlbums()
 		Objects.artists = DatabaseArtists()
 		Objects.genres = DatabaseGenres()
-		Objects.tracks = DatabaseTracks()	
-		Objects.playlists = DatabasePlaylists()
+		Objects.tracks = DatabaseTracks()
+		Objects.playlists = PlaylistsManager()
 		Objects.player = Player()
 		Objects.art = AlbumArt()
 
