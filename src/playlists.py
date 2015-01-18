@@ -56,6 +56,30 @@ class PlaylistsManager:
 			print("Lollypop::PlaylistManager::get: %s" % e)
 		return self._playlists
 
+	"""
+		Return availables tracks for playlist
+		@param playlist name as str
+		@return array of track id as int
+	"""
+	def get_tracks(self, playlist):
+		return []
+
+	"""
+		Add track to playlist
+		@param track id as int
+		@param playlist name as str
+	"""
+	def add_track(self, track_id, playlist):
+		pass
+
+	"""
+		Remove track from playlist
+		@param track id as int
+		@param playlist name as str
+	"""
+	def remove_track(self, track_id, playlist):
+		pass
+
 """
 	Dialog for adding/removing a song to/from a playlist
 """
