@@ -221,10 +221,10 @@ class AlbumView(View):
 		self._context_widget = None
 
 		self._albumbox = Gtk.FlowBox()
-
 		self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
 		self._albumbox.connect("child-activated", self._on_album_activated)
 		self._albumbox.set_max_children_per_line(100)
+
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_hexpand(True)
@@ -303,7 +303,7 @@ class AlbumView(View):
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True, None)
+		self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True)
 		self._context_widget.show()			
 		view = Gtk.ScrolledWindow()
 		view.set_min_content_height(250)
@@ -358,14 +358,38 @@ class PlaylistView(View):
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
 										Gtk.PolicyType.AUTOMATIC)
+
+		self._albumbox = Gtk.Grid()
+		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._scrolledWindow.add(self._albumbox)
 
 		self.add(self._scrolledWindow)
 		self.show_all()
 
-	
+	"""
+		Populate the view, can be threaded
+	"""
+	def populate(self):
+		sql = Objects.db.get_cursor()
+		playlists = Objects.playlists.get(sql)
+		GLib.idle_add(self._add_playlists, playlists)
+		sql.close()
+
 #######################
 # PRIVATE             #
 #######################
 
-
+	"""
+		Pop a playlist and add it to the view,
+		repeat operation until playlists list is empty
+		@param [playlist ids as int]
+	"""
+	def _add_playlists(self, playlists):
+		if len(playlists) > 0 and not self._stop:
+			widget = PlaylistWidget(playlists.pop(0))
+			widget.show()
+			self._albumbox.add(widget)
+			GLib.idle_add(self._add_playlists, playlists, priority=GLib.PRIORITY_LOW)
+		else:
+			self._stop = False
+			self.emit('finished')

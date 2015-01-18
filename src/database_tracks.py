@@ -93,13 +93,13 @@ class DatabaseTracks:
 	"""
 		Get all track informations for track id
 		@param Track id as int
-		@return Array of (name as string, filepath as string, length as int, tracknumber as int, album_id as int)]
+		@return (name as string, filepath as string, length as int, tracknumber as int, album_id as int)
 	"""
 	def get_infos(self, track_id, sql = None):
 		if not sql:
 			sql = Objects.sql
 		tracks = []
-		result = sql.execute("SELECT name, filepath, length, tracknumber, album_id FROM tracks WHERE rowid=?" , (track_id,))
+		result = sql.execute("SELECT name, filepath, length, artist_id, album_id FROM tracks WHERE rowid=?" , (track_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
 			return v

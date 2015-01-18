@@ -96,7 +96,7 @@ class AlbumDetailedWidget(Gtk.Grid):
 		@param popover authorized as bool
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group):
+	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group = None):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
 
@@ -222,21 +222,106 @@ class AlbumDetailedWidget(Gtk.Grid):
 
 
 """
-	Playlist Widget is a grid with playlist title and a flowbox of album covers
+	Playlist Widget is similar to album detailed widget but show a cover grid as playlist cover
 """
 class PlaylistWidget(Gtk.Grid):
 	"""
-		Init playlist widget
-		@param playlist id as int
+		Init playlist Widget
+		@param name as str
+		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self):
+	def __init__(self, name, size_group = None):
 		Gtk.Grid.__init__(self)
-		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self.set_property("margin", 5)
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
-		
+
+		self._tracks_widget1 = TracksWidget(False)
+		self._tracks_widget2 = TracksWidget(False)
+		if size_group:
+			size_group.add_widget(self._tracks_widget1)
+			size_group.add_widget(self._tracks_widget2)
+		self._tracks_widget1.connect('activated', self._on_activated)
+		self._tracks_widget2.connect('activated', self._on_activated)
+		self._ui.get_object('tracks').add(self._tracks_widget1)
+		self._ui.get_object('tracks').add(self._tracks_widget2)
+		self._tracks_widget1.show()
+		self._tracks_widget2.show()
+
+		self._header = self._ui.get_object('header')
+		self._ui.get_object('title').set_label(name)
+		self.add(self._ui.get_object('PlaylistWidget'))
+
+		self._add_tracks(name)
+
+	"""
+		Update playing track
+		@param track id as int
+	"""
+	def update_playing_track(self, track_id):
+		self._tracks_widget1.update_playing(track_id)	
+		self._tracks_widget2.update_playing(track_id)
+
+
+#######################
+# PRIVATE             #
+#######################
+
+	"""
+		Popup menu for album
+		@param widget as Gtk.Button
+		@param album id as int
+	"""
+	def _pop_menu(self, widget, album_id):
+		return
+		menu = PopMenu(album_id, True)
+		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+		popover.show()
+
+	"""
+		Add tracks from playlist
+		@param playlist name as str
+	"""
+	def _add_tracks(self, name):
+		i = 1
+		tracks = Objects.playlists.get_tracks(name)
+		mid_tracks = int(0.5+len(tracks)/2)
+		albums = []
+		for track_id in tracks:
+			(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
+			title = "%s - %s" % (translate_artist_name(Objects.artists.get_name(artist_id)), title)
+
+			# Get track position in queue
+			pos = None
+			if Objects.player.is_in_queue(track_id):
+				pos = Objects.player.get_track_position(track_id)
+
+			if album_id not in albums:
+				albums.append(album_id)
+				
+			if i <= mid_tracks:
+				self._tracks_widget1.add_track(track_id, i, title, length, pos) 
+			else:
+				self._tracks_widget2.add_track(track_id, i, title, length, pos) 
+			i += 1
+
+		# populate cover grid
+		for album_id in albums:
+			image = Gtk.Image()
+			image.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_MEDIUM))
+			image.show()
+			self._header.add(image)	
+	"""
+		On track activation, play track
+		@param widget as TracksWidget
+		@param track id as int
+	"""		
+	def _on_activated(self, widget, track_id):
+		Objects.player.load(track_id)
+		if not Objects.player.is_party():
+			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
+
 
 """
 	Widget used to let user select a collection folder

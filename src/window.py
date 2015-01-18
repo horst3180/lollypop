@@ -356,10 +356,10 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_view_playlists(self):
 		old_view = self._stack.get_visible_child()
-#		view = AlbumView(genre_id)
-#		self._stack.add(view)
-#		start_new_thread(view.populate, ())
-#		self._stack.set_visible_child(view)
+		view = PlaylistView()
+		self._stack.add(view)
+		start_new_thread(view.populate, ())
+		self._stack.set_visible_child(view)
 		if old_view:
 			old_view.stop()
 			self._stack.remove(old_view)

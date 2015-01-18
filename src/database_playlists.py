@@ -92,11 +92,11 @@ class DatabasePlaylists:
 			print("Fail to get playlist id for: ", playlist_name)
 
 	"""
-		Get track name for track id
+		Get playlist name for playlist id
 		@param Playlist id as int
 		@return Name as string
 	"""
-	def get_name(self, track_id, sql = None):
+	def get_name(self, playlist_id, sql = None):
 		if not sql:
 			sql = Objects.sql
 		result = sql.execute("SELECT name FROM playlists where rowid=?", (playlist_id,))
