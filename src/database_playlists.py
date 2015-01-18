@@ -113,10 +113,10 @@ class DatabasePlaylists:
 	def get(self, sql = None):
 		if not sql:
 			sql = Objects.sql
-		result = sql.execute("SELECT name from playlists ORDER BY name")
+		result = sql.execute("SELECT rowid, name from playlists ORDER BY name")
 		playlists = []
 		for row in result:
-			playlists += row
+			playlists += (row,)
 		return playlists
 
 	"""

@@ -86,10 +86,10 @@ class PlaylistPopup:
 
 		playlists = Objects.playlists.get()
 		for playlist in playlists:
-			for track in Objects.playlists.get_tracks(playlist):
+			for track in Objects.playlists.get_tracks(playlist[1]):
 				if track in tracks:
 					selected = True
-			self._model.append([selected, playlist])
+			self._model.append([selected, playlist[1]])
 		self._popup.show()
 		
 #######################

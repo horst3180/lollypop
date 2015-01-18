@@ -89,7 +89,7 @@ class DatabaseArtists:
 		
 		@return Array of (artist id as int, artist name as string)
 	"""
-	def get_ids(self, genre_id, sql = None):
+	def get(self, genre_id, sql = None):
 		if not sql:
 			sql = Objects.sql
 		artists = []

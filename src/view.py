@@ -349,8 +349,9 @@ class AlbumView(View):
 class PlaylistView(View):
 	"""
 		Init PlaylistView ui with a scrolled grid of PlaylistWidgets
+		@param playlist id as int
 	"""
-	def __init__(self):
+	def __init__(self, playlist_id):
 		View.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		
@@ -359,37 +360,12 @@ class PlaylistView(View):
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
 										Gtk.PolicyType.AUTOMATIC)
 
-		self._albumbox = Gtk.Grid()
-		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
-		self._scrolledWindow.add(self._albumbox)
-
 		self.add(self._scrolledWindow)
+		widget = PlaylistWidget(playlist_id)
+		widget.show()
+		self._scrolledWindow.add(widget)
 		self.show_all()
-
-	"""
-		Populate the view, can be threaded
-	"""
-	def populate(self):
-		sql = Objects.db.get_cursor()
-		playlists = Objects.playlists.get(sql)
-		GLib.idle_add(self._add_playlists, playlists)
-		sql.close()
 
 #######################
 # PRIVATE             #
 #######################
-
-	"""
-		Pop a playlist and add it to the view,
-		repeat operation until playlists list is empty
-		@param [playlist ids as int]
-	"""
-	def _add_playlists(self, playlists):
-		if len(playlists) > 0 and not self._stop:
-			widget = PlaylistWidget(playlists.pop(0))
-			widget.show()
-			self._albumbox.add(widget)
-			GLib.idle_add(self._add_playlists, playlists, priority=GLib.PRIORITY_LOW)
-		else:
-			self._stop = False
-			self.emit('finished')

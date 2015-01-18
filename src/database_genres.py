@@ -81,7 +81,7 @@ class DatabaseGenres:
 		Get all availables genres
 		@return Array of (id as int, name as string)]
 	"""
-	def get_ids(self, sql = None):
+	def get(self, sql = None):
 		if not sql:
 			sql = Objects.sql
 		genres = []

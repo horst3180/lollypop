@@ -227,10 +227,9 @@ class AlbumDetailedWidget(Gtk.Grid):
 class PlaylistWidget(Gtk.Grid):
 	"""
 		Init playlist Widget
-		@param name as str
-		@param size group as Gtk.SizeGroup
+		@param playlist id as int
 	"""
-	def __init__(self, name, size_group = None):
+	def __init__(self, playlist_id):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
 
@@ -239,17 +238,21 @@ class PlaylistWidget(Gtk.Grid):
 
 		self._tracks_widget1 = TracksWidget(False)
 		self._tracks_widget2 = TracksWidget(False)
-		if size_group:
-			size_group.add_widget(self._tracks_widget1)
-			size_group.add_widget(self._tracks_widget2)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
-		self._ui.get_object('tracks').add(self._tracks_widget1)
-		self._ui.get_object('tracks').add(self._tracks_widget2)
 		self._tracks_widget1.show()
 		self._tracks_widget2.show()
+		self._ui.get_object('tracks').add(self._tracks_widget1)
+		self._ui.get_object('tracks').add(self._tracks_widget2)
+
+		self._cover_widget = Gtk.FlowBox()
+		self._cover_widget.set_selection_mode(Gtk.SelectionMode.NONE)
+		self._cover_widget.set_max_children_per_line(100)
+		self._cover_widget.set_property('margin', 50)
+		self._ui.get_object('tracks').attach(self._cover_widget, 0, 1, 2, 1)
 
 		self._header = self._ui.get_object('header')
+		name = Objects.playlists.get_name(playlist_id)
 		self._ui.get_object('title').set_label(name)
 		self.add(self._ui.get_object('PlaylistWidget'))
 
@@ -311,7 +314,7 @@ class PlaylistWidget(Gtk.Grid):
 			image = Gtk.Image()
 			image.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_MEDIUM))
 			image.show()
-			self._header.add(image)	
+			self._cover_widget.add(image)	
 	"""
 		On track activation, play track
 		@param widget as TracksWidget
@@ -319,8 +322,8 @@ class PlaylistWidget(Gtk.Grid):
 	"""		
 	def _on_activated(self, widget, track_id):
 		Objects.player.load(track_id)
-		if not Objects.player.is_party():
-			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
+#		if not Objects.player.is_party():
+#			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
 
 
 """
