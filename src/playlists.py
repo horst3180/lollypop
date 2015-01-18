@@ -34,6 +34,7 @@ class PlaylistPopup:
 
 		self._object_id = object_id		
 		self._is_album = is_album
+		self._deleted_path = None
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistPopup.ui')
@@ -46,6 +47,8 @@ class PlaylistPopup:
 		self._ui.connect_signals(self)
 
 		self._popup = self._ui.get_object('popup')
+		self._infobar = self._ui.get_object('infobar')
+		self._infobar_label = self._ui.get_object('infobarlabel')
 
 		renderer0 = Gtk.CellRendererToggle()
 		renderer0.set_property('activatable', True)
@@ -68,7 +71,7 @@ class PlaylistPopup:
 		Show playlist popup
 	"""
 	def show(self):
-		self._popup.set_property('width-request', 400)
+		self._popup.set_property('width-request', 600)
 		size_setting = Objects.settings.get_value('window-size')
 		if isinstance(size_setting[1], int):
 			self._popup.set_property('height-request', size_setting[1]*0.5)
@@ -93,6 +96,40 @@ class PlaylistPopup:
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Hide infobar
+		@param widget as Gtk.Infobar
+		@param reponse id as int
+	"""
+	def _on_response(self, infobar, response_id):
+		if response_id == Gtk.ResponseType.CLOSE:
+			self._infobar.hide()
+
+	"""
+		Delete playlist after confirmation
+		@param button as Gtk.Button
+	"""
+	def _on_delete_confirm(self, button):
+		if self._deleted_path:
+			iterator = self._model.get_iter(self._deleted_path)
+			Objects.playlists.delete(self._model.get_value(iterator, 1))
+			self._model.remove(iterator)
+			self._deleted_path = None
+			self._infobar.hide()
+
+	"""
+		Delete item if Delete was pressed
+		@param widget unused, Gtk.Event
+	"""
+	def _on_keyboard_event(self, widget, event):
+		if event.keyval == 65535:
+			path, column = self._view.get_cursor()
+			iterator = self._model.get_iter(path)
+			self._deleted_path = path
+			self._infobar_label.set_text("Remove %s playlist?" % self._model.get_value(iterator, 1))
+			self._infobar.show()
+
 	"""
 		Hide window
 		@param widget as Gtk.Button

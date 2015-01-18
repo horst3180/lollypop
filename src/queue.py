@@ -104,6 +104,16 @@ class QueueWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Delete item if Delete was pressed
+		@param widget unused, Gtk.Event
+	"""
+	def _on_keyboard_event(self, widget, event):
+		if len(Objects.player.get_queue()) > 0:
+			if event.keyval == 65535:
+				path, column = self._view.get_cursor()
+				iterator = self._model.get_iter(path)
+				self._model.remove(iterator)
 
 	"""
 		Pop first item in queue if it's current track id
@@ -129,17 +139,6 @@ class QueueWidget(Gtk.Popover):
 	"""
 	def _on_drag_end(self, widget, context):
 		self._in_drag = False
-
-	"""
-		Delete item if Delete was pressed
-		@param widget unused, Gtk.Event
-	"""
-	def _on_keyboard_event(self, widget, event):
-		if len(Objects.player.get_queue()) > 0:
-			if event.keyval == 65535:
-				path, column = self._view.get_cursor()
-				iter = self._model.get_iter(path)
-				self._model.remove(iter)
 
 	"""
 		Update queue when a row has been deleted

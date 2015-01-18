@@ -33,6 +33,22 @@ class DatabasePlaylists:
 		sql.commit()
 
 	"""
+		Delete playlist from database
+		@param name as string
+	"""
+	def delete(self, name, sql = None):
+		if not sql:
+			sql = Objects.sql
+		result = sql.execute("SELECT id from playlists WHERE name=?", (name,))
+		v = result.fetchone()
+		if v and len(v) > 0:		
+			sql.execute("DELETE FROM playlists_ids WHERE playlist_id = ?", (v[0],))
+		else:
+			print("Fail to get playlist id for: ", playlist_name)
+		sql.execute("DELETE FROM playlists WHERE name=?", (name,))
+		sql.commit()
+
+	"""
 		Rename playlist
 		@param name as str
 		@param old name as str
