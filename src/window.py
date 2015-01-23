@@ -289,7 +289,7 @@ class Window(Gtk.ApplicationWindow):
 		if active:
 			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)
 		else:
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_artists, None)
+			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
 
 	"""
 		Init list two with artist based on genre
