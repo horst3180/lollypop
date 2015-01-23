@@ -382,7 +382,10 @@ class Player(GObject.GObject):
 		@return [ids as int]
 	"""
 	def get_queue(self):
-		return self._queue
+		if self._queue:
+			return self._queue
+		else:
+			return []
 
 	"""
 		True if track_id exist in queue
@@ -457,7 +460,7 @@ class Player(GObject.GObject):
 		self._shuffle_album_tracks_history = []
 		self._shuffle_tracks_history = []
 
-		if self._shuffle == SHUFFLE_TRACKS:
+		if self._shuffle == SHUFFLE_TRACKS or self._user_playlist:
 			self._rgvolume.props.album_mode = 0
 		else:
 			self._rgvolume.props.album_mode = 1
