@@ -253,6 +253,21 @@ class PlaylistWidget(Gtk.Grid):
 		self._name = name
 		self._add_tracks(name)
 
+
+	"""
+		On show, connect signals
+	"""
+	def do_show(self):
+		Objects.playlists.connect("playlist-changed", self._on_playlist_changed)
+		Gtk.Grid.do_show(self)
+		
+	"""
+		On hide, delete signals
+	"""
+	def do_hide(self):
+		Objects.playlists.disconnect_by_func(self._on_playlist_changed)
+		Gtk.Grid.do_hide(self)
+		
 	"""
 		Update playing track
 		@param track id as int
@@ -266,6 +281,22 @@ class PlaylistWidget(Gtk.Grid):
 # PRIVATE             #
 #######################
 
+	"""
+		Update all tracks if signal is for us
+		@param manager as PlaylistPopup
+		@param playlist name as str
+	"""
+	def _on_playlist_changed(self, manager, playlist_name):
+		if playlist_name != self._name:
+			return
+
+		for child in self._tracks_widget1.get_children():
+			child.destroy()
+		for child in self._tracks_widget2.get_children():
+			child.destroy()
+		
+		self._add_tracks(playlist_name)
+		
 	"""
 		Popup menu for album
 		@param widget as Gtk.Button

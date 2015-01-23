@@ -28,11 +28,15 @@ from lollypop.utils import translate_artist_name
 """
 	Playlists manager: add, remove, list, append, ...
 """
-class PlaylistsManager:
+class PlaylistsManager(GObject.GObject):
 
 	PLAYLISTS_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop/playlists"
+	__gsignals__ = {
+        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,))
+    }
 
 	def __init__(self):
+		GObject.GObject.__init__(self)
 		self._parser = TotemPlParser.Parser.new()
 		self._playlists = []
 		self._tracks = []
@@ -194,6 +198,7 @@ class PlaylistsManager:
 				self._parser.save(playlist, f, "", TotemPlParser.ParserType.M3U)
 			else:
 				self.add(name)
+			self.emit("playlist-changed", name)
 		except Exception as e:
 			print("PlaylistsManager::save_playlist: %s" %e)
 			
@@ -417,6 +422,7 @@ class PlaylistPopup:
 				playlist = Objects.playlists.remove_track(uri, playlist)
 
 		Objects.playlists.save_playlist(playlist, name)
+		self.emit("playlist-changed", name)
 		
 	"""
 		When playlist is edited, rename playlist
