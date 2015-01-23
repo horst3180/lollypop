@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango, TotemP
 from gettext import gettext as _, ngettext 
 
 import os
+from stat import S_ISREG, ST_MTIME, ST_MODE
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
@@ -76,17 +77,26 @@ class PlaylistsManager:
 			
 	"""
 		Return availables playlists
+		@param recent as bool to return only recent playlists
 		@return array of (id, string)
 	"""
-	def get(self):
+	def get(self, recent = False):
 		self._playlists = []
 		try:
 			index = 0
+			entries = []
 			for filename in os.listdir(self.PLAYLISTS_PATH):
+				stat = os.stat(self.PLAYLISTS_PATH+"/"+filename)
+				if S_ISREG(stat[ST_MODE]):
+					entries.append((stat[ST_MTIME], filename))
+			for cdate, filename in sorted(entries):
 				if filename.endswith(".m3u"):
 					item = (index, filename[:-4])
 					self._playlists.append(item)
-					index += 1		
+					index += 1
+					# Only get recent playlist
+					if recent and index > 3:
+						break	
 		except Exception as e:
 			print("Lollypop::PlaylistManager::get: %s" % e)
 		return self._playlists
@@ -187,8 +197,29 @@ class PlaylistsManager:
 		except Exception as e:
 			print("PlaylistsManager::save_playlist: %s" %e)
 			
-	
+	"""
+		Return True if object_id is already present in playlist
+		@param playlist name as str
+		@param object id as int
+		@param is an album as bool
+		@return bool
+	"""
+	def is_present(self, playlist_name, object_id, is_album):
+		if is_album:
+			tracks = Objects.albums.get_tracks(object_id)
+		else:
+			tracks = [ object_id ]
 
+		found = 0
+		for filepath in Objects.playlists.get_tracks(playlist_name):
+			track_id = Objects.tracks.get_id_by_path(filepath)
+			if track_id in tracks:
+				found += 1
+		if found == len(tracks):
+			return True
+		else:
+			return False
+			
 #######################
 # PRIVATE             #
 #######################
@@ -260,24 +291,10 @@ class PlaylistPopup:
 		else:
 			self._popup.set_property('height-request', 600)
 
-		
-		if self._is_album:
-			tracks = Objects.albums.get_tracks(self._object_id)
-		else:
-			tracks = [ self._object_id ]
-
 		# Search if we need to select item or not
 		playlists = Objects.playlists.get()
 		for playlist in playlists:
-			found = 0
-			for filepath in Objects.playlists.get_tracks(playlist[1]):
-				track_id = Objects.tracks.get_id_by_path(filepath)
-				if track_id in tracks:
-					found += 1
-			if found == len(tracks):
-				selected = True
-			else:
-				selected = False
+			selected = Objects.playlists.is_present(playlist[1], self._object_id, self._is_album)
 			self._model.append([selected, playlist[1]])
 		self._popup.show()
 		
