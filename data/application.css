@@ -80,6 +80,19 @@ Gtk.ListBoxRow .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
+.trackrow .menubutton {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
+.trackrow:hover .menubutton {
+  	color: inherit;
+}
+
+.trackrow:hover .menubutton:hover {
+	border-color: alpha(#000000, 0.1);
+}
 
 /* trackrowmenu is trackrow when menu is shown*/
 .trackrowmenu {
@@ -103,19 +116,5 @@ Gtk.ListBoxRow .menubutton:hover {
 .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
   	color: inherit;
-}
-
-.trackrow .menubutton {
-	border-color: transparent;
-	background-color: transparent;
-	color: transparent;
-}
-
-.trackrow:hover .menubutton {
-  	color: inherit;
-}
-
-.trackrow:hover .menubutton:hover {
-	border-color: alpha(#000000, 0.1);
 }
 
