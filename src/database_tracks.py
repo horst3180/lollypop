@@ -40,7 +40,21 @@ class DatabaseTracks:
 						artist_id, performer_id, album_id, mtime))
 		except:
 			pass
-		
+	
+	"""
+		Return track id for path
+		@param filepath as str
+	"""	
+	def get_id_by_path(self, filepath, sql = None):
+	
+		if not sql:
+			sql = Objects.sql
+		result = sql.execute("SELECT rowid FROM tracks where filepath=?", (filepath,))
+		v = result.fetchone()
+		if v and len(v) > 0:
+			return v[0]
+
+		return -1
 		
 	"""
 		Get track name for track id

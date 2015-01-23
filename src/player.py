@@ -56,15 +56,17 @@ class Player(GObject.GObject):
 		Gst.init(None)
 
 		self.current = CurrentTrack()
-		self._albums = [] # Albums in current playlist
-		self._albums_backup = None # Use by shuffle albums to restore playlist before shuffle
+		self._albums = None # Albums in current playlist
+		self._albums_backup = None # Used by shuffle albums to restore playlist before shuffle
+		self._user_playlist = None # A user playlist used as current playlist
+		self._user_playlist_backup = None # Used by shuffle tracks to restore user playlist before shuffle
 		self._shuffle = Objects.settings.get_enum('shuffle')
 		self._shuffle_tracks_history = [] # Tracks already played
 		self._shuffle_albums_history = [] # Albums already played
 		self._shuffle_album_tracks_history = [] # Tracks already played for current album
 		self._party = False
-		self._party_ids = []
-		self._queue = []
+		self._party_ids = None
+		self._queue = None
 
 		self._playbin = Gst.ElementFactory.make('playbin', 'player')
 		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
@@ -191,13 +193,22 @@ class Player(GObject.GObject):
 	"""
 	def next(self, force = True, sql = None):
 		# Look first at user queue
-		if len(self._queue) > 0:
+		if self._queue:
 			track_id = self._queue[0]
 			self.del_from_queue(track_id)
 			if force:
 				self.load(track_id)
 			else:
 				self._load_track(track_id, sql)
+		# Look at user playlist then
+		elif self._user_playlist:
+			self.current.number += 1
+			if self.current.number >= len(self._user_playlist):
+				self.current.number = 0
+			if force:
+				self.load(self._user_playlist[self.current.number])
+			else:
+				self._load_track(self._user_playlist[self.current.number], sql)
 		# Get a random album/track
 		elif self._shuffle == SHUFFLE_TRACKS or self._party:
 			self._shuffle_next(force, sql)
@@ -248,6 +259,7 @@ class Player(GObject.GObject):
 		@param party as bool
 	"""
 	def set_party(self, party):
+		self._user_playlist = None
 		if party:
 			self._rgvolume.props.album_mode = 0
 		else:
@@ -306,6 +318,7 @@ class Player(GObject.GObject):
 	"""
 	def set_albums(self, artist_id, genre_id, limit_to_artist):
 		self._albums = []
+		self._user_playlist = None # We are not playing a user playlist anymore
 		# We are in all artists
 		if genre_id == ALL or artist_id == ALL:
 			self._albums = Objects.albums.get_compilations(ALL)
@@ -322,12 +335,6 @@ class Player(GObject.GObject):
 
 		# Shuffle album list if needed
 		self._shuffle_playlist()
-
-	"""
-		Empty albums list
-	"""
-	def clear_albums(self):
-		self._albums = []
 
 	"""
 		Append track to queue,
@@ -358,6 +365,8 @@ class Player(GObject.GObject):
 	def del_from_queue(self, track_id):
 		if track_id in self._queue:
 			self._queue.remove(track_id)
+			if len(self._queue) == 0:
+				self._queue = None
 			self.emit("queue-changed")
 		
 	"""
@@ -381,7 +390,10 @@ class Player(GObject.GObject):
 		@return bool
 	"""
 	def is_in_queue(self, track_id):
-		return track_id in self._queue
+		if self._queue:
+			return track_id in self._queue
+		else:
+			return False
 
 	"""
 		Return track position in queue
@@ -399,6 +411,16 @@ class Player(GObject.GObject):
 		position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
 		return position*60
 
+	"""
+		Set user playlist as current playback playlist
+		@param array of track id as int
+	"""
+	def set_user_playlist(self, tracks):
+		self._user_playlist = tracks
+		self._albums = None
+		self._shuffle_playlist()
+		self.current.number = 0
+		
 #######################
 # PRIVATE             #
 #######################
@@ -408,13 +430,22 @@ class Player(GObject.GObject):
 	"""
 	def _shuffle_playlist(self):
 		# Shuffle album list or restore unshuffled list
-		if self._shuffle == SHUFFLE_ALBUMS:
+		if self._shuffle == SHUFFLE_ALBUMS and self._albums:
 			self._albums_backup = list(self._albums)
 			random.shuffle(self._albums)
-		elif self._shuffle == SHUFFLE_NONE:
+		# Shuffle playlist
+		elif self._shuffle == SHUFFLE_TRACKS and self._user_playlist:
+			self._user_playlist_backup = list(self._user_playlist)
+			random.shuffle(self._user_playlist)
+		# When shuffle none or shuffle albums and a user playlist is defined
+		# Unshuffle
+		elif self._shuffle in [ SHUFFLE_NONE, SHUFFLE_ALBUMS]:
 			if self._albums_backup:
 				self._albums = self._albums_backup
 				self._albums_backup = None
+			if self._user_playlist_backup:
+				self._user_playlist = self._user_playlist_backup
+				self._user_playlist_backup = None
 
 	"""
 		Set shuffle mode to gettings value
@@ -434,14 +465,17 @@ class Player(GObject.GObject):
 		# Shuffle album list or restore unshuffled list
 		self._shuffle_playlist()
 
-		if not self._shuffle != SHUFFLE_TRACKS and self.current.id:
+		# Restore position in user playlist
+		if self._shuffle != SHUFFLE_TRACKS and self._user_playlist:
+			self.current.number = self._user_playlist.index(self.current.id)
+		# Restore position in current album
+		elif self._shuffle in [ SHUFFLE_NONE, SHUFFLE_ALBUMS] and self.current.id:
 			tracks = Objects.albums.get_tracks(self.current.album_id)
 			self.current.number = tracks.index(self.current.id)
+		# Add current track too shuffle history
 		elif self.current.id:
 			self._shuffle_tracks_history.append(self.current.id)
 			
-
-
 	"""
 		Setup replaygain
 	"""
@@ -573,8 +607,12 @@ class Player(GObject.GObject):
 		self.current.genre_id = Objects.albums.get_genre_id(self.current.album_id, sql)
 		self.current.genre = Objects.genres.get_name(self.current.genre_id, sql)
 		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
-		tracks = Objects.albums.get_tracks(self.current.album_id, sql)
-		self.current.number = tracks.index(self.current.id)
+		
+		# We do not update this only when we are in album playlist mode (not a user playlist)
+		if self._albums:
+			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
+			self.current.number = tracks.index(self.current.id)
+			
 		self.current.path = Objects.tracks.get_path(self.current.id, sql)
 		if path.exists(self.current.path):
 			self._playbin.set_property('uri', GLib.filename_to_uri(self.current.path))

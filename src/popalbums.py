@@ -55,7 +55,7 @@ class PopAlbums(Gtk.Popover):
 		if self._artist_id == artist_id and self._genre_id == genre_id:
 			return
 
-		view = ArtistView(artist_id, genre_id, True)
+		view = ArtistView(artist_id, genre_id, False)
 		self._stack.add(view)
 		if self._artist_id:
 				view.connect('finished', self._switch_view)

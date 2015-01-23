@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango, TotemPlParser
+from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango, TotemPlParser
 from gettext import gettext as _, ngettext 
 
 import os
@@ -32,8 +32,10 @@ class PlaylistsManager:
 	PLAYLISTS_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop/playlists"
 
 	def __init__(self):
-		self._playlists = [] #Cache
-		self._parser = TotemPlParser.Parser()
+		self._parser = TotemPlParser.Parser.new()
+		self._playlists = []
+		self._tracks = []
+		self._parser.connect("entry-parsed", self._get_playlist_entry)
 		# Create playlists directory if missing
 		if not os.path.exists(self.PLAYLISTS_PATH):
 			try:
@@ -41,6 +43,37 @@ class PlaylistsManager:
 			except Exception as e:
 				print("Lollypop::PlaylistsManager::init: %s" % e)
 
+	"""
+		Add a playlist
+		@param playlist name as str
+	"""
+	def add(self, name):
+		try:
+			open(self.PLAYLISTS_PATH+"/"+name+".m3u", "w+").close()
+		except Exception as e:
+			print("PlaylistsManager::add: %s" %e)
+
+	"""
+		Rename playlist
+		@param new playlist name as str
+		@param old playlist name as str
+	"""
+	def rename(self, new_name, old_name):
+		try:
+			os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
+		except Exception as e:
+			print("PlaylistsManager::rename: %s" %e)
+
+	"""
+		delete playlist
+		@param playlist name as str
+	"""
+	def delete(self, name):
+		try:
+			os.remove(self.PLAYLISTS_PATH+"/"+name+".m3u")
+		except Exception as e:
+			print("PlaylistsManager::delete: %s" %e)
+			
 	"""
 		Return availables playlists
 		@return array of (id, string)
@@ -50,42 +83,125 @@ class PlaylistsManager:
 		try:
 			index = 0
 			for filename in os.listdir(self.PLAYLISTS_PATH):
-				item = (index, filename)
-				self._playlists.append(item)
-				index += 1		
+				if filename.endswith(".m3u"):
+					item = (index, filename[:-4])
+					self._playlists.append(item)
+					index += 1		
 		except Exception as e:
 			print("Lollypop::PlaylistManager::get: %s" % e)
 		return self._playlists
 
 	"""
+		Return playlist name for id
+		@param playlist id as int
+	"""
+	def get_name(self, playlist_id):
+		for playlist in self._playlists:
+			if playlist[0] == playlist_id:
+				return playlist[1]
+		return ""
+
+	"""
 		Return availables tracks for playlist
+		@param playlist name as str
+		@return array of track filepath as str
+	"""
+	def get_tracks(self, name):
+		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+name+".m3u")
+		self._tracks = []
+		self._parser.parse(playlist_path, False)
+		return self._tracks
+
+	"""
+		Return availables tracks id for playlist
 		@param playlist name as str
 		@return array of track id as int
 	"""
-	def get_tracks(self, playlist):
-		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+playlist)
+	def get_tracks_id(self, name):
 		tracks = []
-		if self._parser.can_parse_from_uri(playlist_path, False):
-			pass
-		return tracks
-
+		for filepath in self.get_tracks(name):
+			tracks.append(Objects.tracks.get_id_by_path(filepath))
+		return tracks;
+		
 	"""
-		Add track to playlist
-		@param track id as int
-		@param playlist name as str
+		Add track to playlist if not already present
+		@param track uri as str
+		@param playlist as TotemPlParser.Playlist
 	"""
-	def add_track(self, track_id, playlist):
-		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+playlist)
-		path = Object.tracks.get_path(track_id)
-
+	def add_track(self, uri, playlist):
+		# Do nothing if uri already present in playlist
+		for filepath in self._tracks:
+			track_uri = GLib.filename_to_uri(filepath)
+			if track_uri == uri:
+				return
+				
+		iterator = playlist.append()
+		playlist.set_value(iterator, TotemPlParser.PARSER_FIELD_URI, uri)
+		
 	"""
 		Remove track from playlist
-		@param track id as int
+		@param track uri as str
+		@param playlist as TotemPlParser.Playlist
+		@return a new TotemPlParser.Playlist
+	"""
+	def remove_track(self, uri, playlist):
+		first = playlist.iter_first()
+		next = first[0]
+		iterator = first[1]
+		new_playlist = TotemPlParser.Playlist.new()
+		while next:
+			value = GObject.Value()
+			playlist.get_value(iterator, TotemPlParser.PARSER_FIELD_URI, value)
+			if value.get_string() != uri:
+				new_iter = new_playlist.append()
+				new_playlist.set_value(new_iter, TotemPlParser.PARSER_FIELD_URI, value)
+			next = playlist.iter_next(iterator)
+		return new_playlist
+	
+	"""
+		Get playlist with name
+		@param playlist name as str
+		@return TotemPlParser.Playlist
+	"""	
+	def get_playlist(self, name):
+		tracks = self.get_tracks(name)
+		playlist = TotemPlParser.Playlist.new()
+		for filepath in tracks:
+			iterator = playlist.append()
+			playlist.set_value(iterator, TotemPlParser.PARSER_FIELD_URI, GLib.filename_to_uri(filepath))
+		return playlist
+	
+	"""
+		Save playlist on disk
+		@param playlist as TotemPlParser.Playlist
 		@param playlist name as str
 	"""
-	def remove_track(self, track_id, playlist):
-		pass
+	def save_playlist(self, playlist, name):
+		playlist_path = GLib.filename_to_uri(self.PLAYLISTS_PATH+"/"+name+".m3u")
+		f = Gio.File.new_for_uri(playlist_path)
+		try:
+			if playlist.size():
+				self._parser.save(playlist, f, "", TotemPlParser.ParserType.M3U)
+			else:
+				self.add(name)
+		except Exception as e:
+			print("PlaylistsManager::save_playlist: %s" %e)
+			
+	
 
+#######################
+# PRIVATE             #
+#######################
+
+	"""
+		Parse a playlist entry
+		@param parser as TotemPlParser.Parser
+		@param filepath as str
+		@param metadata as unused
+	"""
+	def _get_playlist_entry(self, parser, filepath, metadata):
+		self._tracks.append(filepath)
+		
 """
 	Dialog for adding/removing a song to/from a playlist
 """
@@ -144,18 +260,24 @@ class PlaylistPopup:
 		else:
 			self._popup.set_property('height-request', 600)
 
-		# Select playlist if one song at least is present in album
-		selected = False
+		
 		if self._is_album:
 			tracks = Objects.albums.get_tracks(self._object_id)
 		else:
 			tracks = [ self._object_id ]
 
+		# Search if we need to select item or not
 		playlists = Objects.playlists.get()
 		for playlist in playlists:
-			for track in Objects.playlists.get_tracks(playlist[1]):
-				if track in tracks:
-					selected = True
+			found = 0
+			for filepath in Objects.playlists.get_tracks(playlist[1]):
+				track_id = Objects.tracks.get_id_by_path(filepath)
+				if track_id in tracks:
+					found += 1
+			if found == len(tracks):
+				selected = True
+			else:
+				selected = False
 			self._model.append([selected, playlist[1]])
 		self._popup.show()
 		
@@ -221,6 +343,7 @@ class PlaylistPopup:
 			name = _("New playlist ")+str(count)
 		self._model.append([True, name])
 		Objects.playlists.add(name)
+		self._set_current_object(name, True)
 
 	"""
 		When playlist is activated, add object to playlist
@@ -232,28 +355,38 @@ class PlaylistPopup:
 		toggle = not self._model.get_value(iterator, 0)
 		name = self._model.get_value(iterator, 1)
 		self._model.set_value(iterator, 0, toggle)
-
+		self._set_current_object(name, toggle)
+		
+	"""
+		Add/Remove current object to playlist
+		@param playlist name as str
+		@param add as bool
+	"""
+	def _set_current_object(self, name, add):
 		# Add or remove object from playlist
 		if self._is_album:
 			tracks = Objects.albums.get_tracks(self._object_id)
 		else:
 			tracks = [ self._object_id ]
 
+		playlist = Objects.playlists.get_playlist(name)
 		for track_id in tracks:
-			if toggle:
-				Objects.playlists.add_track(track_id, name)
+			uri = GLib.filename_to_uri(Objects.tracks.get_path(track_id))
+			if add:
+				Objects.playlists.add_track(uri, playlist)
 			else:
-				Objects.playlists.remove_track(track_id, name)
-			
+				playlist = Objects.playlists.remove_track(uri, playlist)
+
+		Objects.playlists.save_playlist(playlist, name)
 		
 	"""
 		When playlist is edited, rename playlist
 		@param widget as cell renderer
 		@param path as str representation of Gtk.TreePath
-		@param text as str
+		@param name as str
 	"""
-	def _on_playlist_edited(self, view, path, text):
+	def _on_playlist_edited(self, view, path, name):
 		iterator = self._model.get_iter(path)
-		name = self._model.get_value(iterator, 1)
-		self._model.set_value(iterator, 1, text)
-		Objects.playlists.rename(text, name)
+		old_name = self._model.get_value(iterator, 1)
+		self._model.set_value(iterator, 1, name)
+		Objects.playlists.rename(name, old_name)

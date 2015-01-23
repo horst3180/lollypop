@@ -328,7 +328,7 @@ class Window(Gtk.ApplicationWindow):
 			self._update_view_albums(object_id)
 		else:
 			old_view = self._stack.get_visible_child()
-			view = ArtistView(object_id, genre_id, False)
+			view = ArtistView(object_id, genre_id, True)
 			self._stack.add(view)
 			start_new_thread(view.populate, ())
 			self._stack.set_visible_child(view)

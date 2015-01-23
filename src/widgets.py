@@ -92,11 +92,11 @@ class AlbumDetailedWidget(Gtk.Grid):
 		@param album id as int
 		@param genre id as int
 		@param parent width as int
-		@param limit_to_artist as bool => Only load artist albums on play
-		@param popover authorized as bool
+		@param limit_to_artist as bool to load artist albums on play
+		@param show_menu as bool if menu need to be displayed
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, limit_to_artist, popover, size_group = None):
+	def __init__(self, album_id, genre_id, limit_to_artist, show_menu, size_group = None):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
 
@@ -108,8 +108,8 @@ class AlbumDetailedWidget(Gtk.Grid):
 		self._genre_id = genre_id
 		self._limit_to_artist = limit_to_artist
 
-		self._tracks_widget1 = TracksWidget(popover)
-		self._tracks_widget2 = TracksWidget(popover)
+		self._tracks_widget1 = TracksWidget(False, show_menu)
+		self._tracks_widget2 = TracksWidget(False, show_menu)
 		if size_group:
 			size_group.add_widget(self._tracks_widget1)
 			size_group.add_widget(self._tracks_widget2)
@@ -126,7 +126,7 @@ class AlbumDetailedWidget(Gtk.Grid):
 		self._ui.get_object('year').set_label(Objects.albums.get_year(album_id))
 		self.add(self._ui.get_object('AlbumDetailedWidget'))
 
-		if popover:
+		if show_menu:
 			self.eventbox = self._ui.get_object('eventbox')
 			self.eventbox.connect("button-press-event", self._show_web_art)
 			self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
@@ -236,8 +236,8 @@ class PlaylistWidget(Gtk.Grid):
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
 
-		self._tracks_widget1 = TracksWidget(False)
-		self._tracks_widget2 = TracksWidget(False)
+		self._tracks_widget1 = TracksWidget(True, False)
+		self._tracks_widget2 = TracksWidget(True, False)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._tracks_widget1.show()
@@ -245,17 +245,12 @@ class PlaylistWidget(Gtk.Grid):
 		self._ui.get_object('tracks').add(self._tracks_widget1)
 		self._ui.get_object('tracks').add(self._tracks_widget2)
 
-		self._cover_widget = Gtk.FlowBox()
-		self._cover_widget.set_selection_mode(Gtk.SelectionMode.NONE)
-		self._cover_widget.set_max_children_per_line(100)
-		self._cover_widget.set_property('margin', 50)
-		self._ui.get_object('tracks').attach(self._cover_widget, 0, 1, 2, 1)
-
 		self._header = self._ui.get_object('header')
 		name = Objects.playlists.get_name(playlist_id)
 		self._ui.get_object('title').set_label(name)
 		self.add(self._ui.get_object('PlaylistWidget'))
 
+		self._name = name
 		self._add_tracks(name)
 
 	"""
@@ -288,7 +283,7 @@ class PlaylistWidget(Gtk.Grid):
 	"""
 	def _add_tracks(self, name):
 		i = 1
-		tracks = Objects.playlists.get_tracks(name)
+		tracks = Objects.playlists.get_tracks_id(name)
 		mid_tracks = int(0.5+len(tracks)/2)
 		albums = []
 		for track_id in tracks:
@@ -309,21 +304,16 @@ class PlaylistWidget(Gtk.Grid):
 				self._tracks_widget2.add_track(track_id, i, title, length, pos) 
 			i += 1
 
-		# populate cover grid
-		for album_id in albums:
-			image = Gtk.Image()
-			image.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_MEDIUM))
-			image.show()
-			self._cover_widget.add(image)	
 	"""
 		On track activation, play track
 		@param widget as TracksWidget
 		@param track id as int
 	"""		
 	def _on_activated(self, widget, track_id):
+		if not Objects.player.is_party():
+			tracks = Objects.playlists.get_tracks_id(self._name)
+			Objects.player.set_user_playlist(tracks)
 		Objects.player.load(track_id)
-#		if not Objects.player.is_party():
-#			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
 
 
 """

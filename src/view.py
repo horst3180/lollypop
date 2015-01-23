@@ -119,16 +119,16 @@ class View(Gtk.Grid):
 """
 class ArtistView(View):
 	"""
-		Init ArtistView ui with a scrolled grid of AlbumWidgetSongs
+		Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
 		@param: artist id as int
 		@param: genre id as int
-		@param: context as bool
+		@param: show_artist_details as bool
 	"""
-	def __init__(self, artist_id, genre_id, context):
+	def __init__(self, artist_id, genre_id, show_artist_details):
 		View.__init__(self)
 		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		
-		if not context:
+		if show_artist_details:
 			self._ui = Gtk.Builder()
 			self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
 			self.add(self._ui.get_object('ArtistView'))
@@ -138,7 +138,7 @@ class ArtistView(View):
 
 		self._artist_id = artist_id
 		self._genre_id = genre_id
-		self._context = context
+		self._show_menu = show_artist_details
 
 		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
@@ -195,7 +195,7 @@ class ArtistView(View):
 	"""
 	def _add_albums(self, albums):
 		if len(albums) > 0 and not self._stop:
-			widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, not self._context, self._size_group)
+			widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, self._show_menu, self._size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			if widget.eventbox:
@@ -359,12 +359,12 @@ class PlaylistView(View):
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
 										Gtk.PolicyType.AUTOMATIC)
-
+		self._scrolledWindow.show()
 		self.add(self._scrolledWindow)
 		widget = PlaylistWidget(playlist_id)
 		widget.show()
 		self._scrolledWindow.add(widget)
-		self.show_all()
+		self.show()
 
 #######################
 # PRIVATE             #

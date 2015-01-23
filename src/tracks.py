@@ -109,6 +109,13 @@ class TrackRow(Gtk.ListBoxRow):
 	def get_number(self):
 		return self._number
 
+	"""
+		Set cover
+		@param cover as Gdk.Pixbuf
+	"""
+	def set_cover(self, pixbuf):
+		self._ui.get_object('cover').set_from_pixbuf(pixbuf)
+
 #######################
 # PRIVATE             #
 #######################
@@ -139,9 +146,15 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SIGNAL_RUN_FIRST, None, (int,))
     }
 
-	def __init__(self, popover):
+	"""
+		Init track widget
+		@param show_cover as bool if cover need to be displayed
+		@param show_menu as bool if menu need to be displayed
+	"""
+	def __init__(self, show_cover, show_menu):
 		Gtk.ListBox.__init__(self)
-		self._popover = popover
+		self._show_cover = show_cover
+		self._show_menu = show_menu
 		self.connect("row-activated", self._on_activate)
 		self.get_style_context().add_class('trackswidget')
 
@@ -155,8 +168,8 @@ class TracksWidget(Gtk.ListBox):
 	"""
 	def add_track(self, track_id, num, title, length, pos):
 		track_row = TrackRow()
-		if not self._popover:
-			track_row.show_widget('menu', False)
+		track_row.show_widget('cover', self._show_cover)
+		track_row.show_widget('menu', self._show_menu)
 		if Objects.player.current.id == track_id:
 			track_row.show_widget('icon', True)
 		if pos:
@@ -167,6 +180,9 @@ class TracksWidget(Gtk.ListBox):
 		track_row.set_label('title', escape(title))
 		track_row.set_label('duration', seconds_to_string(length))
 		track_row.set_object_id(track_id)
+		if self._show_cover:
+			album_id = Objects.tracks.get_album_id(track_id)
+			track_row.set_cover(Objects.art.get(album_id, ART_SIZE_SMALL))
 		track_row.show()
 		self.add(track_row)
 
