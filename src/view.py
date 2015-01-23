@@ -361,11 +361,17 @@ class PlaylistView(View):
 										Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.show()
 		self.add(self._scrolledWindow)
-		widget = PlaylistWidget(playlist_id)
-		widget.show()
-		self._scrolledWindow.add(widget)
+		self._widget = PlaylistWidget(playlist_id)
+		self._widget.show()
+		self._scrolledWindow.add(self._widget)
 		self.show()
 
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Update the content view
+		@param player as Player
+	"""
+	def _update_content(self, player):
+		self._widget.update_playing_track(player.current.id)
