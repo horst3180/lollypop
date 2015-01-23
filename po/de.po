@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Mark Gerlach, 2015
 # Noah Hüsser <yatekii@yatekii.ch>, 2015
@@ -12,11 +12,12 @@ msgstr ""
 "POT-Creation-Date: 2015-01-05 17:36+0100\n"
 "PO-Revision-Date: 2015-01-09 14:54+0000\n"
 "Last-Translator: Noah Hüsser <yatekii@yatekii.ch>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
+"de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -87,14 +88,14 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Zufallsmodus"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
-msgstr "Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks\" (zufälliger Titel), \"albums\" (zufälliges Album)"
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+"Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks"
+"\" (zufälliger Titel), \"albums\" (zufälliges Album)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 #: ../src/window.py:35
