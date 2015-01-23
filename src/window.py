@@ -316,13 +316,19 @@ class Window(Gtk.ApplicationWindow):
 		# In playlist mode, we only show second list
 		if genre_id != PLAYLISTS:
 			self._update_view_albums(genre_id)
-		
+
 	"""
 		Update detailed view
-		@param object as int, genre id as int
+		@param obj as SelectionList
+		@param object id as int
+		@param genre id as int
 	"""
 	def _update_view_detailed(self, obj, object_id, genre_id):
-		if genre_id == PLAYLISTS:
+		# We need to show playlist selector
+		# FIXME: This need to be reworked
+		if not genre_id:
+			self._setup_list_two(obj, PLAYLISTS)
+		elif genre_id == PLAYLISTS:
 			self._update_view_playlists(object_id)
 		elif object_id == ALL or object_id == POPULARS:
 			self._update_view_albums(object_id)
