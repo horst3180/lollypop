@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:25+0100\n"
+"POT-Creation-Date: 2015-01-23 22:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,6 +169,15 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
+#: ../src/playlists.py:318
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr ""
+
+#: ../src/playlists.py:379 ../src/playlists.py:382
+msgid "New playlist "
+msgstr ""
+
 #: ../src/view.py:36
 msgid "Loading please wait..."
 msgstr ""
@@ -255,6 +264,22 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
+#: ../data/PlaylistPopup.ui.h:1
+msgid "Add to playlists"
+msgstr ""
+
+#: ../data/PlaylistPopup.ui.h:2
+msgid "New playlist"
+msgstr ""
+
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+msgid "Close"
+msgstr ""
+
+#: ../data/PlaylistPopup.ui.h:4
+msgid "Confirm"
+msgstr ""
+
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
 msgstr ""
@@ -317,8 +342,4 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Select what will be available in party mode"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Close"
 msgstr ""

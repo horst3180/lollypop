@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:25+0100\n"
+"POT-Creation-Date: 2015-01-23 22:38+0100\n"
 "PO-Revision-Date: 2015-01-06 11:40+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -176,6 +176,16 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
+#: ../src/playlists.py:318
+#, fuzzy, python-format
+msgid "Remove \"%s\"?"
+msgstr "Odstranit z řady"
+
+#: ../src/playlists.py:379 ../src/playlists.py:382
+#, fuzzy
+msgid "New playlist "
+msgstr "Přehrát"
+
 #: ../src/view.py:36
 msgid "Loading please wait..."
 msgstr "Nahrává se. Počkejte, prosím..."
@@ -265,6 +275,24 @@ msgstr "O _programu"
 msgid "_Quit"
 msgstr "_Ukončit"
 
+#: ../data/PlaylistPopup.ui.h:1
+#, fuzzy
+msgid "Add to playlists"
+msgstr "Přehrát"
+
+#: ../data/PlaylistPopup.ui.h:2
+#, fuzzy
+msgid "New playlist"
+msgstr "Přehrát"
+
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+msgid "Close"
+msgstr "Zavřít"
+
+#: ../data/PlaylistPopup.ui.h:4
+msgid "Confirm"
+msgstr ""
+
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
 msgstr "Žádné míchání"
@@ -328,7 +356,3 @@ msgstr "Hudba"
 #: ../data/SettingsDialog.ui.h:8
 msgid "Select what will be available in party mode"
 msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Close"
-msgstr "Zavřít"

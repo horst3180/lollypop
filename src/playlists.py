@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango, TotemPlParser
-from gettext import gettext as _, ngettext 
+from gettext import gettext as _
 
 import os
 from stat import S_ISREG, ST_MTIME, ST_MODE
@@ -315,7 +315,7 @@ class PlaylistPopup:
 	def _show_infobar(self, path):
 		iterator = self._model.get_iter(path)
 		self._deleted_path = path
-		self._infobar_label.set_text(_("Remove %s?") % self._model.get_value(iterator, 1))
+		self._infobar_label.set_text(_("Remove \"%s\"?") % self._model.get_value(iterator, 1))
 		self._infobar.show()
 		
 	"""

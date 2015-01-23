@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:25+0100\n"
+"POT-Creation-Date: 2015-01-23 22:38+0100\n"
 "PO-Revision-Date: 2015-01-09 14:54+0000\n"
 "Last-Translator: Noah Hüsser <yatekii@yatekii.ch>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
@@ -175,6 +175,16 @@ msgstr "Unbekannt"
 msgid "Compilation"
 msgstr "Compilation"
 
+#: ../src/playlists.py:318
+#, fuzzy, python-format
+msgid "Remove \"%s\"?"
+msgstr "Aus Warteschlange entfernen"
+
+#: ../src/playlists.py:379 ../src/playlists.py:382
+#, fuzzy
+msgid "New playlist "
+msgstr "Play"
+
 #: ../src/view.py:36
 msgid "Loading please wait..."
 msgstr "Laden, bitte warten..."
@@ -264,6 +274,24 @@ msgstr "_Über"
 msgid "_Quit"
 msgstr "_Beenden"
 
+#: ../data/PlaylistPopup.ui.h:1
+#, fuzzy
+msgid "Add to playlists"
+msgstr "Play"
+
+#: ../data/PlaylistPopup.ui.h:2
+#, fuzzy
+msgid "New playlist"
+msgstr "Play"
+
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+msgid "Close"
+msgstr "Schliessen"
+
+#: ../data/PlaylistPopup.ui.h:4
+msgid "Confirm"
+msgstr ""
+
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
 msgstr "Kein Zufall"
@@ -327,7 +355,3 @@ msgstr "Musik"
 #: ../data/SettingsDialog.ui.h:8
 msgid "Select what will be available in party mode"
 msgstr "Wähle was im partymodus verfügbar sein soll"
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Close"
-msgstr "Schliessen"
