@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:38+0100\n"
+"POT-Creation-Date: 2015-01-24 00:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,27 +117,27 @@ msgstr ""
 msgid "Configure lollypop"
 msgstr ""
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:230 ../src/toolbar.py:257
 msgid "Pause"
 msgstr ""
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:267 ../src/window.py:311
+#: ../src/window.py:265 ../src/window.py:312
 msgid "Compilations"
 msgstr ""
 
-#: ../src/window.py:269
+#: ../src/window.py:270
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:270 ../src/popmenu.py:43
+#: ../src/window.py:271 ../src/popmenu.py:46
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:271
+#: ../src/window.py:272
 msgid "Popular albums"
 msgstr ""
 
@@ -169,12 +169,12 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:318
+#: ../src/playlists.py:323
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:379 ../src/playlists.py:382
+#: ../src/playlists.py:384 ../src/playlists.py:387
 msgid "New playlist "
 msgstr ""
 
@@ -182,39 +182,41 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/popmenu.py:42
+#: ../src/popmenu.py:41
 msgid "Playback"
 msgstr ""
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr ""
 
-#: ../src/popmenu.py:72
+#: ../src/popmenu.py:78
 msgid "Management"
 msgstr ""
 
-#: ../src/popmenu.py:78
-msgid "Remove from "
+#: ../src/popmenu.py:86
+#, python-format
+msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:81
-msgid "Add to "
+#: ../src/popmenu.py:89
+#, python-format
+msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:123 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:127
+#: ../src/popmenu.py:135
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:129 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:132
+#: ../src/popmenu.py:140
 msgid "Remove from queue"
 msgstr ""
 

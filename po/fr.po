@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:38+0100\n"
+"POT-Creation-Date: 2015-01-24 00:32+0100\n"
 "PO-Revision-Date: 2015-01-11 21:44+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -121,27 +121,27 @@ msgstr "Lecteur de musique pour le bureau GNOME"
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:230 ../src/toolbar.py:257
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:267 ../src/window.py:311
+#: ../src/window.py:265 ../src/window.py:312
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:269
+#: ../src/window.py:270
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:270 ../src/popmenu.py:43
+#: ../src/window.py:271 ../src/popmenu.py:46
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/window.py:271
+#: ../src/window.py:272
 msgid "Popular albums"
 msgstr "Albums populaires"
 
@@ -173,12 +173,12 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:318
+#: ../src/playlists.py:323
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlists.py:379 ../src/playlists.py:382
+#: ../src/playlists.py:384 ../src/playlists.py:387
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture"
 
@@ -186,39 +186,41 @@ msgstr "Nouvelle liste de lecture"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popmenu.py:42
+#: ../src/popmenu.py:41
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Lire seulement cet album"
 
-#: ../src/popmenu.py:72
+#: ../src/popmenu.py:78
 msgid "Management"
 msgstr "Gestion"
 
-#: ../src/popmenu.py:78
-msgid "Remove from "
-msgstr "Supprimer de "
+#: ../src/popmenu.py:86
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Supprimer de \"%s\""
 
-#: ../src/popmenu.py:81
-msgid "Add to "
-msgstr "Ajouter à "
+#: ../src/popmenu.py:89
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Ajouter à \"%s\""
 
-#: ../src/popmenu.py:123 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
-#: ../src/popmenu.py:127
+#: ../src/popmenu.py:135
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:129 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:132
+#: ../src/popmenu.py:140
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 

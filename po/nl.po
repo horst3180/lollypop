@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:38+0100\n"
+"POT-Creation-Date: 2015-01-24 00:32+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -119,28 +119,28 @@ msgstr "Muziekspeler voor de GNOME-desktop"
 msgid "Configure lollypop"
 msgstr "Lollypop aanpassen"
 
-#: ../src/toolbar.py:224 ../src/toolbar.py:251
+#: ../src/toolbar.py:230 ../src/toolbar.py:257
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../src/window.py:267 ../src/window.py:311
+#: ../src/window.py:265 ../src/window.py:312
 msgid "Compilations"
 msgstr "Compilaties"
 
-#: ../src/window.py:269
+#: ../src/window.py:270
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/window.py:270 ../src/popmenu.py:43
+#: ../src/window.py:271 ../src/popmenu.py:46
 #, fuzzy
 msgid "Playlists"
 msgstr "Afspelen"
 
-#: ../src/window.py:271
+#: ../src/window.py:272
 msgid "Popular albums"
 msgstr "Populaire albums"
 
@@ -172,12 +172,12 @@ msgstr "Onbekend"
 msgid "Compilation"
 msgstr "Compilatie"
 
-#: ../src/playlists.py:318
+#: ../src/playlists.py:323
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/playlists.py:379 ../src/playlists.py:382
+#: ../src/playlists.py:384 ../src/playlists.py:387
 #, fuzzy
 msgid "New playlist "
 msgstr "Afspelen"
@@ -186,42 +186,42 @@ msgstr "Afspelen"
 msgid "Loading please wait..."
 msgstr "Bezig met laden, gelieve te wachten..."
 
-#: ../src/popmenu.py:42
+#: ../src/popmenu.py:41
 #, fuzzy
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/popmenu.py:59
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Alleen dit album afspelen"
 
-#: ../src/popmenu.py:72
+#: ../src/popmenu.py:78
 msgid "Management"
 msgstr ""
 
-#: ../src/popmenu.py:78
-#, fuzzy
-msgid "Remove from "
+#: ../src/popmenu.py:86
+#, fuzzy, python-format
+msgid "Remove from \"%s\""
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/popmenu.py:81
-#, fuzzy
-msgid "Add to "
+#: ../src/popmenu.py:89
+#, fuzzy, python-format
+msgid "Add to \"%s\""
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:123 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:127
+#: ../src/popmenu.py:135
 msgid "Next tracks"
 msgstr "Volgende nummers"
 
-#: ../src/popmenu.py:129 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Volgend nummer"
 
-#: ../src/popmenu.py:132
+#: ../src/popmenu.py:140
 msgid "Remove from queue"
 msgstr "Verwijderen uit wachtrij"
 
