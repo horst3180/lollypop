@@ -25,21 +25,24 @@ class PopMenu(Gio.Menu):
 		Init menu model
 		@param: object id as int
 		@param: is album as bool
+		@param: toolbar context as bool => only show playlists
 	"""
-	def __init__(self, object_id, is_album):
+	def __init__(self, object_id, is_album, toolbar_context = False):
 		Gio.Menu.__init__(self)
 		self._is_album = is_album
 		app = Gio.Application.get_default()
 		#FIXME How signal connect works when called many times
 		
-		playback_menu = Gio.Menu()
+		if not toolbar_context:
+			playback_menu = Gio.Menu()
+			if is_album:
+				self._set_album_actions(app, playback_menu, object_id)
+			self._set_queue_actions(app, playback_menu, object_id, is_album)
+			self.insert_section(0, _("Playback"), playback_menu)
+
 		playlist_menu = Gio.Menu()
-		
-		if is_album:
-			self._set_album_actions(app, playback_menu, object_id)
-		self._set_queue_actions(app, playback_menu, object_id, is_album)
-		self._set_playlist_actions(app, playlist_menu, object_id, is_album)
-		self.insert_section(0, _("Playback"), playback_menu)
+		self._set_playlist_actions(app, playlist_menu, object_id, is_album, not toolbar_context)
+
 		self.insert_section(1, _("Playlists"), playlist_menu)
 			
 #######################
@@ -64,13 +67,18 @@ class PopMenu(Gio.Menu):
 		@param menu as Gio.Menu
 		@param object_id as int
 		@param is album as bool
+		@param manage playlists as bool
 	"""
-	def _set_playlist_actions(self, app, menu, object_id, is_album):
-		playlist_action = Gio.SimpleAction(name="playlist_action")
-		app.add_action(playlist_action)
-		playlist_action.connect('activate', self._add_to_playlists, object_id, is_album)
-		menu.append(_("Management"), 'app.playlist_action')
-		for playlist in Objects.playlists.get(True):
+	def _set_playlist_actions(self, app, menu, object_id, is_album, manage_playlists):
+		max_items = 15
+		if manage_playlists:
+			playlist_action = Gio.SimpleAction(name="playlist_action")
+			app.add_action(playlist_action)
+			playlist_action.connect('activate', self._add_to_playlists, object_id, is_album)
+			menu.append(_("Management"), 'app.playlist_action')
+			max_items = 3
+			
+		for playlist in Objects.playlists.get(max_items):
 			action = Gio.SimpleAction(name=playlist[0])
 			app.add_action(action)
 			if Objects.playlists.is_present(playlist[1], object_id, is_album):

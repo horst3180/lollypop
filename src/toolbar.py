@@ -18,6 +18,7 @@ from _thread import start_new_thread
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
+from lollypop.popmenu import PopMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
@@ -57,7 +58,7 @@ class Toolbar():
 		self._artist_label = self._ui.get_object('artist')
 		self._cover = self._ui.get_object('cover')
 		self._infobox = self._ui.get_object('infobox')	
-		self._infobox.connect("button-press-event", self._pop_albums)
+		self._infobox.connect("button-press-event", self._pop_infobox)
 		self._popalbums = PopAlbums()
 		self._popalbums.set_relative_to(self._infobox)
 
@@ -136,13 +137,18 @@ class Toolbar():
 		Objects.settings.set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
 
 	"""
-		Pop albums from current artist in a thread
+		Pop albums from current artist in a thread on left click
 	"""
-	def _pop_albums(self, widget, event):
-		if event.button == 1:
-			if Objects.player.current.id:
+	def _pop_infobox(self, widget, event):
+		if Objects.player.current.id:
+			if event.button == 1:		
 				self._popalbums.populate()
 				self._popalbums.show()
+				return True
+			else:
+				menu = PopMenu(Objects.player.current.id, False, True)
+				popover = Gtk.Popover.new_from_model(self._infobox, menu)
+				popover.show()
 				return True
 
 	"""

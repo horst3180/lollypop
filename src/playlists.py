@@ -77,10 +77,10 @@ class PlaylistsManager:
 			
 	"""
 		Return availables playlists
-		@param recent as bool to return only recent playlists
+		@param max items as int
 		@return array of (id, string)
 	"""
-	def get(self, recent = False):
+	def get(self, max_items = None):
 		self._playlists = []
 		try:
 			index = 0
@@ -94,8 +94,8 @@ class PlaylistsManager:
 					item = (index, filename[:-4])
 					self._playlists.append(item)
 					index += 1
-					# Only get recent playlist
-					if recent and index > 3:
+					# Break if max items is reach
+					if max_items and index > max_items:
 						break	
 		except Exception as e:
 			print("Lollypop::PlaylistManager::get: %s" % e)
