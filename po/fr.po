@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-05 17:36+0100\n"
+"POT-Creation-Date: 2015-01-23 22:25+0100\n"
 "PO-Revision-Date: 2015-01-11 21:44+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -74,20 +74,24 @@ msgstr "Ne pas afficher la liste des genres"
 msgid "Show albums/artists view as dark"
 msgstr "Montrer les albums/artistes avec un fond sombre"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Show stylized covers"
+msgstr "Montrer des pochettes d'albums stylisées"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:3
 msgid "Continue playback when closed"
 msgstr "Continuer à lire à la fermeture"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "INTERNAL"
 msgstr "INTERNE"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Shuffle mode"
 msgstr "Mode de lecture aléatoire"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -113,27 +117,31 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:114
+#: ../src/application.py:130
 msgid "Configure lollypop"
 msgstr "Configurer lollypop"
 
-#: ../src/toolbar.py:195 ../src/toolbar.py:222
+#: ../src/toolbar.py:224 ../src/toolbar.py:251
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:257 ../src/window.py:298
+#: ../src/window.py:267 ../src/window.py:311
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:259
+#: ../src/window.py:269
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:260
+#: ../src/window.py:270 ../src/popmenu.py:43
+msgid "Playlists"
+msgstr "Listes de lecture"
+
+#: ../src/window.py:271
 msgid "Popular albums"
 msgstr "Albums populaires"
 
@@ -151,17 +159,17 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/database_artists.py:59
+#: ../src/database_artists.py:60
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/database_artists.py:66 ../src/database_albums.py:124
-#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
-#: ../src/database_genres.py:63
+#: ../src/database_artists.py:67 ../src/database_albums.py:139
+#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:139
+#: ../src/database_albums.py:154
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -169,27 +177,43 @@ msgstr "Compilation"
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/popmenu.py:56
+#: ../src/popmenu.py:42
+msgid "Playback"
+msgstr "Lecture"
+
+#: ../src/popmenu.py:59
 msgid "Only play this album"
 msgstr "Lire seulement cet album"
 
-#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:72
+msgid "Management"
+msgstr "Gestion"
+
+#: ../src/popmenu.py:78
+msgid "Remove from "
+msgstr "Supprimer de "
+
+#: ../src/popmenu.py:81
+msgid "Add to "
+msgstr "Ajouter à "
+
+#: ../src/popmenu.py:123 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
-#: ../src/popmenu.py:70
+#: ../src/popmenu.py:127
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:129 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:75
+#: ../src/popmenu.py:132
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/popimages.py:53
+#: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 

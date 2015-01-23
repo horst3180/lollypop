@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-05 17:36+0100\n"
+"POT-Creation-Date: 2015-01-23 22:25+0100\n"
 "PO-Revision-Date: 2015-01-06 11:40+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -76,20 +76,24 @@ msgstr "Neukazovat seznam žánrů"
 msgid "Show albums/artists view as dark"
 msgstr "Ukázat pohled na alba/umělce jako tmavý"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Show stylized covers"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:3
 msgid "Continue playback when closed"
 msgstr "Pokračovat v přehrávání při zavření"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "INTERNAL"
 msgstr "VNITŘNÍ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -115,27 +119,32 @@ msgstr "Přehrávejte a pořádejte svoji hudební sbírku"
 msgid "Music player for the GNOME desktop"
 msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 
-#: ../src/application.py:114
+#: ../src/application.py:130
 msgid "Configure lollypop"
 msgstr "Nastavit Lollypop"
 
-#: ../src/toolbar.py:195 ../src/toolbar.py:222
+#: ../src/toolbar.py:224 ../src/toolbar.py:251
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/toolbar.py:203 ../src/toolbar.py:219 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:232 ../src/toolbar.py:248 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/window.py:257 ../src/window.py:298
+#: ../src/window.py:267 ../src/window.py:311
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/window.py:259
+#: ../src/window.py:269
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/window.py:260
+#: ../src/window.py:270 ../src/popmenu.py:43
+#, fuzzy
+msgid "Playlists"
+msgstr "Přehrát"
+
+#: ../src/window.py:271
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
@@ -153,17 +162,17 @@ msgstr "Další"
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
 
-#: ../src/database_artists.py:59
+#: ../src/database_artists.py:60
 msgid "Many artists"
 msgstr "Mnoho umělců"
 
-#: ../src/database_artists.py:66 ../src/database_albums.py:124
-#: ../src/database_tracks.py:116 ../src/database_tracks.py:131
-#: ../src/database_genres.py:63
+#: ../src/database_artists.py:67 ../src/database_albums.py:139
+#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../src/database_albums.py:139
+#: ../src/database_albums.py:154
 msgid "Compilation"
 msgstr "Kompilace"
 
@@ -171,27 +180,46 @@ msgstr "Kompilace"
 msgid "Loading please wait..."
 msgstr "Nahrává se. Počkejte, prosím..."
 
-#: ../src/popmenu.py:56
+#: ../src/popmenu.py:42
+#, fuzzy
+msgid "Playback"
+msgstr "Přehrát"
+
+#: ../src/popmenu.py:59
 msgid "Only play this album"
 msgstr "Přehrát pouze toto album"
 
-#: ../src/popmenu.py:66 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:72
+msgid "Management"
+msgstr ""
+
+#: ../src/popmenu.py:78
+#, fuzzy
+msgid "Remove from "
+msgstr "Odstranit z řady"
+
+#: ../src/popmenu.py:81
+#, fuzzy
+msgid "Add to "
+msgstr "Přidat do řady"
+
+#: ../src/popmenu.py:123 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmenu.py:70
+#: ../src/popmenu.py:127
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmenu.py:72 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:129 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmenu.py:75
+#: ../src/popmenu.py:132
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 
-#: ../src/popimages.py:53
+#: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Vybrat obal pro toto album"
 
