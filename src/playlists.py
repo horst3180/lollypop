@@ -248,11 +248,12 @@ class PlaylistPopup:
 		self._object_id = object_id		
 		self._is_album = is_album
 		self._deleted_path = None
-
+		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+		
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistPopup.ui')
 
-		self._model = Gtk.ListStore(bool, str)
+		self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
 
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
@@ -276,9 +277,14 @@ class PlaylistPopup:
 		column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
 		column1.set_expand(True)
 		
+		renderer2 = Gtk.CellRendererPixbuf()
+		renderer2.set_property('stock-size', 22)
+		renderer2.set_fixed_size(22, -1)
+		column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
 		
 		self._view.append_column(column0)
 		self._view.append_column(column1)
+		self._view.append_column(column2)
 
 	"""
 		Show playlist popup
@@ -295,13 +301,23 @@ class PlaylistPopup:
 		playlists = Objects.playlists.get()
 		for playlist in playlists:
 			selected = Objects.playlists.is_present(playlist[1], self._object_id, self._is_album)
-			self._model.append([selected, playlist[1]])
+			self._model.append([selected, playlist[1], self._del_pixbuf])
 		self._popup.show()
 		
 #######################
 # PRIVATE             #
 #######################
 
+	"""
+		Show infobar
+		@param path as Gtk.TreePath
+	"""
+	def _show_infobar(self, path):
+		iterator = self._model.get_iter(path)
+		self._deleted_path = path
+		self._infobar_label.set_text(_("Remove %s?") % self._model.get_value(iterator, 1))
+		self._infobar.show()
+		
 	"""
 		Hide infobar
 		@param widget as Gtk.Infobar
@@ -311,6 +327,16 @@ class PlaylistPopup:
 		if response_id == Gtk.ResponseType.CLOSE:
 			self._infobar.hide()
 
+	"""
+		Delete playlist
+		@param TreeView, TreePath, TreeViewColumn
+	"""
+	def _on_row_activated(self, view, path, column):
+		iterator = self._model.get_iter(path)
+		if iterator:
+			if column.get_title() == "pixbuf2":
+				self._show_infobar(path)
+			
 	"""
 		Delete playlist after confirmation
 		@param button as Gtk.Button
@@ -330,11 +356,7 @@ class PlaylistPopup:
 	def _on_keyboard_event(self, widget, event):
 		if event.keyval == 65535:
 			path, column = self._view.get_cursor()
-			iterator = self._model.get_iter(path)
-			self._deleted_path = path
-			self._infobar_label.set_text(_("Remove %s playlist?") % self._model.get_value(iterator, 1))
-			self._infobar.show()
-
+			self._show_infobar(path)
 	"""
 		Hide window
 		@param widget as Gtk.Button
@@ -358,7 +380,7 @@ class PlaylistPopup:
 		while name in existing_playlists:
 			count += 1
 			name = _("New playlist ")+str(count)
-		self._model.append([True, name])
+		self._model.append([True, name, self._del_pixbuf])
 		Objects.playlists.add(name)
 		self._set_current_object(name, True)
 
