@@ -14,6 +14,7 @@
 from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _
 
+from _thread import start_new_thread
 import os
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
@@ -194,17 +195,18 @@ class PlaylistsManager(GObject.GObject):
 		@param playlist name as str
 		@param object id as int
 		@param is an album as bool
+		@param sql as sqlite cursor
 		@return bool
 	"""
-	def is_present(self, playlist_name, object_id, is_album):
+	def is_present(self, playlist_name, object_id, is_album, sql = None):
 		if is_album:
-			tracks = Objects.albums.get_tracks(object_id)
+			tracks = Objects.albums.get_tracks(object_id, sql)
 		else:
 			tracks = [ object_id ]
 
 		found = 0
 		for filepath in self.get_tracks(playlist_name):
-			track_id = Objects.tracks.get_id_by_path(filepath)
+			track_id = Objects.tracks.get_id_by_path(filepath, sql)
 			if track_id in tracks:
 				found += 1
 		if found == len(tracks):
@@ -281,16 +283,31 @@ class PlaylistPopup:
 		else:
 			self._popup.set_property('height-request', 600)
 
-		# Search if we need to select item or not
-		playlists = Objects.playlists.get()
-		for playlist in playlists:
-			selected = Objects.playlists.is_present(playlist[1], self._object_id, self._is_album)
-			self._model.append([selected, playlist[1], self._del_pixbuf])
+		start_new_thread(self._append_playlists, ())
 		self._popup.show()
 		
 #######################
 # PRIVATE             #
 #######################
+
+	"""
+		Append playlists, thread safe
+	"""
+	def _append_playlists(self):
+		sql = Objects.db.get_cursor()
+		# Search if we need to select item or not
+		playlists = Objects.playlists.get()
+		for playlist in playlists:
+			selected = Objects.playlists.is_present(playlist[1], self._object_id, self._is_album, sql)
+			GLib.idle_add(self._append_playlist, playlist[1], selected)
+
+	"""
+		Append a playlist
+		@param playlist name as str
+		@param playlist selected as bool
+	"""
+	def _append_playlist(self, playlist_name, selected):
+		self._model.append([selected, playlist_name, self._del_pixbuf])
 
 	"""
 		Show infobar
