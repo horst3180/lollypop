@@ -46,7 +46,6 @@ class DatabaseTracks:
 		@param filepath as str
 	"""	
 	def get_id_by_path(self, filepath, sql = None):
-	
 		if not sql:
 			sql = Objects.sql
 		result = sql.execute("SELECT rowid FROM tracks where filepath=?", (filepath,))

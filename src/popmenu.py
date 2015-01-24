@@ -173,11 +173,9 @@ class PopMenu(Gio.Menu):
 		else:
 			tracks = [ object_id ]
 
-		playlist = Objects.playlists.get_playlist(playlist_name)
 		for track_id in tracks:
-			uri = GLib.filename_to_uri(Objects.tracks.get_path(track_id))
-			Objects.playlists.add_track(uri, playlist)
-		Objects.playlists.save_playlist(playlist, playlist_name)
+			filepath = Objects.tracks.get_path(track_id)
+			Objects.playlists.add_track(playlist_name, filepath)
 		
 	"""
 		Del from playlist
@@ -193,11 +191,9 @@ class PopMenu(Gio.Menu):
 		else:
 			tracks = [ object_id ]
 
-		playlist = Objects.playlists.get_playlist(playlist_name)
 		for track_id in tracks:
-			uri = GLib.filename_to_uri(Objects.tracks.get_path(track_id))
-			playlist = Objects.playlists.remove_track(uri, playlist)
-		Objects.playlists.save_playlist(playlist, playlist_name)
+			filepath = Objects.tracks.get_path(track_id)
+			Objects.playlists.remove_track(playlist_name, filepath)
 			
 	"""
 		Append track to queue
