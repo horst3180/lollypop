@@ -155,17 +155,18 @@ class MPRIS(dbus.service.Object):
 
 	def _update_metadata(self):
 		if Objects.player.current.id == None:
-			return dbus.Dictionary({}, signature='sv')
-		self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
-		self._metadata['xesam:trackNumber'] = Objects.player.current.number
-		self._metadata['xesam:title'] = Objects.player.current.title
-		self._metadata['xesam:album'] = Objects.player.current.album
-		self._metadata['xesam:artist'] = [Objects.player.current.artist]
-		self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
-		self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
-		self._metadata['xesam:genre'] = [Objects.player.current.genre]
-		self._metadata['xesam:url'] = "file://"+Objects.player.current.path
-		self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
+			self._metadata = {}
+		else:
+			self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
+			self._metadata['xesam:trackNumber'] = Objects.player.current.number
+			self._metadata['xesam:title'] = Objects.player.current.title
+			self._metadata['xesam:album'] = Objects.player.current.album
+			self._metadata['xesam:artist'] = [Objects.player.current.artist]
+			self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
+			self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+			self._metadata['xesam:genre'] = [Objects.player.current.genre]
+			self._metadata['xesam:url'] = "file://"+Objects.player.current.path
+			self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
 	
 
 	def _on_seeked(self, player, position):
