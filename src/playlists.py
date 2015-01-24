@@ -410,7 +410,7 @@ class PlaylistPopup:
 		if self._is_album:
 			tracks_path = Objects.albums.get_tracks_path(self._object_id)
 		else:
-			tracks = [ Objects.tracks.get_path(self._object_id) ]
+			tracks_path = [ Objects.tracks.get_path(self._object_id) ]
 
 		for track_path in tracks_path:
 			if add:
