@@ -612,7 +612,7 @@ class Player(GObject.GObject):
 		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
 		
 		# We do not update this only when we are in album playlist mode (not a user playlist)
-		if self._albums:
+		if not self._user_playlist:
 			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
 			self.current.number = tracks.index(self.current.id)
 			
