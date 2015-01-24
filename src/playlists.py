@@ -408,16 +408,15 @@ class PlaylistPopup:
 	def _set_current_object(self, name, add):
 		# Add or remove object from playlist
 		if self._is_album:
-			tracks = Objects.albums.get_tracks(self._object_id)
+			tracks_path = Objects.albums.get_tracks_path(self._object_id)
 		else:
-			tracks = [ self._object_id ]
+			tracks = [ Objects.tracks.get_path(self._object_id) ]
 
-		for track_id in tracks:
-			filepath = Objects.tracks.get_path(track_id)
+		for track_path in tracks_path:
 			if add:
-				Objects.playlists.add_track(name, filepath)
+				Objects.playlists.add_track(name, track_path)
 			else:
-				playlist = Objects.playlists.remove_track(name, filepath)
+				playlist = Objects.playlists.remove_track(name, track_path)
 		
 	"""
 		When playlist is edited, rename playlist
