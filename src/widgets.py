@@ -108,8 +108,8 @@ class AlbumDetailedWidget(Gtk.Grid):
 		self._genre_id = genre_id
 		self._limit_to_artist = limit_to_artist
 
-		self._tracks_widget1 = TracksWidget(False, show_menu)
-		self._tracks_widget2 = TracksWidget(False, show_menu)
+		self._tracks_widget1 = TracksWidget(show_menu)
+		self._tracks_widget2 = TracksWidget(show_menu)
 		if size_group:
 			size_group.add_widget(self._tracks_widget1)
 			size_group.add_widget(self._tracks_widget2)
@@ -232,12 +232,13 @@ class PlaylistWidget(Gtk.Grid):
 	def __init__(self, playlist_id):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
+		self._previous_album_id = None
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
 
-		self._tracks_widget1 = TracksWidget(True, False)
-		self._tracks_widget2 = TracksWidget(True, False)
+		self._tracks_widget1 = TracksWidget(False)
+		self._tracks_widget2 = TracksWidget(False)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._tracks_widget1.show()
@@ -321,6 +322,12 @@ class PlaylistWidget(Gtk.Grid):
 			(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
 			title = "%s - %s" % (translate_artist_name(Objects.artists.get_name(artist_id)), title)
 
+			# Don't show cover
+			if self._previous_album_id and self._previous_album_id == album_id:
+				show_cover = False
+			else:
+				show_cover = True
+
 			# Get track position in queue
 			pos = None
 			if Objects.player.is_in_queue(track_id):
@@ -328,11 +335,13 @@ class PlaylistWidget(Gtk.Grid):
 
 			if album_id not in albums:
 				albums.append(album_id)
-				
+			
+			self._previous_album_id = album_id
+
 			if i <= mid_tracks:
-				self._tracks_widget1.add_track(track_id, i, title, length, pos) 
+				self._tracks_widget1.add_track(track_id, i, title, length, pos, show_cover) 
 			else:
-				self._tracks_widget2.add_track(track_id, i, title, length, pos) 
+				self._tracks_widget2.add_track(track_id, i, title, length, pos, show_cover)
 			i += 1
 
 	"""
