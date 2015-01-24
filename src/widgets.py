@@ -343,7 +343,7 @@ class PlaylistWidget(Gtk.Grid):
 	def _on_activated(self, widget, track_id):
 		if not Objects.player.is_party():
 			tracks = Objects.playlists.get_tracks_id(self._name)
-			Objects.player.set_user_playlist(tracks)
+			Objects.player.set_user_playlist(tracks, track_id)
 		Objects.player.load(track_id)
 
 

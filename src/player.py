@@ -417,12 +417,13 @@ class Player(GObject.GObject):
 	"""
 		Set user playlist as current playback playlist
 		@param array of track id as int
+		@param starting track id as int
 	"""
-	def set_user_playlist(self, tracks):
+	def set_user_playlist(self, tracks, track_id):
 		self._user_playlist = tracks
 		self._albums = None
 		self._shuffle_playlist()
-		self.current.number = 0
+		self.current.number = tracks.index(track_id)
 		
 #######################
 # PRIVATE             #
