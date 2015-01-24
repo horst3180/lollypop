@@ -144,12 +144,11 @@ class Toolbar():
 			if event.button == 1:		
 				self._popalbums.populate()
 				self._popalbums.show()
-				return True
 			else:
 				menu = PopMenu(Objects.player.current.id, False, True)
 				popover = Gtk.Popover.new_from_model(self._infobox, menu)
 				popover.show()
-				return True
+			return True
 
 	"""
 		Update cover for album_id
