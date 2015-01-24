@@ -62,7 +62,7 @@ class Player(GObject.GObject):
 		self._user_playlist_backup = None # Used by shuffle tracks to restore user playlist before shuffle
 		self._shuffle = Objects.settings.get_enum('shuffle')
 		self._shuffle_tracks_history = [] # Tracks already played
-		self._shuffle_albums_history = [] # Albums already played
+		self._shuffle_albums_backup = [] # Albums already played
 		self._shuffle_album_tracks_history = [] # Tracks already played for current album
 		self._party = False
 		self._party_ids = None
@@ -457,7 +457,7 @@ class Player(GObject.GObject):
 	"""
 	def _set_shuffle(self, settings, value):
 		self._shuffle = Objects.settings.get_enum('shuffle')
-		self._shuffle_albums_history = []
+		self._shuffle_albums_backup = []
 		self._shuffle_album_tracks_history = []
 		self._shuffle_tracks_history = []
 
@@ -525,9 +525,9 @@ class Player(GObject.GObject):
 		track_id = self._get_random(sql)
 		# Need to clear history
 		if not track_id:
-			self._albums = self._shuffle_albums_history
+			self._albums = self._shuffle_albums_backup
 			self._shuffle_tracks_history = []
-			self._shuffle_albums_history = []
+			self._shuffle_albums_backup = []
 			self._shuffle_next(force)
 			return
 
@@ -543,15 +543,14 @@ class Player(GObject.GObject):
 	"""
 	def _get_random(self, sql = None):
 		for album in sorted(self._albums, key=lambda *args: random.random()):
-			if not album in self._shuffle_albums_history:
-				tracks = Objects.albums.get_tracks(album, sql)
-				for track in sorted(tracks, key=lambda *args: random.random()):
-					if not track in self._shuffle_album_tracks_history:
-						self._shuffle_album_tracks_history.append(track)
-						return track
+			tracks = Objects.albums.get_tracks(album, sql)
+			for track in sorted(tracks, key=lambda *args: random.random()):
+				if not track in self._shuffle_album_tracks_history:
+					self._shuffle_album_tracks_history.append(track)
+					return track
 			# No new tracks for this album, remove it
 			self._albums.remove(album)
-			self._shuffle_albums_history.append(album)
+			self._shuffle_albums_backup.append(album)
 			self._shuffle_album_tracks_history = []
 
 		return None
