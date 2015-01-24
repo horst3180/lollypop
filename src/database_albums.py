@@ -282,22 +282,36 @@ class DatabaseAlbums:
 
 	"""
 		Get tracks for album id
-		Will search track from albums from same artist with same name and different genre
-		@param Album id as int, artist_id as int
+		Will search track from albums
+		@param Album id as int
 		@return Arrays of tracks id as int
 	"""
 	def get_tracks(self, album_id, sql = None):
 		if not sql:
 			sql = Objects.sql
 		tracks = []
-		artist_id = Objects.albums.get_artist_id(album_id, sql)
-		album_name = Objects.albums.get_name(album_id, sql)
-		result = sql.execute("SELECT tracks.rowid FROM tracks,albums WHERE albums.artist_id=? AND albums.name=?\
-							  AND albums.rowid=tracks.album_id ORDER BY discnumber, tracknumber",\
-							  (artist_id, album_name))
+		result = sql.execute("SELECT tracks.rowid FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber",\
+							  (album_id,))
 		for row in result:
 			tracks += row
 		return tracks
+
+	"""
+		Get tracks path for album id
+		Will search track from albums from same artist with same name and different genre
+		@param Album id as int
+		@return Arrays of tracks id as int
+	"""
+	def get_tracks_path(self, album_id, sql = None):
+		if not sql:
+			sql = Objects.sql
+		tracks = []
+		result = sql.execute("SELECT tracks.filepath FROM tracks WHERE album_id=? ORDER BY discnumber, tracknumber",\
+							  (album_id,))
+		for row in result:
+			tracks += row
+		return tracks
+	
 
 	"""
 		Get tracks informations for album id

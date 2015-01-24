@@ -199,17 +199,20 @@ class PlaylistsManager(GObject.GObject):
 		@return bool
 	"""
 	def is_present(self, playlist_name, object_id, is_album, sql = None):
+		playlist_paths = self.get_tracks(playlist_name)
 		if is_album:
-			tracks = Objects.albums.get_tracks(object_id, sql)
+			tracks_path = Objects.albums.get_tracks_path(object_id, sql)
 		else:
-			tracks = [ object_id ]
+			tracks_path = [ Objects.tracks.get_path(object_id, sql) ]
 
 		found = 0
-		for filepath in self.get_tracks(playlist_name):
-			track_id = Objects.tracks.get_id_by_path(filepath, sql)
-			if track_id in tracks:
+		len_tracks = len(tracks_path)
+		for filepath in tracks_path:
+			if filepath in playlist_paths:
 				found += 1
-		if found == len(tracks):
+				if found >= len_tracks:
+					break
+		if found == len_tracks:
 			return True
 		else:
 			return False
