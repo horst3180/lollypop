@@ -168,13 +168,12 @@ class PopMenu(Gio.Menu):
 	"""
 	def _add_to_playlist(self, action, variant, object_id, is_album, playlist_name):
 		if is_album:
-			tracks = Objects.albums.get_tracks(object_id)
+			tracks_path = Objects.albums.get_tracks_path(object_id)
 		else:
-			tracks = [ object_id ]
+			tracks_path = [ Objects.tracks.get_path(object_id) ]
 
-		for track_id in tracks:
-			filepath = Objects.tracks.get_path(track_id)
-			Objects.playlists.add_track(playlist_name, filepath)
+		for track_path in tracks_path:
+			Objects.playlists.add_track(playlist_name, track_path)
 		
 	"""
 		Del from playlist
@@ -186,13 +185,12 @@ class PopMenu(Gio.Menu):
 	"""
 	def _del_from_playlist(self, action, variant, object_id, is_album, playlist_name):
 		if is_album:
-			tracks = Objects.albums.get_tracks(object_id)
+			tracks_path = Objects.albums.get_tracks_path(object_id)
 		else:
-			tracks = [ object_id ]
+			tracks_path = [ Objects.tracks.get_path(object_id) ]
 
-		for track_id in tracks:
-			filepath = Objects.tracks.get_path(track_id)
-			Objects.playlists.remove_track(playlist_name, filepath)
+		for track_path in tracks_path:
+			Objects.playlists.remove_track(playlist_name, track_path)
 			
 	"""
 		Append track to queue
