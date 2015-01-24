@@ -259,6 +259,9 @@ class Player(GObject.GObject):
 		@param party as bool
 	"""
 	def set_party(self, party):
+		self._shuffle_tracks_history = []
+		self._shuffle_album_tracks_history = []
+		self._shuffle_albums_backup = []
 		self._user_playlist = None
 		if party:
 			self._rgvolume.props.album_mode = 0
@@ -318,6 +321,9 @@ class Player(GObject.GObject):
 	"""
 	def set_albums(self, artist_id, genre_id, limit_to_artist):
 		self._albums = []
+		self._shuffle_tracks_history = []
+		self._shuffle_album_tracks_history = []
+		self._shuffle_albums_backup = []
 		self._user_playlist = None # We are not playing a user playlist anymore
 		# We are in all artists
 		if genre_id == ALL or artist_id == ALL:
@@ -527,6 +533,7 @@ class Player(GObject.GObject):
 		if not track_id:
 			self._albums = self._shuffle_albums_backup
 			self._shuffle_tracks_history = []
+			self._shuffle_album_tracks_history = []
 			self._shuffle_albums_backup = []
 			self._shuffle_next(force)
 			return
@@ -542,16 +549,16 @@ class Player(GObject.GObject):
 		@param sqlite cursor as sql if running in a thread
 	"""
 	def _get_random(self, sql = None):
-		for album in sorted(self._albums, key=lambda *args: random.random()):
-			tracks = Objects.albums.get_tracks(album, sql)
+		for album_id in sorted(self._albums, key=lambda *args: random.random()):
+			tracks = Objects.albums.get_tracks(album_id, sql)
 			for track in sorted(tracks, key=lambda *args: random.random()):
 				if not track in self._shuffle_album_tracks_history:
-					self._shuffle_album_tracks_history.append(track)
 					return track
 			# No new tracks for this album, remove it
-			self._albums.remove(album)
-			self._shuffle_albums_backup.append(album)
-			self._shuffle_album_tracks_history = []
+			self._albums.remove(album_id)
+			for track_id in Objects.albums.get_tracks(album_id):
+				self._shuffle_album_tracks_history.remove(track_id)
+			self._shuffle_albums_backup.append(album_id)
 
 		return None
 
@@ -562,8 +569,9 @@ class Player(GObject.GObject):
 	def _on_stream_start(self, bus, message):
 		self.emit("current-changed")
 		# Add track to shuffle history if needed
-		if self._shuffle or self._party:
+		if self._shuffle != SHUFFLE_NONE or self._party:
 			self._shuffle_tracks_history.append(self.current.id)
+			self._shuffle_album_tracks_history.append(self.current.id)
 
 
 	"""
