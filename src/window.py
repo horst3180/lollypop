@@ -329,15 +329,18 @@ class Window(Gtk.ApplicationWindow):
 		@param genre id as int
 	"""
 	def _update_view_detailed(self, obj, object_id, genre_id):
+		is_artist = not self._toolbar.get_view_genres_btn().get_active()
 		if object_id == PLAYLISTS:
 			self._setup_list_two(obj, PLAYLISTS)
 		elif genre_id == PLAYLISTS:
 			self._update_view_playlists(object_id)
 		elif object_id == ALL or object_id == POPULARS:
-			self._list_two.widget.hide()
+			if is_artist:
+				self._list_two.widget.hide()
 			self._update_view_genres(object_id)
 		else:
-			self._list_two.widget.hide()
+			if is_artist:
+				self._list_two.widget.hide()
 			old_view = self._stack.get_visible_child()
 			view = ArtistView(object_id, genre_id, True)
 			self._stack.add(view)
