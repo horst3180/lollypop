@@ -41,7 +41,7 @@ class DatabaseGenres:
 	def get_id(self, name, sql = None):
 		if not sql:
 			sql = Objects.sql
-		result = sql.execute("SELECT rowid from genres where name=?", (name,))
+		result = sql.execute("SELECT rowid from genres where name=? COLLATE NOCASE", (name,))
 		v = result.fetchone()
 		if v and len(v) > 0:
 			return v[0]
