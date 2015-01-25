@@ -66,7 +66,7 @@ class Player(GObject.GObject):
 		self._shuffle_album_tracks_history = [] # Tracks already played for current album
 		self._party = False
 		self._party_ids = None
-		self._queue = None
+		self._queue = []
 
 		self._playbin = Gst.ElementFactory.make('playbin', 'player')
 		self._playbin.connect("about-to-finish", self._on_stream_about_to_finish)
