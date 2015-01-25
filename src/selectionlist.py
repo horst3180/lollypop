@@ -173,5 +173,6 @@ class SelectionList(GObject.GObject):
 	"""	
 	def _new_item_selected(self, view):
 		selected_id = self.get_selected_id()
-		self.emit('item-selected', selected_id)
+		if selected_id:
+			self.emit('item-selected', selected_id)
 
