@@ -60,7 +60,6 @@ class Window(Gtk.ApplicationWindow):
 		self._list_two.widget.hide()
 
 		old_view = self._stack.get_visible_child()		
-		self._loading = True
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
@@ -132,7 +131,7 @@ class Window(Gtk.ApplicationWindow):
 	def _on_scan_finished(self, scanner):
 		# Only restore state for hidden lists
 		is_visible = self._list_one.widget.is_visible()
-		self._setup_list_one(True)
+		self._setup_list_one(None, is_visible)
 		if not is_visible:
 			self._restore_view_state()
 
@@ -228,7 +227,6 @@ class Window(Gtk.ApplicationWindow):
 		self._list_one_signal = None
 		self._list_two_signal = None
 		
-		self._loading = True
 		loading_view = LoadingView()
 
 		self._stack = Gtk.Stack()
@@ -288,13 +286,9 @@ class Window(Gtk.ApplicationWindow):
 	def _setup_list_one(self, obj = None, update = False):
 		is_artist = not self._toolbar.get_view_genres_btn().get_active()
 
-		# Connect signal
+		# Disconnect signal
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
-		if is_artist:
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
-		else:
-			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)		
 
 		# We show all artists
 		if is_artist:
@@ -315,14 +309,13 @@ class Window(Gtk.ApplicationWindow):
 		else:
 			self._list_one.populate(items, is_artist)
 
-		if self._loading:
-			self._stack.get_visible_child().hide()
-			#self._list_one.select_first()
-			self._update_view_genres(POPULARS)
-			self._loading = False
-
 		self._list_one.widget.show()
-	
+		
+		# Connect signal
+		if is_artist:
+			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
+		else:
+			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)		
 
 	"""
 		Init list two with artist based on genre

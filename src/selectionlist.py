@@ -66,8 +66,6 @@ class SelectionList(GObject.GObject):
 	
 	"""
 		Update view with values
-		Setup a sort function on list
-		Please  use populate in priority
 		@param [(int, str)], bool
 	"""	
 	def update(self, values, is_artist = False):
@@ -98,10 +96,13 @@ class SelectionList(GObject.GObject):
 		@param position as str
 	"""
 	def select_item(self, position):
-		iterator = self._model.get_iter(str(position))
-		path = self._model.get_path(iterator)
-		self._view.set_cursor(path, None, False)
-		self.emit('item-selected', self._model.get_value(iterator, 0))
+		try:
+			iterator = self._model.get_iter(str(position))
+			path = self._model.get_path(iterator)
+			self._view.set_cursor(path, None, False)
+			self.emit('item-selected', self._model.get_value(iterator, 0))
+		except Exception as e:
+			print("SelectionList::select_item: ", e)
 
 	"""
 		Get treeview current position
@@ -154,10 +155,10 @@ class SelectionList(GObject.GObject):
 				pos_b += 1
 
 			return pos_a > pos_b
-
+	
 	"""
 		Forward "cursor-changed" as "item-selected" with item id as arg
-		@param view
+		@param view as Gtk.TreeView
 	"""	
 	def _new_item_selected(self, view):
 		(path, column) = view.get_cursor()
