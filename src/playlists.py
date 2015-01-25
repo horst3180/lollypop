@@ -15,8 +15,7 @@ from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _
 
 from _thread import start_new_thread
-from urllib.parse import quote, unquote
-import os
+import os, string
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
 from lollypop.define import *
@@ -54,7 +53,6 @@ class PlaylistsManager(GObject.GObject):
 	"""
 	def add(self, playlist_name):
 		try:
-			playlist_name =  quote(playlist_name, '')
 			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
 			f.write("#EXTM3U\n")
 			f.close()
@@ -68,7 +66,6 @@ class PlaylistsManager(GObject.GObject):
 	"""
 	def rename(self, new_name, old_name):
 		try:
-			new_name =  quote(new_name, '')
 			os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
 		except Exception as e:
 			print("PlaylistsManager::rename: %s" %e)
@@ -99,7 +96,7 @@ class PlaylistsManager(GObject.GObject):
 					entries.append((stat[ST_MTIME], filename))
 			for cdate, filename in sorted(entries):
 				if filename.endswith(".m3u"):
-					item = (index, unquote(filename[:-4]))
+					item = (index, filename[:-4])
 					self._playlists.append(item)
 					index += 1
 					# Break if max items is reach
@@ -428,6 +425,8 @@ class PlaylistPopup:
 		@param name as str
 	"""
 	def _on_playlist_edited(self, view, path, name):
+		if name.find("/") != -1:
+			return
 		iterator = self._model.get_iter(path)
 		old_name = self._model.get_value(iterator, 1)
 		self._model.set_value(iterator, 1, name)
