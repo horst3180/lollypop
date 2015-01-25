@@ -130,8 +130,11 @@ class Window(Gtk.ApplicationWindow):
 		@param scanner as CollectionScanner
 	"""
 	def _on_scan_finished(self, scanner):
+		# Only restore state for hidden lists
+		is_visible = self._list_one.widget.is_visible()
 		self._setup_list_one(True)
-		self._restore_view_state()
+		if not is_visible:
+			self._restore_view_state()
 
 	"""
 		Setup media player keys
@@ -324,8 +327,9 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list two with artist based on genre
 		@param obj as unused, genre id as int
+		@param update as bool => if True, update entries
 	"""
-	def _setup_list_two(self, obj, genre_id):
+	def _setup_list_two(self, obj, genre_id, update = False	):
 		if self._list_two_signal:
 			self._list_two.disconnect(self._list_two_signal)
 
