@@ -76,11 +76,27 @@ class CollectionScanner(GObject.GObject):
 	"""
 		Notify from main thread when scan finished
 	"""
-	def _notify(self):
+	def _finish(self):
 		self._in_thread = False
 		self._progress.hide()
 		self.emit("scan-finished")
-		
+	
+	"""
+		Clean track's compilation if needed
+		@param album id as int
+	"""
+	def _clean_compilation(self, album_id, sql = None):
+		artists = Objects.albums.get_compilation_artists(album_id, sql)
+		# It's not a compilation anymore
+		if len(artists) == 1:
+			artist_id = artists[0]
+			Objects.albums.set_artist_id(album_id, artist_id, sql)
+			# Update album path
+			tracks = Objects.albums.get_tracks(album_id, sql)
+			filepath = Objects.tracks.get_path(tracks[0], sql)
+			path = os.path.dirname(filepath)
+			Objects.albums.set_path(album_id, path, sql)
+	
 	"""
 		Scan music collection for music files
 		@param paths as [string], paths to scan
@@ -116,7 +132,10 @@ class CollectionScanner(GObject.GObject):
 					# Update tags by removing song and readd it
 					if mtime != self._mtimes[filepath]:
 						tag = mutagen.File(filepath, easy = True)
+						track_id = Objects.tracks.get_id_by_path(filepath, sql)
+						album_id = Objects.tracks.get_album_id(track_id, sql)
 						Objects.tracks.remove(filepath, sql)
+						self._clean_compilation(album_id, sql)
 						self._add2db(filepath, mtime, tag, sql)
 					tracks.remove(filepath)
 			
@@ -129,14 +148,16 @@ class CollectionScanner(GObject.GObject):
 
 		# Clean deleted files
 		if i > 0:
-			for track in tracks:
-				Objects.tracks.remove(track, sql)
+			for filepath in tracks:
+				track_id = Objects.tracks.get_id_by_path(filepath, sql)
+				album_id = Objects.tracks.get_album_id(track_id, sql)
+				Objects.tracks.remove(filepath, sql)
+				self._clean_compilation(album_id, sql)
 
 		Objects.tracks.clean(sql)
 		sql.commit()
 		sql.close()
-		GLib.idle_add(self._notify)
-
+		GLib.idle_add(self._finish)
 
 
 	"""

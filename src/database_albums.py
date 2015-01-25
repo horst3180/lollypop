@@ -35,6 +35,7 @@ class DatabaseAlbums:
 	"""
 		Set artist id
 		@param album id as int, artist_id as int
+		@warning: commit needed
 	"""
 	def set_artist_id(self, album_id, artist_id, sql):
 		if not sql:
@@ -44,6 +45,7 @@ class DatabaseAlbums:
 	"""
 		Set album path for album id
 		@param Album id as int, path as string
+		@warning: commit needed
 	"""
 	def set_path(self, album_id, path, sql = None):
 		if not sql:
@@ -161,13 +163,27 @@ class DatabaseAlbums:
 	def get_artist_id(self, album_id, sql = None):
 		if not sql:
 			sql = Objects.sql
-		performers = []
 		result = sql.execute("SELECT artist_id FROM albums where rowid=?", (album_id,))
 		v = result.fetchone()
 		if v and len(v) > 0:
 			return v[0]
 
 		return COMPILATIONS
+
+	"""
+		Get compilation artists id
+		@param album id as int
+		@return array of artists id, empty if not a compilation
+	"""
+	def get_compilation_artists(self, album_id, sql = None):
+		if not sql:
+			sql = Objects.sql
+		artists = []
+		result = sql.execute("SELECT DISTINCT artist_id from tracks where album_id=? and performer_id=?", (album_id, COMPILATIONS))
+		for row in result:
+			artists += row
+		return artists
+
 
 	"""
 		Get album perfomers id
@@ -384,7 +400,7 @@ class DatabaseAlbums:
 		for row in result:
 			albums += row
 		return albums
-			
+
 
 	"""
 		Search for albums looking like string

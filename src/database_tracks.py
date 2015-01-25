@@ -38,9 +38,9 @@ class DatabaseTracks:
 						(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
 						(name, filepath, length, tracknumber, discnumber,\
 						artist_id, performer_id, album_id, mtime))
-		except:
-			pass
-	
+		except Exception as e:
+			print("DatabaseTracks::add: ", e)
+
 	"""
 		Return track id for path
 		@param filepath as str
