@@ -130,9 +130,13 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _on_scan_finished(self, scanner):
 		# Only restore state for hidden lists
-		is_visible = self._list_one.widget.is_visible()
-		self._setup_list_one(None, is_visible)
-		if not is_visible:
+		need_update = self._list_one.widget.is_visible()
+		self._setup_list_one(None, need_update)
+
+		if self._list_two.widget.is_visible():
+			object_id = self._list_one.get_selected_id()
+			self._setup_list_two(None, object_id, need_update)
+		if not need_update:
 			self._restore_view_state()
 
 	"""
@@ -334,9 +338,15 @@ class Window(Gtk.ApplicationWindow):
 				values = Objects.playlists.get()
 			else:
 				values = Objects.artists.get(genre_id)
+
 			if len(Objects.albums.get_compilations(genre_id)) > 0:
 				values.insert(0, (COMPILATIONS, _("Compilations")))
-			self._list_two.populate(values, True)
+
+			if update:
+				self._list_two.update(values, False)
+			else:
+				self._list_two.populate(values, True)
+
 			self._list_two.widget.show()
 			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
 
@@ -344,7 +354,7 @@ class Window(Gtk.ApplicationWindow):
 		if genre_id == PLAYLISTS:
 			old_view = self._stack.get_visible_child()
 			self._clean_view(old_view)
-		else:
+		elif not update:
 			self._update_view_genres(genre_id)
 			
 

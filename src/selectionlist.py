@@ -114,7 +114,18 @@ class SelectionList(GObject.GObject):
 			return path.get_indices()[0]
 		else:
 			return -1
-		
+
+	"""
+		Get id at current position
+		@return id as int
+	"""	
+	def get_selected_id(self):
+		(path, column) = self._view.get_cursor()
+		if path:
+			iter = self._model.get_iter(path)
+			if iter:
+				return self._model.get_value(iter, 0)
+		return None
 
 #######################
 # PRIVATE             #
@@ -161,9 +172,6 @@ class SelectionList(GObject.GObject):
 		@param view as Gtk.TreeView
 	"""	
 	def _new_item_selected(self, view):
-		(path, column) = view.get_cursor()
-		if path:
-			iter = self._model.get_iter(path)
-			if iter:
-				self.emit('item-selected', self._model.get_value(iter, 0))
+		selected_id = self.get_selected_id()
+		self.emit('item-selected', selected_id)
 
