@@ -16,6 +16,7 @@ app_PYTHON = \
 	albumart.py\
 	selectionlist.py\
 	queue.py\
+	settings.py\
 	playlists.py\
 	view.py\
 	mpris.py\

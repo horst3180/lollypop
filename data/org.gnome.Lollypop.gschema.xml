@@ -61,6 +61,11 @@
             <summary>Continue playback when closed</summary>
             <description></description>
         </key>
+     	 <key type="b" name="save-state">
+            <default>false</default>
+            <summary>Restore previous view</summary>
+            <description></description>
+        </key>
 		 <key type="i" name="paned-mainlist-width">
             <default>150</default>
             <summary>INTERNAL</summary>
@@ -68,6 +73,16 @@
         </key>
 		 <key type="i" name="paned-listview-width">
             <default>200</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
+		<key type="i" name="list-one">
+            <default>0</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
+		<key type="i" name="list-two">
+            <default>-1</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

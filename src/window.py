@@ -35,11 +35,12 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._timeout = None
-		self._scanner = CollectionScanner()
-		self._scanner.connect("scan-finished", self._setup_list_one, True)
-
+		
 		self._setup_window()				
 		self._setup_view()
+		self._setup_list_one()
+		if not self._setup_scanner():
+			self._restore_state()
 
 		self._setup_media_keys()
 
@@ -50,19 +51,6 @@ class Window(Gtk.ApplicationWindow):
 				ids.append(setting)	
 		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
-
-	"""
-		Run collection update if needed
-	"""	
-	def setup_view(self):
-		if Objects.tracks.is_empty():
-			self._scanner.update(self._progress, False)
-			return
-		elif Objects.settings.get_value('startup-scan'):
-			self._scanner.update(self._progress, True)
-			
-		self._setup_list_one()
-		self._update_view_genres(POPULARS)
 
 	"""
 		Update music database
@@ -100,9 +88,42 @@ class Window(Gtk.ApplicationWindow):
 	def setup_menu(self, menu):
 		self._toolbar.setup_menu_btn(menu)
 
+	"""
+		Save view state
+	"""
+	def save_view_state(self):
+		Objects.settings.set_value("list-one", GLib.Variant('i', self._list_one.get_selected_item()))
+		Objects.settings.set_value("list-two", GLib.Variant('i', self._list_two.get_selected_item()))
+
 ############
 # Private  #
 ############
+	"""
+		Restore previous state
+	"""
+	def _restore_state(self):
+		if Objects.settings.get_value('save-state'):
+			self._list_one.select_item(Objects.settings.get_value('list-one'))
+			position = Objects.settings.get_value('list-two').get_int32()
+			if position != -1:
+				self._list_two.select_item(position)
+		else:
+			self._list_one.select_item(0)
+
+	"""
+		Run collection update if needed
+		@return True if hard scan is running
+	"""	
+	def _setup_scanner(self):
+		self._scanner = CollectionScanner()
+		self._scanner.connect("scan-finished", self._setup_list_one, True)
+
+		if Objects.tracks.is_empty():
+			self._scanner.update(self._progress, False)
+			return True
+		elif Objects.settings.get_value('startup-scan'):
+			self._scanner.update(self._progress, True)
+			return False
 
 	"""
 		Setup media player keys
@@ -253,9 +274,15 @@ class Window(Gtk.ApplicationWindow):
 		@param obj as unused, bool
 	"""
 	def _setup_list_one(self, obj = None, update = None):
+		is_artist = not self._toolbar.get_view_genres_btn().get_active()
+
+		# Connect signal
 		if self._list_one_signal:
 			self._list_one.disconnect(self._list_one_signal)
-		is_artist = not self._toolbar.get_view_genres_btn().get_active()
+		if is_artist:
+			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
+		else:
+			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)		
 
 		# We show all artists
 		if is_artist:
@@ -274,23 +301,16 @@ class Window(Gtk.ApplicationWindow):
 		if update:
 			self._list_one.update(items, is_artist)
 		else:
-			self._list_one.populate(items, is_artist)		
-
-		# If was empty
-		if not self._list_one_signal:
-			self._list_one.select_first()
+			self._list_one.populate(items, is_artist)
 
 		if self._loading:
 			self._stack.get_visible_child().hide()
-			self._list_one.select_first()
+			#self._list_one.select_first()
 			self._update_view_genres(POPULARS)
 			self._loading = False
 
 		self._list_one.widget.show()
-		if is_artist:
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
-		else:
-			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)		
+	
 
 	"""
 		Init list two with artist based on genre
@@ -390,7 +410,7 @@ class Window(Gtk.ApplicationWindow):
 		if self._timeout:
 			GLib.source_remove(self._timeout)
 		self._timeout = GLib.timeout_add(500, self._save_size_position, widget)
-	
+
 	"""
 		Save window state, update current view content size
 		@param: widget as Gtk.Window

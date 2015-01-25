@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-24 00:32+0100\n"
+"POT-Creation-Date: 2015-01-25 19:49+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -84,15 +84,19 @@ msgid "Continue playback when closed"
 msgstr "Jatka toistoa, kun sovellus suljetaan"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "INTERNAL"
+msgid "Restore previous view"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -118,32 +122,28 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/application.py:130
-msgid "Configure lollypop"
-msgstr "Lollypopin asetukset"
-
-#: ../src/toolbar.py:230 ../src/toolbar.py:257
+#: ../src/toolbar.py:229 ../src/toolbar.py:256
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:237 ../src/toolbar.py:253 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/window.py:265 ../src/window.py:312
+#: ../src/window.py:292 ../src/window.py:332
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/window.py:270
+#: ../src/window.py:297
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/window.py:271 ../src/popmenu.py:46
+#: ../src/window.py:298 ../src/popmenu.py:46
 #, fuzzy
 msgid "Playlists"
 msgstr "Toista"
 
-#: ../src/window.py:272
+#: ../src/window.py:299
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
@@ -166,7 +166,7 @@ msgid "Many artists"
 msgstr "Useita esittäjiä"
 
 #: ../src/database_artists.py:67 ../src/database_albums.py:139
-#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_tracks.py:149 ../src/database_tracks.py:164
 #: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Tuntematon"
@@ -175,12 +175,12 @@ msgstr "Tuntematon"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:323
+#: ../src/playlists.py:325
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:384 ../src/playlists.py:387
+#: ../src/playlists.py:386 ../src/playlists.py:389
 #, fuzzy
 msgid "New playlist "
 msgstr "Toista"
@@ -212,25 +212,29 @@ msgstr "Poista jonosta"
 msgid "Add to \"%s\""
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:130 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:135
+#: ../src/popmenu.py:134
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:136 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Seuraava kappale"
 
-#: ../src/popmenu.py:140
+#: ../src/popmenu.py:139
 msgid "Remove from queue"
 msgstr "Poista jonosta"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
+
+#: ../src/settings.py:31
+msgid "Configure lollypop"
+msgstr "Lollypopin asetukset"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -284,7 +288,7 @@ msgstr "Toista"
 msgid "New playlist"
 msgstr "Toista"
 
-#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:11
 msgid "Close"
 msgstr "Sulje"
 
@@ -308,7 +312,7 @@ msgstr "Sekoita kappaleet"
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:10
 msgid "Party mode"
 msgstr "Biletila"
 
@@ -337,21 +341,26 @@ msgid "Update music on startup"
 msgstr "Päivitä musiikki käynnistyessä"
 
 #: ../data/SettingsDialog.ui.h:4
+#, fuzzy
+msgid "Restore view on startup"
+msgstr "Päivitä musiikki käynnistyessä"
+
+#: ../data/SettingsDialog.ui.h:5
 msgid "Configure lollypop behaviour"
 msgstr "Muokkaa Lollypopin toimintoja"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
 msgstr "Toiminta"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Select music folders"
 msgstr "Valitse musiikkikansiot"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Music"
 msgstr "Musiikki"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"

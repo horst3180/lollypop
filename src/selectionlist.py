@@ -95,11 +95,25 @@ class SelectionList(GObject.GObject):
 
 	"""
 		Make treeview select first default item
+		@param position as str
 	"""
-	def select_first(self):
-		iterator = self._model.get_iter("0")
+	def select_item(self, position):
+		iterator = self._model.get_iter(str(position))
 		path = self._model.get_path(iterator)
 		self._view.set_cursor(path, None, False)
+		self.emit('item-selected', self._model.get_value(iterator, 0))
+
+	"""
+		Get treeview current position
+		@return position as str
+	"""
+	def get_selected_item(self):
+		(path, column) = self._view.get_cursor()
+		if path:
+			return path.get_indices()[0]
+		else:
+			return -1
+		
 
 #######################
 # PRIVATE             #

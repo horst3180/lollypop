@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-24 00:32+0100\n"
+"POT-Creation-Date: 2015-01-25 19:49+0100\n"
 "PO-Revision-Date: 2015-01-11 21:44+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -83,15 +83,19 @@ msgid "Continue playback when closed"
 msgstr "Continuer à lire à la fermeture"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid "Restore previous view"
+msgstr "Restaurer la vue au démarrage"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
 msgstr "INTERNE"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
 msgstr "Mode de lecture aléatoire"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -117,31 +121,27 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:130
-msgid "Configure lollypop"
-msgstr "Configurer lollypop"
-
-#: ../src/toolbar.py:230 ../src/toolbar.py:257
+#: ../src/toolbar.py:229 ../src/toolbar.py:256
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:237 ../src/toolbar.py:253 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:265 ../src/window.py:312
+#: ../src/window.py:292 ../src/window.py:332
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/window.py:270
+#: ../src/window.py:297
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:271 ../src/popmenu.py:46
+#: ../src/window.py:298 ../src/popmenu.py:46
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/window.py:272
+#: ../src/window.py:299
 msgid "Popular albums"
 msgstr "Albums populaires"
 
@@ -164,7 +164,7 @@ msgid "Many artists"
 msgstr "Plusieurs artistes"
 
 #: ../src/database_artists.py:67 ../src/database_albums.py:139
-#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_tracks.py:149 ../src/database_tracks.py:164
 #: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Inconnu"
@@ -173,12 +173,12 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:323
+#: ../src/playlists.py:325
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlists.py:384 ../src/playlists.py:387
+#: ../src/playlists.py:386 ../src/playlists.py:389
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture"
 
@@ -208,25 +208,29 @@ msgstr "Supprimer de \"%s\""
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:130 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
-#: ../src/popmenu.py:135
+#: ../src/popmenu.py:134
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:136 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:140
+#: ../src/popmenu.py:139
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
+
+#: ../src/settings.py:31
+msgid "Configure lollypop"
+msgstr "Configurer lollypop"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -278,7 +282,7 @@ msgstr "Ajouter aux listes de lecture"
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
-#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:11
 msgid "Close"
 msgstr "Fermer"
 
@@ -302,7 +306,7 @@ msgstr "Mélanger les morceaux"
 msgid "Shuffle"
 msgstr "Aléatoire"
 
-#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:10
 msgid "Party mode"
 msgstr "Mode soirée"
 
@@ -331,21 +335,25 @@ msgid "Update music on startup"
 msgstr "Mise à jour de la musique au démarrage"
 
 #: ../data/SettingsDialog.ui.h:4
+msgid "Restore view on startup"
+msgstr "Restaurer la vue au démarrage"
+
+#: ../data/SettingsDialog.ui.h:5
 msgid "Configure lollypop behaviour"
 msgstr "Configurer le comportement de lollypop"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
 msgstr "Comportement"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Select music folders"
 msgstr "Selectionnez vos dossiers de musique"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Music"
 msgstr "Musique"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"

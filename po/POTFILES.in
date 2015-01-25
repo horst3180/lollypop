@@ -21,6 +21,7 @@ src/queue.py
 src/view.py
 src/popmenu.py
 src/popimages.py
+src/settings.py
 src/mpris.py
 src/utils.py
 src/search.py

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-24 00:32+0100\n"
+"POT-Creation-Date: 2015-01-25 19:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,15 +82,19 @@ msgid "Continue playback when closed"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "INTERNAL"
+msgid "Restore previous view"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -113,31 +117,27 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:130
-msgid "Configure lollypop"
-msgstr ""
-
-#: ../src/toolbar.py:230 ../src/toolbar.py:257
+#: ../src/toolbar.py:229 ../src/toolbar.py:256
 msgid "Pause"
 msgstr ""
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:237 ../src/toolbar.py:253 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:265 ../src/window.py:312
+#: ../src/window.py:292 ../src/window.py:332
 msgid "Compilations"
 msgstr ""
 
-#: ../src/window.py:270
+#: ../src/window.py:297
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:271 ../src/popmenu.py:46
+#: ../src/window.py:298 ../src/popmenu.py:46
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:272
+#: ../src/window.py:299
 msgid "Popular albums"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/database_artists.py:67 ../src/database_albums.py:139
-#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_tracks.py:149 ../src/database_tracks.py:164
 #: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr ""
@@ -169,12 +169,12 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:323
+#: ../src/playlists.py:325
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:384 ../src/playlists.py:387
+#: ../src/playlists.py:386 ../src/playlists.py:389
 msgid "New playlist "
 msgstr ""
 
@@ -204,24 +204,28 @@ msgstr ""
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:130 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:135
+#: ../src/popmenu.py:134
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:136 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:140
+#: ../src/popmenu.py:139
 msgid "Remove from queue"
 msgstr ""
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
+msgstr ""
+
+#: ../src/settings.py:31
+msgid "Configure lollypop"
 msgstr ""
 
 #. Handle language ordering
@@ -274,7 +278,7 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:11
 msgid "Close"
 msgstr ""
 
@@ -298,7 +302,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:10
 msgid "Party mode"
 msgstr ""
 
@@ -327,21 +331,25 @@ msgid "Update music on startup"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:4
-msgid "Configure lollypop behaviour"
+msgid "Restore view on startup"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:5
-msgid "Behaviour"
+msgid "Configure lollypop behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:6
-msgid "Select music folders"
+msgid "Behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:7
-msgid "Music"
+msgid "Select music folders"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:8
+msgid "Music"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:9
 msgid "Select what will be available in party mode"
 msgstr ""

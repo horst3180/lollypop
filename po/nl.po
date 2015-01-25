@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-24 00:32+0100\n"
+"POT-Creation-Date: 2015-01-25 19:49+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -84,15 +84,19 @@ msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid "Restore previous view"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
 msgstr "INTERN"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -115,32 +119,28 @@ msgstr "Je muziekverzameling beluisteren en beheren"
 msgid "Music player for the GNOME desktop"
 msgstr "Muziekspeler voor de GNOME-desktop"
 
-#: ../src/application.py:130
-msgid "Configure lollypop"
-msgstr "Lollypop aanpassen"
-
-#: ../src/toolbar.py:230 ../src/toolbar.py:257
+#: ../src/toolbar.py:229 ../src/toolbar.py:256
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:254 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:237 ../src/toolbar.py:253 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../src/window.py:265 ../src/window.py:312
+#: ../src/window.py:292 ../src/window.py:332
 msgid "Compilations"
 msgstr "Compilaties"
 
-#: ../src/window.py:270
+#: ../src/window.py:297
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/window.py:271 ../src/popmenu.py:46
+#: ../src/window.py:298 ../src/popmenu.py:46
 #, fuzzy
 msgid "Playlists"
 msgstr "Afspelen"
 
-#: ../src/window.py:272
+#: ../src/window.py:299
 msgid "Popular albums"
 msgstr "Populaire albums"
 
@@ -163,7 +163,7 @@ msgid "Many artists"
 msgstr "Veel artiesten"
 
 #: ../src/database_artists.py:67 ../src/database_albums.py:139
-#: ../src/database_tracks.py:150 ../src/database_tracks.py:165
+#: ../src/database_tracks.py:149 ../src/database_tracks.py:164
 #: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Onbekend"
@@ -172,12 +172,12 @@ msgstr "Onbekend"
 msgid "Compilation"
 msgstr "Compilatie"
 
-#: ../src/playlists.py:323
+#: ../src/playlists.py:325
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/playlists.py:384 ../src/playlists.py:387
+#: ../src/playlists.py:386 ../src/playlists.py:389
 #, fuzzy
 msgid "New playlist "
 msgstr "Afspelen"
@@ -209,25 +209,29 @@ msgstr "Verwijderen uit wachtrij"
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:131 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:130 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:135
+#: ../src/popmenu.py:134
 msgid "Next tracks"
 msgstr "Volgende nummers"
 
-#: ../src/popmenu.py:137 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:136 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Volgend nummer"
 
-#: ../src/popmenu.py:140
+#: ../src/popmenu.py:139
 msgid "Remove from queue"
 msgstr "Verwijderen uit wachtrij"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
 msgstr "Een albumhoes voor dit album selecteren"
+
+#: ../src/settings.py:31
+msgid "Configure lollypop"
+msgstr "Lollypop aanpassen"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -281,7 +285,7 @@ msgstr "Afspelen"
 msgid "New playlist"
 msgstr "Afspelen"
 
-#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:10
+#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:11
 msgid "Close"
 msgstr "Sluiten"
 
@@ -305,7 +309,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Willekeurig"
 
-#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:9
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:10
 msgid "Party mode"
 msgstr "Feestmodus"
 
@@ -334,21 +338,26 @@ msgid "Update music on startup"
 msgstr "Update muziek bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:4
+#, fuzzy
+msgid "Restore view on startup"
+msgstr "Update muziek bij opstarten"
+
+#: ../data/SettingsDialog.ui.h:5
 msgid "Configure lollypop behaviour"
 msgstr "Pas gedrag van lollypop aan"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
 msgstr "Gedrag"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Select music folders"
 msgstr "Selecteer muziekmappen"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Music"
 msgstr "Muziek"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Select what will be available in party mode"
 msgstr "Selecteer wat beschikbaar is in feestmodus"
