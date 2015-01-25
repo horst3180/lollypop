@@ -40,7 +40,7 @@ class Window(Gtk.ApplicationWindow):
 		self._setup_view()
 		self._setup_list_one()
 		if not self._setup_scanner():
-			self._restore_state()
+			self._restore_view_state()
 
 		self._setup_media_keys()
 
@@ -64,11 +64,8 @@ class Window(Gtk.ApplicationWindow):
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
+		self.save_view_state()
 		self._scanner.update(self._progress, False)
-		if old_view:
-			self._stack.remove(old_view)
-			old_view.remove_signals()
-
 
 	"""
 		Update view class
@@ -92,18 +89,21 @@ class Window(Gtk.ApplicationWindow):
 		Save view state
 	"""
 	def save_view_state(self):
-		Objects.settings.set_value("list-one", GLib.Variant('i', self._list_one.get_selected_item()))
-		Objects.settings.set_value("list-two", GLib.Variant('i', self._list_two.get_selected_item()))
+		if Objects.settings.get_value('save-state'):
+			Objects.settings.set_value("list-one", GLib.Variant('i', self._list_one.get_selected_item()))
+			Objects.settings.set_value("list-two", GLib.Variant('i', self._list_two.get_selected_item()))
 
 ############
 # Private  #
 ############
 	"""
-		Restore previous state
+		Restore saved view
 	"""
-	def _restore_state(self):
+	def _restore_view_state(self):
 		if Objects.settings.get_value('save-state'):
-			self._list_one.select_item(Objects.settings.get_value('list-one'))
+			position = Objects.settings.get_value('list-one').get_int32()
+			if position != -1:
+				self._list_one.select_item(position)
 			position = Objects.settings.get_value('list-two').get_int32()
 			if position != -1:
 				self._list_two.select_item(position)
@@ -116,7 +116,7 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _setup_scanner(self):
 		self._scanner = CollectionScanner()
-		self._scanner.connect("scan-finished", self._setup_list_one, True)
+		self._scanner.connect("scan-finished", self._on_scan_finished)
 
 		if Objects.tracks.is_empty():
 			self._scanner.update(self._progress, False)
@@ -124,6 +124,14 @@ class Window(Gtk.ApplicationWindow):
 		elif Objects.settings.get_value('startup-scan'):
 			self._scanner.update(self._progress, True)
 			return False
+
+	"""
+		On scan finished, update lists
+		@param scanner as CollectionScanner
+	"""
+	def _on_scan_finished(self, scanner):
+		self._setup_list_one(True)
+		self._restore_view_state()
 
 	"""
 		Setup media player keys
@@ -271,9 +279,10 @@ class Window(Gtk.ApplicationWindow):
 	"""
 		Init list with genres or artist
 		If update, only update list content
-		@param obj as unused, bool
+		@param obj as unused
+		@param update as bool => if True, update entries
 	"""
-	def _setup_list_one(self, obj = None, update = None):
+	def _setup_list_one(self, obj = None, update = False):
 		is_artist = not self._toolbar.get_view_genres_btn().get_active()
 
 		# Connect signal

@@ -41,6 +41,8 @@ class LoadingView(Gtk.Grid):
 		pass
 	def calculate_content_size(self):
 		pass
+	def stop(self):
+		pass
 
 """
 	Generic view
