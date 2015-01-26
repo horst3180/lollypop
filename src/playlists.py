@@ -34,7 +34,10 @@ class PlaylistsManager(GObject.GObject):
 
 	PLAYLISTS_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop/playlists"
 	__gsignals__ = {
-        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,))
+		# Add or remove a playlist
+		'playlists-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+		# Objects added/removed to/from playlist
+        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,)) 
     }
 
 	def __init__(self):
@@ -58,6 +61,7 @@ class PlaylistsManager(GObject.GObject):
 			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
 			f.write("#EXTM3U\n")
 			f.close()
+			self.emit('playlists-changed')
 		except Exception as e:
 			print("PlaylistsManager::add: %s" %e)
 
@@ -69,6 +73,7 @@ class PlaylistsManager(GObject.GObject):
 	def rename(self, new_name, old_name):
 		try:
 			os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
+			self.emit('playlists-changed')
 		except Exception as e:
 			print("PlaylistsManager::rename: %s" %e)
 
@@ -79,6 +84,7 @@ class PlaylistsManager(GObject.GObject):
 	def delete(self, playlist_name):
 		try:
 			os.remove(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u")
+			self.emit('playlists-changed')
 		except Exception as e:
 			print("PlaylistsManager::delete: %s" %e)
 			

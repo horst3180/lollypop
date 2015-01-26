@@ -54,6 +54,7 @@ class Window(Gtk.ApplicationWindow):
 				ids.append(setting)	
 		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
+		Objects.playlists.connect("playlists-changed", self._update_lists)
 
 	"""
 		Update music database
@@ -114,7 +115,7 @@ class Window(Gtk.ApplicationWindow):
 	"""	
 	def _setup_scanner(self):
 		self._scanner = CollectionScanner()
-		self._scanner.connect("scan-finished", self._on_scan_finished)
+		self._scanner.connect("scan-finished", self._update_lists)
 
 		if Objects.tracks.is_empty():
 			self._scanner.update(self._progress, False)
@@ -124,17 +125,19 @@ class Window(Gtk.ApplicationWindow):
 			return False
 
 	"""
-		On scan finished, update lists
-		@param scanner as CollectionScanner
+		Update lists
+		@param obj as unused
 	"""
-	def _on_scan_finished(self, scanner):
+	def _update_lists(self, obj):
 		# Only restore state for hidden lists
 		need_update = self._list_one.widget.is_visible()
 
 		self._setup_list_one(None, need_update)
 
-		if self._list_two.widget.is_visible():
-			object_id = self._list_one.get_selected_id()
+		object_id = self._list_one.get_selected_id()
+		# Only update list two if visible
+		# In playlists mode, may be hidden so update anyway
+		if self._list_two.widget.is_visible() or object_id == PLAYLISTS:
 			self._setup_list_two(None, object_id, need_update)
 		if not need_update:
 			self._restore_view_state()
