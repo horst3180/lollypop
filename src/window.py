@@ -355,8 +355,7 @@ class Window(Gtk.ApplicationWindow):
 		if not update:
 			# In playlist mode, we do not show anything
 			if genre_id == PLAYLISTS:
-				old_view = self._stack.get_visible_child()
-				self._clean_view(old_view)
+				self._update_view_playlists(None)
 			else:
 				self._update_view_genres(genre_id)
 			
@@ -405,7 +404,10 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_view_playlists(self, playlist_id):
 		old_view = self._stack.get_visible_child()
-		view = PlaylistView(playlist_id)
+		if playlist_id == None:
+			view = PlaylistsView()
+		else:
+			view = PlaylistView(playlist_id)
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
 		self._clean_view(old_view)

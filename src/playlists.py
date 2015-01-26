@@ -274,10 +274,11 @@ class PlaylistsManagePopup:
 		self._infobar = self._ui.get_object('infobar')
 		self._infobar_label = self._ui.get_object('infobarlabel')
 
-		renderer0 = Gtk.CellRendererToggle()
-		renderer0.set_property('activatable', True)
-		renderer0.connect('toggled', self._on_playlist_toggled)
-		column0 = Gtk.TreeViewColumn("toggle", renderer0, active=0)
+		if self._object_id != -1:
+			renderer0 = Gtk.CellRendererToggle()
+			renderer0.set_property('activatable', True)
+			renderer0.connect('toggled', self._on_playlist_toggled)
+			column0 = Gtk.TreeViewColumn("toggle", renderer0, active=0)
 		
 		renderer1 = Gtk.CellRendererText()
 		renderer1.set_property('ellipsize-set',True)
@@ -292,7 +293,8 @@ class PlaylistsManagePopup:
 		renderer2.set_fixed_size(22, -1)
 		column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
 		
-		self._view.append_column(column0)
+		if self._object_id != -1:
+			self._view.append_column(column0)
 		self._view.append_column(column1)
 		self._view.append_column(column2)
 
@@ -427,6 +429,9 @@ class PlaylistsManagePopup:
 		@param add as bool
 	"""
 	def _set_current_object(self, name, add):
+		# No current object
+		if self._object_id == -1:
+			return
 		# Add or remove object from playlist
 		if self._is_album:
 			tracks_path = Objects.albums.get_tracks_path(self._object_id)

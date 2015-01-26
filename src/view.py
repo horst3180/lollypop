@@ -17,32 +17,59 @@ from time import sleep
 
 from lollypop.define import Objects
 from lollypop.database import Database
+from lollypop.playlists import PlaylistsManagePopup
 from lollypop.view_widgets import *
 from lollypop.utils import translate_artist_name
 
 """
 	Loading view used on db update
 """
-class LoadingView(Gtk.Grid):
+class LoadingView(Gtk.Bin):
 	def __init__(self):
-		Gtk.Grid.__init__(self)
-		self._ui = Gtk.Builder()
-		self._ui.add_from_resource('/org/gnome/Lollypop/Loading.ui')
+		Gtk.Bin.__init__(self)
 		self.set_property('halign', Gtk.Align.CENTER)
 		self.set_property('valign', Gtk.Align.CENTER)
-		self.set_vexpand(True)
-		self.set_hexpand(True)
-		self._label = self._ui.get_object('label')
-		self._label.set_label(_("Loading please wait..."))
-		self.add(self._label)
+		label = Gtk.Label()
+		label.set_label(_("Loading please wait..."))
+		label.show()
+		self.add(label)
 		self.show_all()
 		
 	def remove_signals(self):
 		pass
-	def calculate_content_size(self):
+	def stop(self):
+		pass
+
+
+"""
+	PlaylistsView view used to manage playlists
+"""
+class PlaylistsView(Gtk.Bin):
+	def __init__(self):
+		Gtk.Bin.__init__(self)
+		self.set_property('halign', Gtk.Align.CENTER)
+		self.set_property('valign', Gtk.Align.CENTER)
+		button = Gtk.Button(_("Manage playlists"))
+		button.connect('clicked', self._on_button_clicked)
+		button.show()
+		self.add(button)
+		self.show_all()
+		
+	def remove_signals(self):
 		pass
 	def stop(self):
 		pass
+		
+#######################
+# PRIVATE             #
+#######################	
+	"""
+		Show playlists management dialog
+		@param button as Gtk.Button
+	"""
+	def _on_button_clicked(self, button):
+		popup = PlaylistsManagePopup(-1, False)
+		popup.show()
 
 """
 	Generic view
@@ -68,12 +95,6 @@ class View(Gtk.Grid):
 	def remove_signals(self):
 		Objects.player.disconnect_by_func(self._on_current_changed)
 		Objects.player.disconnect_by_func(self._on_cover_changed)
-	
-	"""
-		Calculate content size
-	"""	
-	def calculate_content_size(self):
-		pass
 		
 #######################
 # PRIVATE             #

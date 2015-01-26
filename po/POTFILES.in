@@ -39,7 +39,6 @@ src/collectionscanner.py
 [type: gettext/glade]data/PlaylistsManagePopup.ui
 [type: gettext/glade]data/PlaylistWidget.ui
 [type: gettext/glade]data/ArtistView.ui
-[type: gettext/glade]data/Loading.ui
 [type: gettext/glade]data/headerbar.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SettingsDialog.ui
