@@ -618,7 +618,7 @@ class PlaylistEditPopup:
 		@param button as Gtk.Button
 	"""	
 	def _on_empty_clicked(self, button):
-		self._deleted_path = ALL
+		self._deleted_path = Gtk.TreePath.new_from_indices([ALL])
 		self._infobar_label.set_markup(_("Empty playlist?"))
 		self._infobar.show()
 		
@@ -646,13 +646,18 @@ class PlaylistEditPopup:
 		@param button as Gtk.Button
 	"""
 	def _on_delete_confirm(self, button):
-		if self._deleted_path == ALL:
+		if self._deleted_path == Gtk.TreePath.new_from_indices([ALL]):
 			for item in self._model:
 				self._model.remove(item.iter)
 		elif self._deleted_path:
+			print(self._deleted_path)
 			iterator = self._model.get_iter(self._deleted_path)
 			self._model.remove(iterator)
 
+		tracks_path = []
+		for item in self._model:
+			tracks_path.append(item[3])
+		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 		self._infobar.hide()
 		self._deleted_path = None
 		
@@ -670,5 +675,4 @@ class PlaylistEditPopup:
 	"""
 	def _on_close_clicked(self, widget):
 		self._popup.hide()
-		tracks_path = []
 		self._model.clear()
