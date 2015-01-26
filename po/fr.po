@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: 2015-01-11 21:44+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -173,12 +173,12 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
@@ -216,7 +216,7 @@ msgstr "Supprimer de \"%s\""
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Ajouter à file d'attente"
 
@@ -224,7 +224,7 @@ msgstr "Ajouter à file d'attente"
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr "Morceau suivant"
 
@@ -246,7 +246,7 @@ msgstr "Configurer lollypop"
 msgid "The the"
 msgstr "The the Les les La Le la le"
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr "Recherche:"
 
@@ -331,9 +331,13 @@ msgstr "File d'attente"
 msgid "Show genres"
 msgstr "Afficher les genres"
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artist"
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
+msgstr "Ajouter à la liste de lecture"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"

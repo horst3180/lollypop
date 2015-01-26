@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: 2015-01-06 11:31+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
@@ -176,12 +176,12 @@ msgstr "Sconosciuto"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Rimuovi dalla coda"
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 #, fuzzy
 msgid "New playlist "
 msgstr "Esegui"
@@ -223,7 +223,7 @@ msgstr "Rimuovi dalla coda"
 msgid "Add to \"%s\""
 msgstr "Aggiungi alla coda"
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Aggiungi alla coda"
 
@@ -231,7 +231,7 @@ msgstr "Aggiungi alla coda"
 msgid "Next tracks"
 msgstr "Prossime tracce"
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr "Possima traccia"
 
@@ -253,7 +253,7 @@ msgstr "Configura Lollypop"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr "Cerca:"
 
@@ -340,9 +340,14 @@ msgstr "Coda"
 msgid "Show genres"
 msgstr "Mostra generi"
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artista"
+
+#: ../data/SearchRow.ui.h:2
+#, fuzzy
+msgid "Add to playlist"
+msgstr "Esegui"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"

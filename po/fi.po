@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -175,12 +175,12 @@ msgstr "Tuntematon"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 #, fuzzy
 msgid "New playlist "
 msgstr "Toista"
@@ -222,7 +222,7 @@ msgstr "Poista jonosta"
 msgid "Add to \"%s\""
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
@@ -230,7 +230,7 @@ msgstr "Lisää jonoon"
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr "Seuraava kappale"
 
@@ -252,7 +252,7 @@ msgstr "Lollypopin asetukset"
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr "Etsi:"
 
@@ -339,9 +339,14 @@ msgstr "Jono"
 msgid "Show genres"
 msgstr "Näytä tyylilajit"
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "esittäjä"
+
+#: ../data/SearchRow.ui.h:2
+#, fuzzy
+msgid "Add to playlist"
+msgstr "Toista"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"

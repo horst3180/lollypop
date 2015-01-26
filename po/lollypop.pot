@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,12 +169,12 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 msgid "New playlist "
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr ""
 
@@ -327,8 +327,12 @@ msgstr ""
 msgid "Show genres"
 msgstr ""
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
+msgstr ""
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1

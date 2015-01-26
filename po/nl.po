@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -172,12 +172,12 @@ msgstr "Onbekend"
 msgid "Compilation"
 msgstr "Compilatie"
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 #, fuzzy
 msgid "New playlist "
 msgstr "Afspelen"
@@ -219,7 +219,7 @@ msgstr "Verwijderen uit wachtrij"
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
 
@@ -227,7 +227,7 @@ msgstr "Toevoegen aan wachtrij"
 msgid "Next tracks"
 msgstr "Volgende nummers"
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr "Volgend nummer"
 
@@ -249,7 +249,7 @@ msgstr "Lollypop aanpassen"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr "Zoeken:"
 
@@ -336,9 +336,14 @@ msgstr "Wachtrij"
 msgid "Show genres"
 msgstr "Toon genres"
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "artiest"
+
+#: ../data/SearchRow.ui.h:2
+#, fuzzy
+msgid "Add to playlist"
+msgstr "Afspelen"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"

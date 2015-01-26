@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:52+0100\n"
+"POT-Creation-Date: 2015-01-26 22:26+0100\n"
 "PO-Revision-Date: 2015-01-10 11:51+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -178,12 +178,12 @@ msgstr "Nieznany"
 msgid "Compilation"
 msgstr "Składanka"
 
-#: ../src/playlists.py:351 ../src/playlists.py:579
+#: ../src/playlists.py:352 ../src/playlists.py:580
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usuń z kolejki"
 
-#: ../src/playlists.py:412 ../src/playlists.py:415
+#: ../src/playlists.py:413 ../src/playlists.py:416
 #, fuzzy
 msgid "New playlist "
 msgstr "Rozpoczyna odtwarzanie"
@@ -225,7 +225,7 @@ msgstr "Usuń z kolejki"
 msgid "Add to \"%s\""
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Dodaj do kolejki"
 
@@ -233,7 +233,7 @@ msgstr "Dodaj do kolejki"
 msgid "Next tracks"
 msgstr "Odtwórz jako następne"
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163
 msgid "Next track"
 msgstr "Odtwórz jako następny"
 
@@ -255,7 +255,7 @@ msgstr "Preferencje Lollypop"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:148
+#: ../src/search.py:145
 msgid "Search:"
 msgstr "Wyszukiwanie:"
 
@@ -342,9 +342,14 @@ msgstr "Wyświetla kolejkę odtwarzania"
 msgid "Show genres"
 msgstr "Wyświetla listę gatunków"
 
-#: ../data/SearchRow.ui.h:3
+#: ../data/SearchRow.ui.h:1
 msgid "artist"
 msgstr "wykonawca"
+
+#: ../data/SearchRow.ui.h:2
+#, fuzzy
+msgid "Add to playlist"
+msgstr "Rozpoczyna odtwarzanie"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Darken views"
