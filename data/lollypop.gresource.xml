@@ -8,7 +8,8 @@
     <file preprocess="xml-stripblanks">QueueWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistWidget.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistPopup.ui</file>
+    <file preprocess="xml-stripblanks">PlaylistEditPopup.ui</file>
+    <file preprocess="xml-stripblanks">PlaylistsManagePopup.ui</file>
     <file>application.css</file>
     <file preprocess="xml-stripblanks">AlbumWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>

@@ -19,7 +19,8 @@ src/selectionlist.py
 src/playlists.py
 src/queue.py
 src/view.py
-src/popmenu.py
+src/popmainmenu.py
+src/popplaylistmenu.py
 src/popimages.py
 src/settings.py
 src/mpris.py
@@ -34,7 +35,8 @@ src/collectionscanner.py
 [type: gettext/glade]data/app-menu.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/TrackRow.ui
-[type: gettext/glade]data/PlaylistPopup.ui
+[type: gettext/glade]data/PlaylistEditPopup.ui
+[type: gettext/glade]data/PlaylistsManagePopup.ui
 [type: gettext/glade]data/PlaylistWidget.ui
 [type: gettext/glade]data/ArtistView.ui
 [type: gettext/glade]data/Loading.ui

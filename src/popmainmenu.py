@@ -16,9 +16,9 @@ from gi.repository import Gtk, GObject, GLib, Gio
 from _thread import start_new_thread
 
 from lollypop.define import *
-from lollypop.playlists import PlaylistPopup
+from lollypop.playlists import PlaylistsManagePopup
 
-class PopMenu(Gio.Menu):
+class PopMainMenu(Gio.Menu):
 	"""
 		Init menu model
 		@param: object id as int
@@ -139,7 +139,7 @@ class PopMenu(Gio.Menu):
 	"""
 		Play album
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param album id as int
 	"""
 	def _play_album(self, action, variant, album_id):
@@ -148,18 +148,18 @@ class PopMenu(Gio.Menu):
 	"""
 		Add to playlists
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param object id as int
 		@param is album as bool
 	"""
 	def _add_to_playlists(self, action, variant, object_id, is_album):
-		popup = PlaylistPopup(object_id, is_album)
+		popup = PlaylistsManagePopup(object_id, is_album)
 		popup.show()
 
 	"""
 		Add to playlist
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param object id as int
 		@param is album as bool
 		@param playlist name as str
@@ -176,7 +176,7 @@ class PopMenu(Gio.Menu):
 	"""
 		Del from playlist
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param object id as int
 		@param is album as bool
 		@param playlist name as str
@@ -193,7 +193,7 @@ class PopMenu(Gio.Menu):
 	"""
 		Append track to queue
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param album id as int
 	"""
 	def _append_to_queue(self, action, variant, album_id):
@@ -206,7 +206,7 @@ class PopMenu(Gio.Menu):
 	"""
 		Prepend track id to queue
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param album id as int
 	"""
 	def _prepend_to_queue(self, action, variant, album_id):
@@ -219,7 +219,7 @@ class PopMenu(Gio.Menu):
 	"""
 		Delete track id from queue
 		@param SimpleAction
-		@param GVariant as None
+		@param GVariant
 		@param album id as int
 	"""
 	def _del_from_queue(self, action, variant, album_id):

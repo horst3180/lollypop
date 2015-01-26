@@ -16,7 +16,7 @@ from cgi import escape
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
-from lollypop.popmenu import PopMenu
+from lollypop.popmainmenu import PopMainMenu
 from lollypop.utils import translate_artist_name, seconds_to_string
 
 class TrackRow(Gtk.ListBoxRow):
@@ -130,7 +130,7 @@ class TrackRow(Gtk.ListBoxRow):
 		@param widget as Gtk.Button
 	"""
 	def _pop_menu(self, widget):
-		menu = PopMenu(self._object_id, False)
+		menu = PopMainMenu(self._object_id, False)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
 		popover.connect('closed', self._on_closed)
 		self.get_style_context().add_class('trackrowmenu')

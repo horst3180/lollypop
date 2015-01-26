@@ -19,7 +19,8 @@ from lollypop.define import *
 from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
-from lollypop.popmenu import PopMenu
+from lollypop.popmainmenu import PopMainMenu
+from lollypop.popplaylistmenu import PopPlaylistMenu
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
@@ -168,7 +169,7 @@ class AlbumDetailedWidget(Gtk.Grid):
 		@param album id as int
 	"""
 	def _pop_menu(self, widget, album_id):
-		menu = PopMenu(album_id, True)
+		menu = PopMainMenu(album_id, True)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
 		popover.show()
 
@@ -232,7 +233,7 @@ class PlaylistWidget(Gtk.Grid):
 	def __init__(self, playlist_id):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
-		self._previous_album_id = None
+		name = Objects.playlists.get_name(playlist_id)
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
@@ -243,11 +244,12 @@ class PlaylistWidget(Gtk.Grid):
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._tracks_widget1.show()
 		self._tracks_widget2.show()
+		self._ui.get_object('menu').connect('clicked', self._pop_menu, name)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
 		self._ui.get_object('tracks').add(self._tracks_widget2)
 
 		self._header = self._ui.get_object('header')
-		name = Objects.playlists.get_name(playlist_id)
+		
 		self._ui.get_object('title').set_label(name)
 		self.add(self._ui.get_object('PlaylistWidget'))
 
@@ -299,13 +301,12 @@ class PlaylistWidget(Gtk.Grid):
 		self._add_tracks(playlist_name)
 		
 	"""
-		Popup menu for album
+		Popup menu for playlist
 		@param widget as Gtk.Button
-		@param album id as int
+		@param playlist name as str
 	"""
-	def _pop_menu(self, widget, album_id):
-		return
-		menu = PopMenu(album_id, True)
+	def _pop_menu(self, widget, playlist_name):
+		menu = PopPlaylistMenu(playlist_name)
 		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
 		popover.show()
 
@@ -329,8 +330,6 @@ class PlaylistWidget(Gtk.Grid):
 
 			if album_id not in albums:
 				albums.append(album_id)
-			
-			self._previous_album_id = album_id
 
 			if i <= mid_tracks:
 				self._tracks_widget1.add_track(track_id, i, title, length, pos, True) 

@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
-from lollypop.popmenu import PopMenu
+from lollypop.popmainmenu import PopMainMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
@@ -145,7 +145,7 @@ class Toolbar():
 				self._popalbums.populate()
 				self._popalbums.show()
 			else:
-				menu = PopMenu(Objects.player.current.id, False, True)
+				menu = PopMainMenu(Objects.player.current.id, False, True)
 				popover = Gtk.Popover.new_from_model(self._infobox, menu)
 				popover.show()
 			return True

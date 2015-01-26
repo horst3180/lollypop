@@ -26,6 +26,7 @@ app_PYTHON = \
 	player.py\
 	popimages.py\
 	popalbums.py\
-	popmenu.py\
+	popmainmenu.py\
+	popplaylistmenu.py\
 	collectionscanner.py
 
