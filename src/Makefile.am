@@ -22,7 +22,7 @@ app_PYTHON = \
 	mpris.py\
 	search.py\
 	tracks.py\
-	widgets.py\
+	view_widgets.py\
 	player.py\
 	popimages.py\
 	popalbums.py\

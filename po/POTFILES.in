@@ -26,7 +26,7 @@ src/settings.py
 src/mpris.py
 src/utils.py
 src/search.py
-src/widgets.py
+src/view_widgets.py
 src/player.py
 src/collectionscanner.py
 [type: gettext/glade]data/AboutDialog.ui.in

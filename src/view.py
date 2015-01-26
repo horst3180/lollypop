@@ -17,7 +17,7 @@ from time import sleep
 
 from lollypop.define import Objects
 from lollypop.database import Database
-from lollypop.widgets import *
+from lollypop.view_widgets import *
 from lollypop.utils import translate_artist_name
 
 """
