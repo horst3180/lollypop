@@ -218,7 +218,7 @@ msgstr "Ajouter à \"%s\""
 
 #: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
-msgstr "Ajouter à file d'attente"
+msgstr "Ajouter à la file d'attente"
 
 #: ../src/popmenu.py:161
 msgid "Next tracks"
