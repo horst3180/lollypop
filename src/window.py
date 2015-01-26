@@ -60,7 +60,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def update_db(self):
 		self._list_one.widget.hide()
-		self._list_two.widget.hide()
+		self._hide_list_two()
 
 		old_view = self._stack.get_visible_child()		
 		view = LoadingView()
@@ -297,7 +297,7 @@ class Window(Gtk.ApplicationWindow):
 
 		# We show all artists
 		if is_artist:
-			self._list_two.widget.hide()
+			self._hide_list_two()
 			items = Objects.artists.get(ALL)
 			if len(Objects.albums.get_compilations(ALL)) > 0:
 				items.insert(0, (COMPILATIONS, _("Compilations")))	
@@ -328,12 +328,9 @@ class Window(Gtk.ApplicationWindow):
 		@param update as bool => if True, update entries
 	"""
 	def _setup_list_two(self, obj, genre_id, update = False	):
-		if self._list_two_signal:
-			self._list_two.disconnect(self._list_two_signal)
 
 		if genre_id == POPULARS:
-			self._list_two.widget.hide()
-			self._list_two_signal = None
+			self._hide_list_two()
 		else:
 			if genre_id == PLAYLISTS:
 				values = Objects.playlists.get()
@@ -350,10 +347,12 @@ class Window(Gtk.ApplicationWindow):
 				else:
 					self._list_two.populate(values, True)
 
+				if self._list_two_signal:
+					self._list_two.disconnect(self._list_two_signal)
 				self._list_two.widget.show()
 				self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
 			else:
-				self._list_two.widget.hide()
+				self._hide_list_two()
 
 		# Only update view if list has not been updated, user may have started navigation
 		if not update:
@@ -378,11 +377,11 @@ class Window(Gtk.ApplicationWindow):
 			self._update_view_playlists(object_id)
 		elif object_id == ALL or object_id == POPULARS:
 			if is_artist:
-				self._list_two.widget.hide()
+				self._hide_list_two()
 			self._update_view_genres(object_id)
 		else:
 			if is_artist:
-				self._list_two.widget.hide()
+				self._hide_list_two()
 			old_view = self._stack.get_visible_child()
 			view = ArtistView(object_id, genre_id, True)
 			self._stack.add(view)
@@ -425,6 +424,15 @@ class Window(Gtk.ApplicationWindow):
 			view.stop()
 			self._stack.remove(view)
 			view.remove_signals()
+
+	"""
+		Clean and hide list two
+	"""
+	def _hide_list_two(self):
+		if self._list_two_signal:
+			self._list_two.disconnect(self._list_two_signal)
+			self._list_two_signal = None
+		self._list_two.widget.hide()
 
 	"""
 		Delay event
