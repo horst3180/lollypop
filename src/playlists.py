@@ -491,9 +491,8 @@ class PlaylistsManagePopup:
 		old_name = self._model.get_value(iterator, 1)
 		self._model.set_value(iterator, 1, name)
 		Objects.playlists.rename(name, old_name)
-		
-		
-		
+
+	
 """
 	Dialog for edit a playlist
 """
@@ -514,9 +513,13 @@ class PlaylistEditPopup:
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
 
-		self._view = self._ui.get_object('view')
-		self._view.set_model(self._model)
+		self._filter_widget = self._ui.get_object('filter')
+		self._filter = self._model.filter_new()
+		self._filter.set_visible_func(self._do_filtering)
 
+		self._view = self._ui.get_object('view')
+		self._view.set_model(self._filter)
+		
 		self._ui.connect_signals(self)
 
 		self._popup = self._ui.get_object('popup')
@@ -588,6 +591,22 @@ class PlaylistEditPopup:
 			GLib.idle_add(self._append_track, tracks)
 
 	"""
+		Filter model
+		@param model as Gtk.TreeModel
+		@param iterator as Gtk.TreeIter
+		@param data as unused
+	"""
+	def _do_filtering(self, model, iterator, data = None):
+		query = self._filter_widget.get_text()
+		value = model.get_value(iterator, 1).replace('\n',' ')
+
+		if query == "":
+			return True
+		elif query.lower() in value.lower():
+			return True
+		return False
+
+	"""
 		Delete item if Delete was pressed
 		@param widget unused, Gtk.Event
 	"""
@@ -601,9 +620,9 @@ class PlaylistEditPopup:
 		@param path as Gtk.TreePath
 	"""
 	def _show_infobar(self, path):
-		iterator = self._model.get_iter(path)
+		iterator = self._filter.get_iter(path)
 		self._deleted_path = path
-		self._infobar_label.set_markup(_("Remove \"%s\"?") % self._model.get_value(iterator, 1).replace('\n',' - '))
+		self._infobar_label.set_markup(_("Remove \"%s\"?") % self._filter.get_value(iterator, 1).replace('\n',' - '))
 		self._infobar.show()
 	
 	"""
@@ -611,7 +630,7 @@ class PlaylistEditPopup:
 		@param entry as Gtk.Entry
 	"""
 	def _on_text_changed(self, entry):
-		pass
+		self._filter.refilter()
 		
 	"""
 		Empty playlist
@@ -650,9 +669,12 @@ class PlaylistEditPopup:
 			for item in self._model:
 				self._model.remove(item.iter)
 		elif self._deleted_path:
-			print(self._deleted_path)
-			iterator = self._model.get_iter(self._deleted_path)
-			self._model.remove(iterator)
+			iterator = self._filter.get_iter(self._deleted_path)
+			value = self._filter.get_value(iterator, 1)
+			for item in self._model:
+				model_value = self._model.get_value(item.iter, 1)
+				if value == model_value:
+					self._model.remove(item.iter)
 
 		tracks_path = []
 		for item in self._model:
