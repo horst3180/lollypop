@@ -29,12 +29,11 @@ class SearchRow(Gtk.ListBoxRow):
 		self.is_track = False
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
+		self._ui.connect_signals(self)
 		self._row_widget = self._ui.get_object('row')
 		self._artist = self._ui.get_object('artist')
 		self._item = self._ui.get_object('item')
 		self._cover = self._ui.get_object('cover')
-		self._ui.get_object('add').connect('clicked', self._on_add_clicked)
-		self._ui.get_object('next').connect('clicked', self._on_next_clicked)
 		self.add(self._row_widget)
 
 		self.show()
