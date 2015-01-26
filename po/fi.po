@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 19:49+0100\n"
+"POT-Creation-Date: 2015-01-26 15:50+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -130,20 +130,20 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/window.py:292 ../src/window.py:332
+#: ../src/window.py:303 ../src/window.py:344
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/window.py:297
+#: ../src/window.py:308
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/window.py:298 ../src/popmenu.py:46
+#: ../src/window.py:309 ../src/popmainmenu.py:44
 #, fuzzy
 msgid "Playlists"
 msgstr "Toista"
 
-#: ../src/window.py:299
+#: ../src/window.py:310
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
@@ -165,22 +165,22 @@ msgstr "esittäjän %s levyltä %s"
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:139
+#: ../src/database_artists.py:67 ../src/database_albums.py:141
 #: ../src/database_tracks.py:149 ../src/database_tracks.py:164
 #: ../src/database_genres.py:64
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/database_albums.py:154
+#: ../src/database_albums.py:156
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:325
+#: ../src/playlists.py:343 ../src/playlists.py:568
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:386 ../src/playlists.py:389
+#: ../src/playlists.py:404 ../src/playlists.py:407
 #, fuzzy
 msgid "New playlist "
 msgstr "Toista"
@@ -189,44 +189,49 @@ msgstr "Toista"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/popmenu.py:41
+#: ../src/popmainmenu.py:39
 #, fuzzy
 msgid "Playback"
 msgstr "Toista"
 
-#: ../src/popmenu.py:62
+#: ../src/popmainmenu.py:60
 msgid "Only play this album"
 msgstr "Toista vain tämä albumi"
 
-#: ../src/popmenu.py:78
+#: ../src/popmainmenu.py:76
 msgid "Management"
 msgstr ""
 
-#: ../src/popmenu.py:86
+#: ../src/popmainmenu.py:84
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Poista jonosta"
 
-#: ../src/popmenu.py:89
+#: ../src/popmainmenu.py:87
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:130 ../data/SearchRow.ui.h:1
+#: ../src/popmainmenu.py:128 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:134
+#: ../src/popmainmenu.py:132
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:136 ../data/SearchRow.ui.h:2
+#: ../src/popmainmenu.py:134 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Seuraava kappale"
 
-#: ../src/popmenu.py:139
+#: ../src/popmainmenu.py:137
 msgid "Remove from queue"
 msgstr "Poista jonosta"
+
+#: ../src/popplaylistmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
+#, fuzzy
+msgid "Edit playlist"
+msgstr "Toista"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
@@ -278,23 +283,24 @@ msgstr "_Tietoja"
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../data/PlaylistPopup.ui.h:1
+#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:3
+#: ../data/SettingsDialog.ui.h:11
+msgid "Close"
+msgstr "Sulje"
+
+#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
+msgid "Confirm"
+msgstr ""
+
+#: ../data/PlaylistsManagePopup.ui.h:1
 #, fuzzy
 msgid "Add to playlists"
 msgstr "Toista"
 
-#: ../data/PlaylistPopup.ui.h:2
+#: ../data/PlaylistsManagePopup.ui.h:2
 #, fuzzy
 msgid "New playlist"
 msgstr "Toista"
-
-#: ../data/PlaylistPopup.ui.h:3 ../data/SettingsDialog.ui.h:11
-msgid "Close"
-msgstr "Sulje"
-
-#: ../data/PlaylistPopup.ui.h:4
-msgid "Confirm"
-msgstr ""
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
