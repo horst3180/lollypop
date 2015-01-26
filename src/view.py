@@ -128,7 +128,6 @@ class ArtistView(View):
 	"""
 	def __init__(self, artist_id, genre_id, show_artist_details):
 		View.__init__(self)
-		self.set_property("orientation", Gtk.Orientation.VERTICAL)
 		
 		if show_artist_details:
 			self._ui = Gtk.Builder()
@@ -355,8 +354,7 @@ class PlaylistView(View):
 	"""
 	def __init__(self, playlist_id):
 		View.__init__(self)
-		self.set_property("orientation", Gtk.Orientation.VERTICAL)
-		
+
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
 		self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,

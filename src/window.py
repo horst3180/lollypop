@@ -236,6 +236,7 @@ class Window(Gtk.ApplicationWindow):
 		self._stack.add(loading_view)
 		self._stack.set_visible_child(loading_view)
 		self._stack.set_transition_duration(500)
+		self._stack.set_property('expand', True)
 		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 		self._stack.show()
 
