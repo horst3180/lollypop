@@ -322,12 +322,6 @@ class PlaylistWidget(Gtk.Grid):
 			(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
 			title = "%s - %s" % (translate_artist_name(Objects.artists.get_name(artist_id)), title)
 
-			# Don't show cover
-			if self._previous_album_id and self._previous_album_id == album_id:
-				show_cover = False
-			else:
-				show_cover = True
-
 			# Get track position in queue
 			pos = None
 			if Objects.player.is_in_queue(track_id):
@@ -339,9 +333,9 @@ class PlaylistWidget(Gtk.Grid):
 			self._previous_album_id = album_id
 
 			if i <= mid_tracks:
-				self._tracks_widget1.add_track(track_id, i, title, length, pos, show_cover) 
+				self._tracks_widget1.add_track(track_id, i, title, length, pos, True) 
 			else:
-				self._tracks_widget2.add_track(track_id, i, title, length, pos, show_cover)
+				self._tracks_widget2.add_track(track_id, i, title, length, pos, True)
 			i += 1
 
 	"""
