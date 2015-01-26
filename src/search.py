@@ -195,7 +195,7 @@ class SearchWidget(Gtk.Popover):
 	def _clear(self, results):
 		length = len(results)
 		for child in self._view.get_children():
-			if length == 0 or not child._exists(results):
+			if length == 0 or not child.exists(results):
 				GLib.idle_add(child.destroy)
 
 	"""

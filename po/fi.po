@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 22:26+0100\n"
+"POT-Creation-Date: 2015-01-26 23:30+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -175,14 +175,19 @@ msgstr "Tuntematon"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:352 ../src/playlists.py:580
+#: ../src/playlists.py:380 ../src/playlists.py:606
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:413 ../src/playlists.py:416
+#: ../src/playlists.py:441 ../src/playlists.py:444
 #, fuzzy
 msgid "New playlist "
+msgstr "Toista"
+
+#: ../src/playlists.py:622
+#, fuzzy
+msgid "Empty playlist?"
 msgstr "Toista"
 
 #: ../src/view.py:33
@@ -293,7 +298,16 @@ msgstr "_Lopeta"
 msgid "Close"
 msgstr "Sulje"
 
-#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
+#: ../data/PlaylistEditPopup.ui.h:3
+msgid "Filter:"
+msgstr ""
+
+#: ../data/PlaylistEditPopup.ui.h:4
+#, fuzzy
+msgid "Empty playlist"
+msgstr "Toista"
+
+#: ../data/PlaylistEditPopup.ui.h:5 ../data/PlaylistsManagePopup.ui.h:4
 msgid "Confirm"
 msgstr ""
 

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 22:26+0100\n"
+"POT-Creation-Date: 2015-01-26 23:30+0100\n"
 "PO-Revision-Date: 2015-01-06 11:40+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -176,14 +176,19 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
-#: ../src/playlists.py:352 ../src/playlists.py:580
+#: ../src/playlists.py:380 ../src/playlists.py:606
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit z řady"
 
-#: ../src/playlists.py:413 ../src/playlists.py:416
+#: ../src/playlists.py:441 ../src/playlists.py:444
 #, fuzzy
 msgid "New playlist "
+msgstr "Přehrát"
+
+#: ../src/playlists.py:622
+#, fuzzy
+msgid "Empty playlist?"
 msgstr "Přehrát"
 
 #: ../src/view.py:33
@@ -294,7 +299,16 @@ msgstr "_Ukončit"
 msgid "Close"
 msgstr "Zavřít"
 
-#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
+#: ../data/PlaylistEditPopup.ui.h:3
+msgid "Filter:"
+msgstr ""
+
+#: ../data/PlaylistEditPopup.ui.h:4
+#, fuzzy
+msgid "Empty playlist"
+msgstr "Přehrát"
+
+#: ../data/PlaylistEditPopup.ui.h:5 ../data/PlaylistsManagePopup.ui.h:4
 msgid "Confirm"
 msgstr ""
 

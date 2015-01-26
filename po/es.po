@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 22:26+0100\n"
+"POT-Creation-Date: 2015-01-26 23:30+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -173,14 +173,19 @@ msgstr "Desconocido"
 msgid "Compilation"
 msgstr "Recopilación"
 
-#: ../src/playlists.py:352 ../src/playlists.py:580
+#: ../src/playlists.py:380 ../src/playlists.py:606
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Suprimir de la cola"
 
-#: ../src/playlists.py:413 ../src/playlists.py:416
+#: ../src/playlists.py:441 ../src/playlists.py:444
 #, fuzzy
 msgid "New playlist "
+msgstr "Reproducir"
+
+#: ../src/playlists.py:622
+#, fuzzy
+msgid "Empty playlist?"
 msgstr "Reproducir"
 
 #: ../src/view.py:33
@@ -291,7 +296,16 @@ msgstr "_Salir"
 msgid "Close"
 msgstr "Cerrar"
 
-#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
+#: ../data/PlaylistEditPopup.ui.h:3
+msgid "Filter:"
+msgstr ""
+
+#: ../data/PlaylistEditPopup.ui.h:4
+#, fuzzy
+msgid "Empty playlist"
+msgstr "Reproducir"
+
+#: ../data/PlaylistEditPopup.ui.h:5 ../data/PlaylistsManagePopup.ui.h:4
 msgid "Confirm"
 msgstr ""
 

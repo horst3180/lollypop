@@ -519,7 +519,6 @@ class PlaylistEditPopup:
 
 		self._ui.connect_signals(self)
 
-		self._entry = self._ui.get_object('entry')
 		self._popup = self._ui.get_object('popup')
 		self._infobar = self._ui.get_object('infobar')
 		self._infobar_label = self._ui.get_object('infobarlabel')
@@ -606,6 +605,22 @@ class PlaylistEditPopup:
 		self._deleted_path = path
 		self._infobar_label.set_markup(_("Remove \"%s\"?") % self._model.get_value(iterator, 1).replace('\n',' - '))
 		self._infobar.show()
+	
+	"""
+		Filter view
+		@param entry as Gtk.Entry
+	"""
+	def _on_text_changed(self, entry):
+		pass
+		
+	"""
+		Empty playlist
+		@param button as Gtk.Button
+	"""	
+	def _on_empty_clicked(self, button):
+		self._deleted_path = ALL
+		self._infobar_label.set_markup(_("Empty playlist?"))
+		self._infobar.show()
 		
 	"""
 		Hide infobar
@@ -631,12 +646,16 @@ class PlaylistEditPopup:
 		@param button as Gtk.Button
 	"""
 	def _on_delete_confirm(self, button):
-		if self._deleted_path:
+		if self._deleted_path == ALL:
+			for item in self._model:
+				self._model.remove(item.iter)
+		elif self._deleted_path:
 			iterator = self._model.get_iter(self._deleted_path)
 			self._model.remove(iterator)
-			self._deleted_path = None
-			self._infobar.hide()
 
+		self._infobar.hide()
+		self._deleted_path = None
+		
 	"""
 		Delete item if Delete was pressed
 		@param widget unused, Gtk.Event
@@ -652,7 +671,4 @@ class PlaylistEditPopup:
 	def _on_close_clicked(self, widget):
 		self._popup.hide()
 		tracks_path = []
-		for item in self._model:
-			tracks_path.append(item[3])
-		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 		self._model.clear()

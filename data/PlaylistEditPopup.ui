@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-clear-all-symbolic</property>
+  </object>
   <object class="GtkWindow" id="popup">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Edit playlist</property>
@@ -45,7 +50,8 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
+            <property name="top_attach">2</property>
+            <property name="width">3</property>
           </packing>
         </child>
         <child>
@@ -74,7 +80,54 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
+            <property name="top_attach">3</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="margin_left">5</property>
+            <property name="label" translatable="yes">Filter:</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="filter">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_left">5</property>
+            <property name="margin_right">5</property>
+            <property name="margin_bottom">3</property>
+            <property name="hexpand">True</property>
+            <signal name="changed" handler="_on_text_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="empty">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Empty playlist</property>
+            <property name="halign">end</property>
+            <property name="margin_right">5</property>
+            <property name="image">image1</property>
+            <property name="relief">none</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="_on_empty_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
@@ -85,7 +138,7 @@
             <property name="show_close_button">True</property>
             <signal name="response" handler="_on_response" swapped="no"/>
             <child internal-child="action_area">
-              <object class="GtkButtonBox" id="infobar-action_area1">
+              <object class="GtkButtonBox" id="infobar-action_area">
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
@@ -106,7 +159,7 @@
               </packing>
             </child>
             <child internal-child="content_area">
-              <object class="GtkBox" id="infobar-content_area1">
+              <object class="GtkBox" id="infobar-content_area">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="spacing">16</property>
@@ -154,7 +207,8 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="width">3</property>
           </packing>
         </child>
       </object>
