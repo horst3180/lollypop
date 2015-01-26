@@ -95,6 +95,7 @@ class PlaylistsManager(GObject.GObject):
 		@return array of (id, string)
 	"""
 	def get(self, max_items = None):
+		#FIXME This just can't really works
 		self._playlists = []
 		try:
 			index = 0
