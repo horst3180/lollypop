@@ -343,13 +343,17 @@ class Window(Gtk.ApplicationWindow):
 			if len(Objects.albums.get_compilations(genre_id)) > 0:
 				values.insert(0, (COMPILATIONS, _("Compilations")))
 
-			if update:
-				self._list_two.update(values, False)
-			else:
-				self._list_two.populate(values, True)
+			# Do not show list if empty
+			if len(values) > 0:
+				if update:
+					self._list_two.update(values, False)
+				else:
+					self._list_two.populate(values, True)
 
-			self._list_two.widget.show()
-			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
+				self._list_two.widget.show()
+				self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
+			else:
+				self._list_two.widget.hide()
 
 		# Only update view if list has not been updated, user may have started navigation
 		if not update:
