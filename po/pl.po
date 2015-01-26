@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 15:50+0100\n"
+"POT-Creation-Date: 2015-01-26 16:05+0100\n"
 "PO-Revision-Date: 2015-01-10 11:51+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -178,19 +178,24 @@ msgstr "Nieznany"
 msgid "Compilation"
 msgstr "Składanka"
 
-#: ../src/playlists.py:343 ../src/playlists.py:568
+#: ../src/playlists.py:345 ../src/playlists.py:573
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usuń z kolejki"
 
-#: ../src/playlists.py:404 ../src/playlists.py:407
+#: ../src/playlists.py:406 ../src/playlists.py:409
 #, fuzzy
 msgid "New playlist "
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/view.py:36
+#: ../src/view.py:33
 msgid "Loading please wait..."
 msgstr "Wczytywanie, proszę czekać..."
+
+#: ../src/view.py:52
+#, fuzzy
+msgid "Manage playlists"
+msgstr "Rozpoczyna odtwarzanie"
 
 #: ../src/popmainmenu.py:39
 #, fuzzy

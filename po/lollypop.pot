@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 15:50+0100\n"
+"POT-Creation-Date: 2015-01-26 16:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,17 +169,21 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:343 ../src/playlists.py:568
+#: ../src/playlists.py:345 ../src/playlists.py:573
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:404 ../src/playlists.py:407
+#: ../src/playlists.py:406 ../src/playlists.py:409
 msgid "New playlist "
 msgstr ""
 
-#: ../src/view.py:36
+#: ../src/view.py:33
 msgid "Loading please wait..."
+msgstr ""
+
+#: ../src/view.py:52
+msgid "Manage playlists"
 msgstr ""
 
 #: ../src/popmainmenu.py:39

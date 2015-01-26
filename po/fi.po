@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 15:50+0100\n"
+"POT-Creation-Date: 2015-01-26 16:05+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -175,19 +175,24 @@ msgstr "Tuntematon"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:343 ../src/playlists.py:568
+#: ../src/playlists.py:345 ../src/playlists.py:573
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:404 ../src/playlists.py:407
+#: ../src/playlists.py:406 ../src/playlists.py:409
 #, fuzzy
 msgid "New playlist "
 msgstr "Toista"
 
-#: ../src/view.py:36
+#: ../src/view.py:33
 msgid "Loading please wait..."
 msgstr "Ladataan..."
+
+#: ../src/view.py:52
+#, fuzzy
+msgid "Manage playlists"
+msgstr "Toista"
 
 #: ../src/popmainmenu.py:39
 #, fuzzy
