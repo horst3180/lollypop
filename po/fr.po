@@ -180,7 +180,7 @@ msgstr "Supprimer \"%s\"?"
 
 #: ../src/playlists.py:412 ../src/playlists.py:415
 msgid "New playlist "
-msgstr "Nouvelle liste de lecture"
+msgstr "Nouvelle liste de lecture "
 
 #: ../src/view.py:33
 msgid "Loading please wait..."
