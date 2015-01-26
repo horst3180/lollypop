@@ -68,14 +68,11 @@ class SearchRow(Gtk.ListBoxRow):
 	def set_cover(self, pixbuf):
 		self._cover.set_from_pixbuf(pixbuf)
 
-#######################
-# PRIVATE             #
-#######################
 	"""
-		Return True if item exist results
+		Return True if self exists in items
 		@param: items as array of searchObject
 	"""
-	def _exists(self, items):
+	def exists(self, items):
 		found = False
 		for item in items:
 			if item.is_track and self.is_track:
@@ -87,6 +84,10 @@ class SearchRow(Gtk.ListBoxRow):
 					found = True
 					break
 		return found
+
+#######################
+# PRIVATE             #
+#######################
 
 	"""
 		Add track to queue
