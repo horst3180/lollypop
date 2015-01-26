@@ -17,6 +17,7 @@ from _thread import start_new_thread
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
+from lollypop.playlists import PlaylistsManagePopup
 from lollypop.utils import translate_artist_name
 
 class SearchRow(Gtk.ListBoxRow):
@@ -90,27 +91,23 @@ class SearchRow(Gtk.ListBoxRow):
 #######################
 
 	"""
+		Prepend track to queue
+		@param button as Gtk.Button
+	"""
+	def _on_playlist_clicked(self, button):
+		popup = PlaylistsManagePopup(self.id, not self.is_track)
+		popup.show()
+		
+	"""
 		Add track to queue
 		@param button as Gtk.Button
 	"""
-	def _on_add_clicked(self, button):
+	def _on_queue_clicked(self, button):
 		if self.is_track:
 			Objects.player.append_to_queue(self.id)
 		else:
 			for track in Objects.albums.get_tracks(self.id):
 				Objects.player.append_to_queue(track)
-		button.hide()
-
-	"""
-		Prepend track to queue
-		@param button as Gtk.Button
-	"""
-	def _on_next_clicked(self, button):
-		if self.is_track:
-			Objects.player.prepend_to_queue(self.id)
-		else:
-			for track in reversed(Objects.albums.get_tracks(self.id)):
-				Objects.player.prepend_to_queue(track)
 		button.hide()
 
 ######################################################################
