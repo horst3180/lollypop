@@ -180,6 +180,16 @@ class PlaylistsManager(GObject.GObject):
 	def add_track(self, playlist_name, filepath):
 		self._add_track(playlist_name, filepath)
 		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+
+	"""
+		Add tracks to playlist if not already present
+		@param playlist name as str
+		@param tracks filepath as [str]
+	"""
+	def add_tracks(self, playlist_name, tracks_path):
+		for filepath in tracks_path:
+			self._add_track(playlist_name, filepath)
+		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
 		
 	"""
 		Remove track from playlist
@@ -187,20 +197,18 @@ class PlaylistsManager(GObject.GObject):
 		@param track filepath as str
 	"""
 	def remove_track(self, playlist_name, filepath):
-		try:
-			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
-			lines = f.readlines()
-			f.close()
-			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
-			for path in lines:
-				if path[:-1] != filepath:
-					f.write(path)
-			f.close()
-			tracks = self.get_tracks(playlist_name)
-			tracks.remove(filepath)
-			GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
-		except Exception as e:
-			print("PlaylistsManager::remove_tracks: %s" %e)
+		self._remove_track(self, playlist_name, filepath)
+		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+	
+	"""
+		Remove tracks from playlist
+		@param playlist name as str
+		@param tracks filepath as [str]
+	"""
+	def remove_tracks(self, playlist_name, tracks_path):
+		for filepath in tracks_path:
+			self._remove_track(playlist_name, filepath)
+		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
 			
 	"""
 		Return True if object_id is already present in playlist
@@ -249,6 +257,26 @@ class PlaylistsManager(GObject.GObject):
 				tracks.append(filepath)
 			except Exception as e:
 				print("PlaylistsManager::add_track: %s" %e)
+
+	"""
+		Remove track from playlist
+		@param playlist name as str
+		@param track filepath as str
+	"""
+	def _remove_track(self, playlist_name, filepath):
+		try:
+			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
+			lines = f.readlines()
+			f.close()
+			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
+			for path in lines:
+				if path[:-1] != filepath:
+					f.write(path)
+			f.close()
+			tracks = self.get_tracks(playlist_name)
+			tracks.remove(filepath)
+		except Exception as e:
+			print("PlaylistsManager::remove_tracks: %s" %e)
 		
 """
 	Dialog for manage playlist
@@ -444,13 +472,12 @@ class PlaylistsManagePopup:
 			tracks_path = Objects.albums.get_tracks_path(self._object_id)
 		else:
 			tracks_path = [ Objects.tracks.get_path(self._object_id) ]
-
-		for track_path in tracks_path:
-			if add:
-				Objects.playlists.add_track(name, track_path)
-			else:
-				playlist = Objects.playlists.remove_track(name, track_path)
-		
+	
+		if add:
+			Objects.playlists.add_tracks(name, tracks_path)
+		else:
+			playlist = Objects.playlists.remove_tracks(name, tracks_path)
+	
 	"""
 		When playlist is edited, rename playlist
 		@param widget as cell renderer
