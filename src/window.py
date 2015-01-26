@@ -331,7 +331,7 @@ class Window(Gtk.ApplicationWindow):
 		@param update as bool => if True, update entries
 	"""
 	def _setup_list_two(self, obj, genre_id, update = False	):
-
+		is_artist = genre_id != PLAYLISTS
 		if genre_id == POPULARS:
 			self._hide_list_two()
 		else:
@@ -346,9 +346,9 @@ class Window(Gtk.ApplicationWindow):
 			# Do not show list if empty
 			if len(values) > 0:
 				if update:
-					self._list_two.update(values, False)
+					self._list_two.update(values, is_artist)
 				else:
-					self._list_two.populate(values, True)
+					self._list_two.populate(values, is_artist)
 
 				if self._list_two_signal:
 					self._list_two.disconnect(self._list_two_signal)
