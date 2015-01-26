@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
 from lollypop.search import SearchWidget
-from lollypop.popmainmenu import PopMainMenu
+from lollypop.popmenu import PopMainMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums

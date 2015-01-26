@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:05+0100\n"
+"POT-Creation-Date: 2015-01-26 16:52+0100\n"
 "PO-Revision-Date: 2015-01-06 11:40+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -131,20 +131,20 @@ msgstr "Pozastavit"
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/window.py:303 ../src/window.py:344
+#: ../src/window.py:306 ../src/window.py:344
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/window.py:308
+#: ../src/window.py:311
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/window.py:309 ../src/popmainmenu.py:44
+#: ../src/window.py:312 ../src/popmenu.py:73
 #, fuzzy
 msgid "Playlists"
 msgstr "Přehrát"
 
-#: ../src/window.py:310
+#: ../src/window.py:313
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
@@ -176,12 +176,12 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
-#: ../src/playlists.py:345 ../src/playlists.py:573
+#: ../src/playlists.py:351 ../src/playlists.py:579
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit z řady"
 
-#: ../src/playlists.py:406 ../src/playlists.py:409
+#: ../src/playlists.py:412 ../src/playlists.py:415
 #, fuzzy
 msgid "New playlist "
 msgstr "Přehrát"
@@ -195,49 +195,49 @@ msgstr "Nahrává se. Počkejte, prosím..."
 msgid "Manage playlists"
 msgstr "Přehrát"
 
-#: ../src/popmainmenu.py:39
+#: ../src/popmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
+#, fuzzy
+msgid "Edit playlist"
+msgstr "Přehrát"
+
+#: ../src/popmenu.py:68
 #, fuzzy
 msgid "Playback"
 msgstr "Přehrát"
 
-#: ../src/popmainmenu.py:60
+#: ../src/popmenu.py:89
 msgid "Only play this album"
 msgstr "Přehrát pouze toto album"
 
-#: ../src/popmainmenu.py:76
+#: ../src/popmenu.py:105
 msgid "Management"
 msgstr ""
 
-#: ../src/popmainmenu.py:84
+#: ../src/popmenu.py:113
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Odstranit z řady"
 
-#: ../src/popmainmenu.py:87
+#: ../src/popmenu.py:116
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Přidat do řady"
 
-#: ../src/popmainmenu.py:128 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmainmenu.py:132
+#: ../src/popmenu.py:161
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmainmenu.py:134 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmainmenu.py:137
+#: ../src/popmenu.py:166
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
-
-#: ../src/popplaylistmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
-#, fuzzy
-msgid "Edit playlist"
-msgstr "Přehrát"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"

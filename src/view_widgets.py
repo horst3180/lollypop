@@ -19,8 +19,8 @@ from lollypop.define import *
 from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
-from lollypop.popmainmenu import PopMainMenu
-from lollypop.popplaylistmenu import PopPlaylistMenu
+from lollypop.popmenu import PopMainMenu
+from lollypop.popmenu import PopPlaylistMenu
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 

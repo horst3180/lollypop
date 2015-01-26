@@ -16,7 +16,7 @@ from cgi import escape
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
-from lollypop.popmainmenu import PopMainMenu
+from lollypop.popmenu import PopMainMenu
 from lollypop.utils import translate_artist_name, seconds_to_string
 
 class TrackRow(Gtk.ListBoxRow):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 16:05+0100\n"
+"POT-Creation-Date: 2015-01-26 16:52+0100\n"
 "PO-Revision-Date: 2015-01-10 11:51+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -133,20 +133,20 @@ msgstr "Wstrzymuje odtwarzanie"
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:303 ../src/window.py:344
+#: ../src/window.py:306 ../src/window.py:344
 msgid "Compilations"
 msgstr "Składanki"
 
-#: ../src/window.py:308
+#: ../src/window.py:311
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/window.py:309 ../src/popmainmenu.py:44
+#: ../src/window.py:312 ../src/popmenu.py:73
 #, fuzzy
 msgid "Playlists"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:310
+#: ../src/window.py:313
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
@@ -178,12 +178,12 @@ msgstr "Nieznany"
 msgid "Compilation"
 msgstr "Składanka"
 
-#: ../src/playlists.py:345 ../src/playlists.py:573
+#: ../src/playlists.py:351 ../src/playlists.py:579
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usuń z kolejki"
 
-#: ../src/playlists.py:406 ../src/playlists.py:409
+#: ../src/playlists.py:412 ../src/playlists.py:415
 #, fuzzy
 msgid "New playlist "
 msgstr "Rozpoczyna odtwarzanie"
@@ -197,49 +197,49 @@ msgstr "Wczytywanie, proszę czekać..."
 msgid "Manage playlists"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/popmainmenu.py:39
+#: ../src/popmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
+#, fuzzy
+msgid "Edit playlist"
+msgstr "Rozpoczyna odtwarzanie"
+
+#: ../src/popmenu.py:68
 #, fuzzy
 msgid "Playback"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/popmainmenu.py:60
+#: ../src/popmenu.py:89
 msgid "Only play this album"
 msgstr "Odtwórz tylko ten album"
 
-#: ../src/popmainmenu.py:76
+#: ../src/popmenu.py:105
 msgid "Management"
 msgstr ""
 
-#: ../src/popmainmenu.py:84
+#: ../src/popmenu.py:113
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Usuń z kolejki"
 
-#: ../src/popmainmenu.py:87
+#: ../src/popmenu.py:116
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmainmenu.py:128 ../data/SearchRow.ui.h:1
+#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:1
 msgid "Add to queue"
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmainmenu.py:132
+#: ../src/popmenu.py:161
 msgid "Next tracks"
 msgstr "Odtwórz jako następne"
 
-#: ../src/popmainmenu.py:134 ../data/SearchRow.ui.h:2
+#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:2
 msgid "Next track"
 msgstr "Odtwórz jako następny"
 
-#: ../src/popmainmenu.py:137
+#: ../src/popmenu.py:166
 msgid "Remove from queue"
 msgstr "Usuń z kolejki"
-
-#: ../src/popplaylistmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
-#, fuzzy
-msgid "Edit playlist"
-msgstr "Rozpoczyna odtwarzanie"
 
 #: ../src/popimages.py:57
 msgid "Select a cover art for this album"
