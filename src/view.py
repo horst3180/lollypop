@@ -33,7 +33,7 @@ class LoadingView(Gtk.Bin):
 		label.set_label(_("Loading please wait..."))
 		label.show()
 		self.add(label)
-		self.show_all()
+		self.show()
 		
 	def remove_signals(self):
 		pass
@@ -53,7 +53,7 @@ class PlaylistsView(Gtk.Bin):
 		button.connect('clicked', self._on_button_clicked)
 		button.show()
 		self.add(button)
-		self.show_all()
+		self.show()
 		
 	def remove_signals(self):
 		pass
