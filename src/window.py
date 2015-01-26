@@ -130,6 +130,7 @@ class Window(Gtk.ApplicationWindow):
 	def _on_scan_finished(self, scanner):
 		# Only restore state for hidden lists
 		need_update = self._list_one.widget.is_visible()
+
 		self._setup_list_one(None, need_update)
 
 		if self._list_two.widget.is_visible():
@@ -350,12 +351,14 @@ class Window(Gtk.ApplicationWindow):
 			self._list_two.widget.show()
 			self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
 
-		# In playlist mode, we do not show anything
-		if genre_id == PLAYLISTS:
-			old_view = self._stack.get_visible_child()
-			self._clean_view(old_view)
-		elif not update:
-			self._update_view_genres(genre_id)
+		# Only update view if list has not been updated, user may have started navigation
+		if not update:
+			# In playlist mode, we do not show anything
+			if genre_id == PLAYLISTS:
+				old_view = self._stack.get_visible_child()
+				self._clean_view(old_view)
+			else:
+				self._update_view_genres(genre_id)
 			
 
 	"""
