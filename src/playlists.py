@@ -71,6 +71,7 @@ class PlaylistsManager(GObject.GObject):
 		@param old playlist name as str
 	"""
 	def rename(self, new_name, old_name):
+		self._tracks_cache[old_name] = []
 		try:
 			os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
 			self.emit('playlists-changed')
