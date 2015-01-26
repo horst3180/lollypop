@@ -13,8 +13,6 @@
 
 from gettext import gettext as _
 from gi.repository import Gtk, GObject, GLib, Gio
-import urllib.request
-import urllib.parse
 from _thread import start_new_thread
 
 from lollypop.define import *
