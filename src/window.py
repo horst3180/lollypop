@@ -40,7 +40,10 @@ class Window(Gtk.ApplicationWindow):
 		self._setup_view()
 		self._setup_list_one()
 		if not self._setup_scanner():
-			self._restore_view_state()
+			if Objects.settings.get_value('save-state'):
+				self._restore_view_state()
+			else:
+				self._list_one.select_item(0)
 
 		self._setup_media_keys()
 
@@ -88,9 +91,8 @@ class Window(Gtk.ApplicationWindow):
 		Save view state
 	"""
 	def save_view_state(self):
-		if Objects.settings.get_value('save-state'):
-			Objects.settings.set_value("list-one", GLib.Variant('i', self._list_one.get_selected_item()))
-			Objects.settings.set_value("list-two", GLib.Variant('i', self._list_two.get_selected_item()))
+		Objects.settings.set_value("list-one", GLib.Variant('i', self._list_one.get_selected_item()))
+		Objects.settings.set_value("list-two", GLib.Variant('i', self._list_two.get_selected_item()))
 
 ############
 # Private  #
@@ -99,15 +101,12 @@ class Window(Gtk.ApplicationWindow):
 		Restore saved view
 	"""
 	def _restore_view_state(self):
-		if Objects.settings.get_value('save-state'):
-			position = Objects.settings.get_value('list-one').get_int32()
-			if position != -1:
-				self._list_one.select_item(position)
-			position = Objects.settings.get_value('list-two').get_int32()
-			if position != -1:
-				self._list_two.select_item(position)
-		else:
-			self._list_one.select_item(0)
+		position = Objects.settings.get_value('list-one').get_int32()
+		if position != -1:
+			self._list_one.select_item(position)
+		position = Objects.settings.get_value('list-two').get_int32()
+		if position != -1:
+			self._list_two.select_item(position)
 
 	"""
 		Run collection update if needed

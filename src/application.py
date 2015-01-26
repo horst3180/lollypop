@@ -105,7 +105,8 @@ class Application(Gtk.Application):
 		Objects.player.stop()
 		Objects.sql.execute("VACUUM")
 		Objects.sql.close()
-		self._window.save_view_state()
+		if Objects.settings.get_value('save-state'):
+			self._window.save_view_state()
 		self._window.destroy()
 
 #######################
