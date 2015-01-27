@@ -20,7 +20,7 @@ from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
 from lollypop.player import Player
 from lollypop.popmenu import PopMainMenu
-from lollypop.popmenu import PopPlaylistMenu
+from lollypop.playlists import PlaylistEditPopup
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
@@ -306,9 +306,9 @@ class PlaylistWidget(Gtk.Grid):
 		@param playlist name as str
 	"""
 	def _pop_menu(self, widget, playlist_name):
-		menu = PopPlaylistMenu(playlist_name)
-		popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
-		popover.show()
+		popup = PlaylistEditPopup(playlist_name)
+		popup.show()
+
 
 	"""
 		Add tracks from playlist
