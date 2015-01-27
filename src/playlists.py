@@ -512,7 +512,7 @@ class PlaylistEditPopup:
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistEditPopup.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
-
+		self._model.connect('row-deleted', self._update_playlist_on_disk)
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
 		
@@ -606,15 +606,6 @@ class PlaylistEditPopup:
 		self._deleted_path = path
 		self._infobar_label.set_markup(_("Remove \"%s\"?") % self._model.get_value(iterator, 1).replace('\n',' - '))
 		self._infobar.show()
-
-	"""
-		Empty playlist
-		@param button as Gtk.Button
-	"""	
-	def _on_empty_clicked(self, button):
-		self._deleted_path = Gtk.TreePath.new_from_indices([ALL])
-		self._infobar_label.set_markup(_("Empty playlist?"))
-		self._infobar.show()
 		
 	"""
 		Hide infobar
@@ -636,19 +627,23 @@ class PlaylistEditPopup:
 				self._show_infobar(path)
 	
 	"""
-		Delete playlist after confirmation
-		@param button as Gtk.Button
+		Update playlist based on current model
+		@param unused
 	"""
-	def _on_delete_confirm(self, button):
-		if self._deleted_path == Gtk.TreePath.new_from_indices([ALL]):
-			self._model.clear()
-		elif self._deleted_path:
-			iterator = self._model.get_iter(self._deleted_path)
-			self._model.remove(iterator)
+	def _update_playlist_on_disk(self, path = None, data = None):
 		tracks_path = []
 		for item in self._model:
 			tracks_path.append(item[3])
 		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
+
+	"""
+		Delete playlist after confirmation
+		@param button as Gtk.Button
+	"""
+	def _on_delete_confirm(self, button):
+		if self._deleted_path:
+			iterator = self._model.get_iter(self._deleted_path)
+			self._model.remove(iterator)
 		self._infobar.hide()
 		self._deleted_path = None
 		
