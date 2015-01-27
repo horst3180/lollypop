@@ -15,6 +15,8 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from gi.repository import GdkPixbuf
 from gettext import gettext as _
 
+from cgi import escape
+
 from lollypop.define import *
 from lollypop.tracks import TracksWidget
 from lollypop.albumart import AlbumArt
@@ -193,9 +195,9 @@ class AlbumDetailedWidget(Gtk.Grid):
 				pos = Objects.player.get_track_position(track_id)
 				
 			if i <= mid_tracks:
-				self._tracks_widget1.add_track(track_id, i, title, length, pos) 
+				self._tracks_widget1.add_track(track_id, i, escape(title), length, pos) 
 			else:
-				self._tracks_widget2.add_track(track_id, i, title, length, pos) 
+				self._tracks_widget2.add_track(track_id, i, escape(title), length, pos) 
 			i += 1
 	
 	"""
@@ -330,7 +332,7 @@ class PlaylistWidget(Gtk.Grid):
 			return
 		track_id = tracks.pop(0)
 		(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
-		title = "%s - %s" % (translate_artist_name(Objects.artists.get_name(artist_id)), title)
+		title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
 
 		# Get track position in queue
 		pos = None

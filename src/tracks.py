@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GObject, Gtk, GLib, GdkPixbuf, Pango
-from cgi import escape
 
 from lollypop.define import *
 from lollypop.albumart import AlbumArt
@@ -182,12 +181,12 @@ class TracksWidget(Gtk.ListBox):
 		else:
 			track_row.set_label('num', str(num))
 		track_row.set_number(num)
-		track_row.set_label('title', escape(title))
+		track_row.set_label('title', title)
 		track_row.set_label('duration', seconds_to_string(length))
 		track_row.set_object_id(track_id)
 		if show_cover:
 			album_id = Objects.tracks.get_album_id(track_id)
-			track_row.set_cover(Objects.art.get(album_id, ART_SIZE_SMALL))
+			track_row.set_cover(Objects.art.get(album_id, ART_SIZE_MEDIUM))
 		else:
 			track_row.title_add_margin()
 		track_row.show()
