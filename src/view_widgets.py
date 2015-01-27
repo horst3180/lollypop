@@ -298,7 +298,7 @@ class PlaylistWidget(Gtk.Grid):
 		for child in self._tracks_widget2.get_children():
 			child.destroy()
 		
-		self._add_tracks(playlist_name)
+		self._populate(playlist_name)
 		
 	"""
 		Popup menu for playlist
