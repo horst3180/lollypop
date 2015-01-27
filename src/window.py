@@ -470,12 +470,13 @@ class Window(Gtk.ApplicationWindow):
 		old_view = self._stack.get_visible_child()
 		if isinstance(old_view, PlaylistView):
 			old_name = old_view.get_name()
-			view = PlaylistView(old_name)
-			view.show()
-			self._stack.add(view)
-			self._stack.set_visible_child(view)
-			start_new_thread(view.populate, ())
-			self._clean_view(old_view)
+			if old_name == playlist_name:
+				view = PlaylistView(old_name)
+				view.show()
+				self._stack.add(view)
+				self._stack.set_visible_child(view)
+				start_new_thread(view.populate, ())
+				self._clean_view(old_view)
 
 	"""
 		Delay event
