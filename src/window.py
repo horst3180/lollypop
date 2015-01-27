@@ -345,12 +345,11 @@ class Window(Gtk.ApplicationWindow):
 			# it will works. For playlists, we just use a static int and increment it over time
 			if genre_id == PLAYLISTS:
 				self._playlists = []
-				values = []
 				playlist_names = Objects.playlists.get()
 				for playlist_name in playlist_names:
-					values.append((self._counter, playlist_name))
-					self._playlists.append(playlist_name)
+					self._playlists.append((self._counter, playlist_name))
 					self._counter += 1
+				values = self._playlists
 			else:
 				values = Objects.artists.get(genre_id)
 
@@ -371,7 +370,7 @@ class Window(Gtk.ApplicationWindow):
 			else:
 				self._hide_list_two()
 
-		# Only update view if list has not been updated, user may have started navigation
+		# Only update view on list populate
 		if not update:
 			# In playlist mode, we do not show anything
 			if genre_id == PLAYLISTS:
@@ -423,11 +422,19 @@ class Window(Gtk.ApplicationWindow):
 		@param playlist id as int
 	"""
 	def _update_view_playlists(self, playlist_id):
+		playlist_name = None
 		old_view = self._stack.get_visible_child()
-		if playlist_id == None:
-			view = PlaylistConfigureView()
+
+		if playlist_id != None:
+			for item in self._playlists:
+				if item[0] == playlist_id:
+					playlist_name = item[1]
+					break
+		if playlist_name:
+			view = PlaylistView(playlist_name)
 		else:
-			view = PlaylistView(self._playlists[playlist_id])
+			view = PlaylistConfigureView()
+
 		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
