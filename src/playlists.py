@@ -52,7 +52,7 @@ class PlaylistsManager(GObject.GObject):
 				print("Lollypop::PlaylistsManager::init: %s" % e)
 
 	"""
-		Add a playlist
+		Add a playlist (Thread safe)
 		@param playlist name as str
 	"""
 	def add(self, playlist_name):
@@ -61,12 +61,12 @@ class PlaylistsManager(GObject.GObject):
 			f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
 			f.write("#EXTM3U\n")
 			f.close()
-			self.emit('playlists-changed')
+			GLib.idle_add(self.emit, "playlists-changed")
 		except Exception as e:
 			print("PlaylistsManager::add: %s" %e)
 
 	"""
-		Rename playlist
+		Rename playlist (Thread safe)
 		@param new playlist name as str
 		@param old playlist name as str
 	"""
@@ -74,18 +74,18 @@ class PlaylistsManager(GObject.GObject):
 		self._tracks_cache[old_name] = []
 		try:
 			os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
-			self.emit('playlists-changed')
+			GLib.idle_add(self.emit, "playlists-changed")
 		except Exception as e:
 			print("PlaylistsManager::rename: %s" %e)
 
 	"""
-		delete playlist
+		delete playlist (Thread safe)
 		@param playlist name as str
 	"""
 	def delete(self, playlist_name):
 		try:
 			os.remove(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u")
-			self.emit('playlists-changed')
+			GLib.idle_add(self.emit, "playlists-changed")
 		except Exception as e:
 			print("PlaylistsManager::delete: %s" %e)
 			
@@ -150,7 +150,7 @@ class PlaylistsManager(GObject.GObject):
 		return tracks
 
 	"""
-		Set playlist tracks
+		Set playlist tracks (Thread safe)
 		@param playlist name as str
 		@param tracks path as [str]
 	"""
@@ -179,7 +179,7 @@ class PlaylistsManager(GObject.GObject):
 	"""
 	def add_track(self, playlist_name, filepath):
 		self._add_track(playlist_name, filepath)
-		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+		GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
 	"""
 		Add tracks to playlist if not already present
@@ -189,7 +189,7 @@ class PlaylistsManager(GObject.GObject):
 	def add_tracks(self, playlist_name, tracks_path):
 		for filepath in tracks_path:
 			self._add_track(playlist_name, filepath)
-		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+		GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 		
 	"""
 		Remove track from playlist
@@ -198,7 +198,7 @@ class PlaylistsManager(GObject.GObject):
 	"""
 	def remove_track(self, playlist_name, filepath):
 		self._remove_track(playlist_name, filepath)
-		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+		GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 	
 	"""
 		Remove tracks from playlist
@@ -208,7 +208,7 @@ class PlaylistsManager(GObject.GObject):
 	def remove_tracks(self, playlist_name, tracks_path):
 		for filepath in tracks_path:
 			self._remove_track(playlist_name, filepath)
-		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+		GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 			
 	"""
 		Return True if object_id is already present in playlist
@@ -512,7 +512,6 @@ class PlaylistEditPopup:
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistEditPopup.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
-		self._model.connect('row-deleted', self._update_playlist_on_disk)
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
 		
@@ -625,16 +624,6 @@ class PlaylistEditPopup:
 		if iterator:
 			if column.get_title() == "pixbuf2":
 				self._show_infobar(path)
-	
-	"""
-		Update playlist based on current model
-		@param unused
-	"""
-	def _update_playlist_on_disk(self, path = None, data = None):
-		tracks_path = []
-		for item in self._model:
-			tracks_path.append(item[3])
-		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 
 	"""
 		Delete playlist after confirmation
@@ -661,4 +650,15 @@ class PlaylistEditPopup:
 	"""
 	def _on_close_clicked(self, widget):
 		self._popup.hide()
-		self._model.clear()
+		tracks_path = []
+		for item in self._model:
+			tracks_path.append(item[3])
+		start_new_thread(self._finish, (tracks_path,))
+
+	"""
+		Update playlist on disk and clean
+		@param track's paths as [str]
+	"""
+	def _finish(self, tracks_path):
+		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
+		GLib.idle_add(self._model.clear)
