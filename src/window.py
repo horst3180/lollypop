@@ -437,6 +437,7 @@ class Window(Gtk.ApplicationWindow):
 			view.stop()
 			self._stack.remove(view)
 			view.remove_signals()
+			view.destroy()
 
 	"""
 		Clean and hide list two
