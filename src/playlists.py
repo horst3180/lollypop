@@ -675,4 +675,3 @@ class PlaylistEditPopup:
 	def _finish(self, tracks_path):
 		if tracks_path != self._tracks_orig:
 			Objects.playlists.set_tracks(self._playlist_name, tracks_path)
-		GLib.idle_add(self._model.clear)

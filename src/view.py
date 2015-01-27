@@ -54,8 +54,8 @@ class PlaylistConfigureView(Gtk.Bin):
 		button.connect('clicked', self._on_button_clicked)
 		button.show()
 		self.add(button)
-		self.show()
-		
+	def populate(self):
+		pass
 	def remove_signals(self):
 		pass
 	def stop(self):
@@ -387,23 +387,7 @@ class PlaylistView(View):
 		self._widget = PlaylistWidget(name)
 		self._widget.show()
 		self._scrolledWindow.add(self._widget)
-		self.show()
 
-
-	"""
-		On show, connect signals
-	"""
-	def do_show(self):
-		Objects.playlists.connect("playlist-changed", self._on_playlist_changed)
-		View.do_show(self)
-		
-	"""
-		On hide, delete signals
-	"""
-	def do_hide(self):
-		Objects.playlists.disconnect_by_func(self._on_playlist_changed)
-		View.do_hide(self)
-		
 	"""
 		Populate view with tracks from playlist
 	"""
@@ -413,20 +397,16 @@ class PlaylistView(View):
 		mid_tracks = int(0.5+len(tracks)/2)
 		GLib.idle_add(self._widget.add_tracks, tracks, 1, mid_tracks)
 
+	"""
+		Return playlist name
+		@return name as str
+	"""
+	def get_name(self):
+		return self._name
+
 #######################
 # PRIVATE             #
 #######################
-
-	"""
-		Update all tracks if signal is for us
-		@param manager as PlaylistPopup
-		@param playlist name as str
-	"""
-	def _on_playlist_changed(self, manager, playlist_name):
-		if playlist_name != self._name:
-			return
-		self._widget.clear()		
-		self.populate()
 
 	"""
 		Update the content view

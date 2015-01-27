@@ -57,6 +57,7 @@ class Window(Gtk.ApplicationWindow):
 		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
 		Objects.playlists.connect("playlists-changed", self._update_lists)
+		Objects.playlists.connect("playlist-changed", self._on_playlist_changed)
 
 	"""
 		Update music database
@@ -423,9 +424,10 @@ class Window(Gtk.ApplicationWindow):
 			view = PlaylistConfigureView()
 		else:
 			view = PlaylistView(self._playlists[playlist_id])
-			start_new_thread(view.populate, ())
+		view.show()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
+		start_new_thread(view.populate, ())
 		self._clean_view(old_view)
 		
 	"""
@@ -447,6 +449,22 @@ class Window(Gtk.ApplicationWindow):
 			self._list_two.disconnect(self._list_two_signal)
 			self._list_two_signal = None
 		self._list_two.widget.hide()
+
+	"""
+		Update playlist view if we are in playlist view
+		@param manager as PlaylistPopup
+		@param playlist name as str
+	"""
+	def _on_playlist_changed(self, manager, playlist_name):
+		old_view = self._stack.get_visible_child()
+		if isinstance(old_view, PlaylistView):
+			old_name = old_view.get_name()
+			view = PlaylistView(old_name)
+			view.show()
+			self._stack.add(view)
+			self._stack.set_visible_child(view)
+			start_new_thread(view.populate, ())
+			self._clean_view(old_view)
 
 	"""
 		Delay event
