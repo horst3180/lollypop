@@ -507,16 +507,11 @@ class PlaylistEditPopup:
 		self._playlist_name = playlist_name
 		self._deleted_path = None
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
-		self._in_thread = False
-		self._timeout = None
-		self._timeout_thread = None
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistEditPopup.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
-		self._model.connect('row-deleted', self._update_playlist_on_disk)
-		self._filter = self._ui.get_object('filter')
 
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
@@ -557,19 +552,12 @@ class PlaylistEditPopup:
 		else:
 			self._popup.set_property('height-request', 600)
 
-		self._populate()
+		start_new_thread(self._append_tracks, ())
 		self._popup.show()
 		
 #######################
 # PRIVATE             #
 #######################
-
-	"""
-		Populate the view
-	"""
-	def _populate(self):
-		self._in_thread = True
-		start_new_thread(self._append_tracks, ())
 
 	"""
 		Append tracks, thread safe
@@ -584,7 +572,6 @@ class PlaylistEditPopup:
 		@param tracks as [track_id as int]
 	"""
 	def _append_track(self, tracks):
-		query = self._filter.get_text().lower()
 		if len(tracks) > 0:
 			track_id = tracks.pop(0)
 			filepath = Objects.tracks.get_path(track_id)
@@ -594,15 +581,12 @@ class PlaylistEditPopup:
 				artist_id = Objects.tracks.get_artist_id(track_id)
 			artist_name = Objects.artists.get_name(artist_id)
 			track_name = Objects.tracks.get_name(track_id)
-			if query == '' or query in artist_name.lower() or query in track_name.lower():
-				art = Objects.art.get(album_id, ART_SIZE_SMALL)
-				self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
-								   escape(track_name), self._del_pixbuf, filepath])
+			art = Objects.art.get(album_id, ART_SIZE_SMALL)
+			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
+							   escape(track_name), self._del_pixbuf, filepath])
 			GLib.idle_add(self._append_track, tracks)
 		else:
 			self._in_thread = False
-
-
 
 	"""
 		Delete item if Delete was pressed
@@ -622,31 +606,6 @@ class PlaylistEditPopup:
 		self._deleted_path = path
 		self._infobar_label.set_markup(_("Remove \"%s\"?") % self._model.get_value(iterator, 1).replace('\n',' - '))
 		self._infobar.show()
-	
-	"""
-		Start filtering after some timeout
-		@param entry as Gtk.Entry
-	"""
-	def _on_text_changed(self, entry):
-		if self._timeout:
-			GLib.source_remove(self._timeout)
-		if self._timeout_thread:
-			GLib.source_remove(self._timeout_thread)
-			self._timeout_thread = None
-		self._timeout = GLib.timeout_add(250, self._do_filtering)
-
-	"""
-		Do filtering
-	"""
-	def _do_filtering(self):
-		self._view.set_reorderable(self._filter.get_text() == '')
-		self._timeout = None
-		# Wait previous thread to finish
-		if self._in_thread:
-			self._timeout_thread = GLib.timeout_add(250, self._do_filtering)
-		else:
-			self._model.clear()
-			self._populate()
 
 	"""
 		Empty playlist
@@ -675,16 +634,6 @@ class PlaylistEditPopup:
 		if iterator:
 			if column.get_title() == "pixbuf2":
 				self._show_infobar(path)
-
-	"""
-		Update playlist based on current model
-		@param unused
-	"""
-	def _update_playlist_on_disk(self, path, data):
-		tracks_path = []
-		for item in self._model:
-			tracks_path.append(item[3])
-		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 	
 	"""
 		Delete playlist after confirmation
@@ -696,7 +645,10 @@ class PlaylistEditPopup:
 		elif self._deleted_path:
 			iterator = self._model.get_iter(self._deleted_path)
 			self._model.remove(iterator)
-
+		tracks_path = []
+		for item in self._model:
+			tracks_path.append(item[3])
+		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 		self._infobar.hide()
 		self._deleted_path = None
 		
@@ -714,6 +666,4 @@ class PlaylistEditPopup:
 	"""
 	def _on_close_clicked(self, widget):
 		self._popup.hide()
-		# Disconnect before cleaning
-		self._model.disconnect_by_func(self._update_playlist_on_disk)
 		self._model.clear()
