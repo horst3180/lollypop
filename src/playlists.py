@@ -197,7 +197,7 @@ class PlaylistsManager(GObject.GObject):
 		@param track filepath as str
 	"""
 	def remove_track(self, playlist_name, filepath):
-		self._remove_track(self, playlist_name, filepath)
+		self._remove_track(playlist_name, filepath)
 		GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
 	
 	"""
