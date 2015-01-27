@@ -75,16 +75,18 @@ class PopMainMenu(Gio.Menu):
 			playlist_action.connect('activate', self._add_to_playlists, object_id, is_album)
 			menu.append(_("Management"), 'app.playlist_action')
 			max_items = 3
-			
-		for playlist in Objects.playlists.get(max_items):
-			action = Gio.SimpleAction(name=playlist[0])
+		
+		i = 0
+		for playlist in Objects.playlists.get_last(max_items):
+			action = Gio.SimpleAction(name="playlist%s" % i)
 			app.add_action(action)
-			if Objects.playlists.is_present(playlist[1], object_id, is_album):
-				action.connect('activate', self._del_from_playlist, object_id, is_album, playlist[1])
-				menu.append(_("Remove from \"%s\"") % playlist[1], "app.%s" % playlist[0])
+			if Objects.playlists.is_present(playlist, object_id, is_album):
+				action.connect('activate', self._del_from_playlist, object_id, is_album, playlist)
+				menu.append(_("Remove from \"%s\"") % playlist, "app.playlist%s" % i)
 			else:
-				action.connect('activate', self._add_to_playlist, object_id, is_album, playlist[1])
-				menu.append(_("Add to \"%s\"") % playlist[1], "app.%s" % playlist[0])		
+				action.connect('activate', self._add_to_playlist, object_id, is_album, playlist)
+				menu.append(_("Add to \"%s\"") % playlist, "app.playlist%s" % i)
+			i+=1
 	
 	"""
 		Set queue actions

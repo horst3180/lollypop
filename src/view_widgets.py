@@ -228,12 +228,11 @@ class AlbumDetailedWidget(Gtk.Grid):
 class PlaylistWidget(Gtk.Grid):
 	"""
 		Init playlist Widget
-		@param playlist id as int
+		@param playlist name as str
 	"""
-	def __init__(self, playlist_id):
+	def __init__(self, name):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
-		name = Objects.playlists.get_name(playlist_id)
 
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')

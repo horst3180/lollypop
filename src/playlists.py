@@ -42,7 +42,6 @@ class PlaylistsManager(GObject.GObject):
 
 	def __init__(self):
 		GObject.GObject.__init__(self)
-		self._playlists = []
 		self._tracks_cache = {}
 		# Create playlists directory if missing
 		if not os.path.exists(self.PLAYLISTS_PATH):
@@ -91,11 +90,25 @@ class PlaylistsManager(GObject.GObject):
 			
 	"""
 		Return availables playlists
+		@return array of (id, string)
+	"""
+	def get(self):
+		playlists = []
+		try:
+			for filename in sorted(os.listdir(self.PLAYLISTS_PATH)):
+				if filename.endswith(".m3u"):
+					playlists.append(filename[:-4])
+		except Exception as e:
+			print("Lollypop::PlaylistManager::get: %s" % e)
+		return playlists
+
+	"""
+		Return availables playlists sorted by modification time
 		@param max items as int
 		@return array of (id, string)
 	"""
-	def get(self, max_items = None):
-		self._playlists = []
+	def get_last(self, max_items):
+		playlists = []
 		try:
 			index = 0
 			entries = []
@@ -105,15 +118,14 @@ class PlaylistsManager(GObject.GObject):
 					entries.append((stat[ST_MTIME], filename))
 			for cdate, filename in sorted(entries):
 				if filename.endswith(".m3u"):
-					item = (index, filename[:-4])
-					self._playlists.insert(0, item)
+					playlists.insert(0, filename[:-4])
 					index += 1
 					# Break if max items is reach
 					if max_items and index > max_items:
 						break	
 		except Exception as e:
-			print("Lollypop::PlaylistManager::get: %s" % e)
-		return self._playlists
+			print("Lollypop::PlaylistManager::get_last: %s" % e)
+		return playlists
 
 	"""
 		Return playlist name for id
@@ -359,8 +371,8 @@ class PlaylistsManagePopup:
 		# Search if we need to select item or not
 		playlists = Objects.playlists.get()
 		for playlist in playlists:
-			selected = Objects.playlists.is_present(playlist[1], self._object_id, self._is_album, sql)
-			GLib.idle_add(self._append_playlist, playlist[1], selected)
+			selected = Objects.playlists.is_present(playlist, self._object_id, self._is_album, sql)
+			GLib.idle_add(self._append_playlist, playlist, selected)
 
 	"""
 		Append a playlist

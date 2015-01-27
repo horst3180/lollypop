@@ -371,9 +371,9 @@ class AlbumView(View):
 class PlaylistView(View):
 	"""
 		Init PlaylistView ui with a scrolled grid of PlaylistWidgets
-		@param playlist id as int
+		@param playlist name as str
 	"""
-	def __init__(self, playlist_id):
+	def __init__(self, name):
 		View.__init__(self)
 
 		self._scrolledWindow = Gtk.ScrolledWindow()
@@ -382,7 +382,7 @@ class PlaylistView(View):
 										Gtk.PolicyType.AUTOMATIC)
 		self._scrolledWindow.show()
 		self.add(self._scrolledWindow)
-		self._widget = PlaylistWidget(playlist_id)
+		self._widget = PlaylistWidget(name)
 		self._widget.show()
 		self._scrolledWindow.add(self._widget)
 		self.show()

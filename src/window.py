@@ -35,7 +35,9 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._timeout = None
-		
+		# Playlist do not have id (not in db), so we use an index to retrieve playlist name
+		self._playlists = []
+
 		self._setup_window()				
 		self._setup_view()
 		self._setup_list_one()
@@ -336,7 +338,14 @@ class Window(Gtk.ApplicationWindow):
 			self._hide_list_two()
 		else: 
 			if genre_id == PLAYLISTS:
-				values = Objects.playlists.get()
+				self._playlists = []
+				values = []
+				playlist_names = Objects.playlists.get()
+				i = 0
+				for playlist_name in playlist_names:
+					values.append((i, playlist_name))
+					self._playlists.append(playlist_name)
+					i+=1
 			else:
 				values = Objects.artists.get(genre_id)
 
@@ -345,9 +354,7 @@ class Window(Gtk.ApplicationWindow):
 
 			# Do not show list if empty
 			if len(values) > 0:
-				# While genres and artist's ids are linked to a sqlite rowid, playlists ids are volatile
-				# So we always repopuplate playlists
-				if update and is_artist:
+				if update:
 					self._list_two.update(values, is_artist)
 				else:
 					self._list_two.populate(values, is_artist)
@@ -415,7 +422,7 @@ class Window(Gtk.ApplicationWindow):
 		if playlist_id == None:
 			view = PlaylistsView()
 		else:
-			view = PlaylistView(playlist_id)
+			view = PlaylistView(self._playlists[playlist_id])
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
 		self._clean_view(old_view)
