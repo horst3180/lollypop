@@ -43,9 +43,9 @@ class LoadingView(Gtk.Bin):
 
 
 """
-	PlaylistsView view used to manage playlists
+	PlaylistConfigureView view used to manage playlists
 """
-class PlaylistsView(Gtk.Bin):
+class PlaylistConfigureView(Gtk.Bin):
 	def __init__(self):
 		Gtk.Bin.__init__(self)
 		self.set_property('halign', Gtk.Align.CENTER)

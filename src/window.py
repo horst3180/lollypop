@@ -420,7 +420,7 @@ class Window(Gtk.ApplicationWindow):
 	def _update_view_playlists(self, playlist_id):
 		old_view = self._stack.get_visible_child()
 		if playlist_id == None:
-			view = PlaylistsView()
+			view = PlaylistConfigureView()
 		else:
 			view = PlaylistView(self._playlists[playlist_id])
 			start_new_thread(view.populate, ())
