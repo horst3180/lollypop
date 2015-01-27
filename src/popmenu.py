@@ -170,8 +170,7 @@ class PopMainMenu(Gio.Menu):
 		else:
 			tracks_path = [ Objects.tracks.get_path(object_id) ]
 
-		for track_path in tracks_path:
-			Objects.playlists.add_track(playlist_name, track_path)
+		start_new_thread(Objects.playlists.add_tracks, (playlist_name, tracks_path))
 		
 	"""
 		Del from playlist
@@ -187,8 +186,7 @@ class PopMainMenu(Gio.Menu):
 		else:
 			tracks_path = [ Objects.tracks.get_path(object_id) ]
 
-		for track_path in tracks_path:
-			Objects.playlists.remove_track(playlist_name, track_path)
+		start_new_thread(Objects.playlists.remove_tracks, (playlist_name, tracks_path))
 			
 	"""
 		Append track to queue
