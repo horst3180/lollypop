@@ -207,8 +207,8 @@ msgid "Only play this album"
 msgstr "Lire seulement cet album"
 
 #: ../src/popmenu.py:105
-msgid "Management"
-msgstr "Gestion"
+msgid "Add to others"
+msgstr "Ajouter aux autres"
 
 #: ../src/popmenu.py:113
 #, python-format

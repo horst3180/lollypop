@@ -187,7 +187,7 @@ msgid "Loading please wait..."
 msgstr ""
 
 #: ../src/view.py:52
-msgid "Manage playlists"
+msgid "Add to others"
 msgstr ""
 
 #: ../src/popmenu.py:34 ../data/PlaylistEditPopup.ui.h:1

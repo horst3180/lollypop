@@ -103,11 +103,10 @@ class PlaylistsManager(GObject.GObject):
 		return playlists
 
 	"""
-		Return availables playlists sorted by modification time
-		@param max items as int
+		Return 3 last modified playlist
 		@return array of (id, string)
 	"""
-	def get_last(self, max_items):
+	def get_last(self):
 		playlists = []
 		try:
 			index = 0
@@ -121,7 +120,7 @@ class PlaylistsManager(GObject.GObject):
 					playlists.insert(0, filename[:-4])
 					index += 1
 					# Break if max items is reach
-					if max_items and index > max_items:
+					if index >= 3:
 						break	
 		except Exception as e:
 			print("Lollypop::PlaylistManager::get_last: %s" % e)

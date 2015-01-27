@@ -39,7 +39,7 @@ class PopMainMenu(Gio.Menu):
 			self.insert_section(0, _("Playback"), playback_menu)
 
 		playlist_menu = Gio.Menu()
-		self._set_playlist_actions(app, playlist_menu, object_id, is_album, not toolbar_context)
+		self._set_playlist_actions(app, playlist_menu, object_id, is_album)
 
 		self.insert_section(1, _("Playlists"), playlist_menu)
 			
@@ -65,19 +65,15 @@ class PopMainMenu(Gio.Menu):
 		@param menu as Gio.Menu
 		@param object_id as int
 		@param is album as bool
-		@param manage playlists as bool
 	"""
-	def _set_playlist_actions(self, app, menu, object_id, is_album, manage_playlists):
-		max_items = 15
-		if manage_playlists:
-			playlist_action = Gio.SimpleAction(name="playlist_action")
-			app.add_action(playlist_action)
-			playlist_action.connect('activate', self._add_to_playlists, object_id, is_album)
-			menu.append(_("Management"), 'app.playlist_action')
-			max_items = 3
-		
+	def _set_playlist_actions(self, app, menu, object_id, is_album):
+		playlist_action = Gio.SimpleAction(name="playlist_action")
+		app.add_action(playlist_action)
+		playlist_action.connect('activate', self._add_to_playlists, object_id, is_album)
+		menu.append(_("Add to others"), 'app.playlist_action')
+	
 		i = 0
-		for playlist in Objects.playlists.get_last(max_items):
+		for playlist in Objects.playlists.get_last():
 			action = Gio.SimpleAction(name="playlist%s" % i)
 			app.add_action(action)
 			if Objects.playlists.is_present(playlist, object_id, is_album):
