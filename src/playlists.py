@@ -106,7 +106,7 @@ class PlaylistsManager(GObject.GObject):
 			for cdate, filename in sorted(entries):
 				if filename.endswith(".m3u"):
 					item = (index, filename[:-4])
-					self._playlists.append(item)
+					self._playlists.insert(0, item)
 					index += 1
 					# Break if max items is reach
 					if max_items and index > max_items:
