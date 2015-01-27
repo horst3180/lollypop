@@ -231,9 +231,8 @@ class PlaylistWidget(Gtk.Grid):
 		Init playlist Widget
 		@param playlist name as str
 	"""
-	def __init__(self, name):
+	def __init__(self, playlist_name):
 		Gtk.Grid.__init__(self)
-		self._name = name
 		self.set_property("margin", 5)
 
 		self._ui = Gtk.Builder()
@@ -241,8 +240,8 @@ class PlaylistWidget(Gtk.Grid):
 
 		self._tracks_widget1 = TracksWidget(False)
 		self._tracks_widget2 = TracksWidget(False)
-		self._tracks_widget1.connect('activated', self._on_activated)
-		self._tracks_widget2.connect('activated', self._on_activated)
+		self._tracks_widget1.connect('activated', self._on_activated, playlist_name)
+		self._tracks_widget2.connect('activated', self._on_activated, playlist_name)
 		self._tracks_widget1.show()
 		self._tracks_widget2.show()
 
@@ -250,13 +249,13 @@ class PlaylistWidget(Gtk.Grid):
 		size_group.add_widget(self._tracks_widget1)
 		size_group.add_widget(self._tracks_widget2)
 
-		self._ui.get_object('menu').connect('clicked', self._pop_menu)
+		self._ui.get_object('menu').connect('clicked', self._pop_menu, playlist_name)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
 		self._ui.get_object('tracks').add(self._tracks_widget2)
 
 		self._header = self._ui.get_object('header')
 		
-		self._ui.get_object('title').set_label(name)
+		self._ui.get_object('title').set_label(playlist_name)
 		self.add(self._ui.get_object('PlaylistWidget'))
 
 	"""
@@ -283,20 +282,6 @@ class PlaylistWidget(Gtk.Grid):
 			self._tracks_widget2.add_track(track_id, i, title, length, pos, True)
 
 		GLib.idle_add(self.add_tracks, tracks, i+1, mid_tracks)
-
-	"""
-		On show, connect signals
-	"""
-	def do_show(self):
-		Objects.playlists.connect("playlist-changed", self._on_playlist_changed)
-		Gtk.Grid.do_show(self)
-		
-	"""
-		On hide, delete signals
-	"""
-	def do_hide(self):
-		Objects.playlists.disconnect_by_func(self._on_playlist_changed)
-		Gtk.Grid.do_hide(self)
 		
 	"""
 		Update playing track
@@ -307,41 +292,36 @@ class PlaylistWidget(Gtk.Grid):
 		self._tracks_widget2.update_playing(track_id)
 
 
-#######################
-# PRIVATE             #
-#######################
-
 	"""
-		Update all tracks if signal is for us
-		@param manager as PlaylistPopup
-		@param playlist name as str
+		Clear tracks
 	"""
-	def _on_playlist_changed(self, manager, playlist_name):
-		if playlist_name != self._name:
-			return
-
+	def clear(self):
 		for child in self._tracks_widget1.get_children():
 			child.destroy()
 		for child in self._tracks_widget2.get_children():
 			child.destroy()
-		
-		self.populate(playlist_name)
+
+#######################
+# PRIVATE             #
+#######################
 		
 	"""
 		Popup menu for playlist
 		@param widget as Gtk.Button
+		@param playlist name as str
 	"""
-	def _pop_menu(self, widget):
-		popup = PlaylistEditPopup(self._name)
+	def _pop_menu(self, widget, playlist_name):
+		popup = PlaylistEditPopup(playlist_name)
 		popup.show()
 
 	"""
 		On track activation, play track
 		@param widget as TracksWidget
 		@param track id as int
+		@param playlist name as str
 	"""		
-	def _on_activated(self, widget, track_id):
+	def _on_activated(self, widget, track_id, playlist_name):
 		if not Objects.player.is_party():
-			tracks = Objects.playlists.get_tracks_id(self._name)
+			tracks = Objects.playlists.get_tracks_id(playlist_name)
 			Objects.player.set_user_playlist(tracks, track_id)
 		Objects.player.load(track_id)
