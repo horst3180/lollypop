@@ -334,7 +334,7 @@ class Window(Gtk.ApplicationWindow):
 		is_artist = genre_id != PLAYLISTS
 		if genre_id == POPULARS:
 			self._hide_list_two()
-		else:
+		else: 
 			if genre_id == PLAYLISTS:
 				values = Objects.playlists.get()
 			else:
@@ -345,7 +345,9 @@ class Window(Gtk.ApplicationWindow):
 
 			# Do not show list if empty
 			if len(values) > 0:
-				if update:
+				# While genres and artist's ids are linked to a sqlite rowid, playlists ids are volatile
+				# So we always repopuplate playlists
+				if update and is_artist:
 					self._list_two.update(values, is_artist)
 				else:
 					self._list_two.populate(values, is_artist)
