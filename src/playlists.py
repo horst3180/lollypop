@@ -515,9 +515,9 @@ class PlaylistEditPopup:
 		@param playlist name as str
 	"""
 	def __init__(self, playlist_name):
-
 		self._playlist_name = playlist_name
 		self._deleted_path = None
+		self._tracks_orig = []
 		self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
 
 		self._ui = Gtk.Builder()
@@ -595,6 +595,7 @@ class PlaylistEditPopup:
 			art = Objects.art.get(album_id, ART_SIZE_SMALL)
 			self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
 							   escape(track_name), self._del_pixbuf, filepath])
+			self._tracks_orig.append(filepath)
 			GLib.idle_add(self._append_track, tracks)
 		else:
 			self._in_thread = False
@@ -672,5 +673,6 @@ class PlaylistEditPopup:
 		@param track's paths as [str]
 	"""
 	def _finish(self, tracks_path):
-		Objects.playlists.set_tracks(self._playlist_name, tracks_path)
+		if tracks_path != self._tracks_orig:
+			Objects.playlists.set_tracks(self._playlist_name, tracks_path)
 		GLib.idle_add(self._model.clear)
