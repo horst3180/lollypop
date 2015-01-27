@@ -35,6 +35,9 @@ class Window(Gtk.ApplicationWindow):
 					       title=_("Lollypop"))
 
 		self._timeout = None
+		# SelectionList::update() is based on index in values tuple. For db objects, it's rowid so
+		# it will works. For playlists, we just use a static int and increment it over time
+		self._counter = 0
 		# Playlist do not have id (not in db), so we use an index to retrieve playlist name
 		self._playlists = []
 
@@ -337,16 +340,17 @@ class Window(Gtk.ApplicationWindow):
 		is_artist = genre_id != PLAYLISTS
 		if genre_id == POPULARS:
 			self._hide_list_two()
-		else: 
+		else:
+			# SelectionList::update() is based on index in values tuple. For db objects, it's rowid so
+			# it will works. For playlists, we just use a static int and increment it over time
 			if genre_id == PLAYLISTS:
 				self._playlists = []
 				values = []
 				playlist_names = Objects.playlists.get()
-				i = 0
 				for playlist_name in playlist_names:
-					values.append((i, playlist_name))
+					values.append((self._counter, playlist_name))
 					self._playlists.append(playlist_name)
-					i+=1
+					self._counter += 1
 			else:
 				values = Objects.artists.get(genre_id)
 
