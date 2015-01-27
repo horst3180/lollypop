@@ -162,8 +162,6 @@ class ArtistView(View):
 		self._genre_id = genre_id
 		self._show_menu = show_artist_details
 
-		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-
 		self._albumbox = Gtk.Grid()
 		self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
 		self._scrolledWindow = Gtk.ScrolledWindow()
@@ -216,8 +214,9 @@ class ArtistView(View):
 		@param [album ids as int]
 	"""
 	def _add_albums(self, albums):
+		size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 		if len(albums) > 0 and not self._stop:
-			widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, self._show_menu, self._size_group)
+			widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, self._show_menu, size_group)
 			widget.show()
 			self._albumbox.add(widget)
 			if widget.eventbox:
@@ -322,10 +321,11 @@ class AlbumView(View):
 		@param album id as int
 	"""
 	def _populate_context(self, album_id):
+		size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 		old_view = self._get_next_view()
 		if old_view:
 			self._stack.remove(old_view)
-		self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True)
+		self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True, size_group)
 		self._context_widget.show()			
 		view = Gtk.ScrolledWindow()
 		view.set_min_content_height(250)

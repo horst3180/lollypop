@@ -99,7 +99,7 @@ class AlbumDetailedWidget(Gtk.Grid):
 		@param show_menu as bool if menu need to be displayed
 		@param size group as Gtk.SizeGroup
 	"""
-	def __init__(self, album_id, genre_id, limit_to_artist, show_menu, size_group = None):
+	def __init__(self, album_id, genre_id, limit_to_artist, show_menu, size_group):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
 
@@ -113,9 +113,8 @@ class AlbumDetailedWidget(Gtk.Grid):
 
 		self._tracks_widget1 = TracksWidget(show_menu)
 		self._tracks_widget2 = TracksWidget(show_menu)
-		if size_group:
-			size_group.add_widget(self._tracks_widget1)
-			size_group.add_widget(self._tracks_widget2)
+		size_group.add_widget(self._tracks_widget1)
+		size_group.add_widget(self._tracks_widget2)
 		self._tracks_widget1.connect('activated', self._on_activated)
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
@@ -245,6 +244,11 @@ class PlaylistWidget(Gtk.Grid):
 		self._tracks_widget2.connect('activated', self._on_activated)
 		self._tracks_widget1.show()
 		self._tracks_widget2.show()
+
+		size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+		size_group.add_widget(self._tracks_widget1)
+		size_group.add_widget(self._tracks_widget2)
+
 		self._ui.get_object('menu').connect('clicked', self._pop_menu, name)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
 		self._ui.get_object('tracks').add(self._tracks_widget2)
