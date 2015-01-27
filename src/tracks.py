@@ -115,12 +115,6 @@ class TrackRow(Gtk.ListBoxRow):
 	def set_cover(self, pixbuf):
 		self._ui.get_object('cover').set_from_pixbuf(pixbuf)
 
-	"""
-		Add some left margin to title
-	"""
-	def title_add_margin(self):
-		self._ui.get_object('title').set_property('margin-start', 10+ART_SIZE_SMALL)
-
 #######################
 # PRIVATE             #
 #######################
@@ -187,8 +181,6 @@ class TracksWidget(Gtk.ListBox):
 		if show_cover:
 			album_id = Objects.tracks.get_album_id(track_id)
 			track_row.set_cover(Objects.art.get(album_id, ART_SIZE_MEDIUM))
-		else:
-			track_row.title_add_margin()
 		track_row.show()
 		self.add(track_row)
 
