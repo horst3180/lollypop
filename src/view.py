@@ -14,6 +14,7 @@
 from gi.repository import Gtk, GObject, Gdk
 from gettext import gettext as _
 from time import sleep
+from _thread import start_new_thread
 
 from lollypop.define import Objects
 from lollypop.database import Database
@@ -375,6 +376,7 @@ class PlaylistView(View):
 	"""
 	def __init__(self, name):
 		View.__init__(self)
+		self._name = name
 
 		self._scrolledWindow = Gtk.ScrolledWindow()
 		self._scrolledWindow.set_vexpand(True)
@@ -386,6 +388,15 @@ class PlaylistView(View):
 		self._widget.show()
 		self._scrolledWindow.add(self._widget)
 		self.show()
+
+	"""
+		Populate view with tracks from playlist
+	"""
+	def populate(self):
+		sql = Objects.db.get_cursor()
+		tracks = Objects.playlists.get_tracks_id(self._name, sql)
+		mid_tracks = int(0.5+len(tracks)/2)
+		GLib.idle_add(self._widget.add_tracks, tracks, 1, mid_tracks)
 
 #######################
 # PRIVATE             #

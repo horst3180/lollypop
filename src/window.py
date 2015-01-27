@@ -423,6 +423,7 @@ class Window(Gtk.ApplicationWindow):
 			view = PlaylistsView()
 		else:
 			view = PlaylistView(self._playlists[playlist_id])
+			start_new_thread(view.populate, ())
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
 		self._clean_view(old_view)

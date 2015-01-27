@@ -233,6 +233,7 @@ class PlaylistWidget(Gtk.Grid):
 	"""
 	def __init__(self, name):
 		Gtk.Grid.__init__(self)
+		self._name = name
 		self.set_property("margin", 5)
 
 		self._ui = Gtk.Builder()
@@ -249,7 +250,7 @@ class PlaylistWidget(Gtk.Grid):
 		size_group.add_widget(self._tracks_widget1)
 		size_group.add_widget(self._tracks_widget2)
 
-		self._ui.get_object('menu').connect('clicked', self._pop_menu, name)
+		self._ui.get_object('menu').connect('clicked', self._pop_menu)
 		self._ui.get_object('tracks').add(self._tracks_widget1)
 		self._ui.get_object('tracks').add(self._tracks_widget2)
 
@@ -258,9 +259,30 @@ class PlaylistWidget(Gtk.Grid):
 		self._ui.get_object('title').set_label(name)
 		self.add(self._ui.get_object('PlaylistWidget'))
 
-		self._name = name
-		self._populate(name)
+	"""
+		Add tracks to view
+		@param tracks id as array of [int]
+		@param i as int => track position
+		@param mid_tracks as position for widget switching
+	"""
+	def add_tracks(self, tracks, i, mid_tracks):
+		if len(tracks) == 0:
+			return
+		track_id = tracks.pop(0)
+		(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
+		title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
 
+		# Get track position in queue
+		pos = None
+		if Objects.player.is_in_queue(track_id):
+			pos = Objects.player.get_track_position(track_id)
+
+		if i <= mid_tracks:
+			self._tracks_widget1.add_track(track_id, i, title, length, pos, True) 
+		else:
+			self._tracks_widget2.add_track(track_id, i, title, length, pos, True)
+
+		GLib.idle_add(self.add_tracks, tracks, i+1, mid_tracks)
 
 	"""
 		On show, connect signals
@@ -303,52 +325,15 @@ class PlaylistWidget(Gtk.Grid):
 		for child in self._tracks_widget2.get_children():
 			child.destroy()
 		
-		self._populate(playlist_name)
+		self.populate(playlist_name)
 		
 	"""
 		Popup menu for playlist
 		@param widget as Gtk.Button
-		@param playlist name as str
 	"""
-	def _pop_menu(self, widget, playlist_name):
-		popup = PlaylistEditPopup(playlist_name)
+	def _pop_menu(self, widget):
+		popup = PlaylistEditPopup(self._name)
 		popup.show()
-
-
-	"""
-		Populate view with tracks from playlist
-		@param playlist name as str
-	"""
-	def _populate(self, playlist_name):
-		sql = Objects.db.get_cursor()
-		tracks = Objects.playlists.get_tracks_id(playlist_name, sql)
-		mid_tracks = int(0.5+len(tracks)/2)
-		GLib.idle_add(self._add_tracks, tracks, 1, mid_tracks)
-
-	"""
-		Add tracks to view
-		@param tracks id as array of [int]
-		@param i as int => track position
-		@param mid_tracks as position for widget switching
-	"""
-	def _add_tracks(self, tracks, i, mid_tracks):
-		if len(tracks) == 0:
-			return
-		track_id = tracks.pop(0)
-		(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
-		title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
-
-		# Get track position in queue
-		pos = None
-		if Objects.player.is_in_queue(track_id):
-			pos = Objects.player.get_track_position(track_id)
-
-		if i <= mid_tracks:
-			self._tracks_widget1.add_track(track_id, i, title, length, pos, True) 
-		else:
-			self._tracks_widget2.add_track(track_id, i, title, length, pos, True)
-
-		GLib.idle_add(self._add_tracks, tracks, i+1, mid_tracks)
 
 	"""
 		On track activation, play track
