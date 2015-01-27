@@ -142,9 +142,9 @@ class QueueWidget(Gtk.Popover):
 
 	"""
 		Update queue when a row has been deleted
-		@param TreePath unused
+		@param unused
 	"""
-	def _updated_rows(self, path, none):
+	def _updated_rows(self, path, data):
 		if self.is_visible():
 			new_queue = []
 			for row in self._model:
