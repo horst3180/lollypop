@@ -310,6 +310,8 @@ class PlaylistsManagePopup:
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistsManagePopup.ui')
 
 		self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
+		self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+		self._model.set_sort_func(1, self._sort_items)
 
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
@@ -361,6 +363,13 @@ class PlaylistsManagePopup:
 #######################
 # PRIVATE             #
 #######################
+	"""
+		Sort model
+	"""
+	def _sort_items(self, model, itera, iterb, data):
+		a = model.get_value(itera, 1)
+		b = model.get_value(iterb, 1)
+		return a > b
 
 	"""
 		Append playlists, thread safe
@@ -500,7 +509,8 @@ class PlaylistsManagePopup:
 			return
 		iterator = self._model.get_iter(path)
 		old_name = self._model.get_value(iterator, 1)
-		self._model.set_value(iterator, 1, name)
+		self._model.remove(iterator)
+		self._model.append([True, name, self._del_pixbuf])
 		Objects.playlists.rename(name, old_name)
 
 	
