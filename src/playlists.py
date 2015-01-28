@@ -521,6 +521,7 @@ class PlaylistEditPopup:
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistEditPopup.ui')
 
 		self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
+		self._model.connect("row-deleted", self._on_row_deleted)
 		self._view = self._ui.get_object('view')
 		self._view.set_model(self._model)
 		
@@ -645,6 +646,7 @@ class PlaylistEditPopup:
 			self._model.remove(iterator)
 		self._infobar.hide()
 		self._deleted_path = None
+		self._update_on_disk()
 		
 	"""
 		Delete item if Delete was pressed
@@ -660,15 +662,28 @@ class PlaylistEditPopup:
 	"""
 	def _on_close_clicked(self, widget):
 		self._popup.hide()
+	
+	"""
+		Only catch drag & drop successful
+		@param path as Gtk.TreePath
+		@param data as unused
+	"""
+	def _on_row_deleted(self, path, data):
+		self._update_on_disk()
+
+	"""
+		Update playlist on disk
+	"""
+	def _update_on_disk(self):
 		tracks_path = []
 		for item in self._model:
 			tracks_path.append(item[3])
-		start_new_thread(self._finish, (tracks_path,))
+		start_new_thread(self._update_on_disk_thread, (tracks_path,))
 
 	"""
-		Update playlist on disk and clean
+		Update playlist on disk, thread safe
 		@param track's paths as [str]
 	"""
-	def _finish(self, tracks_path):
+	def _update_on_disk_thread(self, tracks_path):
 		if tracks_path != self._tracks_orig:
 			Objects.playlists.set_tracks(self._playlist_name, tracks_path)
