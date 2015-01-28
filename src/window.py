@@ -61,7 +61,7 @@ class Window(Gtk.ApplicationWindow):
 		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
 		Objects.playlists.connect("playlists-changed", self._update_lists)
-		Objects.playlists.connect("playlist-changed", self._update_list_two)
+		Objects.playlists.connect("playlist-changed", self._update_view_playlist)
 
 	"""
 		Update music database
@@ -439,6 +439,22 @@ class Window(Gtk.ApplicationWindow):
 		start_new_thread(view.populate, ())
 		self._clean_view(old_view)
 
+	"""
+		Same as above but only update if already displayed
+		@param manager as PlaylistsManager
+		@param playlist name as str
+	"""
+	def _update_view_playlist(self, manager, playlist_name):
+		old_view = self._stack.get_visible_child()
+		if isinstance(old_view, PlaylistView):
+			if old_view.get_name() == playlist_name:
+				view = PlaylistView(playlist_name)
+				view.show()
+				self._stack.add(view)
+				self._stack.set_visible_child(view)
+				start_new_thread(view.populate, ())
+				self._clean_view(old_view)
+	
 	"""
 		Clear selection list
 		@param selection list as SelectionList
