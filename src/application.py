@@ -96,6 +96,7 @@ class Application(Gtk.Application):
 			if not self._appmenu:
 				menu = self._setup_app_menu()
 				self._window.setup_menu(menu)
+		self._window.show()
 		self._window.present()
 
 	"""

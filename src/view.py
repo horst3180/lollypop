@@ -221,7 +221,9 @@ class ArtistView(View):
 			widget.show()
 			self._albumbox.add(widget)
 			if widget.eventbox:
-				widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+				window = widget.eventbox.get_window()
+				if window:
+					window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 			GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
 		else:
 			self._stop = False

@@ -379,11 +379,7 @@ class DatabaseAlbums:
 
 	"""
 		Get all compilations
-		
-		@param None
-		or
 		@param genre id as int
-		
 		@return Array of album ids as int
 	"""
 	def get_compilations(self, genre_id, sql = None):

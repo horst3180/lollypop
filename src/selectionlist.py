@@ -17,6 +17,9 @@ from lollypop.database import Database
 from lollypop.utils import translate_artist_name
 from lollypop.define import *
 
+"""
+	A selection list is a artists or genres scrolled treeview
+"""
 class SelectionList(GObject.GObject):
 
 	__gsignals__ = {
@@ -25,9 +28,8 @@ class SelectionList(GObject.GObject):
 
 	"""
 		Init Selection list ui
-		@param title as string and width as int
 	"""
-	def __init__(self, title):
+	def __init__(self):
 		GObject.GObject.__init__(self)
 		
 		self._model = Gtk.ListStore(int, str)	
@@ -35,13 +37,14 @@ class SelectionList(GObject.GObject):
 		self._model.set_sort_func(0, self._sort_items)
 		self._sort = False
 		self._values = None
+		self._is_artists = False
 
 		self._view = Gtk.TreeView(self._model)
 		self._view.connect('cursor-changed', self._new_item_selected)
 		self._renderer = Gtk.CellRendererText()
 		self._renderer.set_property('ellipsize-set',True)
 		self._renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-		self._column = Gtk.TreeViewColumn(title, self._renderer, text=1)
+		self._column = Gtk.TreeViewColumn('', self._renderer, text=1)
 		self._view.append_column(self._column)
 		self._view.set_headers_visible(False)
 		self._view.show()
@@ -52,27 +55,44 @@ class SelectionList(GObject.GObject):
 		self.widget.add(self._view)
 
 	"""
+		Mark list as artists list
+		@param is_artists as bool
+	"""
+	def mark_as_artists(self, is_artists):
+		self._is_artists = is_artists
+
+	"""
+		Return True if list is marked as artists
+	"""
+	def is_marked_as_artists(self):
+		return self._is_artists
+
+	"""
 		Populate view with values
-		Translate string if is_artist = True
-		@param [(int, str)], bool
+		@param [(int, str)]
 	"""	
-	def populate(self, values, is_artist = False):
-		self._model.clear()
+	def populate(self, values):
 		for (object_id, string) in values:
-			if is_artist:
+			#Translating artist@@@@the => The artist
+			if self._is_artists:
 				string = translate_artist_name(string)
 			self._model.append([object_id, string])
 				
-	
+	"""
+		Clear the list
+	"""	
+	def clear(self):
+		self._model.clear()
+
 	"""
 		Update view with values
-		@param [(int, str)], bool
+		@param [(int, str)]
 	"""	
-	def update(self, values, is_artist = False):
+	def update(self, values):
 		for item in self._model:
 			found = False
 			for value in values:
-				if item[0] == value[0]:
+				if item[1] == value[1]:
 					found = True
 			if not found:
 				self._model.remove(item.iter)
@@ -81,10 +101,10 @@ class SelectionList(GObject.GObject):
 		for value in values:
 			found = False
 			for item in self._model:
-				if item[0] == value[0]:
+				if item[1] == value[1]:
 					found = True
 			if not found:
-				if is_artist:
+				if self._is_artists:
 					string = translate_artist_name(value[1])
 				else:
 					string = value[1]
@@ -101,7 +121,6 @@ class SelectionList(GObject.GObject):
 			iterator = self._model.get_iter(str(position))
 			path = self._model.get_path(iterator)
 			self._view.set_cursor(path, None, False)
-			self.emit('item-selected', self._model.get_value(iterator, 0))
 		except Exception as e:
 			print("SelectionList::select_item: ", e)
 
@@ -127,6 +146,12 @@ class SelectionList(GObject.GObject):
 			if iter:
 				return self._model.get_value(iter, 0)
 		return None
+
+	"""
+		Return items number in list
+	"""
+	def length(self):
+		return len(self._model)
 
 #######################
 # PRIVATE             #
@@ -173,7 +198,7 @@ class SelectionList(GObject.GObject):
 		@param view as Gtk.TreeView
 	"""	
 	def _new_item_selected(self, view):
-		selected_id = self.get_selected_id()
-		if selected_id != None:
-			self.emit('item-selected', selected_id)
+		self._selected_id = self.get_selected_id()
+		if self._selected_id != None:
+			self.emit('item-selected', self._selected_id)
 

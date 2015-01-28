@@ -21,6 +21,7 @@ from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.database import Database
 from lollypop.selectionlist import SelectionList
+from lollypop.playlists import PlaylistsManager
 from lollypop.player import Player
 from lollypop.view import *
 
@@ -43,7 +44,7 @@ class Window(Gtk.ApplicationWindow):
 
 		self._setup_window()				
 		self._setup_view()
-		self._setup_list_one()
+
 		if not self._setup_scanner():
 			if Objects.settings.get_value('save-state'):
 				self._restore_view_state()
@@ -67,9 +68,9 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def update_db(self):
 		self._list_one.widget.hide()
-		self._hide_list_two()
+		self._list_two.widget.hide()
 
-		old_view = self._stack.get_visible_child()		
+		old_view = self._stack.get_visible_child()
 		view = LoadingView()
 		self._stack.add(view)
 		self._stack.set_visible_child(view)
@@ -132,21 +133,38 @@ class Window(Gtk.ApplicationWindow):
 
 	"""
 		Update lists
-		@param obj as unused
+		@param updater as GObject
 	"""
-	def _update_lists(self, obj):
-		# Only restore state for hidden lists
-		need_update = self._list_one.widget.is_visible()
+	def _update_lists(self, updater):
+		if self._list_one.length() > 0:
+			self._update_list_one(updater)
+			self._list_one.widget.show()
+		if self._list_two.length() > 0:
+			self._update_list_two(updater)
+			self._list_two.widget.show()
+		if isinstance(updater, CollectionScanner):
+			view = self._stack.get_visible_child()
+			if isinstance(view, LoadingView):
+				view.destroy()
 
-		self._setup_list_one(None, need_update)
-
+	"""
+		Update list one
+		@param updater as GObject
+	"""
+	def _update_list_one(self, updater):
+		# Do not update if updater is PlaylistsManager
+		if not isinstance(updater, PlaylistsManager):
+			self._setup_lists(True)
+		
+	"""
+		Update list two
+		@param updater as GObject
+	"""
+	def _update_list_two(self, updater):
 		object_id = self._list_one.get_selected_id()
-		# Only update list two if visible
-		# In playlists mode, may be hidden so update anyway
-		if self._list_two.widget.is_visible() or object_id == PLAYLISTS:
-			self._setup_list_two(None, object_id, need_update)
-		if not need_update:
-			self._restore_view_state()
+		if (isinstance(updater, PlaylistsManager) and object_id == PLAYLISTS) or \
+		   (isinstance(updater, CollectionScanner) and object_id != PLAYLISTS):		
+			self._setup_list_artists(self._list_two, object_id, True)
 
 	"""
 		Setup media player keys
@@ -233,12 +251,15 @@ class Window(Gtk.ApplicationWindow):
 	
 		self._toolbar = Toolbar()
 		self._toolbar.header_bar.show()
-		self._toolbar.get_view_genres_btn().connect("toggled", self._setup_list_one)
+		self._toolbar.get_view_genres_btn().connect("toggled", self._on_genres_btn_toggled)
+		self._show_genres = self._toolbar.get_view_genres_btn().get_active()
 
-		self._list_one = SelectionList("Genre")
-		self._list_two = SelectionList("Artist")
-		self._list_one_signal = None
-		self._list_two_signal = None
+		self._list_one = SelectionList()
+		self._list_two = SelectionList()
+		self._list_one.connect('item-selected', self._on_list_one_selected)
+		self._list_two.connect('item-selected', self._on_list_two_selected)
+		self._list_one.widget.show()
+		self._setup_lists(False)
 		
 		loading_view = LoadingView()
 
@@ -280,124 +301,100 @@ class Window(Gtk.ApplicationWindow):
 		self._paned_list_view.set_position(Objects.settings.get_value("paned-listview-width").get_int32())
 		self._paned_main_list.show()
 		self._paned_list_view.show()
-		self.show()
 
 	"""
-		Init the filter list
-		@param widget as unused
+		Return list one headers
 	"""
-	def _init_main_list(self, widget):
-		if self._list_one.widget.is_visible():
-			self._update_genres()
-		else:
-			self._init_genres()
-	"""
-		Init list with genres or artist
-		If update, only update list content
-		@param obj as unused
-		@param update as bool => if True, update entries
-	"""
-	def _setup_list_one(self, obj = None, update = False):
-		is_artist = not self._toolbar.get_view_genres_btn().get_active()
-
-		# Disconnect signal
-		if self._list_one_signal:
-			self._list_one.disconnect(self._list_one_signal)
-
-		# We show all artists
-		if is_artist:
-			self._hide_list_two()
-			items = Objects.artists.get(ALL)
-			if len(Objects.albums.get_compilations(ALL)) > 0:
-				items.insert(0, (COMPILATIONS, _("Compilations")))	
-		# We show genres		
-		else:
-			items = Objects.genres.get()
-
-		items.insert(0, (ALL, _("All artists")))
-		items.insert(0, (PLAYLISTS, _("Playlists")))
-		items.insert(0, (POPULARS, _("Popular albums")))
-
-		if update:
-			self._list_one.update(items, is_artist)
-		else:
-			self._list_one.populate(items, is_artist)
-
-		self._list_one.widget.show()
+	def _get_headers(self):
+		items = []
+		items.append((POPULARS, _("Popular albums")))
+		items.append((PLAYLISTS, _("Playlists")))
+		items.append((ALL, _("All artists")))
+		return items
 		
-		# Connect signal
-		if is_artist:
-			self._list_one_signal = self._list_one.connect('item-selected', self._update_view_detailed, None)
+	"""
+		Setup genres/artists lists
+		@param update as bool, if True, just update entries
+	"""
+	def _setup_lists(self, update):
+		if self._show_genres:
+			self._setup_list_genres(self._list_one, update)
 		else:
-			self._list_one_signal = self._list_one.connect('item-selected', self._setup_list_two)		
+			self._setup_list_artists(self._list_one, ALL, update)
 
 	"""
-		Init list two with artist based on genre
-		@param obj as unused, genre id as int
-		@param update as bool => if True, update entries
+		Setup list for genres
+		@param list as SelectionList
+		@param update as bool, if True, just update entries
 	"""
-	def _setup_list_two(self, obj, genre_id, update = False	):
-		is_artist = genre_id != PLAYLISTS
-		if genre_id == POPULARS:
-			self._hide_list_two()
+	def _setup_list_genres(self, selection_list, update):
+		selection_list.mark_as_artists(False)
+		items = self._get_headers() + Objects.genres.get()
+		if update:
+			selection_list.update(items)
 		else:
-			# SelectionList::update() is based on index in values tuple. For db objects, it's rowid so
-			# it will works. For playlists, we just use a static int and increment it over time
-			if genre_id == PLAYLISTS:
-				self._playlists = []
-				playlist_names = Objects.playlists.get()
-				for playlist_name in playlist_names:
-					self._playlists.append((self._counter, playlist_name))
-					self._counter += 1
-				values = self._playlists
+			selection_list.populate(items)
+
+	"""
+		Setup list for artists
+		@param list as SelectionList
+		@param update as bool, if True, just update entries
+	"""
+	def _setup_list_artists(self, selection_list, genre_id, update):
+		if selection_list == self._list_one and self._list_two.widget.is_visible():
+			self._list_two.widget.hide()
+			self._list_two.clear()
+			
+		items = []
+		selection_list.mark_as_artists(True)
+		if selection_list == self._list_one:
+			items = self._get_headers()
+		if len(Objects.albums.get_compilations(genre_id)) > 0:
+			items.append((COMPILATIONS, _("Compilations")))
+			
+		items += Objects.artists.get(genre_id)
+		
+		if update:
+			selection_list.update(items)
+		else:
+			selection_list.populate(items)
+
+	"""
+		Setup list for playlists
+		@param update as bool
+	"""
+	def _setup_list_playlists(self, update):
+		self._playlists = []
+		self._clear_list(self._list_two, self._on_list_two_selected)
+		self._list_two.mark_as_artists(False)
+		playlist_names = Objects.playlists.get()
+		for playlist_name in playlist_names:
+			self._playlists.append((self._counter, playlist_name))
+			self._counter += 1
+		values = self._playlists
+	
+		# Do not show list if empty
+		if len(values) > 0:
+			if update:
+				self._list_two.update(values)
 			else:
-				values = Objects.artists.get(genre_id)
-
-			if len(Objects.albums.get_compilations(genre_id)) > 0:
-				values.insert(0, (COMPILATIONS, _("Compilations")))
-
-			# Do not show list if empty
-			if len(values) > 0:
-				if update:
-					self._list_two.update(values, is_artist)
-				else:
-					self._list_two.populate(values, is_artist)
-
-				if self._list_two_signal:
-					self._list_two.disconnect(self._list_two_signal)
-				self._list_two.widget.show()
-				self._list_two_signal = self._list_two.connect('item-selected', self._update_view_detailed, genre_id)
-			else:
-				self._hide_list_two()
+				self._list_two.populate(values)
 
 		# Only update view on list populate
 		if not update:
-			# In playlist mode, we do not show anything
-			if genre_id == PLAYLISTS:
-				self._update_view_playlists(None)
-			else:
-				self._update_view_genres(genre_id)
-			
+			self._update_view_playlists(None)
 
 	"""
 		Update detailed view
-		@param obj as SelectionList
 		@param object id as int
 		@param genre id as int
 	"""
-	def _update_view_detailed(self, obj, object_id, genre_id):
-		is_artist = not self._toolbar.get_view_genres_btn().get_active()
-		if object_id == PLAYLISTS:
-			self._setup_list_two(obj, PLAYLISTS)
-		elif genre_id == PLAYLISTS:
-			self._update_view_playlists(object_id)
+	def _update_view_detailed(self, object_id, genre_id):
+		if genre_id == PLAYLISTS:
+				self._update_view_playlists(object_id)
 		elif object_id == ALL or object_id == POPULARS:
-			if is_artist:
-				self._hide_list_two()
 			self._update_view_genres(object_id)
 		else:
-			if is_artist:
-				self._hide_list_two()
 			old_view = self._stack.get_visible_child()
 			view = ArtistView(object_id, genre_id, True)
 			self._stack.add(view)
@@ -440,6 +437,16 @@ class Window(Gtk.ApplicationWindow):
 		self._stack.set_visible_child(view)
 		start_new_thread(view.populate, ())
 		self._clean_view(old_view)
+
+	"""
+		Clear selection list
+		@param selection list as SelectionList
+		@param callback associated to selection list
+	"""
+	def _clear_list(self, selection_list, callback):
+		selection_list.disconnect_by_func(callback)
+		selection_list.clear()
+		selection_list.connect('item-selected', callback)
 		
 	"""
 		Clean view
@@ -451,16 +458,49 @@ class Window(Gtk.ApplicationWindow):
 			self._stack.remove(view)
 			view.remove_signals()
 			view.destroy()
+	
+	"""
+		Update view based on selected object
+		@param list as SelectionList
+		@param object id as int
+	"""
+	def _on_list_one_selected(self, selection_list, object_id):
+		if object_id == PLAYLISTS:
+			self._setup_list_playlists(False)
+			self._list_two.widget.show()
+		elif selection_list.is_marked_as_artists():
+			self._list_two.widget.hide()
+			self._list_two.clear()
+			self._update_view_detailed(object_id, None)
+		else:
+			if object_id == POPULARS:
+				self._list_two.widget.hide()
+				self._list_two.clear()
+			else:
+				self._clear_list(self._list_two, self._on_list_two_selected)
+				self._setup_list_artists(self._list_two, object_id, False)
+				self._list_two.widget.show()
+			self._update_view_genres(object_id)
 
 	"""
-		Clean and hide list two
+		Update view based on selected object
+		@param list as SelectionList
+		@param object id as int
 	"""
-	def _hide_list_two(self):
-		if self._list_two_signal:
-			self._list_two.disconnect(self._list_two_signal)
-			self._list_two_signal = None
-		self._list_two.widget.hide()
+	def _on_list_two_selected(self, selection_list, object_id):
+		if self._list_one.get_selected_id() == PLAYLISTS:
+			self._update_view_playlists(object_id)
+		else:
+			self._update_view_detailed(object_id, None)
 
+	"""
+		On genres button toggled, update lists/views
+	"""
+	def _on_genres_btn_toggled(self, button):
+		self._show_genres = self._toolbar.get_view_genres_btn().get_active()
+		self._clear_list(self._list_one, self._on_list_one_selected)
+		self._setup_lists(False)
+		
 	"""
 		Update playlist view if we are in playlist view
 		@param manager as PlaylistPopup
