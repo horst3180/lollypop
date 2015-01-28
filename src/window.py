@@ -391,7 +391,7 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_view_detailed(self, object_id, genre_id):
 		if genre_id == PLAYLISTS:
-				self._update_view_playlists(object_id)
+			self._update_view_playlists(object_id)
 		elif object_id == ALL or object_id == POPULARS:
 			self._update_view_genres(object_id)
 		else:
