@@ -117,7 +117,7 @@ class PlaylistsManager(GObject.GObject):
 					playlists.append(filename[:-4])
 					index += 1
 					# Break if max items is reach
-					if index >= 3:
+					if index >= 5:
 						break	
 		except Exception as e:
 			print("Lollypop::PlaylistManager::get_last: %s" % e)
