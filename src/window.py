@@ -61,7 +61,7 @@ class Window(Gtk.ApplicationWindow):
 		Objects.player.set_party_ids(ids)
 		self.connect("destroy", self._on_destroyed_window)
 		Objects.playlists.connect("playlists-changed", self._update_lists)
-		Objects.playlists.connect("playlist-changed", self._on_playlist_changed)
+		Objects.playlists.connect("playlist-changed", self._update_list_two)
 
 	"""
 		Update music database
@@ -162,8 +162,9 @@ class Window(Gtk.ApplicationWindow):
 	"""
 	def _update_list_two(self, updater):
 		object_id = self._list_one.get_selected_id()
-		if (isinstance(updater, PlaylistsManager) and object_id == PLAYLISTS) or \
-		   (isinstance(updater, CollectionScanner) and object_id != PLAYLISTS):		
+		if (isinstance(updater, PlaylistsManager) and object_id == PLAYLISTS):
+			self._setup_list_playlists(object_id)
+		elif isinstance(updater, CollectionScanner):
 			self._setup_list_artists(self._list_two, object_id, True)
 
 	"""
