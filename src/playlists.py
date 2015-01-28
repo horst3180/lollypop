@@ -112,9 +112,9 @@ class PlaylistsManager(GObject.GObject):
 				stat = os.stat(self.PLAYLISTS_PATH+"/"+filename)
 				if S_ISREG(stat[ST_MODE]):
 					entries.append((stat[ST_MTIME], filename))
-			for cdate, filename in sorted(entries):
+			for cdate, filename in sorted(entries, reverse=True):
 				if filename.endswith(".m3u"):
-					playlists.insert(0, filename[:-4])
+					playlists.append(filename[:-4])
 					index += 1
 					# Break if max items is reach
 					if index >= 3:
