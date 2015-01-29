@@ -46,9 +46,11 @@ class Window(Gtk.ApplicationWindow):
 		self._setup_view()
 
 		if not self._setup_scanner():
+			self._list_one.widget.show()
 			if Objects.settings.get_value('save-state'):
 				self._restore_view_state()
 			else:
+				self._setup_lists(False)
 				self._list_one.select_item(0)
 
 		self._setup_media_keys()
@@ -259,8 +261,6 @@ class Window(Gtk.ApplicationWindow):
 		self._list_two = SelectionList()
 		self._list_one.connect('item-selected', self._on_list_one_selected)
 		self._list_two.connect('item-selected', self._on_list_two_selected)
-		self._list_one.widget.show()
-		self._setup_lists(False)
 		
 		loading_view = LoadingView()
 
