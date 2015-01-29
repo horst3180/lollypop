@@ -103,7 +103,22 @@ class DatabaseArtists:
 		for row in result:
 			artists += (row,)
 		return artists
-		
+
+	"""
+		Return True if artist exist
+		@param artist id as int
+	"""
+	def exists(self, artist_id, sql = None):
+		if not sql:
+			sql = Objects.sql
+
+		result = sql.execute("SELECT COUNT(*) from artists where rowid=?", (artist_id,))
+		v = result.fetchone()
+		if v and len(v) > 0:
+			return bool(v[0])
+
+		return False
+
 	"""
 		Search for artists looking like string
 		@param string

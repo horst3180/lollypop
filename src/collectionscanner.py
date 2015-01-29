@@ -300,6 +300,11 @@ class CollectionScanner(GObject.GObject):
 			else:
 				Objects.albums.add(album, artist_id, genre_id, year, path, popularity, sql)
 				album_id = Objects.albums.get_id(album, artist_id, genre_id, sql)
+		# Be sure artist id is ok
+		else:
+			album_artist_id = Objects.albums.get_artist_id(album_id, sql)
+			if not Objects.artists.exists(album_artist_id, sql):
+				Objects.albums.set_artist_id(album_id, artist_id, sql)
 
 		# Now we have our album id, check if path doesn't change
 		if Objects.albums.get_path(album_id, sql) != path:
