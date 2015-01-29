@@ -138,12 +138,11 @@ class Window(Gtk.ApplicationWindow):
 		@param updater as GObject
 	"""
 	def _update_lists(self, updater):
-		if self._list_one.length() > 0:
-			self._update_list_one(updater)
+		if not self._list_one.widget.is_visible():
 			self._list_one.widget.show()
-		if self._list_two.length() > 0:
+		self._update_list_one(updater)
+		if self._list_two.widget.is_visible():
 			self._update_list_two(updater)
-			self._list_two.widget.show()
 		if isinstance(updater, CollectionScanner):
 			view = self._stack.get_visible_child()
 			if isinstance(view, LoadingView):
