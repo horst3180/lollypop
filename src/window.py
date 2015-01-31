@@ -141,7 +141,8 @@ class Window(Gtk.ApplicationWindow):
 		if not self._list_one.widget.is_visible():
 			self._list_one.widget.show()
 		self._update_list_one(updater)
-		if self._list_two.widget.is_visible():
+		if self._list_two.visible:
+			self._list_two.widget.show()
 			self._update_list_two(updater)
 		if isinstance(updater, CollectionScanner):
 			view = self._stack.get_visible_child()
@@ -260,7 +261,8 @@ class Window(Gtk.ApplicationWindow):
 		self._list_two = SelectionList()
 		self._list_one.connect('item-selected', self._on_list_one_selected)
 		self._list_two.connect('item-selected', self._on_list_two_selected)
-		
+		self._list_two.visible = False
+
 		loading_view = LoadingView()
 
 		self._stack = Gtk.Stack()
@@ -343,6 +345,7 @@ class Window(Gtk.ApplicationWindow):
 	def _setup_list_artists(self, selection_list, genre_id, update):
 		if selection_list == self._list_one and self._list_two.widget.is_visible():
 			self._list_two.widget.hide()
+			self._list_two.visible = False
 			self._list_two.clear()
 			
 		items = []
@@ -484,18 +487,22 @@ class Window(Gtk.ApplicationWindow):
 		if object_id == PLAYLISTS:
 			self._setup_list_playlists(False)
 			self._list_two.widget.show()
+			self._list_two.visible = True
 		elif selection_list.is_marked_as_artists():
 			self._list_two.widget.hide()
+			self._list_two.visible = False
 			self._list_two.clear()
 			self._update_view_detailed(object_id, None)
 		else:
 			if object_id == POPULARS:
 				self._list_two.widget.hide()
+				self._list_two.visible = False
 				self._list_two.clear()
 			else:
 				self._clear_list(self._list_two, self._on_list_two_selected)
 				self._setup_list_artists(self._list_two, object_id, False)
 				self._list_two.widget.show()
+				self._list_two.visible = True
 			self._update_view_genres(object_id)
 
 	"""
