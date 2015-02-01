@@ -31,7 +31,7 @@ class Database:
 
 	"""
 		SQLite documentation:
-			 In SQLite, a column with type INTEGER PRIMARY KEY is an alias for the ROWID
+		In SQLite, a column with type INTEGER PRIMARY KEY is an alias for the ROWID
 		Here, we define an id INT PRIMARY KEY but never feed it, this make VACUUM not destroy rowids...
 	"""
 	create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
