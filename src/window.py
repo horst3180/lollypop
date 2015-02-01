@@ -514,7 +514,7 @@ class Window(Gtk.ApplicationWindow):
 		if self._list_one.get_selected_id() == PLAYLISTS:
 			self._update_view_playlists(object_id)
 		else:
-			self._update_view_detailed(object_id, None)
+			self._update_view_detailed(object_id, self._list_one.get_selected_id())
 
 	"""
 		On genres button toggled, update lists/views
