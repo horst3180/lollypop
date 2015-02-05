@@ -47,7 +47,11 @@ class Window(Gtk.ApplicationWindow):
 
 		if not self._setup_scanner():
 			self._setup_lists(False)
-			self._list_one.widget.show()
+			self._list_one.widget.show()			
+			if Objects.settings.get_value('save-state'):
+				self._restore_view_state()
+			else:
+				self._list_one.select_item(0)
 
 		self._setup_media_keys()
 
@@ -319,10 +323,6 @@ class Window(Gtk.ApplicationWindow):
 			self._setup_list_genres(self._list_one, update)
 		else:
 			self._setup_list_artists(self._list_one, ALL, update)
-		if Objects.settings.get_value('save-state'):
-			self._restore_view_state()
-		else:
-			self._list_one.select_item(0)
 
 	"""
 		Setup list for genres
