@@ -131,11 +131,11 @@ class AlbumArt:
 				# No cover, use default one
 				if not pixbuf:
 					pixbuf = self._get_default_icon(size)
-				
-				try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
-					pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
-				except:
-					pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+				else:
+					try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+						pixbuf.save(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
+					except:
+						pixbuf.savev(CACHE_PATH_JPG, "jpeg", ["quality"], ["90"])
 				
 			return self._make_icon_frame(pixbuf, size)
 			
