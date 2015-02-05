@@ -255,7 +255,6 @@ class PlaylistsManager(GObject.GObject):
 				f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
 				f.write(filepath+'\n')
 				f.close()
-				tracks.append(filepath)
 			except Exception as e:
 				print("PlaylistsManager::add_track: %s" %e)
 
@@ -678,12 +677,5 @@ class PlaylistEditPopup:
 		tracks_path = []
 		for item in self._model:
 			tracks_path.append(item[3])
-		start_new_thread(self._update_on_disk_thread, (tracks_path,))
-
-	"""
-		Update playlist on disk, thread safe
-		@param track's paths as [str]
-	"""
-	def _update_on_disk_thread(self, tracks_path):
 		if tracks_path != self._tracks_orig:
 			Objects.playlists.set_tracks(self._playlist_name, tracks_path)
