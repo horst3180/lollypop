@@ -149,21 +149,6 @@ class DatabaseTracks:
 		return _("Unknown")
 
 	"""
-		Get perfomer name for track id
-		@param Track id as int
-		@return Performer name as string
-	"""
-	def get_performer_name(self, track_id, sql = None):
-		if not sql:
-			sql = Objects.sql
-		result = sql.execute("SELECT artists.name from artists,tracks where tracks.rowid=? and tracks.performer_id=artists.rowid", (track_id,))
-		v = result.fetchone()
-		if v and len(v) > 0:
-			return v[0]
-
-		return _("Unknown")
-
-	"""
 		Get artist id for track id
 		@param Track id as int
 		@return Artist id as int
