@@ -80,20 +80,13 @@ class DatabaseAlbums:
 	def get_id(self, album_name, artist_id, genre_id, sql = None):
 		if not sql:
 			sql = Objects.sql
-		if artist_id:
-			result = sql.execute("SELECT rowid FROM albums where name=? COLLATE NOCASE\
-								  AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
-			v = result.fetchone()
-			if v and len(v) > 0:
-				return v[0]
-			return -1
-		else:
-			albums = []
-			result = sql.execute("SELECT rowid FROM albums where name=? AND genre_id=?", (album_name, genre_id))
-			for row in result:
-				albums += row
-			return albums
+		result = sql.execute("SELECT rowid FROM albums where name=? COLLATE NOCASE\
+							  AND artist_id=? AND genre_id=?", (album_name, artist_id, genre_id))
+		v = result.fetchone()
+		if v and len(v) > 0:
+			return v[0]
 
+		return None
 
 	"""
 		Get genre id
@@ -179,25 +172,10 @@ class DatabaseAlbums:
 		if not sql:
 			sql = Objects.sql
 		artists = []
-		result = sql.execute("SELECT DISTINCT artist_id from tracks where album_id=? and performer_id=?", (album_id, COMPILATIONS))
+		result = sql.execute("SELECT artist_id from tracks where album_id=? and artist_id=?", (album_id, COMPILATIONS))
 		for row in result:
 			artists += row
 		return artists
-
-
-	"""
-		Get album perfomers id
-		@param album_id
-		@return array of performers id
-	"""
-	def get_performers_id(self, album_id, sql = None):
-		if not sql:
-			sql = Objects.sql
-		performers = []
-		result = sql.execute("SELECT performer_id FROM tracks where album_id=? and performer_id!=?", (album_id, COMPILATIONS))
-		for row in result:
-			performers += (row,)
-		return performers
 
 	"""
 		Get album year for album id
@@ -397,6 +375,25 @@ class DatabaseAlbums:
 			albums += row
 		return albums
 
+	"""
+		Sanitize compilations, after scan some albums marked as compilation (no artist album)
+		can be albums => all tracks are from the same artist
+		No commit needed
+	"""
+	def sanitize(self, sql):
+		if not sql:
+			sql = Objects.sql
+		result = sql.execute("SELECT DISTINCT tracks.artist_id, album_id, albums.name, albums.genre_id FROM tracks, albums WHERE albums.rowid == tracks.album_id AND albums.artist_id == ? GROUP BY album_id HAVING COUNT(DISTINCT tracks.artist_id) == 1", (COMPILATIONS,))
+		for artist_id, album_id, album_name, album_genre in result:
+			existing_id = self.get_id(album_name, artist_id, album_genre, sql)
+			# Some tracks from album have an album artist and some not
+			if existing_id != None and existing_id != album_id:
+				sql.execute("UPDATE tracks SET album_id=? WHERE album_id=?", (existing_id, album_id))
+				sql.execute("DELETE FROM albums WHERE rowid == ?", (album_id,))
+			# Album is not a compilation, so update album id to march track album id
+			else:
+				sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?", (artist_id, album_id))
+		sql.commit()
 
 	"""
 		Search for albums looking like string

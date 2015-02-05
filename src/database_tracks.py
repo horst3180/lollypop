@@ -28,16 +28,16 @@ class DatabaseTracks:
 		disknumber as int artist_id as int, album_id as int, mtime as int
 		@warning: commit needed
 	"""
-	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, performer_id, album_id, mtime, sql = None):
+	def add(self, name, filepath, length, tracknumber, discnumber, artist_id, album_id, mtime, sql = None):
 		if not sql:
 			sql = Objects.sql
 		# Invalid encoding in filenames may raise an exception
 		try:
 			sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
-						discnumber, artist_id, performer_id, album_id, mtime) VALUES\
-						(?, ?, ?, ?, ?, ?, ?, ?, ?)",\
+						discnumber, artist_id, album_id, mtime) VALUES\
+						(?, ?, ?, ?, ?, ?, ?, ?)",\
 						(name, filepath, length, tracknumber, discnumber,\
-						artist_id, performer_id, album_id, mtime))
+						artist_id, album_id, mtime))
 		except Exception as e:
 			print("DatabaseTracks::add: ", e)
 
@@ -186,12 +186,13 @@ class DatabaseTracks:
 	def get_performer_id(self, track_id, sql = None):
 		if not sql:
 			sql = Objects.sql
-		result = sql.execute("SELECT performer_id from tracks where tracks.rowid=?", (track_id,))
+		result = sql.execute("SELECT albums.artist_id from albums,tracks where tracks.rowid=? AND tracks.album_id == albums.rowid", (track_id,))
 		v = result.fetchone()
 
 		if v and len(v) > 0:
 			return v[0]
-		return -1
+
+		return COMPILATIONS
 
 	"""
 		Get track filepath for track id
@@ -259,8 +260,7 @@ class DatabaseTracks:
 		if not sql:
 			sql = Objects.sql
 		tracks = []
-		result = sql.execute("SELECT rowid, name FROM tracks where artist_id=?\
-							  and performer_id!=artist_id and performer_id!=?", (artist_id, COMPILATIONS))
+		result = sql.execute("SELECT tracks.rowid, tracks.name FROM tracks, albums where albums.rowid == tracks.album_id AND tracks.artist_id=? AND albums.artist_id != ?", (artist_id, artist_id))
 		for row in result:
 			tracks += (row,)
 		return tracks
@@ -274,7 +274,7 @@ class DatabaseTracks:
 			sql = Objects.sql
 		sql.execute("DELETE FROM albums WHERE NOT EXISTS (SELECT rowid FROM tracks where albums.rowid = tracks.album_id)")
 		sql.execute("DELETE FROM artists WHERE NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.artist_id)\
-                                           AND NOT EXISTS (SELECT rowid FROM tracks where artists.rowid = tracks.performer_id)")
+                                           AND NOT EXISTS (SELECT rowid FROM albums where artists.rowid = albums.artist_id)")
 		sql.execute("DELETE FROM genres WHERE NOT EXISTS (SELECT rowid FROM albums where genres.rowid = albums.genre_id)")
 
 	"""

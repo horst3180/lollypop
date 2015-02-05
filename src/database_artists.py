@@ -46,7 +46,7 @@ class DatabaseArtists:
 		if v and len(v) > 0:
 			return v[0]
 
-		return COMPILATIONS
+		return None
 
 	"""
 		Get artist name

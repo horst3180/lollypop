@@ -252,6 +252,7 @@ class SearchWidget(Gtk.Popover):
 
 		tracks_non_performer = []
 		
+		# Get all albums for all artists and non performer tracks
 		for artist_id in Objects.artists.search(searched, sql):
 			for album_id in Objects.albums.get_ids(artist_id, None, sql):
 				if (album_id, artist_id) not in albums:

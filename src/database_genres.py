@@ -46,7 +46,7 @@ class DatabaseGenres:
 		if v and len(v) > 0:
 			return v[0]
 
-		return -1
+		return None
 
 	"""
 		Get genre name for genre id

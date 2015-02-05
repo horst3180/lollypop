@@ -50,7 +50,6 @@ class Database:
 						tracknumber INT,
 						discnumber INT,
 						artist_id INT NOT NULL,
-						performer_id INT NOT NULL,
 						album_id INT NOT NULL,
 						mtime INT)'''
 	   

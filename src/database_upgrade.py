@@ -24,7 +24,8 @@ class DatabaseUpgrade:
 		self._UPGRADES = { 
 							1: self._db_add_modification_time,
 							2: self._db_add_performer_disc,
-							3: self._db_add_primary_key
+							3: self._db_add_primary_key,
+							4: self._db_remove_performer_key
 						 }
 
 	"""
@@ -69,4 +70,10 @@ class DatabaseUpgrade:
 		Add primary key to table, needed if we want sqlite to take care of rowid on VACUUM
 	"""
 	def _db_add_primary_key(self):
+		self._reset = True
+		
+	"""
+		Remove performer key from tracks table as uneeded anymore
+	"""	
+	def _db_remove_performer_key(self):
 		self._reset = True
