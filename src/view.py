@@ -392,12 +392,14 @@ class PlaylistView(View):
 
 	"""
 		Populate view with tracks from playlist
+		Thread safe
 	"""
 	def populate(self):
 		sql = Objects.db.get_cursor()
 		tracks = Objects.playlists.get_tracks_id(self._name, sql)
 		mid_tracks = int(0.5+len(tracks)/2)
-		GLib.idle_add(self._widget.add_tracks, tracks, 1, mid_tracks)
+		GLib.idle_add(self._widget.populate_list_one, tracks[:mid_tracks], 1)
+		GLib.idle_add(self._widget.populate_list_two, tracks[mid_tracks:], mid_tracks + 1)
 
 	"""
 		Return playlist name

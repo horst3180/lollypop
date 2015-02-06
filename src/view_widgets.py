@@ -259,30 +259,21 @@ class PlaylistWidget(Gtk.Grid):
 		self.add(self._ui.get_object('PlaylistWidget'))
 
 	"""
-		Add tracks to view
-		@param tracks id as array of [int]
-		@param i as int => track position
-		@param mid_tracks as position for widget switching
+		Populate list one
+		@param track's ids as array of int
+		@param track position as int
 	"""
-	def add_tracks(self, tracks, i, mid_tracks):
-		if len(tracks) == 0:
-			return
-		track_id = tracks.pop(0)
-		(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
-		title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
-
-		# Get track position in queue
-		pos = None
-		if Objects.player.is_in_queue(track_id):
-			pos = Objects.player.get_track_position(track_id)
-
-		if i <= mid_tracks:
-			self._tracks_widget1.add_track(track_id, i, title, length, pos, True) 
-		else:
-			self._tracks_widget2.add_track(track_id, i, title, length, pos, True)
-
-		GLib.idle_add(self.add_tracks, tracks, i+1, mid_tracks)
+	def populate_list_one(self, tracks, pos):
+		self._add_tracks(tracks, self._tracks_widget1, pos)
 		
+	"""
+		Populate list two
+		@param track's ids as array of int
+		@param track position as int
+	"""
+	def populate_list_two(self, tracks, pos):
+		self._add_tracks(tracks, self._tracks_widget2, pos)
+
 	"""
 		Update playing track
 		@param track id as int
@@ -304,7 +295,22 @@ class PlaylistWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-		
+	"""
+		Add tracks to list
+		@param tracks id as array of [int]
+		@param widget TracksWidget
+		@param track position as int
+	"""
+	def _add_tracks(self, tracks, widget, pos):
+		if len(tracks) == 0:
+			return
+		track_id = tracks.pop(0)
+		(title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
+		title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
+
+		widget.add_track(track_id, pos, title, length, None, True)
+		GLib.idle_add(self._add_tracks, tracks, widget, pos+1)
+
 	"""
 		Popup menu for playlist
 		@param widget as Gtk.Button
