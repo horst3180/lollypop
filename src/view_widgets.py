@@ -205,9 +205,9 @@ class AlbumDetailedWidget(Gtk.Grid):
 		@param track id as int
 	"""		
 	def _on_activated(self, widget, track_id):
-		Objects.player.load(track_id)
 		if not Objects.player.is_party():
 			Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
+		Objects.player.load(track_id)
 
 	"""
 		Popover with album art downloaded from the web (in fact google :-/)
@@ -234,7 +234,7 @@ class PlaylistWidget(Gtk.Grid):
 	def __init__(self, playlist_name):
 		Gtk.Grid.__init__(self)
 		self.set_property("margin", 5)
-
+		self._is_loaded = False
 		self._ui = Gtk.Builder()
 		self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
 
@@ -327,7 +327,8 @@ class PlaylistWidget(Gtk.Grid):
 		@param playlist name as str
 	"""		
 	def _on_activated(self, widget, track_id, playlist_name):
-		if not Objects.player.is_party():
+		if not Objects.player.is_party() and not self._is_loaded:
 			tracks = Objects.playlists.get_tracks_id(playlist_name)
 			Objects.player.set_user_playlist(tracks, track_id)
+			self._is_loaded = True
 		Objects.player.load(track_id)

@@ -429,8 +429,7 @@ class Player(GObject.GObject):
 		self._user_playlist = tracks
 		self._albums = None
 		self._shuffle_playlist()
-		self.current.number = tracks.index(track_id)
-		
+	
 #######################
 # PRIVATE             #
 #######################
@@ -619,8 +618,9 @@ class Player(GObject.GObject):
 		self.current.genre = Objects.genres.get_name(self.current.genre_id, sql)
 		self.current.duration = Objects.tracks.get_length(self.current.id, sql)
 		
-		# We do not update this only when we are in album playlist mode (not a user playlist)
-		if not self._user_playlist:
+		if self._user_playlist:
+			self.current.number = self._user_playlist.index(track_id)
+		else:
 			tracks = Objects.albums.get_tracks(self.current.album_id, sql)
 			self.current.number = tracks.index(self.current.id)
 			
