@@ -131,6 +131,13 @@ class Application(Gtk.Application):
 			self._window.update_db()
 
 	"""
+		Show a fullscreen window with cover and artist informations
+	"""
+	def _fullscreen(self, action = None, param = None):
+		if self._window:
+			pass
+
+	"""
 		Show settings dialog
 	"""
 	def _settings_dialog(self, action, param):
@@ -173,6 +180,10 @@ class Application(Gtk.Application):
 		updateAction = Gio.SimpleAction.new('update_db', None)
 		updateAction.connect('activate', self._update_db)
 		self.add_action(updateAction)
+
+		fsAction = Gio.SimpleAction.new('fullscreen', None)
+		fsAction.connect('activate', self._fullscreen)
+		self.add_action(fsAction)
 
 		aboutAction = Gio.SimpleAction.new('about', None)
 		aboutAction.connect('activate', self._about)
