@@ -509,8 +509,9 @@ class PlaylistEditPopup:
 	"""
 		Init Popover ui with a text entry and a scrolled treeview
 		@param playlist name as str
+		@param parent as Gtk.Window	
 	"""
-	def __init__(self, playlist_name):
+	def __init__(self, playlist_name, parent):
 		self._playlist_name = playlist_name
 		self._deleted_path = None
 		self._tracks_orig = []
@@ -527,6 +528,7 @@ class PlaylistEditPopup:
 		self._ui.connect_signals(self)
 
 		self._popup = self._ui.get_object('popup')
+		self._popup.set_transient_for(parent)
 		self._infobar = self._ui.get_object('infobar')
 		self._infobar_label = self._ui.get_object('infobarlabel')
 

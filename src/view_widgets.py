@@ -317,7 +317,7 @@ class PlaylistWidget(Gtk.Grid):
 		@param playlist name as str
 	"""
 	def _pop_menu(self, widget, playlist_name):
-		popup = PlaylistEditPopup(playlist_name)
+		popup = PlaylistEditPopup(playlist_name, self.get_toplevel())
 		popup.show()
 
 	"""
