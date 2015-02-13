@@ -69,7 +69,7 @@ class PlaylistConfigureView(Gtk.Bin):
 		@param button as Gtk.Button
 	"""
 	def _on_button_clicked(self, button):
-		popup = PlaylistsManagePopup(-1, False)
+		popup = PlaylistsManagePopup(-1, False, self.get_toplevel())
 		popup.show()
 
 """

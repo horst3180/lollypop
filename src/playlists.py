@@ -285,8 +285,9 @@ class PlaylistsManagePopup:
 		Init Popover ui with a scrolled treeview
 		@param object id as int
 		@param is album as bool
+		@param parent as Gtk.Widget
 	"""
-	def __init__(self, object_id, is_album):
+	def __init__(self, object_id, is_album, parent):
 
 		self._object_id = object_id		
 		self._is_album = is_album
@@ -306,6 +307,7 @@ class PlaylistsManagePopup:
 		self._ui.connect_signals(self)
 
 		self._popup = self._ui.get_object('popup')
+		self._popup.set_transient_for(parent)
 		self._infobar = self._ui.get_object('infobar')
 		self._infobar_label = self._ui.get_object('infobarlabel')
 
