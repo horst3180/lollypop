@@ -51,7 +51,6 @@ class FullScreen(Gtk.Window):
 		self._album = self._ui.get_object('album')
 		
 		self._progress = self._ui.get_object('progress_scale')
-		self._progress.set_sensitive(False)
 		self._progress.connect('button-release-event', self._on_progress_release_button)
 		self._progress.connect('button-press-event', self._on_progress_press_button)
 		self._timelabel = self._ui.get_object('playback')
@@ -69,9 +68,9 @@ class FullScreen(Gtk.Window):
 			settings.set_property("gtk-application-prefer-dark-theme", True)
 			if not is_playing:
 				Objects.player.set_party(True)
-		if is_playing:
+		elif is_playing:
 			self._change_play_btn_status(self._pause_image, _("Pause"))
-		self._on_current_changed(Objects.player)
+			self._on_current_changed(Objects.player)
 		if is_playing and not self._timeout:
 			self._timeout = GLib.timeout_add(1000, self._update_position)
 		Gtk.Window.do_show(self)
@@ -103,16 +102,7 @@ class FullScreen(Gtk.Window):
 	"""
 	def _on_current_changed(self, player):
 		if player.current.id == None:
-			self._cover.hide()
-			self._timelabel.hide()
-			self._total_time_label.hide()
-			self._prev_btn.set_sensitive(False)
-			self._progress.set_sensitive(False)
-			self._play_btn.set_sensitive(False)
-			self._next_btn.set_sensitive(False)
-			self._title.set_text("")
-			self._artist.set_text("")
-			self._album.set_text("")
+			pass # Impossible as we force play on show
 		else:
 			art = Objects.art.get(player.current.album_id,  ART_SIZE_MONSTER)
 			if art:
@@ -161,13 +151,9 @@ class FullScreen(Gtk.Window):
 	"""
 	def _on_status_changed(self, obj):
 		is_playing = Objects.player.is_playing()
-		self._progress.set_sensitive(is_playing)
 		if is_playing and not self._timeout:
 			self._timeout = GLib.timeout_add(1000, self._update_position)
 			self._change_play_btn_status(self._pause_image, _("Pause"))
-			self._prev_btn.set_sensitive(True)
-			self._play_btn.set_sensitive(True)
-			self._next_btn.set_sensitive(True)
 		elif not is_playing and self._timeout:
 			GLib.source_remove(self._timeout)
 			self._timeout = None
