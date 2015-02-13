@@ -127,9 +127,7 @@ class FullScreen(Gtk.Window):
 			self._progress.set_value(1.0)
 			self._progress.set_range(0.0, player.current.duration * 60)
 			self._total_time_label.set_text(seconds_to_string(player.current.duration))
-			self._total_time_label.show()
 			self._timelabel.set_text("0:00")
-			self._timelabel.show()
 
 	"""
 		Go to prev track
