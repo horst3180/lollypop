@@ -57,25 +57,24 @@ class FullScreen(Gtk.Window):
 		self._timelabel = self._ui.get_object('playback')
 		self._total_time_label = self._ui.get_object('duration')
 
-		if Objects.player.is_playing():
-			self._change_play_btn_status(self._pause_image, _("Pause"))
-		self._on_current_changed(Objects.player)
-		playing = Objects.player.is_playing()
-		self._progress.set_sensitive(playing)
-		if playing and not self._timeout:
-			self._timeout = GLib.timeout_add(1000, self._update_position)
-
 	"""
 		Init signals, set color and go party mode if nothing is playing
 	"""
 	def do_show(self):
+		is_playing = Objects.player.is_playing()
 		Objects.player.connect("current-changed", self._on_current_changed)
 		Objects.player.connect("status-changed", self._on_status_changed)
 		if not Objects.player.is_party():
 			settings = Gtk.Settings.get_default()
 			settings.set_property("gtk-application-prefer-dark-theme", True)
-			if not Objects.player.is_playing():
+			if not is_playing:
 				Objects.player.set_party(True)
+		if is_playing:
+			self._change_play_btn_status(self._pause_image, _("Pause"))
+		self._on_current_changed(Objects.player)
+		self._progress.set_sensitive(is_playing)
+		if is_playing and not self._timeout:
+			self._timeout = GLib.timeout_add(1000, self._update_position)
 		Gtk.Window.do_show(self)
 		self.fullscreen()
 
