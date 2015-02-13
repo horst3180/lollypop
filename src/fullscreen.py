@@ -72,7 +72,6 @@ class FullScreen(Gtk.Window):
 		if is_playing:
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 		self._on_current_changed(Objects.player)
-		self._progress.set_sensitive(is_playing)
 		if is_playing and not self._timeout:
 			self._timeout = GLib.timeout_add(1000, self._update_position)
 		Gtk.Window.do_show(self)
@@ -163,17 +162,17 @@ class FullScreen(Gtk.Window):
 		@param obj as unused
 	"""
 	def _on_status_changed(self, obj):
-		playing = Objects.player.is_playing()
-
-		self._progress.set_sensitive(playing)
-		if playing:
-			if not self._timeout:
-				self._timeout = GLib.timeout_add(1000, self._update_position)
+		is_playing = Objects.player.is_playing()
+		self._progress.set_sensitive(is_playing)
+		if is_playing and not self._timeout:
+			self._timeout = GLib.timeout_add(1000, self._update_position)
 			self._change_play_btn_status(self._pause_image, _("Pause"))
-		else:
-			if self._timeout:
-				GLib.source_remove(self._timeout)
-				self._timeout = None
+			self._prev_btn.set_sensitive(True)
+			self._play_btn.set_sensitive(True)
+			self._next_btn.set_sensitive(True)
+		elif not is_playing and self._timeout:
+			GLib.source_remove(self._timeout)
+			self._timeout = None
 			self._change_play_btn_status(self._play_image, _("Play"))
 
 	"""

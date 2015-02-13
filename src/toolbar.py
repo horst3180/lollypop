@@ -214,26 +214,25 @@ class Toolbar:
 			self._total_time_label.show()
 			self._timelabel.set_text("0:00")
 			self._timelabel.show()
-	
+
 	"""
 		Update buttons and progress bar
 		@param obj as unused
 	"""
 	def _on_status_changed(self, obj):
-		playing = Objects.player.is_playing()
-
-		self._progress.set_sensitive(playing)
-		if playing:
-			if not self._timeout:
-				self._timeout = GLib.timeout_add(1000, self._update_position)
+		is_playing = Objects.player.is_playing()
+		self._progress.set_sensitive(is_playing)
+		if is_playing and not self._timeout:
+			self._timeout = GLib.timeout_add(1000, self._update_position)
 			self._change_play_btn_status(self._pause_image, _("Pause"))
 			self._prev_btn.set_sensitive(True)
 			self._play_btn.set_sensitive(True)
 			self._next_btn.set_sensitive(True)
-		else:
-			if self._timeout:
-				GLib.source_remove(self._timeout)
-				self._timeout = None
+			# Party mode can be activated in fullscreen mode, so check button state
+			self._party_btn.set_active(Objects.player.is_party())
+		elif not is_playing and self._timeout:
+			GLib.source_remove(self._timeout)
+			self._timeout = None
 			self._change_play_btn_status(self._play_image, _("Play"))
 
 	"""
