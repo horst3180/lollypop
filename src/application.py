@@ -28,6 +28,7 @@ from lollypop.database_artists import DatabaseArtists
 from lollypop.database_genres import DatabaseGenres
 from lollypop.database_tracks import DatabaseTracks
 from lollypop.playlists import PlaylistsManager
+from lollypop.fullscreen import FullScreen
 
 class Application(Gtk.Application):
 
@@ -62,6 +63,7 @@ class Application(Gtk.Application):
 
 		self.add_action(Objects.settings.create_action('shuffle'))
 		self._window = None
+		self._fs = None # Fullscreen window
 
 		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
 		if DESKTOP and "GNOME" in DESKTOP:
@@ -135,7 +137,8 @@ class Application(Gtk.Application):
 	"""
 	def _fullscreen(self, action = None, param = None):
 		if self._window:
-			pass
+			self._fs = FullScreen(self._window)
+			self._fs.show()
 
 	"""
 		Show settings dialog

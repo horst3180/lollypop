@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 23:30+0100\n"
+"POT-Creation-Date: 2015-02-13 07:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,7 +101,7 @@ msgid ""
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/window.py:35
+#: ../src/window.py:36
 msgid "Lollypop"
 msgstr ""
 
@@ -125,20 +125,20 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:306 ../src/window.py:344
-msgid "Compilations"
+#: ../src/window.py:312
+msgid "Popular albums"
 msgstr ""
 
-#: ../src/window.py:311
-msgid "All artists"
-msgstr ""
-
-#: ../src/window.py:312 ../src/popmenu.py:73
+#: ../src/window.py:313 ../src/popmenu.py:44
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:313
-msgid "Popular albums"
+#: ../src/window.py:314
+msgid "All artists"
+msgstr ""
+
+#: ../src/window.py:356
+msgid "Compilations"
 msgstr ""
 
 #: ../src/notification.py:38 ../data/headerbar.ui.h:4
@@ -159,76 +159,69 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:141
-#: ../src/database_tracks.py:149 ../src/database_tracks.py:164
-#: ../src/database_genres.py:64
+#: ../src/database_artists.py:67 ../src/database_albums.py:134
+#: ../src/database_tracks.py:149 ../src/database_genres.py:64
+#: ../src/collectionscanner.py:184 ../src/collectionscanner.py:198
+#: ../src/collectionscanner.py:203
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:156
+#: ../src/database_albums.py:149
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:380 ../src/playlists.py:606
+#: ../src/playlists.py:387 ../src/playlists.py:616
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:441 ../src/playlists.py:444
+#: ../src/playlists.py:448 ../src/playlists.py:451
 msgid "New playlist "
 msgstr ""
 
-#: ../src/playlists.py:622
-msgid "Empty playlist?"
-msgstr ""
-
-#: ../src/view.py:33
+#: ../src/view.py:34
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/view.py:52
-msgid "Add to others"
+#: ../src/view.py:53
+msgid "Manage playlists"
 msgstr ""
 
-#: ../src/popmenu.py:34 ../data/PlaylistEditPopup.ui.h:1
-msgid "Edit playlist"
-msgstr ""
-
-#: ../src/popmenu.py:68
+#: ../src/popmenu.py:39
 msgid "Playback"
 msgstr ""
 
-#: ../src/popmenu.py:89
+#: ../src/popmenu.py:60
 msgid "Only play this album"
 msgstr ""
 
-#: ../src/popmenu.py:105
-msgid "Management"
+#: ../src/popmenu.py:73
+msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:113
+#: ../src/popmenu.py:81
 #, python-format
 msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:116
+#: ../src/popmenu.py:84
 #, python-format
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:157 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:126 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:161
+#: ../src/popmenu.py:130
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:163
+#: ../src/popmenu.py:132
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:166
+#: ../src/popmenu.py:135
 msgid "Remove from queue"
 msgstr ""
 
@@ -275,28 +268,28 @@ msgid "_Update music"
 msgstr ""
 
 #: ../data/app-menu.ui.h:3
-msgid "_About"
+msgid "_Fullscreen"
 msgstr ""
 
 #: ../data/app-menu.ui.h:4
+msgid "_About"
+msgstr ""
+
+#: ../data/app-menu.ui.h:5
 msgid "_Quit"
 msgstr ""
 
-#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:3
+#: ../data/PlaylistEditPopup.ui.h:1
+msgid "Edit playlist"
+msgstr ""
+
+#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:4
+msgid "Confirm"
+msgstr ""
+
+#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:3
 #: ../data/SettingsDialog.ui.h:11
 msgid "Close"
-msgstr ""
-
-#: ../data/PlaylistEditPopup.ui.h:3
-msgid "Filter:"
-msgstr ""
-
-#: ../data/PlaylistEditPopup.ui.h:4
-msgid "Empty playlist"
-msgstr ""
-
-#: ../data/PlaylistEditPopup.ui.h:5 ../data/PlaylistsManagePopup.ui.h:4
-msgid "Confirm"
 msgstr ""
 
 #: ../data/PlaylistsManagePopup.ui.h:1

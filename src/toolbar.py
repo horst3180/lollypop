@@ -27,7 +27,7 @@ from lollypop.popalbums import PopAlbums
 	Toolbar as headerbar
 	Get real widget with Toolbar.widget
 """
-class Toolbar():
+class Toolbar:
 	"""
 		Init toolbar/headerbar ui
 	"""
