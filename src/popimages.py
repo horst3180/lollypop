@@ -11,15 +11,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _, ngettext 
+from gettext import gettext as _
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 import urllib.request
 import urllib.parse
 import os
 from _thread import start_new_thread
 
-from lollypop.define import *
+from lollypop.define import Objects
+from lollypop.define import ART_SIZE_SMALL
+from lollypop.define import ART_SIZE_MEDIUM
+from lollypop.define import ART_SIZE_BIG
+from lollypop.define import ART_SIZE_MONSTER
 
+
+# Show a popover with album covers from the web
 class PopImages(Gtk.Popover):
 
     """
@@ -27,7 +33,7 @@ class PopImages(Gtk.Popover):
     """
     def __init__(self, album_id):
         Gtk.Popover.__init__(self)
-        
+
         self._album_id = album_id
 
         self._view = Gtk.FlowBox()
@@ -70,15 +76,14 @@ class PopImages(Gtk.Popover):
 
 #######################
 # PRIVATE             #
-#######################        
-
+#######################
     """
         Same as populate()
     """
     def _populate(self, string):
         self._urls = Objects.art.get_google_arts(string)
         self._add_pixbufs()
-        
+
     """
         On hide, stop thread
     """
@@ -94,32 +99,36 @@ class PopImages(Gtk.Popover):
             stream = None
             try:
                 response = urllib.request.urlopen(url)
-                stream = Gio.MemoryInputStream.new_from_data(response.read(), None)
+                stream = Gio.MemoryInputStream.new_from_data(
+                                                response.read(), None)
             except:
                 if self._thread:
                     self._add_pixbufs()
             if stream:
                 GLib.idle_add(self._add_pixbuf, stream)
-            if self._thread:                
+            if self._thread:
                 self._add_pixbufs()
-                
+
     """
         Add stream to the view
     """
     def _add_pixbuf(self, stream):
         try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream, ART_SIZE_MONSTER,
-                                                                      ART_SIZE_MONSTER,
-                                                                      False,
-                                                                      None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                            stream, ART_SIZE_MONSTER,
+                                            ART_SIZE_MONSTER,
+                                            False,
+                                            None)
             image = Gtk.Image()
-            image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG, ART_SIZE_BIG, 2))
+            image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG,
+                                                      ART_SIZE_BIG,
+                                                      2))
             image.show()
             self._view.add(image)
         except Exception as e:
             print(e)
             pass
-        
+
     """
         Use pixbuf as cover
         Reset cache and use player object to announce cover change
@@ -132,15 +141,19 @@ class PopImages(Gtk.Popover):
         try:
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
-                artpath = album_path+"/folder_"+artist_name+"_"+album_name+".jpg"
+                artpath = album_path + "/folder_" +\
+                          artist_name + "_" +\
+                          album_name + ".jpg"
                 if os.path.exists(album_path+"/folder.jpg"):
                     os.remove(album_path+"/folder.jpg")
             else:
                 artpath = album_path+"/folder.jpg"
             # Flowboxitem => image =>  pixbuf
             pixbuf = child.get_child().get_pixbuf()
-            try: # Gdk < 3.15 was missing save method, > 3.15 is missing savev method :(
+            # Gdk < 3.15 was missing save method
+            try:
                 pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
+            # > 3.15 is missing savev method :(
             except:
                 pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
             Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
@@ -153,5 +166,3 @@ class PopImages(Gtk.Popover):
             pass
         self.hide()
         self._streams = {}
-        
-        
