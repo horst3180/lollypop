@@ -27,86 +27,86 @@ from lollypop.utils import translate_artist_name
 from gettext import gettext as _
 
 class MPRIS(dbus.service.Object):
-	MPRIS_IFACE = 'org.mpris.MediaPlayer2'
-	MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
-	MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
-	MPRIS_PATH = '/org/mpris/MediaPlayer2'
+    MPRIS_IFACE = 'org.mpris.MediaPlayer2'
+    MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
+    MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
+    MPRIS_PATH = '/org/mpris/MediaPlayer2'
 
-	def __init__(self, app):
-		DBusGMainLoop(set_as_default=True)
-		name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
-		dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
-		self._app = app
-		self._metadata = {}
-		Objects.player.connect('current-changed', self._on_current_changed)
-		Objects.player.connect('seeked', self._on_seeked)
-		Objects.player.connect('status-changed', self._on_status_changed)
+    def __init__(self, app):
+        DBusGMainLoop(set_as_default=True)
+        name = dbus.service.BusName(self.MPRIS_LOLLYPOP, dbus.SessionBus())
+        dbus.service.Object.__init__(self, name, self.MPRIS_PATH)
+        self._app = app
+        self._metadata = {}
+        Objects.player.connect('current-changed', self._on_current_changed)
+        Objects.player.connect('seeked', self._on_seeked)
+        Objects.player.connect('status-changed', self._on_status_changed)
 
-	@dbus.service.method(dbus_interface=MPRIS_IFACE)
-	def Raise(self):
-		self._app.do_activate()
+    @dbus.service.method(dbus_interface=MPRIS_IFACE)
+    def Raise(self):
+        self._app.do_activate()
 
-	@dbus.service.method(dbus_interface=MPRIS_IFACE)
-	def Quit(self):
-		self._app.quit()
+    @dbus.service.method(dbus_interface=MPRIS_IFACE)
+    def Quit(self):
+        self._app.quit()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def Next(self):
-		Objects.player.next()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def Next(self):
+        Objects.player.next()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def Previous(self):
-		Objects.player.prev()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def Previous(self):
+        Objects.player.prev()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def Pause(self):
-		Objects.player.pause()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def Pause(self):
+        Objects.player.pause()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def PlayPause(self):
-		Objects.player.play_pause()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def PlayPause(self):
+        Objects.player.play_pause()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def Stop(self):
-		Objects.player.stop()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def Stop(self):
+        Objects.player.stop()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
-	def Play(self):
-		Objects.player.play()
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
+    def Play(self):
+        Objects.player.play()
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
-						 in_signature='ox')
-	def SetPosition(self, track_id, position):
-		Objects.player.seek(position/1000000)
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
+                         in_signature='ox')
+    def SetPosition(self, track_id, position):
+        Objects.player.seek(position/1000000)
 
-	@dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
-						 in_signature='s')
-	def OpenUri(self, uri):
-		pass
+    @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
+                         in_signature='s')
+    def OpenUri(self, uri):
+        pass
 
-	@dbus.service.signal(dbus_interface=MPRIS_PLAYER_IFACE,
-						 signature='x')
-	def Seeked(self, position):
-		pass
+    @dbus.service.signal(dbus_interface=MPRIS_PLAYER_IFACE,
+                         signature='x')
+    def Seeked(self, position):
+        pass
 
-	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-						 in_signature='ss', out_signature='v')
-	def Get(self, interface, property_name):
-		return self.GetAll(interface)[property_name]
+    @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
+                         in_signature='ss', out_signature='v')
+    def Get(self, interface, property_name):
+        return self.GetAll(interface)[property_name]
 
-	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-						 in_signature='s', out_signature='a{sv}')
-	def GetAll(self, interface):
-		if interface == self.MPRIS_IFACE:
-			return {
+    @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
+                         in_signature='s', out_signature='a{sv}')
+    def GetAll(self, interface):
+        if interface == self.MPRIS_IFACE:
+            return {
                 'CanQuit': True,
                 'CanRaise': True,
                 'HasTrackList': False,
                 'Identity': 'Lollypop',
                 'DesktopEntry': 'lollypop'
-			}
-		elif interface == self.MPRIS_PLAYER_IFACE:
-			return {
+            }
+        elif interface == self.MPRIS_PLAYER_IFACE:
+            return {
                 'PlaybackStatus': self._get_status(),
                 'LoopStatus': 'Playlist',
                 'Rate': dbus.Double(1.0),
@@ -122,61 +122,61 @@ class MPRIS(dbus.service.Object):
                 'CanPause': True,
                 'CanSeek': True,
                 'CanControl': True,
-			}
-		else:
-			raise dbus.exceptions.DBusException(
-				self.MPRIS_LOLLYPOP,
-				"Lollypop doesn't handle %s interface"
-				% interface)
+            }
+        else:
+            raise dbus.exceptions.DBusException(
+                self.MPRIS_LOLLYPOP,
+                "Lollypop doesn't handle %s interface"
+                % interface)
 
-	@dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
-						 in_signature='ssv')
-	def Set(self, interface, property_name, new_value):
-		pass
+    @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
+                         in_signature='ssv')
+    def Set(self, interface, property_name, new_value):
+        pass
 
-	@dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
-						 signature='sa{sv}as')
-	def PropertiesChanged(self, interface, changed_properties,
-						  invalidated_properties):
-		pass
+    @dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
+                         signature='sa{sv}as')
+    def PropertiesChanged(self, interface, changed_properties,
+                          invalidated_properties):
+        pass
 
 #######################
 # PRIVATE             #
 #######################
 
-	def _get_status(self):
-		state = Objects.player.get_status()
-		if state == Gst.State.PLAYING:
-			return 'Playing'
-		elif state == Gst.State.PAUSED:
-			return 'Paused'
-		else:
-			return 'Stopped'
+    def _get_status(self):
+        state = Objects.player.get_status()
+        if state == Gst.State.PLAYING:
+            return 'Playing'
+        elif state == Gst.State.PAUSED:
+            return 'Paused'
+        else:
+            return 'Stopped'
 
-	def _update_metadata(self):
-		if Objects.player.current.id == None:
-			self._metadata = {}
-		else:
-			self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
-			self._metadata['xesam:trackNumber'] = Objects.player.current.number
-			self._metadata['xesam:title'] = Objects.player.current.title
-			self._metadata['xesam:album'] = Objects.player.current.album
-			self._metadata['xesam:artist'] = [Objects.player.current.artist]
-			self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
-			self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
-			self._metadata['xesam:genre'] = [Objects.player.current.genre]
-			self._metadata['xesam:url'] = "file://"+Objects.player.current.path
-			self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
-	
+    def _update_metadata(self):
+        if Objects.player.current.id == None:
+            self._metadata = {}
+        else:
+            self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
+            self._metadata['xesam:trackNumber'] = Objects.player.current.number
+            self._metadata['xesam:title'] = Objects.player.current.title
+            self._metadata['xesam:album'] = Objects.player.current.album
+            self._metadata['xesam:artist'] = [Objects.player.current.artist]
+            self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
+            self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+            self._metadata['xesam:genre'] = [Objects.player.current.genre]
+            self._metadata['xesam:url'] = "file://"+Objects.player.current.path
+            self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
+    
 
-	def _on_seeked(self, player, position):
-		self.Seeked(position * 1000000)
+    def _on_seeked(self, player, position):
+        self.Seeked(position * 1000000)
 
-	def _on_current_changed(self, player):
-		self._update_metadata()
-		properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv') }
-		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
+    def _on_current_changed(self, player):
+        self._update_metadata()
+        properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv') }
+        self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
 
-	def _on_status_changed(self, data=None):
-		properties = { 'PlaybackStatus': self._get_status() }
-		self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
+    def _on_status_changed(self, data=None):
+        properties = { 'PlaybackStatus': self._get_status() }
+        self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])

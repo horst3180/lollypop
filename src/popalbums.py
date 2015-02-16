@@ -21,98 +21,98 @@ from lollypop.define import *
 
 class PopAlbums(Gtk.Popover):
 
-	"""
-		Init Popover ui with a text entry and a scrolled treeview
-	"""
-	def __init__(self):
-		Gtk.Popover.__init__(self)
+    """
+        Init Popover ui with a text entry and a scrolled treeview
+    """
+    def __init__(self):
+        Gtk.Popover.__init__(self)
 
-		self._widgets = []
-		self._populating_view = None
-		self._artist_id = None
-		self._genre_id = None
-		
-		self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        self._widgets = []
+        self._populating_view = None
+        self._artist_id = None
+        self._genre_id = None
+        
+        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
-		self._stack = Gtk.Stack()
-		self._stack.set_transition_duration(1000)
-		self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-		self._stack.show()
-		self.add(self._stack)
-		
-		Objects.player.connect("current-changed", self._update_content)
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(1000)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.show()
+        self.add(self._stack)
+        
+        Objects.player.connect("current-changed", self._update_content)
 
-	"""
-		Run _populate in a thread
-	"""
-	def populate(self):
-		genre_id = None
-		artist_id = Objects.albums.get_artist_id(Objects.player.current.album_id)
-		if artist_id == COMPILATIONS:
-			genre_id =  Objects.albums.get_genre_id(Objects.player.current.album_id)
+    """
+        Run _populate in a thread
+    """
+    def populate(self):
+        genre_id = None
+        artist_id = Objects.albums.get_artist_id(Objects.player.current.album_id)
+        if artist_id == COMPILATIONS:
+            genre_id =  Objects.albums.get_genre_id(Objects.player.current.album_id)
 
-		# View already populated
-		if self._artist_id == artist_id and self._genre_id == genre_id:
-			return
+        # View already populated
+        if self._artist_id == artist_id and self._genre_id == genre_id:
+            return
 
-		view = ArtistView(artist_id, genre_id, False)
-		self._stack.add(view)
-		if self._artist_id:
-				view.connect('finished', self._switch_view)
-				# Destroy hidden view, which are in populate() thread
-				for child in self._stack.get_children():
-					if child != view and self._stack.get_visible_child() != child:
-						child.destroy()
-		else:
-			self._switch_view(view)
-		start_new_thread(view.populate, ())
-		self._artist_id = artist_id
-		self._genre_id = genre_id
-		view.show()
+        view = ArtistView(artist_id, genre_id, False)
+        self._stack.add(view)
+        if self._artist_id:
+                view.connect('finished', self._switch_view)
+                # Destroy hidden view, which are in populate() thread
+                for child in self._stack.get_children():
+                    if child != view and self._stack.get_visible_child() != child:
+                        child.destroy()
+        else:
+            self._switch_view(view)
+        start_new_thread(view.populate, ())
+        self._artist_id = artist_id
+        self._genre_id = genre_id
+        view.show()
 
-	"""
-		Resize popover and set signals callback
-	"""
-	def do_show(self):
-		size_setting = Objects.settings.get_value('window-size')
-		if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
-			self.set_property('width-request', size_setting[0]*0.65)
-			self.set_property('height-request', size_setting[1]*0.8)
-		else:
-			self.set_property('width-request', 600)
-			self.set_property('height-request', 600)
-		Gtk.Popover.do_show(self)
+    """
+        Resize popover and set signals callback
+    """
+    def do_show(self):
+        size_setting = Objects.settings.get_value('window-size')
+        if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
+            self.set_property('width-request', size_setting[0]*0.65)
+            self.set_property('height-request', size_setting[1]*0.8)
+        else:
+            self.set_property('width-request', 600)
+            self.set_property('height-request', 600)
+        Gtk.Popover.do_show(self)
 
 #######################
 # PRIVATE             #
 #######################
 
-	"""
-		Switch to view
-		@param view as ArtistView
-	"""
-	def _switch_view(self, view):
-		previous = self._stack.get_visible_child()
-		self._stack.set_visible_child(view)
-		if previous and previous != view:
-			previous.stop()
-			previous.destroy()
+    """
+        Switch to view
+        @param view as ArtistView
+    """
+    def _switch_view(self, view):
+        previous = self._stack.get_visible_child()
+        self._stack.set_visible_child(view)
+        if previous and previous != view:
+            previous.stop()
+            previous.destroy()
 
-	"""
-		Update the content view
-		@param player as Player
-		@param track id as int
-	"""
-	def _update_content(self, player):
-		if self.is_visible():
-			self.populate()
-		else:
-			artist_id = Objects.tracks.get_performer_id(player.current.id)
-			if artist_id == -1:
-				artist_id = Objects.tracks.get_artist_id(player.current.id)
-			if self._artist_id != artist_id:
-				self._artist_id = None
-				current = self._stack.get_visible_child()
-				if current:
-					current.destroy()
-	
+    """
+        Update the content view
+        @param player as Player
+        @param track id as int
+    """
+    def _update_content(self, player):
+        if self.is_visible():
+            self.populate()
+        else:
+            artist_id = Objects.tracks.get_performer_id(player.current.id)
+            if artist_id == -1:
+                artist_id = Objects.tracks.get_artist_id(player.current.id)
+            if self._artist_id != artist_id:
+                self._artist_id = None
+                current = self._stack.get_visible_child()
+                if current:
+                    current.destroy()
+    

@@ -15,35 +15,35 @@ from gettext import gettext as _
 from gi.repository import Gdk
 
 """
-	Return formated artist name
-	@param str
+    Return formated artist name
+    @param str
 """
 def format_artist_name(name):
-	# Handle language ordering
-	# Translators: Add here words that shoud be ignored for artist sort order
-	for special in _("The the").split():
-		if name.startswith(special+" "):
-				strlen = len(special+" ")
-				name = name[strlen:]+"@@@@"+special
-	return name
+    # Handle language ordering
+    # Translators: Add here words that shoud be ignored for artist sort order
+    for special in _("The the").split():
+        if name.startswith(special+" "):
+                strlen = len(special+" ")
+                name = name[strlen:]+"@@@@"+special
+    return name
 
 """
-	Return translate formated artist name
-	@param str
+    Return translate formated artist name
+    @param str
 """
 def translate_artist_name(name):
-	split = name.split("@@@@")
-	if len(split) == 2:
-		name = split[1]+" "+split[0]
-	return name
+    split = name.split("@@@@")
+    if len(split) == 2:
+        name = split[1]+" "+split[0]
+    return name
 
 """
-	Convert seconds to a pretty string
-	@param seconds as int
+    Convert seconds to a pretty string
+    @param seconds as int
 """
 def seconds_to_string(duration):
-	seconds = duration
-	minutes = seconds // 60
-	seconds %= 60
+    seconds = duration
+    minutes = seconds // 60
+    seconds %= 60
 
-	return '%i:%02i' % (minutes, seconds)
+    return '%i:%02i' % (minutes, seconds)

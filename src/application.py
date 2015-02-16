@@ -32,168 +32,168 @@ from lollypop.fullscreen import FullScreen
 
 class Application(Gtk.Application):
 
-	"""
-		Create application with a custom css provider
-	"""
-	def __init__(self):
-		Gtk.Application.__init__(self,
-					 application_id='org.gnome.Lollypop',
-					 flags=Gio.ApplicationFlags.FLAGS_NONE)
-		GLib.set_application_name('lollypop')
-		GLib.set_prgname('lollypop')
-		cssProviderFile = Gio.File.new_for_uri('resource:///org/gnome/Lollypop/application.css')
-		cssProvider = Gtk.CssProvider()
-		cssProvider.load_from_file(cssProviderFile)
-		screen = Gdk.Screen.get_default()
-		styleContext = Gtk.StyleContext()
-		styleContext.add_provider_for_screen(screen, cssProvider,
-						     Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    """
+        Create application with a custom css provider
+    """
+    def __init__(self):
+        Gtk.Application.__init__(self,
+                     application_id='org.gnome.Lollypop',
+                     flags=Gio.ApplicationFlags.FLAGS_NONE)
+        GLib.set_application_name('lollypop')
+        GLib.set_prgname('lollypop')
+        cssProviderFile = Gio.File.new_for_uri('resource:///org/gnome/Lollypop/application.css')
+        cssProvider = Gtk.CssProvider()
+        cssProvider.load_from_file(cssProviderFile)
+        screen = Gdk.Screen.get_default()
+        styleContext = Gtk.StyleContext()
+        styleContext.add_provider_for_screen(screen, cssProvider,
+                             Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-		Objects.settings = Gio.Settings.new('org.gnome.Lollypop')
-		Objects.db = Database()
-		# We store a cursor for the main thread
-		Objects.sql = Objects.db.get_cursor()
-		Objects.albums = DatabaseAlbums()
-		Objects.artists = DatabaseArtists()
-		Objects.genres = DatabaseGenres()
-		Objects.tracks = DatabaseTracks()
-		Objects.playlists = PlaylistsManager()
-		Objects.player = Player()
-		Objects.art = AlbumArt()
+        Objects.settings = Gio.Settings.new('org.gnome.Lollypop')
+        Objects.db = Database()
+        # We store a cursor for the main thread
+        Objects.sql = Objects.db.get_cursor()
+        Objects.albums = DatabaseAlbums()
+        Objects.artists = DatabaseArtists()
+        Objects.genres = DatabaseGenres()
+        Objects.tracks = DatabaseTracks()
+        Objects.playlists = PlaylistsManager()
+        Objects.player = Player()
+        Objects.art = AlbumArt()
 
-		self.add_action(Objects.settings.create_action('shuffle'))
-		self._window = None
-		self._fs = None # Fullscreen window
+        self.add_action(Objects.settings.create_action('shuffle'))
+        self._window = None
+        self._fs = None # Fullscreen window
 
-		DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
-		if DESKTOP and "GNOME" in DESKTOP:
-			self._appmenu = True
-		else:
-			self._appmenu = False
+        DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+        if DESKTOP and "GNOME" in DESKTOP:
+            self._appmenu = True
+        else:
+            self._appmenu = False
 
-		self.register(None)
-		if self.get_is_remote():
-			Gdk.notify_startup_complete()
-		
-	"""
-		Add startup notification and build gnome-shell menu after Gtk.Application startup
-	"""
-	def do_startup(self):
-		Gtk.Application.do_startup(self)
-		Notify.init("Lollypop")
-		if self._appmenu:
-			menu = self._setup_app_menu()
-			self.set_app_menu(menu)
+        self.register(None)
+        if self.get_is_remote():
+            Gdk.notify_startup_complete()
+        
+    """
+        Add startup notification and build gnome-shell menu after Gtk.Application startup
+    """
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+        Notify.init("Lollypop")
+        if self._appmenu:
+            menu = self._setup_app_menu()
+            self.set_app_menu(menu)
 
-	"""
-		Activate window and create it if missing
-	"""
-	def do_activate(self):
-		if not self._window:
-			self._window = Window(self)
-			self._window.connect('delete-event', self._hide_on_delete)
-			self._service = MPRIS(self)
-			self._notifications = NotificationManager()
+    """
+        Activate window and create it if missing
+    """
+    def do_activate(self):
+        if not self._window:
+            self._window = Window(self)
+            self._window.connect('delete-event', self._hide_on_delete)
+            self._service = MPRIS(self)
+            self._notifications = NotificationManager()
 
-			if not self._appmenu:
-				menu = self._setup_app_menu()
-				self._window.setup_menu(menu)
-		self._window.show()
-		self._window.present()
+            if not self._appmenu:
+                menu = self._setup_app_menu()
+                self._window.setup_menu(menu)
+        self._window.show()
+        self._window.present()
 
-	"""
-		Destroy main window
-	"""
-	def quit(self, action=None, param=None):
-		Objects.player.stop()
-		Objects.sql.execute("VACUUM")
-		Objects.sql.close()
-		if Objects.settings.get_value('save-state'):
-			self._window.save_view_state()
-		self._window.destroy()
+    """
+        Destroy main window
+    """
+    def quit(self, action=None, param=None):
+        Objects.player.stop()
+        Objects.sql.execute("VACUUM")
+        Objects.sql.close()
+        if Objects.settings.get_value('save-state'):
+            self._window.save_view_state()
+        self._window.destroy()
 
 #######################
 # PRIVATE             #
 #######################
 
-	"""
-		Hide window
-	"""
-	def _hide_on_delete(self, widget, event):
-		if not Objects.settings.get_value('background-mode'):
-			Objects.player.stop()
-			GLib.timeout_add(500, self.quit)
-		return widget.hide_on_delete()
+    """
+        Hide window
+    """
+    def _hide_on_delete(self, widget, event):
+        if not Objects.settings.get_value('background-mode'):
+            Objects.player.stop()
+            GLib.timeout_add(500, self.quit)
+        return widget.hide_on_delete()
 
-	"""
-		Search for new music
-	"""
-	def _update_db(self, action = None, param = None):
-		if self._window:
-			self._window.update_db()
+    """
+        Search for new music
+    """
+    def _update_db(self, action = None, param = None):
+        if self._window:
+            self._window.update_db()
 
-	"""
-		Show a fullscreen window with cover and artist informations
-	"""
-	def _fullscreen(self, action = None, param = None):
-		if self._window:
-			self._fs = FullScreen(self._window)
-			self._fs.show()
+    """
+        Show a fullscreen window with cover and artist informations
+    """
+    def _fullscreen(self, action = None, param = None):
+        if self._window:
+            self._fs = FullScreen(self._window)
+            self._fs.show()
 
-	"""
-		Show settings dialog
-	"""
-	def _settings_dialog(self, action, param):
-		dialog = SettingsDialog(self._window)
+    """
+        Show settings dialog
+    """
+    def _settings_dialog(self, action, param):
+        dialog = SettingsDialog(self._window)
 
-	"""
-		Setup about dialog
-	"""
-	def _about(self, action, param):
-        	builder = Gtk.Builder()
-        	builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        	about = builder.get_object('about_dialog')
-        	about.set_transient_for(self._window)
-        	about.connect("response", self._about_response)
-        	about.show()
+    """
+        Setup about dialog
+    """
+    def _about(self, action, param):
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
+            about = builder.get_object('about_dialog')
+            about.set_transient_for(self._window)
+            about.connect("response", self._about_response)
+            about.show()
 
-	"""
-		Destroy about dialog when closed
-	"""
-	def _about_response(self, dialog, response):
-		dialog.destroy()
+    """
+        Destroy about dialog when closed
+    """
+    def _about_response(self, dialog, response):
+        dialog.destroy()
 
-	"""
-		Setup application menu
-		@return menu as Gio.Menu
-	"""
-	def _setup_app_menu(self):
-		builder = Gtk.Builder()
+    """
+        Setup application menu
+        @return menu as Gio.Menu
+    """
+    def _setup_app_menu(self):
+        builder = Gtk.Builder()
 
-		builder.add_from_resource('/org/gnome/Lollypop/app-menu.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/app-menu.ui')
 
-		menu = builder.get_object('app-menu')
+        menu = builder.get_object('app-menu')
 
-		#TODO: Remove this test later
-		if Gtk.get_minor_version() > 12:
-			settingsAction = Gio.SimpleAction.new('settings', None)
-			settingsAction.connect('activate', self._settings_dialog)
-			self.add_action(settingsAction)
+        #TODO: Remove this test later
+        if Gtk.get_minor_version() > 12:
+            settingsAction = Gio.SimpleAction.new('settings', None)
+            settingsAction.connect('activate', self._settings_dialog)
+            self.add_action(settingsAction)
 
-		updateAction = Gio.SimpleAction.new('update_db', None)
-		updateAction.connect('activate', self._update_db)
-		self.add_action(updateAction)
+        updateAction = Gio.SimpleAction.new('update_db', None)
+        updateAction.connect('activate', self._update_db)
+        self.add_action(updateAction)
 
-		fsAction = Gio.SimpleAction.new('fullscreen', None)
-		fsAction.connect('activate', self._fullscreen)
-		self.add_action(fsAction)
+        fsAction = Gio.SimpleAction.new('fullscreen', None)
+        fsAction.connect('activate', self._fullscreen)
+        self.add_action(fsAction)
 
-		aboutAction = Gio.SimpleAction.new('about', None)
-		aboutAction.connect('activate', self._about)
-		self.add_action(aboutAction)
+        aboutAction = Gio.SimpleAction.new('about', None)
+        aboutAction.connect('activate', self._about)
+        self.add_action(aboutAction)
 
-		quitAction = Gio.SimpleAction.new('quit', None)
-		quitAction.connect('activate', self.quit)
-		self.add_action(quitAction)
+        quitAction = Gio.SimpleAction.new('quit', None)
+        quitAction.connect('activate', self.quit)
+        self.add_action(quitAction)
 
-		return menu
+        return menu

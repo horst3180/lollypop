@@ -26,107 +26,107 @@ from lollypop.database_tracks import DatabaseTracks
 
 class Database:
 
-	LOCAL_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop"
-	DB_PATH = "%s/lollypop.db" % LOCAL_PATH
+    LOCAL_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop"
+    DB_PATH = "%s/lollypop.db" % LOCAL_PATH
 
-	"""
-		SQLite documentation:
-		In SQLite, a column with type INTEGER PRIMARY KEY is an alias for the ROWID
-		Here, we define an id INT PRIMARY KEY but never feed it, this make VACUUM not destroy rowids...
-	"""
-	create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
-						name TEXT NOT NULL,
-						artist_id INT NOT NULL,
-						genre_id INT NOT NULL,
-						year INT NOT NULL,
-						path TEXT NOT NULL,
-						popularity INT NOT NULL)'''
-	create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
-	create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
-	create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
-						name TEXT NOT NULL,
-						filepath TEXT NOT NULL,
-						length INT,
-						tracknumber INT,
-						discnumber INT,
-						artist_id INT NOT NULL,
-						album_id INT NOT NULL,
-						mtime INT)'''
-	   
-	"""
-		Create database tables or manage update if needed
-	"""
-	def __init__(self):
-		self._popularity_backup = {}
-		# Create db directory if missing
-		if not os.path.exists(self.LOCAL_PATH):
-			try:
-				os.mkdir(self.LOCAL_PATH)
-			except:
-				print("Can't create %s" % self.LOCAL_PATH)
-		try:		
-			sql = self.get_cursor()
-			
-		except:
-			exit(-1)
-			
-		db_version = Objects.settings.get_value('db-version')
-		upgrade = DatabaseUpgrade(sql, db_version)
-		# Create db schema
-		try:
-			sql.execute(self.create_albums)
-			sql.execute(self.create_artists)
-			sql.execute(self.create_genres)
-			sql.execute(self.create_tracks)
-			sql.commit()
-			Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.count()))
-		# Upgrade db schema
-		except:
-			try:
-				if db_version.get_int32() < upgrade.count():
-					Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
-				if upgrade.reset_needed():
-					self._set_popularities(sql)
-					Objects.settings.set_value('party-ids', GLib.Variant('ai', []))
-					sql.execute("DROP TABLE tracks")
-					sql.execute("DROP TABLE albums")
-					sql.execute("DROP TABLE artists")
-					sql.execute("DROP TABLE genres")
-					sql.execute(self.create_albums)
-					sql.execute(self.create_artists)
-					sql.execute(self.create_genres)
-					sql.execute(self.create_tracks)
-					sql.commit()
-			except Exception as e:
-				print(e)
-				pass
-		sql.close()
+    """
+        SQLite documentation:
+        In SQLite, a column with type INTEGER PRIMARY KEY is an alias for the ROWID
+        Here, we define an id INT PRIMARY KEY but never feed it, this make VACUUM not destroy rowids...
+    """
+    create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        artist_id INT NOT NULL,
+                        genre_id INT NOT NULL,
+                        year INT NOT NULL,
+                        path TEXT NOT NULL,
+                        popularity INT NOT NULL)'''
+    create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
+    create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY, name TEXT NOT NULL)'''
+    create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        filepath TEXT NOT NULL,
+                        length INT,
+                        tracknumber INT,
+                        discnumber INT,
+                        artist_id INT NOT NULL,
+                        album_id INT NOT NULL,
+                        mtime INT)'''
+       
+    """
+        Create database tables or manage update if needed
+    """
+    def __init__(self):
+        self._popularity_backup = {}
+        # Create db directory if missing
+        if not os.path.exists(self.LOCAL_PATH):
+            try:
+                os.mkdir(self.LOCAL_PATH)
+            except:
+                print("Can't create %s" % self.LOCAL_PATH)
+        try:        
+            sql = self.get_cursor()
+            
+        except:
+            exit(-1)
+            
+        db_version = Objects.settings.get_value('db-version')
+        upgrade = DatabaseUpgrade(sql, db_version)
+        # Create db schema
+        try:
+            sql.execute(self.create_albums)
+            sql.execute(self.create_artists)
+            sql.execute(self.create_genres)
+            sql.execute(self.create_tracks)
+            sql.commit()
+            Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.count()))
+        # Upgrade db schema
+        except:
+            try:
+                if db_version.get_int32() < upgrade.count():
+                    Objects.settings.set_value('db-version', GLib.Variant('i', upgrade.do_db_upgrade()))
+                if upgrade.reset_needed():
+                    self._set_popularities(sql)
+                    Objects.settings.set_value('party-ids', GLib.Variant('ai', []))
+                    sql.execute("DROP TABLE tracks")
+                    sql.execute("DROP TABLE albums")
+                    sql.execute("DROP TABLE artists")
+                    sql.execute("DROP TABLE genres")
+                    sql.execute(self.create_albums)
+                    sql.execute(self.create_artists)
+                    sql.execute(self.create_genres)
+                    sql.execute(self.create_tracks)
+                    sql.commit()
+            except Exception as e:
+                print(e)
+                pass
+        sql.close()
 
 
-	"""
-		Get a dict with album path and popularity
-		This is usefull for collection scanner be able to restore popularities after db reset
-	"""
-	def get_popularities(self):
-		return self._popularity_backup
+    """
+        Get a dict with album path and popularity
+        This is usefull for collection scanner be able to restore popularities after db reset
+    """
+    def get_popularities(self):
+        return self._popularity_backup
 
 #########
 #Private#
 #########
 
-	"""
-		Set a dict with album path and popularity
-		This is usefull for collection scanner be able to restore popularities after db reset 
-	"""
-	def _set_popularities(self, sql):
-		result = sql.execute("SELECT path, popularity FROM albums")
-		for row in result:
-			self._popularity_backup[row[0]] = row[1]
+    """
+        Set a dict with album path and popularity
+        This is usefull for collection scanner be able to restore popularities after db reset 
+    """
+    def _set_popularities(self, sql):
+        result = sql.execute("SELECT path, popularity FROM albums")
+        for row in result:
+            self._popularity_backup[row[0]] = row[1]
 
-	"""
-		Return a new sqlite cursor
-	"""
-	def get_cursor(self):
-		return sqlite3.connect(self.DB_PATH)
+    """
+        Return a new sqlite cursor
+    """
+    def get_cursor(self):
+        return sqlite3.connect(self.DB_PATH)
 
-	
+    

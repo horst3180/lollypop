@@ -13,67 +13,67 @@
 
 class DatabaseUpgrade:
 
-	"""
-		Init object
-	"""
-	def __init__(self, sql, version):
-		self._sql = sql
-		self._version = version
-		self._reset = False
-		# Here are schema upgrade, key is database version, value function doing shema update
-		self._UPGRADES = { 
-							1: self._db_add_modification_time,
-							2: self._db_add_performer_disc,
-							3: self._db_add_primary_key,
-							4: self._db_remove_performer_key
-						 }
+    """
+        Init object
+    """
+    def __init__(self, sql, version):
+        self._sql = sql
+        self._version = version
+        self._reset = False
+        # Here are schema upgrade, key is database version, value function doing shema update
+        self._UPGRADES = { 
+                            1: self._db_add_modification_time,
+                            2: self._db_add_performer_disc,
+                            3: self._db_add_primary_key,
+                            4: self._db_remove_performer_key
+                         }
 
-	"""
-		Return upgrade count
-		@return int
-	"""
-	def count(self):
-		return len(self._UPGRADES)
+    """
+        Return upgrade count
+        @return int
+    """
+    def count(self):
+        return len(self._UPGRADES)
 
-	"""
-		True if db need a reset
-		@return bool
-	"""
-	def reset_needed(self):
-		return self._reset
+    """
+        True if db need a reset
+        @return bool
+    """
+    def reset_needed(self):
+        return self._reset
 
-	"""
-		Upgrade database based on version
-		@return new db version as int
-	"""	
-	def do_db_upgrade(self):
-		for i in range(self._version.get_int32()+1, len(self._UPGRADES)+1):
-			try:
-				self._UPGRADES[i]()
-			except Exception as e:
-				print("Database upgrade failed: ", e)
-		return len(self._UPGRADES)
+    """
+        Upgrade database based on version
+        @return new db version as int
+    """    
+    def do_db_upgrade(self):
+        for i in range(self._version.get_int32()+1, len(self._UPGRADES)+1):
+            try:
+                self._UPGRADES[i]()
+            except Exception as e:
+                print("Database upgrade failed: ", e)
+        return len(self._UPGRADES)
 
-	"""
-		Add modification time to track table
-	"""
-	def _db_add_modification_time(self):
- 		self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
+    """
+        Add modification time to track table
+    """
+    def _db_add_modification_time(self):
+         self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
 
-	"""
-		Add performer time to track table and disc number
-	"""
-	def _db_add_performer_disc(self):
-		self._reset = True
+    """
+        Add performer time to track table and disc number
+    """
+    def _db_add_performer_disc(self):
+        self._reset = True
 
-	"""
-		Add primary key to table, needed if we want sqlite to take care of rowid on VACUUM
-	"""
-	def _db_add_primary_key(self):
-		self._reset = True
-		
-	"""
-		Remove performer key from tracks table as uneeded anymore
-	"""	
-	def _db_remove_performer_key(self):
-		self._reset = True
+    """
+        Add primary key to table, needed if we want sqlite to take care of rowid on VACUUM
+    """
+    def _db_add_primary_key(self):
+        self._reset = True
+        
+    """
+        Remove performer key from tracks table as uneeded anymore
+    """    
+    def _db_remove_performer_key(self):
+        self._reset = True

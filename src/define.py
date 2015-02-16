@@ -12,21 +12,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-	This is global object initialised at lollypop start
-	member init order is important!
+    This is global object initialised at lollypop start
+    member init order is important!
 """
 class Objects_:
-	def __init__(self):
-		self.settings = None
-		self.db = None
-		self.sql = None
-		self.albums = None
-		self.artists = None
-		self.genres = None
-		self.tracks = None
-		self.playlists = None
-		self.player = None
-		self.art = None
+    def __init__(self):
+        self.settings = None
+        self.db = None
+        self.sql = None
+        self.albums = None
+        self.artists = None
+        self.genres = None
+        self.tracks = None
+        self.playlists = None
+        self.player = None
+        self.art = None
 
 Objects = Objects_()
 

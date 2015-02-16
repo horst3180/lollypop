@@ -16,119 +16,119 @@ from gettext import gettext as _
 from lollypop.define import *
 
 """
-	All functions take a sqlite cursor as last parameter, set another one if you're in a thread
+    All functions take a sqlite cursor as last parameter, set another one if you're in a thread
 """
 class DatabaseArtists:
-	def __init__(self):
-		pass
-		
-	"""
-		Add a new artist to database
-		@param Artist name as string
-		@warning: commit needed
-	"""
-	def add(self, name, sql = None):
-		if not sql:
-			sql = Objects.sql
-		sql.execute("INSERT INTO artists (name) VALUES (?)", (name,))
+    def __init__(self):
+        pass
+        
+    """
+        Add a new artist to database
+        @param Artist name as string
+        @warning: commit needed
+    """
+    def add(self, name, sql = None):
+        if not sql:
+            sql = Objects.sql
+        sql.execute("INSERT INTO artists (name) VALUES (?)", (name,))
 
-	"""
-		Get artist id
-		@param Artist name as string
-		@return Artist id as int
-	"""
-	def get_id(self, name, sql = None):
-		if not sql:
-			sql = Objects.sql
+    """
+        Get artist id
+        @param Artist name as string
+        @return Artist id as int
+    """
+    def get_id(self, name, sql = None):
+        if not sql:
+            sql = Objects.sql
 
-		result = sql.execute("SELECT rowid from artists where name=? COLLATE NOCASE", (name,))
-		v = result.fetchone()
-		if v and len(v) > 0:
-			return v[0]
+        result = sql.execute("SELECT rowid from artists where name=? COLLATE NOCASE", (name,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return v[0]
 
-		return None
+        return None
 
-	"""
-		Get artist name
-		@param Artist id as int
-		@return Artist name as string
-	"""
-	def get_name(self, artist_id, sql = None):
-		if not sql:
-			sql = Objects.sql
-		if artist_id == COMPILATIONS:
-			return _("Many artists")
+    """
+        Get artist name
+        @param Artist id as int
+        @return Artist name as string
+    """
+    def get_name(self, artist_id, sql = None):
+        if not sql:
+            sql = Objects.sql
+        if artist_id == COMPILATIONS:
+            return _("Many artists")
 
-		result = sql.execute("SELECT name from artists where rowid=?", (artist_id,))
-		v = result.fetchone()
-		if v and len(v) > 0:
-			return v[0]
+        result = sql.execute("SELECT name from artists where rowid=?", (artist_id,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return v[0]
 
-		return _("Unknown")
+        return _("Unknown")
 
-	"""
-		Get all availables albums  for artist
-		@return Array of id as int
-	"""
-	def get_albums(self, artist_id, sql = None):
-		if not sql:
-			sql = Objects.sql
-		albums = []
-		result = sql.execute("SELECT rowid FROM albums where artist_id=? order by year",(artist_id,))
-		for row in result:
-			albums += row
-		return albums
+    """
+        Get all availables albums  for artist
+        @return Array of id as int
+    """
+    def get_albums(self, artist_id, sql = None):
+        if not sql:
+            sql = Objects.sql
+        albums = []
+        result = sql.execute("SELECT rowid FROM albums where artist_id=? order by year",(artist_id,))
+        for row in result:
+            albums += row
+        return albums
 
 
-	"""
-		Get all available artists
-		
-		@param None
-		or
-		@param Filter genre id as int
-		
-		@return Array of (artist id as int, artist name as string)
-	"""
-	def get(self, genre_id, sql = None):
-		if not sql:
-			sql = Objects.sql
-		artists = []
-		result = []
-		if genre_id == ALL:
-			# Only artist that really have an album
-			result = sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid) ORDER BY name COLLATE NOCASE")
-		else:
-			result = sql.execute("SELECT DISTINCT artists.rowid, artists.name FROM artists,albums WHERE artists.rowid == albums.artist_id AND albums.genre_id=? ORDER BY artists.name COLLATE NOCASE", (genre_id,))
-		
-		for row in result:
-			artists += (row,)
-		return artists
+    """
+        Get all available artists
+        
+        @param None
+        or
+        @param Filter genre id as int
+        
+        @return Array of (artist id as int, artist name as string)
+    """
+    def get(self, genre_id, sql = None):
+        if not sql:
+            sql = Objects.sql
+        artists = []
+        result = []
+        if genre_id == ALL:
+            # Only artist that really have an album
+            result = sql.execute("SELECT rowid, name FROM artists WHERE EXISTS (SELECT rowid FROM albums where albums.artist_id = artists.rowid) ORDER BY name COLLATE NOCASE")
+        else:
+            result = sql.execute("SELECT DISTINCT artists.rowid, artists.name FROM artists,albums WHERE artists.rowid == albums.artist_id AND albums.genre_id=? ORDER BY artists.name COLLATE NOCASE", (genre_id,))
+        
+        for row in result:
+            artists += (row,)
+        return artists
 
-	"""
-		Return True if artist exist
-		@param artist id as int
-	"""
-	def exists(self, artist_id, sql = None):
-		if not sql:
-			sql = Objects.sql
+    """
+        Return True if artist exist
+        @param artist id as int
+    """
+    def exists(self, artist_id, sql = None):
+        if not sql:
+            sql = Objects.sql
 
-		result = sql.execute("SELECT COUNT(*) from artists where rowid=?", (artist_id,))
-		v = result.fetchone()
-		if v and len(v) > 0:
-			return bool(v[0])
+        result = sql.execute("SELECT COUNT(*) from artists where rowid=?", (artist_id,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return bool(v[0])
 
-		return False
+        return False
 
-	"""
-		Search for artists looking like string
-		@param string
-		@return Array of id as int
-	"""
-	def search(self, string, sql = None):
-		if not sql:
-			sql = Objects.sql
-		artists = []
-		result = sql.execute("SELECT rowid FROM artists where name like ? LIMIT 25", ('%'+string+'%',))
-		for row in result:
-			artists += row
-		return artists
+    """
+        Search for artists looking like string
+        @param string
+        @return Array of id as int
+    """
+    def search(self, string, sql = None):
+        if not sql:
+            sql = Objects.sql
+        artists = []
+        result = sql.execute("SELECT rowid FROM artists where name like ? LIMIT 25", ('%'+string+'%',))
+        for row in result:
+            artists += row
+        return artists
