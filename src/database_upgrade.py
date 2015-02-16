@@ -11,8 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-class DatabaseUpgrade:
 
+class DatabaseUpgrade:
     """
         Init object
     """
@@ -20,8 +20,9 @@ class DatabaseUpgrade:
         self._sql = sql
         self._version = version
         self._reset = False
-        # Here are schema upgrade, key is database version, value function doing shema update
-        self._UPGRADES = { 
+        # Here are schema upgrade, key is database version,
+        # value function doing shema update
+        self._UPGRADES = {
                             1: self._db_add_modification_time,
                             2: self._db_add_performer_disc,
                             3: self._db_add_primary_key,
@@ -45,7 +46,7 @@ class DatabaseUpgrade:
     """
         Upgrade database based on version
         @return new db version as int
-    """    
+    """
     def do_db_upgrade(self):
         for i in range(self._version.get_int32()+1, len(self._UPGRADES)+1):
             try:
@@ -58,7 +59,7 @@ class DatabaseUpgrade:
         Add modification time to track table
     """
     def _db_add_modification_time(self):
-         self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
+        self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
 
     """
         Add performer time to track table and disc number
@@ -67,13 +68,14 @@ class DatabaseUpgrade:
         self._reset = True
 
     """
-        Add primary key to table, needed if we want sqlite to take care of rowid on VACUUM
+        Add primary key to table, needed if we want
+        sqlite to take care of rowid on VACUUM
     """
     def _db_add_primary_key(self):
         self._reset = True
-        
+
     """
         Remove performer key from tracks table as uneeded anymore
-    """    
+    """
     def _db_remove_performer_key(self):
         self._reset = True
