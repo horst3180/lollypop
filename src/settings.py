@@ -16,7 +16,7 @@ from gettext import gettext as _
 
 from lollypop.define import Objects
 
-class SettingsDialog:
+class SettingsDialog(Gtk.Dialog):
 
     def __init__(self, parent):
 
@@ -103,6 +103,10 @@ class SettingsDialog:
                 i += 1
                 x = 0
 
+    """
+        Show dialog
+    """
+    def show():
         self._settings_dialog.show()
 
 

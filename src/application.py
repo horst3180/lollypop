@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify
-from gettext import gettext as _
 from os import environ
 
 from lollypop.define import Objects
@@ -30,6 +29,7 @@ from lollypop.database_tracks import DatabaseTracks
 from lollypop.playlists import PlaylistsManager
 from lollypop.fullscreen import FullScreen
 
+
 class Application(Gtk.Application):
 
     """
@@ -37,17 +37,19 @@ class Application(Gtk.Application):
     """
     def __init__(self):
         Gtk.Application.__init__(self,
-                     application_id='org.gnome.Lollypop',
-                     flags=Gio.ApplicationFlags.FLAGS_NONE)
+                                 application_id='org.gnome.Lollypop',
+                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
-        cssProviderFile = Gio.File.new_for_uri('resource:///org/gnome/Lollypop/application.css')
+        cssProviderFile = Gio.File.new_for_uri(
+                            'resource:///org/gnome/Lollypop/application.css'
+                                              )
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
-                             Gtk.STYLE_PROVIDER_PRIORITY_USER)
+                                             Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
         Objects.settings = Gio.Settings.new('org.gnome.Lollypop')
         Objects.db = Database()
@@ -63,7 +65,6 @@ class Application(Gtk.Application):
 
         self.add_action(Objects.settings.create_action('shuffle'))
         self._window = None
-        self._fs = None # Fullscreen window
 
         DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
         if DESKTOP and "GNOME" in DESKTOP:
@@ -74,9 +75,10 @@ class Application(Gtk.Application):
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
-        
+
     """
-        Add startup notification and build gnome-shell menu after Gtk.Application startup
+        Add startup notification and
+        build gnome-shell menu after Gtk.Application startup
     """
     def do_startup(self):
         Gtk.Application.do_startup(self)
@@ -128,23 +130,24 @@ class Application(Gtk.Application):
     """
         Search for new music
     """
-    def _update_db(self, action = None, param = None):
+    def _update_db(self, action=None, param=None):
         if self._window:
             self._window.update_db()
 
     """
         Show a fullscreen window with cover and artist informations
     """
-    def _fullscreen(self, action = None, param = None):
+    def _fullscreen(self, action=None, param=None):
         if self._window:
-            self._fs = FullScreen(self._window)
-            self._fs.show()
+            fs = FullScreen(self._window)
+            fs.show()
 
     """
         Show settings dialog
     """
     def _settings_dialog(self, action, param):
         dialog = SettingsDialog(self._window)
+        dialog.show()
 
     """
         Setup about dialog
@@ -174,7 +177,7 @@ class Application(Gtk.Application):
 
         menu = builder.get_object('app-menu')
 
-        #TODO: Remove this test later
+        # TODO: Remove this test later
         if Gtk.get_minor_version() > 12:
             settingsAction = Gio.SimpleAction.new('settings', None)
             settingsAction.connect('activate', self._settings_dialog)
