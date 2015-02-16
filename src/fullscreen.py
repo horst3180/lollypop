@@ -11,15 +11,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, GLib, GdkPixbuf
+from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
-from lollypop.define import *
+from lollypop.define import Objects, ART_SIZE_MONSTER
 from lollypop.utils import seconds_to_string
 
-"""
-    Show a fullscreen window showing current track context
-"""
+
+# Show a fullscreen window showing current track context
 class FullScreen(Gtk.Window):
 
     """
@@ -49,10 +48,12 @@ class FullScreen(Gtk.Window):
         self._title = self._ui.get_object('title')
         self._artist = self._ui.get_object('artist')
         self._album = self._ui.get_object('album')
-        
+
         self._progress = self._ui.get_object('progress_scale')
-        self._progress.connect('button-release-event', self._on_progress_release_button)
-        self._progress.connect('button-press-event', self._on_progress_press_button)
+        self._progress.connect('button-release-event',
+                               self._on_progress_release_button)
+        self._progress.connect('button-press-event',
+                               self._on_progress_press_button)
         self._timelabel = self._ui.get_object('playback')
         self._total_time_label = self._ui.get_object('duration')
 
@@ -79,7 +80,7 @@ class FullScreen(Gtk.Window):
     """
         Remove signals and unset color
     """
-    def  do_hide(self):
+    def do_hide(self):
         Objects.player.disconnect_by_func(self._on_current_changed)
         Objects.player.disconnect_by_func(self._on_status_changed)
         if not Objects.player.is_party():
@@ -101,8 +102,8 @@ class FullScreen(Gtk.Window):
         @param player as Player
     """
     def _on_current_changed(self, player):
-        if player.current.id == None:
-            pass # Impossible as we force play on show
+        if player.current.id is None:
+            pass  # Impossible as we force play on show
         else:
             art = Objects.art.get(player.current.album_id,  ART_SIZE_MONSTER)
             if art:
@@ -110,13 +111,15 @@ class FullScreen(Gtk.Window):
                 self._cover.show()
             else:
                 self._cover.hide()
-            
+
             self._title.set_text(player.current.title)
             self._artist.set_text(player.current.artist)
             self._album.set_text(player.current.album)
             self._progress.set_value(1.0)
             self._progress.set_range(0.0, player.current.duration * 60)
-            self._total_time_label.set_text(seconds_to_string(player.current.duration))
+            self._total_time_label.set_text(
+                                seconds_to_string(player.current.duration)
+                                           )
             self._timelabel.set_text("0:00")
 
     """
@@ -162,7 +165,7 @@ class FullScreen(Gtk.Window):
     """
         On press, mark player as seeking
         @param unused
-    """    
+    """
     def _on_progress_press_button(self, scale, data):
         self._seeking = True
 
@@ -170,7 +173,7 @@ class FullScreen(Gtk.Window):
         Callback for scale release button
         Seek player to scale value
         @param scale as Gtk.Scale, data as unused
-    """    
+    """
     def _on_progress_release_button(self, scale, data):
         value = scale.get_value()
         self._seeking = False
@@ -190,9 +193,9 @@ class FullScreen(Gtk.Window):
         Update progress bar position
         @param value as int
     """
-    def _update_position(self, value = None):
+    def _update_position(self, value=None):
         if not self._seeking:
-            if value == None:
+            if value is None:
                 value = Objects.player.get_position_in_track()/1000000
             self._progress.set_value(value)
             self._timelabel.set_text(seconds_to_string(value/60))
