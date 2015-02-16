@@ -18,13 +18,8 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.define import *
-from lollypop.player import Player
-from lollypop.albumart import AlbumArt
-from lollypop.database import Database
-from lollypop.utils import translate_artist_name
+from lollypop.define import Objects, ART_SIZE_BIG
 
-from gettext import gettext as _
 
 class MPRIS(dbus.service.Object):
     MPRIS_IFACE = 'org.mpris.MediaPlayer2'
@@ -154,29 +149,40 @@ class MPRIS(dbus.service.Object):
             return 'Stopped'
 
     def _update_metadata(self):
-        if Objects.player.current.id == None:
+        if Objects.player.current.id is None:
             self._metadata = {}
         else:
-            self._metadata['mpris:trackid'] = dbus.ObjectPath('/org/lollypop/%s' % Objects.player.current.id)
+            self._metadata['mpris:trackid'] = dbus.ObjectPath(
+                                                '/org/lollypop/%s' %
+                                                Objects.player.current.id)
             self._metadata['xesam:trackNumber'] = Objects.player.current.number
             self._metadata['xesam:title'] = Objects.player.current.title
             self._metadata['xesam:album'] = Objects.player.current.album
             self._metadata['xesam:artist'] = [Objects.player.current.artist]
-            self._metadata['xesam:albumArtist'] = [Objects.player.current.performer]
-            self._metadata['mpris:length'] = dbus.Int64(Objects.player.current.duration * 1000000)
+            self._metadata['xesam:albumArtist'] = [
+                                            Objects.player.current.performer
+                                                  ]
+            self._metadata['mpris:length'] = dbus.Int64(
+                                              Objects.player.current.duration *
+                                              1000000
+                                                       )
             self._metadata['xesam:genre'] = [Objects.player.current.genre]
             self._metadata['xesam:url'] = "file://"+Objects.player.current.path
-            self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(Objects.player.current.album_id, ART_SIZE_BIG)
-    
+            self._metadata['mpris:artUrl'] = "file://"+Objects.art.get_path(
+                                               Objects.player.current.album_id,
+                                               ART_SIZE_BIG)
 
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
 
     def _on_current_changed(self, player):
         self._update_metadata()
-        properties = { 'Metadata': dbus.Dictionary(self._metadata, signature='sv') }
+        properties = {
+                'Metadata': dbus.Dictionary(self._metadata,
+                                            signature='sv')
+                     }
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
 
     def _on_status_changed(self, data=None):
-        properties = { 'PlaybackStatus': self._get_status() }
+        properties = {'PlaybackStatus': self._get_status()}
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
