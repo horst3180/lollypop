@@ -13,25 +13,21 @@
 
 import os
 from time import sleep
-import sqlite3
 from gettext import gettext as _
-from gi.repository import GLib, Gdk, GObject
+from gi.repository import GLib, GObject
 from _thread import start_new_thread
 import mutagen
 
-from lollypop.define import *
+from lollypop.define import Objects, COMPILATIONS
 from lollypop.utils import format_artist_name
-from lollypop.database import Database
-from lollypop.database_albums import DatabaseAlbums
-from lollypop.database_artists import DatabaseArtists
-from lollypop.database_genres import DatabaseGenres
-from lollypop.database_tracks import DatabaseTracks
+
 
 class CollectionScanner(GObject.GObject):
     __gsignals__ = {
         'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
     }
-    _mimes = [ "mp3", "ogg", "flac", "m4a", "mp4", "opus" ]
+    _mimes = ["mp3", "ogg", "flac", "m4a", "mp4", "opus"]
+
     def __init__(self):
         GObject.GObject.__init__(self)
 
@@ -50,9 +46,10 @@ class CollectionScanner(GObject.GObject):
         paths = Objects.settings.get_value('music-path')
         if len(paths) == 0:
             if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
-                paths = [ GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) ]
+                paths = [GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)]
             else:
-                print("You need to add a music path to org.gnome.Lollypop in dconf")
+                print("You need to add a music path"
+                      " to org.gnome.Lollypop in dconf")
 
         if not self._in_thread:
             self._progress = progress
@@ -72,7 +69,7 @@ class CollectionScanner(GObject.GObject):
     """
     def _update_progress(self, current, total):
         self._progress.set_fraction(current/total)
-        
+
     """
         Notify from main thread when scan finished
     """
@@ -80,12 +77,12 @@ class CollectionScanner(GObject.GObject):
         self._in_thread = False
         self._progress.hide()
         self.emit("scan-finished")
-    
+
     """
         Clean track's compilation if needed
         @param album id as int
     """
-    def _clean_compilation(self, album_id, sql = None):
+    def _clean_compilation(self, album_id, sql=None):
         artists = Objects.albums.get_compilation_artists(album_id, sql)
         # It's not a compilation anymore
         if len(artists) == 1:
@@ -96,7 +93,7 @@ class CollectionScanner(GObject.GObject):
             filepath = Objects.tracks.get_path(tracks[0], sql)
             path = os.path.dirname(filepath)
             Objects.albums.set_path(album_id, path, sql)
-    
+
     """
         Scan music collection for music files
         @param paths as [string], paths to scan
@@ -115,7 +112,7 @@ class CollectionScanner(GObject.GObject):
                     for mime in self._mimes:
                         if lowername.endswith(mime):
                             supported = True
-                            break    
+                            break
                     if supported:
                         new_tracks.append(os.path.join(root, f))
                         count += 1
@@ -126,22 +123,22 @@ class CollectionScanner(GObject.GObject):
             mtime = int(os.path.getmtime(filepath))
             try:
                 if filepath not in tracks:
-                    tag = mutagen.File(filepath, easy = True)
+                    tag = mutagen.File(filepath, easy=True)
                     self._add2db(filepath, mtime, tag, sql)
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
-                        tag = mutagen.File(filepath, easy = True)
+                        tag = mutagen.File(filepath, easy=True)
                         track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
                         self._clean_compilation(album_id, sql)
                         self._add2db(filepath, mtime, tag, sql)
                     tracks.remove(filepath)
-            
+
             except Exception as e:
                 print(filepath)
-                print("CollectionScanner::_scan(): %s" %e)
+                print("CollectionScanner::_scan(): %s" % e)
             i += 1
             if self._smooth:
                 sleep(0.001)
@@ -160,18 +157,19 @@ class CollectionScanner(GObject.GObject):
         sql.close()
         GLib.idle_add(self._finish)
 
-
     """
         Add new file to db with tag
-        @param filepath as string, file modification time as int, tag as mutagen.File(easy=True), sql as sqlite cursor
+        @param filepath as string
+        @param file modification time as int
+        @param tag as mutagen.File(easy=True)
+        @param sql as sqlite cursor
     """
     def _add2db(self, filepath, mtime, tag, sql):
-        compilation = False
         path = os.path.dirname(filepath)
         popularity = 0
         if path in self._popularities:
             popularity = self._popularities[path]
-            
+
         keys = tag.keys()
         if "title" in keys:
             title = tag["title"][0]
@@ -204,7 +202,6 @@ class CollectionScanner(GObject.GObject):
 
         length = int(tag.info.length)
 
-        
         if "discnumber" in keys:
             string = tag["discnumber"][0]
             if "/" in string:
@@ -217,7 +214,7 @@ class CollectionScanner(GObject.GObject):
                     discnumber = 0
         else:
             discnumber = 0
-        
+
         if "tracknumber" in keys:
             string = tag["tracknumber"][0]
             if "/" in string:
@@ -230,7 +227,7 @@ class CollectionScanner(GObject.GObject):
                     tracknumber = 0
         else:
             tracknumber = 0
-        
+
         if "date" in keys:
             try:
                 string = tag["date"][0]
@@ -246,14 +243,14 @@ class CollectionScanner(GObject.GObject):
 
         # Get artist id, add it if missing
         artist_id = Objects.artists.get_id(artist, sql)
-        if artist_id == None:
+        if artist_id is None:
             Objects.artists.add(artist, sql)
             artist_id = Objects.artists.get_id(artist, sql)
-    
+
         if performer:
             # Get performer id, add it if missing
             performer_id = Objects.artists.get_id(performer, sql)
-            if performer_id == None:
+            if performer_id is None:
                 Objects.artists.add(performer, sql)
                 performer_id = Objects.artists.get_id(performer, sql)
         else:
@@ -261,18 +258,22 @@ class CollectionScanner(GObject.GObject):
 
         # Get genre id, add genre if missing
         genre_id = Objects.genres.get_id(genre, sql)
-        if genre_id == None:
+        if genre_id is None:
             Objects.genres.add(genre, sql)
             genre_id = Objects.genres.get_id(genre, sql)
-    
+
         album_id = Objects.albums.get_id(album, performer_id, genre_id, sql)
-        if album_id == None:
-            Objects.albums.add(album, performer_id, genre_id, year, path, popularity, sql)
-            album_id = Objects.albums.get_id(album, performer_id, genre_id, sql)
+        if album_id is None:
+            Objects.albums.add(album, performer_id, genre_id,
+                               year, path, popularity, sql)
+            album_id = Objects.albums.get_id(album, performer_id,
+                                             genre_id, sql)
 
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path:
             Objects.albums.set_path(album_id, path, sql)
 
         # Add track to db
-        Objects.tracks.add(title, filepath, length, tracknumber, discnumber, artist_id, album_id, mtime, sql)
+        Objects.tracks.add(title, filepath, length,
+                           tracknumber, discnumber, artist_id,
+                           album_id, mtime, sql)
