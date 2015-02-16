@@ -11,33 +11,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Gio, GLib, GObject, GdkPixbuf, Pango
+from gi.repository import Gtk, GLib, GObject, GdkPixbuf, Pango
 from gettext import gettext as _
 
 from _thread import start_new_thread
-import os, string
+import os
 from cgi import escape
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
-from lollypop.define import *
-from lollypop.albumart import AlbumArt
+from lollypop.define import Objects, COMPILATIONS
+from lollypop.define import ART_SIZE_SMALL, ART_SIZE_MEDIUM
 from lollypop.utils import translate_artist_name
 
-######################################################################
-######################################################################
 
-
-"""
-    Playlists manager: add, remove, list, append, ...
-"""
+# Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
 
-    PLAYLISTS_PATH = os.path.expanduser ("~") +  "/.local/share/lollypop/playlists"
+    PLAYLISTS_PATH = os.path.expanduser("~") +\
+                     "/.local/share/lollypop/playlists"
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         # Objects added/removed to/from playlist
-        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,)) 
+        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,))
     }
 
     def __init__(self):
@@ -60,7 +56,7 @@ class PlaylistsManager(GObject.GObject):
             f.close()
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
-            print("PlaylistsManager::add: %s" %e)
+            print("PlaylistsManager::add: %s" % e)
 
     """
         Rename playlist (Thread safe)
@@ -69,10 +65,11 @@ class PlaylistsManager(GObject.GObject):
     """
     def rename(self, new_name, old_name):
         try:
-            os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u", self.PLAYLISTS_PATH+"/"+new_name+".m3u")
+            os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u",
+                      self.PLAYLISTS_PATH+"/"+new_name+".m3u")
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
-            print("PlaylistsManager::rename: %s" %e)
+            print("PlaylistsManager::rename: %s" % e)
 
     """
         delete playlist (Thread safe)
@@ -83,8 +80,8 @@ class PlaylistsManager(GObject.GObject):
             os.remove(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u")
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
-            print("PlaylistsManager::delete: %s" %e)
-            
+            print("PlaylistsManager::delete: %s" % e)
+
     """
         Return availables playlists
         @return array of (id, string)
@@ -100,7 +97,7 @@ class PlaylistsManager(GObject.GObject):
         return playlists
 
     """
-        Return 3 last modified playlist
+        Return 5 last modified playlist
         @return array of (id, string)
     """
     def get_last(self):
@@ -116,9 +113,9 @@ class PlaylistsManager(GObject.GObject):
                 if filename.endswith(".m3u"):
                     playlists.append(filename[:-4])
                     index += 1
-                    # Break if max items is reach
+                    # Break if 5 playlists is reached
                     if index >= 5:
-                        break    
+                        break
         except Exception as e:
             print("Lollypop::PlaylistManager::get_last: %s" % e)
         return playlists
@@ -147,7 +144,7 @@ class PlaylistsManager(GObject.GObject):
                     tracks.append(filepath[:-1])
             f.close()
         except Exception as e:
-            print("PlaylistsManager::get_tracks: %s" %e)
+            print("PlaylistsManager::get_tracks: %s" % e)
         return tracks
 
     """
@@ -167,12 +164,12 @@ class PlaylistsManager(GObject.GObject):
         @param playlist name as str
         @return array of track id as int
     """
-    def get_tracks_id(self, playlist_name, sql = None):
+    def get_tracks_id(self, playlist_name, sql=None):
         tracks_id = []
         for filepath in self.get_tracks(playlist_name):
             tracks_id.append(Objects.tracks.get_id_by_path(filepath, sql))
-        return tracks_id;
-        
+        return tracks_id
+
     """
         Add track to playlist if not already present
         @param playlist name as str
@@ -191,7 +188,7 @@ class PlaylistsManager(GObject.GObject):
         for filepath in tracks_path:
             self._add_track(playlist_name, filepath)
         GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-        
+
     """
         Remove track from playlist
         @param playlist name as str
@@ -200,7 +197,7 @@ class PlaylistsManager(GObject.GObject):
     def remove_track(self, playlist_name, filepath):
         self._remove_track(playlist_name, filepath)
         GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-    
+
     """
         Remove tracks from playlist
         @param playlist name as str
@@ -210,7 +207,7 @@ class PlaylistsManager(GObject.GObject):
         for filepath in tracks_path:
             self._remove_track(playlist_name, filepath)
         GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-            
+
     """
         Return True if object_id is already present in playlist
         @param playlist name as str
@@ -219,12 +216,12 @@ class PlaylistsManager(GObject.GObject):
         @param sql as sqlite cursor
         @return bool
     """
-    def is_present(self, playlist_name, object_id, is_album, sql = None):
+    def is_present(self, playlist_name, object_id, is_album, sql=None):
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
             tracks_path = Objects.albums.get_tracks_path(object_id, sql)
         else:
-            tracks_path = [ Objects.tracks.get_path(object_id, sql) ]
+            tracks_path = [Objects.tracks.get_path(object_id, sql)]
 
         found = 0
         len_tracks = len(tracks_path)
@@ -237,11 +234,10 @@ class PlaylistsManager(GObject.GObject):
             return True
         else:
             return False
-    
+
 #######################
 # PRIVATE             #
 #######################
-        
     """
         Add track to playlist if not already present
         @param playlist name as str
@@ -250,13 +246,13 @@ class PlaylistsManager(GObject.GObject):
     def _add_track(self, playlist_name, filepath):
         tracks = self.get_tracks(playlist_name)
         # Do nothing if uri already present in playlist
-        if not filepath in tracks:
+        if filepath not in tracks:
             try:
                 f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
                 f.write(filepath+'\n')
                 f.close()
             except Exception as e:
-                print("PlaylistsManager::add_track: %s" %e)
+                print("PlaylistsManager::add_track: %s" % e)
 
     """
         Remove track from playlist
@@ -274,11 +270,10 @@ class PlaylistsManager(GObject.GObject):
                     f.write(path)
             f.close()
         except Exception as e:
-            print("PlaylistsManager::remove_tracks: %s" %e)
-        
-"""
-    Dialog for manage playlist
-"""
+            print("PlaylistsManager::remove_tracks: %s" % e)
+
+
+# Dialog for manage playlist
 class PlaylistsManagePopup:
 
     """
@@ -289,13 +284,18 @@ class PlaylistsManagePopup:
     """
     def __init__(self, object_id, is_album, parent):
 
-        self._object_id = object_id        
+        self._object_id = object_id
         self._is_album = is_album
         self._deleted_path = None
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
-        
+        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                                "list-remove-symbolic",
+                                                22,
+                                                0)
+
         self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistsManagePopup.ui')
+        self._ui.add_from_resource(
+                '/org/gnome/Lollypop/PlaylistsManagePopup.ui'
+                                  )
 
         self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
@@ -316,20 +316,20 @@ class PlaylistsManagePopup:
             renderer0.set_property('activatable', True)
             renderer0.connect('toggled', self._on_playlist_toggled)
             column0 = Gtk.TreeViewColumn("toggle", renderer0, active=0)
-        
+
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set',True)
+        renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         renderer1.set_property('editable', True)
         renderer1.connect('edited', self._on_playlist_edited)
         column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
         column1.set_expand(True)
-        
+
         renderer2 = Gtk.CellRendererPixbuf()
         renderer2.set_property('stock-size', 22)
         renderer2.set_fixed_size(22, -1)
         column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
-        
+
         if self._object_id != -1:
             self._view.append_column(column0)
         self._view.append_column(column1)
@@ -348,7 +348,7 @@ class PlaylistsManagePopup:
 
         start_new_thread(self._append_playlists, ())
         self._popup.show()
-        
+
 #######################
 # PRIVATE             #
 #######################
@@ -368,7 +368,10 @@ class PlaylistsManagePopup:
         # Search if we need to select item or not
         playlists = Objects.playlists.get()
         for playlist in playlists:
-            selected = Objects.playlists.is_present(playlist, self._object_id, self._is_album, sql)
+            selected = Objects.playlists.is_present(playlist,
+                                                    self._object_id,
+                                                    self._is_album,
+                                                    sql)
             GLib.idle_add(self._append_playlist, playlist, selected)
 
     """
@@ -386,9 +389,10 @@ class PlaylistsManagePopup:
     def _show_infobar(self, path):
         iterator = self._model.get_iter(path)
         self._deleted_path = path
-        self._infobar_label.set_text(_("Remove \"%s\"?") % self._model.get_value(iterator, 1))
+        self._infobar_label.set_text(_("Remove \"%s\"?") %
+                                     self._model.get_value(iterator, 1))
         self._infobar.show()
-        
+
     """
         Hide infobar
         @param widget as Gtk.Infobar
@@ -407,7 +411,7 @@ class PlaylistsManagePopup:
         if iterator:
             if column.get_title() == "pixbuf2":
                 self._show_infobar(path)
-            
+
     """
         Delete playlist after confirmation
         @param button as Gtk.Button
@@ -466,7 +470,7 @@ class PlaylistsManagePopup:
         name = self._model.get_value(iterator, 1)
         self._model.set_value(iterator, 0, toggle)
         self._set_current_object(name, toggle)
-        
+
     """
         Add/Remove current object to playlist
         @param playlist name as str
@@ -480,13 +484,13 @@ class PlaylistsManagePopup:
         if self._is_album:
             tracks_path = Objects.albums.get_tracks_path(self._object_id)
         else:
-            tracks_path = [ Objects.tracks.get_path(self._object_id) ]
-    
+            tracks_path = [Objects.tracks.get_path(self._object_id)]
+
         if add:
             Objects.playlists.add_tracks(name, tracks_path)
         else:
-            playlist = Objects.playlists.remove_tracks(name, tracks_path)
-    
+            Objects.playlists.remove_tracks(name, tracks_path)
+
     """
         When playlist is edited, rename playlist
         @param widget as cell renderer
@@ -502,31 +506,37 @@ class PlaylistsManagePopup:
         self._model.append([True, name, self._del_pixbuf])
         Objects.playlists.rename(name, old_name)
 
-    
-"""
-    Dialog for edit a playlist
-"""
+
+# Dialog for edit a playlist
 class PlaylistEditPopup:
 
     """
         Init Popover ui with a text entry and a scrolled treeview
         @param playlist name as str
-        @param parent as Gtk.Window    
+        @param parent as Gtk.Window
     """
     def __init__(self, playlist_name, parent):
         self._playlist_name = playlist_name
         self._deleted_path = None
         self._tracks_orig = []
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
+        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                                "list-remove-symbolic",
+                                                22,
+                                                0)
 
         self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistEditPopup.ui')
+        self._ui.add_from_resource(
+                '/org/gnome/Lollypop/PlaylistEditPopup.ui'
+                                  )
 
-        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
+        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
+                                    str,
+                                    GdkPixbuf.Pixbuf,
+                                    str)
         self._model.connect("row-deleted", self._on_row_deleted)
         self._view = self._ui.get_object('view')
         self._view.set_model(self._model)
-        
+
         self._ui.connect_signals(self)
 
         self._popup = self._ui.get_object('popup')
@@ -537,18 +547,18 @@ class PlaylistEditPopup:
         renderer0 = Gtk.CellRendererPixbuf()
         renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
-        
+
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set',True)
+        renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
         column1.set_expand(True)
-        
+
         renderer2 = Gtk.CellRendererPixbuf()
         renderer2.set_property('stock-size', 22)
         renderer2.set_fixed_size(22, -1)
         column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
-        
+
         self._view.append_column(column0)
         self._view.append_column(column1)
         self._view.append_column(column2)
@@ -566,11 +576,10 @@ class PlaylistEditPopup:
 
         start_new_thread(self._append_tracks, ())
         self._popup.show()
-        
+
 #######################
 # PRIVATE             #
 #######################
-
     """
         Append tracks, thread safe
     """
@@ -594,8 +603,11 @@ class PlaylistEditPopup:
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
             art = Objects.art.get(album_id, ART_SIZE_SMALL)
-            self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
-                               escape(track_name), self._del_pixbuf, filepath])
+            self._model.append([art,
+                               "<b>%s</b>%s\n" % (
+                                   escape(translate_artist_name(artist_name)),
+                                   escape(track_name)),
+                                self._del_pixbuf, filepath])
             self._tracks_orig.append(filepath)
             GLib.idle_add(self._append_track, tracks)
         else:
@@ -609,7 +621,7 @@ class PlaylistEditPopup:
         if event.keyval == 65535:
             path, column = self._view.get_cursor()
             self._show_infobar(path)
-            
+
     """
         Show infobar
         @param path as Gtk.TreePath
@@ -617,9 +629,15 @@ class PlaylistEditPopup:
     def _show_infobar(self, path):
         iterator = self._model.get_iter(path)
         self._deleted_path = path
-        self._infobar_label.set_markup(_("Remove \"%s\"?") % self._model.get_value(iterator, 1).replace('\n',' - '))
+        self._infobar_label.set_markup(_("Remove \"%s\"?") %
+                                       self._model.get_value(
+                                                            iterator,
+                                                            1
+                                                            ).replace(
+                                                                    '\n',
+                                                                    ' - '))
         self._infobar.show()
-        
+
     """
         Hide infobar
         @param widget as Gtk.Infobar
@@ -650,22 +668,14 @@ class PlaylistEditPopup:
         self._infobar.hide()
         self._deleted_path = None
         self._update_on_disk()
-        
-    """
-        Delete item if Delete was pressed
-        @param widget unused, Gtk.Event
-    """
-    def _on_keyboard_event(self, widget, event):
-        if event.keyval == 65535:
-            path, column = self._view.get_cursor()
-            self._show_infobar(path)
+
     """
         Hide window
         @param widget as Gtk.Button
     """
     def _on_close_clicked(self, widget):
         self._popup.hide()
-    
+
     """
         Only catch drag & drop successful
         @param path as Gtk.TreePath
