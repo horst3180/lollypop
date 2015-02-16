@@ -11,11 +11,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Notify
+from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import Objects
 
+
+# Dialog showing lollypop options
 class SettingsDialog(Gtk.Dialog):
 
     def __init__(self, parent):
@@ -29,8 +31,8 @@ class SettingsDialog(Gtk.Dialog):
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
         self._settings_dialog.set_title(_("Configure lollypop"))
-        
-        switch_scan =  builder.get_object('switch_scan')
+
+        switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Objects.settings.get_value('startup-scan'))
         switch_scan.connect('state-set', self._update_scan_setting)
 
@@ -39,8 +41,10 @@ class SettingsDialog(Gtk.Dialog):
         switch_view.connect('state-set', self._update_view_setting)
 
         switch_background = builder.get_object('switch_background')
-        switch_background.set_state(Objects.settings.get_value('background-mode'))
-        switch_background.connect('state-set', self._update_background_setting)
+        switch_background.set_state(Objects.settings.get_value(
+                                                    'background-mode'))
+        switch_background.connect('state-set',
+                                  self._update_background_setting)
 
         switch_state = builder.get_object('switch_state')
         switch_state.set_state(Objects.settings.get_value('save-state'))
@@ -52,17 +56,18 @@ class SettingsDialog(Gtk.Dialog):
         main_chooser_box = builder.get_object('main_chooser_box')
         self._chooser_box = builder.get_object('chooser_box')
         party_grid = builder.get_object('party_grid')
-        
+
         #
         # Music tab
         #
         dirs = []
         for directory in Objects.settings.get_value('music-path'):
             dirs.append(directory)
-            
+
         # Main chooser
         self._main_chooser = ChooserWidget()
-        image = Gtk.Image.new_from_icon_name("list-add-symbolic", Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_icon_name("list-add-symbolic",
+                                             Gtk.IconSize.MENU)
         self._main_chooser.set_icon(image)
         self._main_chooser.set_action(self._add_chooser)
         main_chooser_box.pack_start(self._main_chooser, False, True, 0)
@@ -71,12 +76,12 @@ class SettingsDialog(Gtk.Dialog):
         else:
             path = GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)
         self._main_chooser.set_dir(path)
-        
-        # Others choosers    
+
+        # Others choosers
         for directory in dirs:
-            self._add_chooser(directory)                
-        
-        #    
+            self._add_chooser(directory)
+
+        #
         # Party mode tab
         #
         genres = Objects.genres.get()
@@ -106,21 +111,21 @@ class SettingsDialog(Gtk.Dialog):
     """
         Show dialog
     """
-    def show():
+    def show(self):
         self._settings_dialog.show()
-
 
 #######################
 # PRIVATE             #
 #######################
-    
+
     """
         Add a new chooser widget
         @param directory path as string
     """
-    def _add_chooser(self, directory = None):
+    def _add_chooser(self, directory=None):
         chooser = ChooserWidget()
-        image = Gtk.Image.new_from_icon_name("list-remove-symbolic", Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
+                                             Gtk.IconSize.MENU)
         chooser.set_icon(image)
         if directory:
             chooser.set_dir(directory)
@@ -131,7 +136,8 @@ class SettingsDialog(Gtk.Dialog):
         @param widget as unused, state as widget state
     """
     def _update_view_setting(self, widget, state):
-        Objects.settings.set_value('dark-view',  GLib.Variant('b', state))
+        Objects.settings.set_value('dark-view',
+                                   GLib.Variant('b', state))
         if self._window:
             self._window.update_view_class(state)
 
@@ -140,21 +146,24 @@ class SettingsDialog(Gtk.Dialog):
         @param widget as unused, state as widget state
     """
     def _update_scan_setting(self, widget, state):
-        Objects.settings.set_value('startup-scan',  GLib.Variant('b', state))
+        Objects.settings.set_value('startup-scan',
+                                   GLib.Variant('b', state))
 
     """
         Update background mode setting
         @param widget as unused, state as widget state
     """
     def _update_background_setting(self, widget, state):
-        Objects.settings.set_value('background-mode',  GLib.Variant('b', state))
+        Objects.settings.set_value('background-mode',
+                                   GLib.Variant('b', state))
 
     """
         Update save state setting
         @param widget as unused, state as widget state
     """
     def _update_state_setting(self, widget, state):
-        Objects.settings.set_value('save-state',  GLib.Variant('b', state))
+        Objects.settings.set_value('save-state',
+                                   GLib.Variant('b', state))
 
     """
         Close edit party dialog
@@ -164,13 +173,14 @@ class SettingsDialog(Gtk.Dialog):
         paths = []
         main_path = self._main_chooser.get_dir()
         choosers = self._chooser_box.get_children()
-        if main_path == GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC) and len(choosers) == 0:
+        if main_path == GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)\
+           and len(choosers) == 0:
             paths = []
         else:
             paths.append(main_path)
             for chooser in choosers:
                 path = chooser.get_dir()
-                if path and not path in paths:
+                if path and path not in paths:
                     paths.append(path)
 
         previous = Objects.settings.get_value('music-path')
@@ -200,11 +210,8 @@ class SettingsDialog(Gtk.Dialog):
         Objects.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
 
-"""
-    Widget used to let user select a collection folder
-"""
+# Widget used to let user select a collection folder
 class ChooserWidget(Gtk.Grid):
-    
     def __init__(self):
         Gtk.Grid.__init__(self)
         self._action = None
@@ -221,7 +228,7 @@ class ChooserWidget(Gtk.Grid):
         self.add(self._action_btn)
         self._action_btn.connect("clicked", self._do_action)
         self.show()
-    
+
     """
         Set current selected path for chooser
         @param directory path as string
@@ -229,14 +236,14 @@ class ChooserWidget(Gtk.Grid):
     def set_dir(self, path):
         if path:
             self._chooser_btn.set_uri("file://"+path)
-    
+
     """
         Set image for action button
         @param Gtk.Image
     """
     def set_icon(self, image):
         self._action_btn.set_image(image)
-        
+
     """
         Set action callback for button clicked signal
         @param func
@@ -249,12 +256,12 @@ class ChooserWidget(Gtk.Grid):
         @return path as string
     """
     def get_dir(self):
-        path =  GLib.uri_unescape_string(self._chooser_btn.get_uri(), None)
+        path = GLib.uri_unescape_string(self._chooser_btn.get_uri(), None)
         if path:
             return path[7:]
         else:
             return None
-        
+
 #######################
 # PRIVATE             #
 #######################
