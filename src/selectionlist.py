@@ -13,13 +13,11 @@
 
 from gi.repository import Gtk, GObject, Pango
 
-from lollypop.database import Database
 from lollypop.utils import translate_artist_name
-from lollypop.define import *
+from lollypop.define import POPULARS, COMPILATIONS, ALL
 
-"""
-    A selection list is a artists or genres scrolled treeview
-"""
+
+# A selection list is a artists or genres scrolled treeview
 class SelectionList(GObject.GObject):
 
     __gsignals__ = {
@@ -31,8 +29,8 @@ class SelectionList(GObject.GObject):
     """
     def __init__(self):
         GObject.GObject.__init__(self)
-        
-        self._model = Gtk.ListStore(int, str)    
+
+        self._model = Gtk.ListStore(int, str)
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
         self._sort = False
@@ -42,7 +40,7 @@ class SelectionList(GObject.GObject):
         self._view = Gtk.TreeView(self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
         self._renderer = Gtk.CellRendererText()
-        self._renderer.set_property('ellipsize-set',True)
+        self._renderer.set_property('ellipsize-set', True)
         self._renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
         self._column = Gtk.TreeViewColumn('', self._renderer, text=1)
         self._view.append_column(self._column)
@@ -70,24 +68,24 @@ class SelectionList(GObject.GObject):
     """
         Populate view with values
         @param [(int, str)]
-    """    
+    """
     def populate(self, values):
         for (object_id, string) in values:
-            #Translating artist@@@@the => The artist
+            # Translating artist@@@@the => The artist
             if self._is_artists:
                 string = translate_artist_name(string)
             self._model.append([object_id, string])
-                
+
     """
         Clear the list
-    """    
+    """
     def clear(self):
         self._model.clear()
 
     """
         Update view with values
         @param [(int, str)]
-    """    
+    """
     def update(self, values):
         for item in self._model:
             found = False
@@ -138,7 +136,7 @@ class SelectionList(GObject.GObject):
     """
         Get id at current position
         @return id as int
-    """    
+    """
     def get_selected_id(self):
         (path, column) = self._view.get_cursor()
         if path:
@@ -192,13 +190,12 @@ class SelectionList(GObject.GObject):
                 pos_b += 1
 
             return pos_a > pos_b
-    
+
     """
         Forward "cursor-changed" as "item-selected" with item id as arg
         @param view as Gtk.TreeView
-    """    
+    """
     def _new_item_selected(self, view):
         self._selected_id = self.get_selected_id()
-        if self._selected_id != None:
+        if self._selected_id is not None:
             self.emit('item-selected', self._selected_id)
-
