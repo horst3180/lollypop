@@ -11,19 +11,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Pango
-from gettext import gettext as _, ngettext 
+from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
-from lollypop.define import *
-from lollypop.albumart import AlbumArt
+from lollypop.define import Objects, ART_SIZE_MEDIUM
 from lollypop.utils import translate_artist_name
 
 ######################################################################
 ######################################################################
 
-class QueueWidget(Gtk.Popover):
 
+# Widget to manage queue
+class QueueWidget(Gtk.Popover):
     """
         Init Popover ui with a text entry and a scrolled treeview
     """
@@ -34,12 +33,19 @@ class QueueWidget(Gtk.Popover):
 
         self._timeout = None
         self._in_drag = False
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon("list-remove-symbolic", 22, 0)
-        
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
+        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                            "list-remove-symbolic",
+                                            22,
+                                            0)
 
-        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, int)
+        self._ui = Gtk.Builder()
+        self._ui.add_from_resource(
+                        '/org/gnome/Lollypop/QueueWidget.ui')
+
+        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
+                                    str,
+                                    GdkPixbuf.Pixbuf,
+                                    int)
         self._model.connect("row-deleted", self._updated_rows)
 
         self._view = self._ui.get_object('view')
@@ -52,18 +58,18 @@ class QueueWidget(Gtk.Popover):
         renderer0 = Gtk.CellRendererPixbuf()
         renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
-        
+
         renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set',True)
+        renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         column1 = Gtk.TreeViewColumn("text", renderer1, markup=1)
         column1.set_expand(True)
-        
+
         renderer2 = Gtk.CellRendererPixbuf()
         renderer2.set_property('stock-size', 22)
         renderer2.set_fixed_size(22, -1)
         column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
-        
+
         self._view.append_column(column0)
         self._view.append_column(column1)
         self._view.append_column(column2)
@@ -71,7 +77,7 @@ class QueueWidget(Gtk.Popover):
         self.add(self._widget)
 
     """
-        Show queue popover        
+        Show queue popover
         Populate treeview with current queue
     """
     def do_show(self):
@@ -87,8 +93,12 @@ class QueueWidget(Gtk.Popover):
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
             art = Objects.art.get(album_id, ART_SIZE_MEDIUM)
-            self._model.append([art, "<b>"+escape(translate_artist_name(artist_name)) + "</b>\n" + 
-                                escape(track_name), self._del_pixbuf, track_id])
+            self._model.append([art,
+                                "<b>%s</b>\n%s" %
+                                (escape(translate_artist_name(artist_name)),
+                                 escape(track_name)),
+                                self._del_pixbuf,
+                                track_id])
 
         Objects.player.connect("current-changed", self._on_current_changed)
         Gtk.Popover.do_show(self)
@@ -100,7 +110,7 @@ class QueueWidget(Gtk.Popover):
         Gtk.Popover.do_hide(self)
         self._model.clear()
         Objects.player.disconnect_by_func(self._on_current_changed)
-        
+
 #######################
 # PRIVATE             #
 #######################
@@ -132,7 +142,7 @@ class QueueWidget(Gtk.Popover):
     """
     def _on_drag_begin(self, widget, context):
         self._in_drag = True
-        
+
     """
         Mark as not in drag
         @param unused
@@ -152,7 +162,7 @@ class QueueWidget(Gtk.Popover):
                 if row[3]:
                     new_queue.append(row[3])
             Objects.player.set_queue(new_queue)
-        
+
     """
         Delete row
         @param GtkTreeIter
@@ -172,16 +182,19 @@ class QueueWidget(Gtk.Popover):
             if column.get_title() == "pixbuf2":
                 self._delete_row(iterator)
             else:
-                # We don't want to play if we are starting a drag & drop, so delay
-                self._timeout = GLib.timeout_add(500, self._play_track, iterator)
-    
+                # We don't want to play if we are
+                # starting a drag & drop, so delay
+                self._timeout = GLib.timeout_add(500,
+                                                 self._play_track,
+                                                 iterator)
+
     """
         Clear queue
         @param widget as Gtk.Button
-    """    
+    """
     def _on_button_clicked(self, widget):
         self._model.clear()
-    
+
     """
         Play track for selected iter
         @param GtkTreeIter

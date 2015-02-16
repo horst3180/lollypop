@@ -604,7 +604,7 @@ class PlaylistEditPopup:
             track_name = Objects.tracks.get_name(track_id)
             art = Objects.art.get(album_id, ART_SIZE_SMALL)
             self._model.append([art,
-                               "<b>%s</b>%s\n" % (
+                               "<b>%s</b>\n%s" % (
                                    escape(translate_artist_name(artist_name)),
                                    escape(track_name)),
                                 self._del_pixbuf, filepath])
