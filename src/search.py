@@ -11,15 +11,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GdkPixbuf, Pango
+from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import *
-from lollypop.albumart import AlbumArt
+from lollypop.define import Objects, ART_SIZE_MEDIUM
 from lollypop.playlists import PlaylistsManagePopup
 from lollypop.utils import translate_artist_name
 
+
+# show an album/track object with actions
 class SearchRow(Gtk.ListBoxRow):
     """
         Init row widgets
@@ -97,7 +98,7 @@ class SearchRow(Gtk.ListBoxRow):
     def _on_playlist_clicked(self, button):
         popup = PlaylistsManagePopup(self.id, not self.is_track)
         popup.show()
-        
+
     """
         Add track to queue
         @param button as Gtk.Button
@@ -113,6 +114,8 @@ class SearchRow(Gtk.ListBoxRow):
 ######################################################################
 ######################################################################
 
+
+# Represent a search object
 class SearchObject:
     def __init__(self):
         self.artist = None
@@ -125,6 +128,8 @@ class SearchObject:
 ######################################################################
 ######################################################################
 
+
+# Show a list of search row
 class SearchWidget(Gtk.Popover):
 
     """
@@ -132,7 +137,7 @@ class SearchWidget(Gtk.Popover):
     """
     def __init__(self):
         Gtk.Popover.__init__(self)
-        
+
         self._in_thread = False
         self._stop_thread = False
         self._timeout = None
@@ -146,25 +151,26 @@ class SearchWidget(Gtk.Popover):
         label.set_property("margin_start", 5)
         label.set_property("margin_end", 5)
         label.show()
-        
+
         self._text_entry = Gtk.Entry()
         self._text_entry.connect("changed", self._do_filtering)
         self._text_entry.set_hexpand(True)
         self._text_entry.set_property("margin", 5)
         self._text_entry.show()
-        
+
         entry_line = Gtk.Grid()
         entry_line.add(label)
         entry_line.add(self._text_entry)
         entry_line.show()
-        
+
         self._view = Gtk.ListBox()
-        self._view.connect("row-activated", self._on_activate)    
-        self._view.show()        
-        
+        self._view.connect("row-activated", self._on_activate)
+        self._view.show()
+
         self._scroll = Gtk.ScrolledWindow()
         self._scroll.set_vexpand(True)
-        self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                Gtk.PolicyType.AUTOMATIC)
         self._scroll.add(self._view)
         self._scroll.show()
 
@@ -176,7 +182,6 @@ class SearchWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    
     """
         Give focus to text entry on show
     """
@@ -217,8 +222,8 @@ class SearchWidget(Gtk.Popover):
 
     """
         Timeout filtering, call _really_do_filterting() after a small timeout
-    """    
-    def _do_filtering(self, data = None):
+    """
+    def _do_filtering(self, data=None):
         if self._in_thread:
             self._stop_thread = True
             GLib.timeout_add(100, self._do_filtering)
@@ -241,7 +246,8 @@ class SearchWidget(Gtk.Popover):
         start_new_thread(self._really_do_filtering, ())
 
     """
-        Populate treeview searching items in db based on text entry current text
+        Populate treeview searching items
+        in db based on text entry current text
     """
     def _really_do_filtering(self):
         sql = Objects.db.get_cursor()
@@ -251,13 +257,15 @@ class SearchWidget(Gtk.Popover):
         searched = self._text_entry.get_text()
 
         tracks_non_performer = []
-        
+
         # Get all albums for all artists and non performer tracks
         for artist_id in Objects.artists.search(searched, sql):
             for album_id in Objects.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Objects.tracks.get_as_non_performer(artist_id, sql):
+            for track_id, track_name in Objects.tracks.get_as_non_performer(
+                                                                   artist_id,
+                                                                   sql):
                 tracks_non_performer.append((track_id, track_name))
 
         albums += Objects.albums.search(searched, sql)
@@ -271,7 +279,8 @@ class SearchWidget(Gtk.Popover):
             search_obj.album_id = album_id
             results.append(search_obj)
 
-        for track_id, track_name in Objects.tracks.search(searched, sql)+tracks_non_performer:
+        for track_id, track_name in Objects.tracks.search(searched, sql) +\
+                tracks_non_performer:
             artist_id = Objects.tracks.get_artist_id(track_id, sql)
             search_obj = SearchObject()
             search_obj.artist = Objects.artists.get_name(artist_id, sql)
@@ -303,7 +312,8 @@ class SearchWidget(Gtk.Popover):
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_title(result.title)
-                search_row.set_cover(Objects.art.get(result.album_id, ART_SIZE_MEDIUM))
+                search_row.set_cover(Objects.art.get(result.album_id,
+                                                     ART_SIZE_MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)
@@ -326,5 +336,3 @@ class SearchWidget(Gtk.Popover):
             Objects.player.load(value_id)
         else:
             Objects.player.play_album(value_id)
-
-
