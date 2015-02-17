@@ -11,24 +11,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GObject, Pango
-from gi.repository import GdkPixbuf
-from gettext import gettext as _
-
+from gi.repository import Gtk, GLib
 from cgi import escape
 
-from lollypop.define import *
+from lollypop.define import Objects, COMPILATIONS, ART_SIZE_BIG
 from lollypop.tracks import TracksWidget
-from lollypop.albumart import AlbumArt
-from lollypop.player import Player
 from lollypop.popmenu import PopMainMenu
 from lollypop.playlists import PlaylistEditPopup
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
-"""
-    Album widget is a pixbuf with two labels: albumm name and artist name
-"""
+
+# Album widget is a pixbuf with two labels: albumm name and artist name
 class AlbumWidget(Gtk.Grid):
 
     """
@@ -46,12 +40,12 @@ class AlbumWidget(Gtk.Grid):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
-        
+
         self._cover = self._ui.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
 
         album_name = Objects.albums.get_name(album_id)
-        title = self._ui.get_object('title')    
+        title = self._ui.get_object('title')
         title.set_label(album_name)
         artist_name = Objects.albums.get_artist_name(album_id)
         artist_name = translate_artist_name(artist_name)
@@ -61,29 +55,28 @@ class AlbumWidget(Gtk.Grid):
         self.add(self._cover)
         self.add(title)
         self.add(artist)
-    
+
     def do_get_preferred_width(self):
         return (ART_SIZE_BIG, ART_SIZE_BIG)
-        
+
     """
         Update cover for album id
         @param album id as int
     """
     def update_cover(self, album_id):
         if self._album_id == album_id:
-            self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
+            self._cover.set_from_pixbuf(Objects.art.get(album_id,
+                                                        ART_SIZE_BIG))
 
     """
         Return album id for widget
         @return album id as int
-    """     
+    """
     def get_id(self):
         return self._album_id
 
 
-"""
-    Album detailed Widget is a pixbuf with album name and tracks list
-"""
+# Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(Gtk.Grid):
 
     """
@@ -99,13 +92,15 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param show_menu as bool if menu need to be displayed
         @param size group as Gtk.SizeGroup
     """
-    def __init__(self, album_id, genre_id, limit_to_artist, show_menu, size_group):
+    def __init__(self, album_id, genre_id, limit_to_artist,
+                 show_menu, size_group):
         Gtk.Grid.__init__(self)
         self.set_property("margin", 5)
 
         self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
-        
+        self._ui.add_from_resource(
+                    '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+
         self._artist_id = Objects.albums.get_artist_id(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
@@ -124,14 +119,19 @@ class AlbumDetailedWidget(Gtk.Grid):
 
         self._cover = self._ui.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
-        self._ui.get_object('title').set_label(Objects.albums.get_name(album_id))
-        self._ui.get_object('year').set_label(Objects.albums.get_year(album_id))
+        self._ui.get_object('title').set_label(
+                                            Objects.albums.get_name(album_id))
+        self._ui.get_object('year').set_label(
+                                            Objects.albums.get_year(album_id))
         self.add(self._ui.get_object('AlbumDetailedWidget'))
 
         if show_menu:
             self.eventbox = self._ui.get_object('eventbox')
-            self.eventbox.connect("button-press-event", self._show_web_art)
-            self._ui.get_object('menu').connect('clicked', self._pop_menu, album_id)
+            self.eventbox.connect("button-press-event",
+                                  self._show_web_art)
+            self._ui.get_object('menu').connect('clicked',
+                                                self._pop_menu,
+                                                album_id)
             self._ui.get_object('menu').show()
         else:
             self.eventbox = None
@@ -142,7 +142,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param track id as int
     """
     def update_playing_track(self, track_id):
-        self._tracks_widget1.update_playing(track_id)    
+        self._tracks_widget1.update_playing(track_id)
         self._tracks_widget2.update_playing(track_id)
 
     """
@@ -151,12 +151,13 @@ class AlbumDetailedWidget(Gtk.Grid):
     """
     def update_cover(self, album_id):
         if self._album_id == album_id:
-            self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
-    
+            self._cover.set_from_pixbuf(Objects.art.get(album_id,
+                                                        ART_SIZE_BIG))
+
     """
         Return album id for widget
         @return album id as int
-    """     
+    """
     def get_id(self):
         return self._album_id
 
@@ -179,34 +180,46 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param album id as int
     """
     def _add_tracks(self, album_id):
-        i = 1                           
+        i = 1
         mid_tracks = int(0.5+Objects.albums.get_count(album_id)/2)
-        for track_id, title, artist_id, filepath, length in Objects.albums.get_tracks_infos(album_id):
-        
+        for track_id, title, artist_id, filepath,\
+                length in Objects.albums.get_tracks_infos(album_id):
+
             # If we are listening to a compilation, prepend artist name
             if self._artist_id == COMPILATIONS or self._artist_id != artist_id:
-                artist_name = translate_artist_name(Objects.tracks.get_artist_name(track_id))
-                title =  artist_name + " - " + title
-                
+                artist_name = translate_artist_name(
+                                    Objects.tracks.get_artist_name(track_id))
+                title = artist_name + " - " + title
+
             # Get track position in queue
             pos = None
             if Objects.player.is_in_queue(track_id):
                 pos = Objects.player.get_track_position(track_id)
-                
+
             if i <= mid_tracks:
-                self._tracks_widget1.add_track(track_id, i, escape(title), length, pos) 
+                self._tracks_widget1.add_track(track_id,
+                                               i,
+                                               escape(title),
+                                               length,
+                                               pos)
             else:
-                self._tracks_widget2.add_track(track_id, i, escape(title), length, pos) 
+                self._tracks_widget2.add_track(track_id,
+                                               i,
+                                               escape(title),
+                                               length,
+                                               pos)
             i += 1
-    
+
     """
         On track activation, play track
         @param widget as TracksWidget
         @param track id as int
-    """        
+    """
     def _on_activated(self, widget, track_id):
         if not Objects.player.is_party():
-            Objects.player.set_albums(self._artist_id, self._genre_id, self._limit_to_artist)
+            Objects.player.set_albums(self._artist_id,
+                                      self._genre_id,
+                                      self._limit_to_artist)
         Objects.player.load(track_id)
 
     """
@@ -223,9 +236,8 @@ class AlbumDetailedWidget(Gtk.Grid):
         popover.show()
 
 
-"""
-    Playlist Widget is similar to album detailed widget but show a cover grid as playlist cover
-"""
+# Playlist Widget is similar to album detailed
+# widget but show a cover grid as playlist cove
 class PlaylistWidget(Gtk.Grid):
     """
         Init playlist Widget
@@ -240,8 +252,10 @@ class PlaylistWidget(Gtk.Grid):
 
         self._tracks_widget1 = TracksWidget(False)
         self._tracks_widget2 = TracksWidget(False)
-        self._tracks_widget1.connect('activated', self._on_activated, playlist_name)
-        self._tracks_widget2.connect('activated', self._on_activated, playlist_name)
+        self._tracks_widget1.connect('activated',
+                                     self._on_activated, playlist_name)
+        self._tracks_widget2.connect('activated',
+                                     self._on_activated, playlist_name)
         self._tracks_widget1.show()
         self._tracks_widget2.show()
 
@@ -249,12 +263,14 @@ class PlaylistWidget(Gtk.Grid):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._ui.get_object('menu').connect('clicked', self._pop_menu, playlist_name)
+        self._ui.get_object('menu').connect('clicked',
+                                            self._pop_menu,
+                                            playlist_name)
         self._ui.get_object('tracks').add(self._tracks_widget1)
         self._ui.get_object('tracks').add(self._tracks_widget2)
 
         self._header = self._ui.get_object('header')
-        
+
         self._ui.get_object('title').set_label(playlist_name)
         self.add(self._ui.get_object('PlaylistWidget'))
 
@@ -265,7 +281,7 @@ class PlaylistWidget(Gtk.Grid):
     """
     def populate_list_one(self, tracks, pos):
         self._add_tracks(tracks, self._tracks_widget1, pos)
-        
+
     """
         Populate list two
         @param track's ids as array of int
@@ -279,9 +295,8 @@ class PlaylistWidget(Gtk.Grid):
         @param track id as int
     """
     def update_playing_track(self, track_id):
-        self._tracks_widget1.update_playing(track_id)    
+        self._tracks_widget1.update_playing(track_id)
         self._tracks_widget2.update_playing(track_id)
-
 
     """
         Clear tracks
@@ -305,8 +320,12 @@ class PlaylistWidget(Gtk.Grid):
         if len(tracks) == 0:
             return
         track_id = tracks.pop(0)
-        (title, filepath, length, artist_id, album_id) = Objects.tracks.get_infos(track_id)
-        title = "<b>%s</b>\n %s" % (escape(translate_artist_name(Objects.artists.get_name(artist_id))), escape(title))
+        (title, filepath, length, artist_id, album_id) =\
+            Objects.tracks.get_infos(track_id)
+        title = "<b>%s</b>\n %s" %\
+            (escape(translate_artist_name(
+                Objects.artists.get_name(artist_id))),
+                escape(title))
 
         widget.add_track(track_id, pos, title, length, None, True)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1)
@@ -325,7 +344,7 @@ class PlaylistWidget(Gtk.Grid):
         @param widget as TracksWidget
         @param track id as int
         @param playlist name as str
-    """        
+    """
     def _on_activated(self, widget, track_id, playlist_name):
         if not Objects.player.is_party() and not self._is_loaded:
             tracks = Objects.playlists.get_tracks_id(playlist_name)
