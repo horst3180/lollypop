@@ -378,7 +378,7 @@ class DatabaseAlbums:
         elif not artist_id and not genre_id:
             result = sql.execute("SELECT albums.rowid FROM albums,artists\
                                   WHERE artists.rowid=albums.artist_id\
-                                  ORDER BY artists.name\
+                                  ORDER BY artists.name, albums.name\
                                   COLLATE NOCASE, albums.year")
         # Get albums for genre
         elif not artist_id:
