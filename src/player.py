@@ -38,6 +38,11 @@ class CurrentTrack:
         self.duration = None
         self.path = None
 
+# Represent playback context
+class CurrentContext:
+    def __init__(self):
+        self.album_id = None
+        self.position = None
 
 # Player object used to manage playback and playlists
 class Player(GObject.GObject):
@@ -60,6 +65,7 @@ class Player(GObject.GObject):
         Gst.init(None)
 
         self.current = CurrentTrack()
+        self._context = CurrentContext()
         # Albums in current playlist
         self._albums = None
         # Used by shuffle albums to restore playlist before shuffle
@@ -180,9 +186,9 @@ class Player(GObject.GObject):
                 self._shuffle_tracks_history.pop()
             except:
                 track_id = None
-        elif self.current.number != -1:
+        elif self._context.position != -1:
             tracks = Objects.albums.get_tracks(self.current.album_id)
-            if self.current.number <= 0:  # Prev album
+            if self._context.position <= 0:  # Prev album
                 pos = self._albums.index(self.current.album_id)
                 if pos - 1 < 0:  # we are on last album, go to first
                     pos = len(self._albums) - 1
@@ -190,11 +196,11 @@ class Player(GObject.GObject):
                     pos -= 1
                 self.current.album_id = self._albums[pos]
                 tracks = Objects.albums.get_tracks(self.current.album_id)
-                self.current.number = len(tracks) - 1
-                track_id = tracks[self.current.number]
+                self._context.position = len(tracks) - 1
+                track_id = tracks[self._context.position]
             else:
-                self.current.number -= 1
-                track_id = tracks[self.current.number]
+                self._context.position -= 1
+                track_id = tracks[self._context.position]
 
         if track_id:
             self.load(track_id)
@@ -217,32 +223,32 @@ class Player(GObject.GObject):
                 self._load_track(track_id, sql)
         # Look at user playlist then
         elif self._user_playlist:
-            self.current.number += 1
-            if self.current.number >= len(self._user_playlist):
-                self.current.number = 0
+            self._context.position += 1
+            if self._context.position >= len(self._user_playlist):
+                self._context.position = 0
             if force:
-                self.load(self._user_playlist[self.current.number])
+                self.load(self._user_playlist[self._context.position])
             else:
-                self._load_track(self._user_playlist[self.current.number], sql)
+                self._load_track(self._user_playlist[self._context.position], sql)
         # Get a random album/track
         elif self._shuffle == SHUFFLE_TRACKS or self._is_party:
             self._shuffle_next(force, sql)
-        elif self.current.number is not None:
+        elif self._context.position is not None:
             track_id = None
-            tracks = Objects.albums.get_tracks(self.current.album_id, sql)
-            if self.current.number + 1 >= len(tracks):  # next album
-                pos = self._albums.index(self.current.album_id)
+            tracks = Objects.albums.get_tracks(self._context.album_id, sql)
+            if self._context.position + 1 >= len(tracks):  # next album
+                pos = self._albums.index(self._context.album_id)
                 # we are on last album, go to first
                 if pos + 1 >= len(self._albums):
                     pos = 0
                 else:
                     pos += 1
-                self.current.album_id = self._albums[pos]
-                self.current.number = 0
+                self._context.album_id = self._albums[pos]
+                self._context.position = 0
                 track_id = Objects.albums.get_tracks(self._albums[pos], sql)[0]
             else:
-                self.current.number += 1
-                track_id = tracks[self.current.number]
+                self._context.position += 1
+                track_id = tracks[self._context.position]
 
             if force:
                 self.load(track_id)
@@ -264,6 +270,8 @@ class Player(GObject.GObject):
         @param album id as int
     """
     def play_album(self, album_id):
+        # Empty user playlist
+        self._user_playlist = None
         # Get first track from album
         track_id = Objects.albums.get_tracks(album_id)[0]
         Objects.player.load(track_id)
@@ -297,7 +305,8 @@ class Player(GObject.GObject):
                 self.load(track_id)
         else:
             genre_id = Objects.albums.get_genre_id(self.current.album_id)
-            self.set_albums(self.current.artist_id, genre_id, True)
+            self.set_albums(self.current.id, self.current.album_id,
+                            self.current.artist_id, genre_id, True)
 
     """
         Set party ids to ids
@@ -331,12 +340,14 @@ class Player(GObject.GObject):
 
     """
         Set album list (for next/prev)
-        Set track as current track in albums
+        @param track id as int
+        @param album id as int
         @param artist id as int
         @param genre id as int
         @param limit_to_artist as bool => only load artist tracks
     """
-    def set_albums(self, artist_id, genre_id, limit_to_artist):
+    def set_albums(self, track_id, album_id, artist_id,
+                   genre_id, limit_to_artist):
         self._albums = []
         self._shuffle_tracks_history = []
         self._shuffle_album_tracks_history = []
@@ -357,6 +368,9 @@ class Player(GObject.GObject):
             self._albums = Objects.albums.get_compilations(genre_id)
             self._albums += Objects.albums.get_ids(None, genre_id)
 
+        self._context.album_id = album_id
+        tracks = Objects.albums.get_tracks(album_id)
+        self._context.position = tracks.index(track_id)
         # Shuffle album list if needed
         self._shuffle_playlist()
 
@@ -444,6 +458,7 @@ class Player(GObject.GObject):
     def set_user_playlist(self, tracks, track_id):
         self._user_playlist = tracks
         self._albums = None
+        self._context.position = self._user_playlist.index(track_id)
         self._shuffle_playlist()
 
 #######################
@@ -491,12 +506,12 @@ class Player(GObject.GObject):
 
         # Restore position in user playlist
         if self._shuffle != SHUFFLE_TRACKS and self._user_playlist:
-            self.current.number = self._user_playlist.index(self.current.id)
+            self._context.position = self._user_playlist.index(self.current.id)
         # Restore position in current album
         elif self.current.id and\
                 self._shuffle in [SHUFFLE_NONE, SHUFFLE_ALBUMS]:
             tracks = Objects.albums.get_tracks(self.current.album_id)
-            self.current.number = tracks.index(self.current.id)
+            self._context.position = tracks.index(self.current.id)
         # Add current track too shuffle history
         elif self.current.id:
             self._shuffle_tracks_history.append(self.current.id)
@@ -660,13 +675,7 @@ class Player(GObject.GObject):
                                                 self.current.genre_id,
                                                 sql)
         self.current.duration = Objects.tracks.get_length(self.current.id, sql)
-
-        if self._user_playlist:
-            self.current.number = self._user_playlist.index(track_id)
-        else:
-            tracks = Objects.albums.get_tracks(self.current.album_id, sql)
-            self.current.number = tracks.index(self.current.id)
-
+        self.current.number = Objects.tracks.get_number(self.current.id, sql)
         self.current.path = Objects.tracks.get_path(self.current.id, sql)
         if path.exists(self.current.path):
             self._playbin.set_property('uri',

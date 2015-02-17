@@ -217,6 +217,22 @@ class DatabaseTracks:
         return tracks
 
     """
+        Get track position in album
+        @param track id as int
+        @return position as int
+    """
+    def get_number(self, track_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT tracknumber FROM tracks\
+                              WHERE rowid=?", (track_id,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return v[0]
+
+        return 0
+
+    """
         Get track length for track id
         @param Track id as int
         @return length as int
