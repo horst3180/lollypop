@@ -57,11 +57,15 @@ class NotificationManager:
         @param player Player
     """
     def _on_current_changed(self, player):
-        self._notification.set_hint('image-path',
-                                    GLib.Variant('s',
-                                                 Objects.art.get_path(
-                                                    player.current.album_id,
-                                                    ART_SIZE_BIG)))
+        cover_path =  Objects.art.get_path(player.current.album_id,
+                                           ART_SIZE_BIG)
+        if cover_path is not None:
+            self._notification.set_hint('image-path',
+                                        GLib.Variant('s', cover_path))
+        else:
+            self._notification.set_hint('image-path',
+                                        GLib.Variant('s', ''))
+
         self._notification.update(player.current.title,
                                   # TRANSLATORS: by refers to the artist,
                                   # from to the album

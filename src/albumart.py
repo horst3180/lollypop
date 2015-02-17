@@ -49,7 +49,7 @@ class AlbumArt:
     """
         get cover cache path for album_id
         @param album id as int, size as int
-        @return cover path as string
+        @return cover path as string or None if no cover
     """
     def get_path(self, album_id, size):
         path = self._get_cache_path(album_id)
@@ -58,7 +58,10 @@ class AlbumArt:
             return CACHE_PATH_JPG
         else:
             self.get(album_id, size)
-            return CACHE_PATH_JPG
+            if os.path.exists(CACHE_PATH_JPG):
+                return CACHE_PATH_JPG
+            else:
+                return None
 
     """
         Look for covers in dir, folder.jpg if exist,
