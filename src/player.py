@@ -473,7 +473,6 @@ class Player(GObject.GObject):
         if self._shuffle == SHUFFLE_ALBUMS and self._albums:
             self._albums_backup = list(self._albums)
             random.shuffle(self._albums)
-            self.shuffle_track_history.append(self.current.id)
         # Shuffle user playlist
         elif self._shuffle == SHUFFLE_TRACKS and self._user_playlist:
             self._user_playlist_backup = list(self._user_playlist)
@@ -481,6 +480,9 @@ class Player(GObject.GObject):
             random.shuffle(self._user_playlist)
             self._user_playlist.insert(0, current)
             self._context.position = 0
+        # Shuffle Tracks, just add current to history
+        elif self._shuffle == SHUFFLE_TRACKS:
+            self._shuffle_album_tracks_history.append(self.current.id)
         # When shuffle none or shuffle albums and a user playlist is defined
         # Unshuffle
         elif self._shuffle in [SHUFFLE_NONE, SHUFFLE_ALBUMS]:
