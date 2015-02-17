@@ -389,8 +389,6 @@ class Player(GObject.GObject):
     def del_from_queue(self, track_id):
         if track_id in self._queue:
             self._queue.remove(track_id)
-            if len(self._queue) == 0:
-                self._queue = None
             self.emit("queue-changed")
 
     """
