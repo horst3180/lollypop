@@ -307,7 +307,7 @@ class PlaylistsManagePopup:
         self._ui.connect_signals(self)
 
         self._popup = self._ui.get_object('popup')
-        self._popup.set_transient_for(parent)
+        self._popup.set_transient_for(parent.get_toplevel())
         self._infobar = self._ui.get_object('infobar')
         self._infobar_label = self._ui.get_object('infobarlabel')
 
@@ -540,7 +540,7 @@ class PlaylistEditPopup:
         self._ui.connect_signals(self)
 
         self._popup = self._ui.get_object('popup')
-        self._popup.set_transient_for(parent)
+        self._popup.set_transient_for(parent.get_toplevel())
         self._infobar = self._ui.get_object('infobar')
         self._infobar_label = self._ui.get_object('infobarlabel')
 

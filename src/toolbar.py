@@ -145,7 +145,10 @@ class Toolbar:
                                                 not widget.get_active()))
 
     """
-        Pop albums from current artist in a thread on left click
+        Pop albums from current artistleft click
+        Show playlist menu on right
+        @param widget as Gtk.EventBox
+        @param event as Gtk.Event
     """
     def _pop_infobox(self, widget, event):
         if Objects.player.current.id:
@@ -153,7 +156,7 @@ class Toolbar:
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
-                menu = PopMainMenu(Objects.player.current.id, False, True)
+                menu = PopMainMenu(Objects.player.current.id, False, True, widget)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True

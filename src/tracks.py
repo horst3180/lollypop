@@ -124,7 +124,7 @@ class TrackRow(Gtk.ListBoxRow):
         @param widget as Gtk.Button
     """
     def _pop_menu(self, widget):
-        menu = PopMainMenu(self._object_id, False)
+        menu = PopMainMenu(self._object_id, False, False, widget)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('trackrowmenu')

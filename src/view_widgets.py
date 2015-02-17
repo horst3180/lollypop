@@ -171,7 +171,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param album id as int
     """
     def _pop_menu(self, widget, album_id):
-        menu = PopMainMenu(album_id, True)
+        menu = PopMainMenu(album_id, True, False, widget)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.show()
 
@@ -336,7 +336,7 @@ class PlaylistWidget(Gtk.Grid):
         @param playlist name as str
     """
     def _pop_menu(self, widget, playlist_name):
-        popup = PlaylistEditPopup(playlist_name, self.get_toplevel())
+        popup = PlaylistEditPopup(playlist_name, widget)
         popup.show()
 
     """
