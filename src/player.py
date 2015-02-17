@@ -517,6 +517,7 @@ class Player(GObject.GObject):
         elif self.current.id and\
                 self._shuffle in [SHUFFLE_NONE, SHUFFLE_ALBUMS]:
             tracks = Objects.albums.get_tracks(self.current.album_id)
+            self._context.album_id = self.current.album_id
             self._context.position = tracks.index(self.current.id)
         # Add current track too shuffle history
         elif self.current.id:
