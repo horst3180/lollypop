@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-13 07:21+0100\n"
+"POT-Creation-Date: 2015-02-17 14:37+0100\n"
 "PO-Revision-Date: 2015-01-06 10:31+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -79,7 +79,7 @@ msgstr "Geef albums/artiesten met donker thema weer"
 msgid "Show stylized covers"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
@@ -103,7 +103,6 @@ msgid ""
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
-#: ../src/window.py:36
 msgid "Lollypop"
 msgstr "Lollypop"
 
@@ -119,134 +118,135 @@ msgstr "Je muziekverzameling beluisteren en beheren"
 msgid "Music player for the GNOME desktop"
 msgstr "Muziekspeler voor de GNOME-desktop"
 
-#: ../src/toolbar.py:229 ../src/toolbar.py:256
+#: ../src/toolbar.py:241 ../src/toolbar.py:270
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/toolbar.py:237 ../src/toolbar.py:253 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:251 ../src/toolbar.py:267 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../src/window.py:312
+#: ../src/window.py:333
 msgid "Popular albums"
 msgstr "Populaire albums"
 
-#: ../src/window.py:313 ../src/popmenu.py:44
+#: ../src/window.py:334 ../src/popmenu.py:48
 #, fuzzy
 msgid "Playlists"
 msgstr "Afspelen"
 
-#: ../src/window.py:314
+#: ../src/window.py:335
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/window.py:356
+#: ../src/window.py:378
 msgid "Compilations"
 msgstr "Compilaties"
 
-#: ../src/notification.py:38 ../data/headerbar.ui.h:4
+#: ../src/notification.py:41 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Vorige"
 
-#: ../src/notification.py:40 ../data/headerbar.ui.h:6
+#: ../src/notification.py:45 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr "Volgende"
 
-#. TRANSLATORS: by refers to the artist, from to the album
-#: ../src/notification.py:56
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:68
 #, python-format
 msgid "by %s, from %s"
 msgstr "door %s, van %s"
 
-#: ../src/database_artists.py:60
+#: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Veel artiesten"
 
-#: ../src/database_artists.py:67 ../src/database_albums.py:134
-#: ../src/database_tracks.py:149 ../src/database_genres.py:64
-#: ../src/collectionscanner.py:184 ../src/collectionscanner.py:198
-#: ../src/collectionscanner.py:203
+#: ../src/database_artists.py:70 ../src/database_albums.py:149
+#: ../src/database_tracks.py:168 ../src/database_genres.py:67
+#: ../src/collectionscanner.py:182 ../src/collectionscanner.py:196
+#: ../src/collectionscanner.py:201
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: ../src/database_albums.py:149
+#: ../src/database_albums.py:166
 msgid "Compilation"
 msgstr "Compilatie"
 
-#: ../src/playlists.py:387 ../src/playlists.py:616
+#: ../src/playlists.py:392 ../src/playlists.py:632
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/playlists.py:448 ../src/playlists.py:451
+#: ../src/playlists.py:454 ../src/playlists.py:457
 #, fuzzy
 msgid "New playlist "
 msgstr "Afspelen"
 
-#: ../src/view.py:34
+#: ../src/view.py:31
 msgid "Loading please wait..."
 msgstr "Bezig met laden, gelieve te wachten..."
 
-#: ../src/view.py:53
+#: ../src/view.py:49
 #, fuzzy
 msgid "Manage playlists"
 msgstr "Afspelen"
 
-#: ../src/popmenu.py:39
+#: ../src/popmenu.py:43
 #, fuzzy
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/popmenu.py:60
+#: ../src/popmenu.py:63
 msgid "Only play this album"
 msgstr "Alleen dit album afspelen"
 
-#: ../src/popmenu.py:73
+#: ../src/popmenu.py:79
 #, fuzzy
 msgid "Add to others"
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:81
+#: ../src/popmenu.py:92
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/popmenu.py:84
+#: ../src/popmenu.py:100
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:126 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:145 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:130
+#: ../src/popmenu.py:151
 msgid "Next tracks"
 msgstr "Volgende nummers"
 
-#: ../src/popmenu.py:132
+#: ../src/popmenu.py:153
 msgid "Next track"
 msgstr "Volgend nummer"
 
-#: ../src/popmenu.py:135
+#: ../src/popmenu.py:158
 msgid "Remove from queue"
 msgstr "Verwijderen uit wachtrij"
 
-#: ../src/popimages.py:57
+#: ../src/popimages.py:63
 msgid "Select a cover art for this album"
 msgstr "Een albumhoes voor dit album selecteren"
 
-#: ../src/settings.py:31
+#: ../src/settings.py:33
 msgid "Configure lollypop"
 msgstr "Lollypop aanpassen"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:24
+#: ../src/utils.py:25
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:145
+#: ../src/search.py:150
 msgid "Search:"
 msgstr "Zoeken:"
 
@@ -291,14 +291,14 @@ msgstr "_Afsluiten"
 msgid "Edit playlist"
 msgstr "Afspelen"
 
-#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:4
-msgid "Confirm"
-msgstr ""
-
-#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:3
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:3
+#: ../data/SettingsDialog.ui.h:1
 msgid "Close"
 msgstr "Sluiten"
+
+#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
+msgid "Confirm"
+msgstr ""
 
 #: ../data/PlaylistsManagePopup.ui.h:1
 #, fuzzy
@@ -326,7 +326,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Willekeurig"
 
-#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:10
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:11
 msgid "Party mode"
 msgstr "Feestmodus"
 
@@ -351,36 +351,36 @@ msgstr "artiest"
 msgid "Add to playlist"
 msgstr "Afspelen"
 
-#: ../data/SettingsDialog.ui.h:1
+#: ../data/SettingsDialog.ui.h:2
 msgid "Darken views"
 msgstr "Maak weergaves donkerder"
 
-#: ../data/SettingsDialog.ui.h:2
+#: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Update muziek bij opstarten"
 
-#: ../data/SettingsDialog.ui.h:4
+#: ../data/SettingsDialog.ui.h:5
 #, fuzzy
 msgid "Restore view on startup"
 msgstr "Update muziek bij opstarten"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
 msgstr "Pas gedrag van lollypop aan"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Behaviour"
 msgstr "Gedrag"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Select music folders"
 msgstr "Selecteer muziekmappen"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Music"
 msgstr "Muziek"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Selecteer wat beschikbaar is in feestmodus"
 
