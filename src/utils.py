@@ -12,12 +12,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-from gi.repository import Gdk
 
 """
     Return formated artist name
     @param str
 """
+
+
 def format_artist_name(name):
     # Handle language ordering
     # Translators: Add here words that shoud be ignored for artist sort order
@@ -27,20 +28,26 @@ def format_artist_name(name):
                 name = name[strlen:]+"@@@@"+special
     return name
 
+
 """
     Return translate formated artist name
     @param str
 """
+
+
 def translate_artist_name(name):
     split = name.split("@@@@")
     if len(split) == 2:
         name = split[1]+" "+split[0]
     return name
 
+
 """
     Convert seconds to a pretty string
     @param seconds as int
 """
+
+
 def seconds_to_string(duration):
     seconds = duration
     minutes = seconds // 60
