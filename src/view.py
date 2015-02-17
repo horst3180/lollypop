@@ -15,8 +15,9 @@ from gi.repository import Gtk, GObject, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
-from lollypop.playlists import PlaylistsManagePopup, PlaylistWidget
+from lollypop.playlists import PlaylistsManagePopup
 from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
+from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
 
 
