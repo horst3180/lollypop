@@ -12,34 +12,33 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-from gi.repository import Gtk, GObject, Gdk, GLib
-from _thread import start_new_thread
+from gi.repository import Gtk, Gdk, GLib
 
-from lollypop.define import *
-from lollypop.albumart import AlbumArt
+from lollypop.define import Objects, SHUFFLE_NONE, ART_SIZE_SMALL
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
 
-"""
-    Toolbar as headerbar
-    Get real widget with Toolbar.widget
-"""
+
+# Toolbar as headerbar
+# Get real widget with Toolbar.widget
 class Toolbar:
     """
         Init toolbar/headerbar ui
     """
     def __init__(self):
-        self._seeking = False # Prevent updating progress while seeking
-        self._timeout = None # Update pogress position
-        
+        # Prevent updating progress while seeking
+        self._seeking = False
+        # Update pogress position
+        self._timeout = None
+
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
         self.header_bar = self._ui.get_object('header-bar')
         self.header_bar.set_custom_title(self._ui.get_object('title-box'))
-        
+
         self._prev_btn = self._ui.get_object('previous_button')
         self._play_btn = self._ui.get_object('play_button')
         self._next_btn = self._ui.get_object('next_button')
@@ -48,16 +47,18 @@ class Toolbar:
 
         self._progress = self._ui.get_object('progress_scale')
         self._progress.set_sensitive(False)
-        self._progress.connect('button-release-event', self._on_progress_release_button)
-        self._progress.connect('button-press-event', self._on_progress_press_button)
+        self._progress.connect('button-release-event',
+                               self._on_progress_release_button)
+        self._progress.connect('button-press-event',
+                               self._on_progress_press_button)
 
         self._timelabel = self._ui.get_object('playback')
         self._total_time_label = self._ui.get_object('duration')
-        
+
         self._title_label = self._ui.get_object('title')
         self._artist_label = self._ui.get_object('artist')
         self._cover = self._ui.get_object('cover')
-        self._infobox = self._ui.get_object('infobox')    
+        self._infobox = self._ui.get_object('infobox')
         self._infobox.connect("button-press-event", self._pop_infobox)
         self._popalbums = PopAlbums()
         self._popalbums.set_relative_to(self._infobox)
@@ -77,9 +78,10 @@ class Toolbar:
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
-        
+
         self._view_genres_btn = self._ui.get_object('genres_button')
-        self._view_genres_btn.set_active(not Objects.settings.get_value('hide-genres'))
+        self._view_genres_btn.set_active(
+                                not Objects.settings.get_value('hide-genres'))
         self._view_genres_btn.connect("toggled", self._save_genres_btn_state)
 
         search_button = self._ui.get_object('search-button')
@@ -118,9 +120,13 @@ class Toolbar:
     def _set_shuffle_icon(self):
         shuffle = Objects.settings.get_enum('shuffle')
         if shuffle == SHUFFLE_NONE:
-            self._shuffle_btn_image.set_from_icon_name("media-playlist-consecutive-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+            self._shuffle_btn_image.set_from_icon_name(
+                                    "media-playlist-consecutive-symbolic",
+                                    Gtk.IconSize.SMALL_TOOLBAR)
         else:
-            self._shuffle_btn_image.set_from_icon_name("media-playlist-shuffle-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+            self._shuffle_btn_image.set_from_icon_name(
+                                    "media-playlist-shuffle-symbolic",
+                                    Gtk.IconSize.SMALL_TOOLBAR)
 
     """
         Mark shuffle button as active when shuffle active
@@ -134,14 +140,16 @@ class Toolbar:
         @param widget as GtkToggleButton
     """
     def _save_genres_btn_state(self, widget):
-        Objects.settings.set_value('hide-genres', GLib.Variant('b', not widget.get_active()))
+        Objects.settings.set_value('hide-genres',
+                                   GLib.Variant('b',
+                                                not widget.get_active()))
 
     """
         Pop albums from current artist in a thread on left click
     """
     def _pop_infobox(self, widget, event):
         if Objects.player.current.id:
-            if event.button == 1:        
+            if event.button == 1:
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
@@ -156,12 +164,13 @@ class Toolbar:
     """
     def _update_cover(self, obj, album_id):
         if Objects.player.current.album_id == album_id:
-            self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_SMALL))
+            self._cover.set_from_pixbuf(Objects.art.get(album_id,
+                                                        ART_SIZE_SMALL))
 
     """
         On press, mark player as seeking
         @param unused
-    """    
+    """
     def _on_progress_press_button(self, scale, data):
         self._seeking = True
 
@@ -169,14 +178,13 @@ class Toolbar:
         Callback for scale release button
         Seek player to scale value
         @param scale as Gtk.Scale, data as unused
-    """    
+    """
     def _on_progress_release_button(self, scale, data):
         value = scale.get_value()
         self._seeking = False
         self._update_position(value)
         Objects.player.seek(value/60)
-    
-    
+
     """
         Update toolbar items with track_id informations:
             - Cover
@@ -186,8 +194,9 @@ class Toolbar:
         @param player as Player
     """
     def _on_current_changed(self, player):
-        if player.current.id == None:
-            self._infobox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+        if player.current.id is None:
+            self._infobox.get_window().set_cursor(
+                                        Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
             self._cover.hide()
             self._timelabel.hide()
             self._total_time_label.hide()
@@ -198,28 +207,30 @@ class Toolbar:
             self._title_label.set_text("")
             self._artist_label.set_text("")
         else:
-            self._infobox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+            self._infobox.get_window().set_cursor(
+                                        Gdk.Cursor(Gdk.CursorType.HAND1))
             art = Objects.art.get(player.current.album_id,  ART_SIZE_SMALL)
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.show()
             else:
                 self._cover.hide()
-            
+
             self._title_label.set_text(player.current.title)
             self._artist_label.set_text(player.current.artist)
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
-            self._total_time_label.set_text(seconds_to_string(player.current.duration))
+            self._total_time_label.set_text(
+                                    seconds_to_string(player.current.duration))
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()
 
     """
         Update buttons and progress bar
-        @param obj as unused
+        @param progress as Gtk.Range
     """
-    def _on_status_changed(self, obj):
+    def _on_status_changed(self, progress):
         is_playing = Objects.player.is_playing()
         self._progress.set_sensitive(is_playing)
         if is_playing and not self._timeout:
@@ -228,7 +239,8 @@ class Toolbar:
             self._prev_btn.set_sensitive(True)
             self._play_btn.set_sensitive(True)
             self._next_btn.set_sensitive(True)
-            # Party mode can be activated in fullscreen mode, so check button state
+            # Party mode can be activated
+            # in fullscreen mode, so check button state
             self._party_btn.set_active(Objects.player.is_party())
         elif not is_playing and self._timeout:
             GLib.source_remove(self._timeout)
@@ -237,16 +249,16 @@ class Toolbar:
 
     """
         Previous track on prev button clicked
-        @param obj as unused
-    """        
-    def _on_prev_btn_clicked(self, obj):
+        @param button as Gtk.Button
+    """
+    def _on_prev_btn_clicked(self, button):
         Objects.player.prev()
 
     """
         Play/Pause on play button clicked
-        @param obj as unused
-    """        
-    def _on_play_btn_clicked(self, obj):
+        @param button as Gtk.Button
+    """
+    def _on_play_btn_clicked(self, button):
         if Objects.player.is_playing():
             Objects.player.pause()
             self._change_play_btn_status(self._play_image, _("Play"))
@@ -256,23 +268,23 @@ class Toolbar:
 
     """
         Next track on next button clicked
-        @param obj as unused
-    """        
-    def _on_next_btn_clicked(self, obj):
-        Objects.player.next()        
-    
+        @param button as Gtk.Button
+    """
+    def _on_next_btn_clicked(self, button):
+        Objects.player.next()
+
     """
         Show search widget on search button clicked
-        @param obj as unused
+        @param button as Gtk.Button
     """
-    def _on_search_btn_clicked(self, obj):
+    def _on_search_btn_clicked(self, button):
         self._search.show()
-        
+
     """
         Show queue widget on queue button clicked
-        @param obj as unused
+        @param button as Gtk.Button
     """
-    def _on_queue_btn_clicked(self, obj):
+    def _on_queue_btn_clicked(self, button):
         self._queue.show()
 
     """
@@ -294,14 +306,14 @@ class Toolbar:
         self._shuffle_btn.set_sensitive(not active)
         settings.set_property("gtk-application-prefer-dark-theme", active)
         Objects.player.set_party(active)
-        
+
     """
         Update progress bar position
         @param value as int
     """
-    def _update_position(self, value = None):
+    def _update_position(self, value=None):
         if not self._seeking:
-            if value == None:
+            if value is None:
                 value = Objects.player.get_position_in_track()/1000000
             self._progress.set_value(value)
             self._timelabel.set_text(seconds_to_string(value/60))
