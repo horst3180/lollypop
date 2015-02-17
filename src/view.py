@@ -11,20 +11,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 from gettext import gettext as _
-from time import sleep
-from _thread import start_new_thread
 
-from lollypop.define import Objects
-from lollypop.database import Database
-from lollypop.playlists import PlaylistsManagePopup
-from lollypop.view_widgets import *
+from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
+from lollypop.playlists import PlaylistsManagePopup, PlaylistWidget
+from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.utils import translate_artist_name
 
-"""
-    Loading view used on db update
-"""
+
+# Loading view used on db update
 class LoadingView(Gtk.Bin):
     def __init__(self):
         Gtk.Bin.__init__(self)
@@ -35,16 +31,15 @@ class LoadingView(Gtk.Bin):
         label.show()
         self.add(label)
         self.show()
-        
+
     def remove_signals(self):
         pass
+
     def stop(self):
         pass
 
 
-"""
-    PlaylistConfigureView view used to manage playlists
-"""
+# PlaylistConfigureView view used to manage playlists
 class PlaylistConfigureView(Gtk.Bin):
     def __init__(self):
         Gtk.Bin.__init__(self)
@@ -54,16 +49,19 @@ class PlaylistConfigureView(Gtk.Bin):
         button.connect('clicked', self._on_button_clicked)
         button.show()
         self.add(button)
+
     def populate(self):
         pass
+
     def remove_signals(self):
         pass
+
     def stop(self):
         pass
-        
+
 #######################
 # PRIVATE             #
-#######################    
+#######################
     """
         Show playlists management dialog
         @param button as Gtk.Button
@@ -72,14 +70,13 @@ class PlaylistConfigureView(Gtk.Bin):
         popup = PlaylistsManagePopup(-1, False, self.get_toplevel())
         popup.show()
 
-"""
-    Generic view
-"""
+
+# Generic view
 class View(Gtk.Grid):
     __gsignals__ = {
         'finished': (GObject.SIGNAL_RUN_FIRST, None, ())
     }
-    
+
     def __init__(self):
         Gtk.Grid.__init__(self)
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
@@ -88,15 +85,16 @@ class View(Gtk.Grid):
             self.get_style_context().add_class('black')
         Objects.player.connect("current-changed", self._on_current_changed)
         Objects.player.connect("cover-changed", self._on_cover_changed)
-        self._stop = False # Stop populate thread
-        
+        # Stop populate thread
+        self._stop = False
+
     """
         Remove signals on player object
     """
     def remove_signals(self):
         Objects.player.disconnect_by_func(self._on_current_changed)
         Objects.player.disconnect_by_func(self._on_cover_changed)
-        
+
 #######################
 # PRIVATE             #
 #######################
@@ -136,11 +134,9 @@ class View(Gtk.Grid):
     """
     def stop(self):
         self._stop = True
-        
 
-"""
-    Artist view is a vertical grid with album songs widgets
-"""
+
+# Artist view is a vertical grid with album songs widgets
 class ArtistView(View):
     """
         Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
@@ -150,7 +146,7 @@ class ArtistView(View):
     """
     def __init__(self, artist_id, genre_id, show_artist_details):
         View.__init__(self)
-        
+
         if show_artist_details:
             self._ui = Gtk.Builder()
             self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
@@ -180,18 +176,22 @@ class ArtistView(View):
     def populate(self):
         sql = Objects.db.get_cursor()
         if self._artist_id == COMPILATIONS:
-            albums = Objects.albums.get_compilations(self._genre_id, sql)
+            albums = Objects.albums.get_compilations(self._genre_id,
+                                                     sql)
         elif self._genre_id == ALL:
-            albums = Objects.albums.get_ids(self._artist_id, None, sql)
+            albums = Objects.albums.get_ids(self._artist_id,
+                                            None,
+                                            sql)
         else:
-            albums = Objects.albums.get_ids(self._artist_id, self._genre_id, sql)
+            albums = Objects.albums.get_ids(self._artist_id,
+                                            self._genre_id,
+                                            sql)
         GLib.idle_add(self._add_albums, albums)
         sql.close()
-        
+
 #######################
 # PRIVATE             #
 #######################
-
     """
         Update album cover in view
         @param album id as int
@@ -217,7 +217,11 @@ class ArtistView(View):
     def _add_albums(self, albums):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         if len(albums) > 0 and not self._stop:
-            widget = AlbumDetailedWidget(albums.pop(0), self._genre_id, True, self._show_menu, size_group)
+            widget = AlbumDetailedWidget(albums.pop(0),
+                                         self._genre_id,
+                                         True,
+                                         self._show_menu,
+                                         size_group)
             widget.show()
             self._albumbox.add(widget)
             if widget.eventbox:
@@ -229,9 +233,8 @@ class ArtistView(View):
             self._stop = False
             self.emit('finished')
 
-"""
-    Album view is a flowbox of albums widgets with album name and artist name
-"""
+
+# Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
 
     """
@@ -255,17 +258,18 @@ class AlbumView(View):
         viewport = Gtk.Viewport()
         viewport.add(self._albumbox)
         viewport.set_property("valign", Gtk.Align.START)
-        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                        Gtk.PolicyType.AUTOMATIC)
         self._scrolledWindow.add(viewport)
         self._scrolledWindow.show_all()
-        
+
         self._stack = Gtk.Stack()
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
         separator = Gtk.Separator()
         separator.show()
-        
+
         self.add(self._scrolledWindow)
         self.add(separator)
         self.add(self._stack)
@@ -273,7 +277,7 @@ class AlbumView(View):
 
     """
         Populate albums, thread safe
-    """    
+    """
     def populate(self):
         sql = Objects.db.get_cursor()
         if self._genre_id == ALL:
@@ -290,7 +294,6 @@ class AlbumView(View):
 #######################
 # PRIVATE             #
 #######################
-    
     """
         Update album cover in view
         @param widget as unused, album id as int
@@ -328,8 +331,12 @@ class AlbumView(View):
         old_view = self._get_next_view()
         if old_view:
             self._stack.remove(old_view)
-        self._context_widget = AlbumDetailedWidget(album_id, self._genre_id, False, True, size_group)
-        self._context_widget.show()            
+        self._context_widget = AlbumDetailedWidget(album_id,
+                                                   self._genre_id,
+                                                   False,
+                                                   True,
+                                                   size_group)
+        self._context_widget.show()
         view = Gtk.ScrolledWindow()
         view.set_min_content_height(250)
         view.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -337,7 +344,7 @@ class AlbumView(View):
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
-            
+
     """
         Show Context view for activated album
         @param flowbox, children
@@ -350,8 +357,9 @@ class AlbumView(View):
             self._artist_id = child.get_child().get_id()
             self._populate_context(self._artist_id)
             self._stack.show()
-            self._context_widget.eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-    
+            self._context_widget.eventbox.get_window().set_cursor(
+                                            Gdk.Cursor(Gdk.CursorType.HAND1))
+
     """
         Pop an album and add it to the view,
         repeat operation until album list is empty
@@ -368,9 +376,7 @@ class AlbumView(View):
             self.emit('finished')
 
 
-"""
-    Playlist view is a vertical grid with album's covers
-"""
+# Playlist view is a vertical grid with album's covers
 class PlaylistView(View):
     """
         Init PlaylistView ui with a scrolled grid of PlaylistWidgets
@@ -398,8 +404,12 @@ class PlaylistView(View):
         sql = Objects.db.get_cursor()
         tracks = Objects.playlists.get_tracks_id(self._name, sql)
         mid_tracks = int(0.5+len(tracks)/2)
-        GLib.idle_add(self._widget.populate_list_one, tracks[:mid_tracks], 1)
-        GLib.idle_add(self._widget.populate_list_two, tracks[mid_tracks:], mid_tracks + 1)
+        GLib.idle_add(self._widget.populate_list_one,
+                      tracks[:mid_tracks],
+                      1)
+        GLib.idle_add(self._widget.populate_list_two,
+                      tracks[mid_tracks:],
+                      mid_tracks + 1)
 
     """
         Return playlist name
