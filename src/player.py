@@ -458,6 +458,7 @@ class Player(GObject.GObject):
     def set_user_playlist(self, tracks, track_id):
         self._user_playlist = tracks
         self._albums = None
+        self._context.album_id = None
         self._context.position = self._user_playlist.index(track_id)
         self._shuffle_playlist()
 

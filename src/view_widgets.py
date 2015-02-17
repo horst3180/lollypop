@@ -247,8 +247,8 @@ class PlaylistWidget(Gtk.Grid):
     """
     def __init__(self, playlist_name):
         Gtk.Grid.__init__(self)
+        self._tracks = []
         self.set_property("margin", 5)
-        self._is_loaded = False
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
 
@@ -304,6 +304,7 @@ class PlaylistWidget(Gtk.Grid):
         Clear tracks
     """
     def clear(self):
+        self._tracks = []
         for child in self._tracks_widget1.get_children():
             child.destroy()
         for child in self._tracks_widget2.get_children():
@@ -348,8 +349,9 @@ class PlaylistWidget(Gtk.Grid):
         @param playlist name as str
     """
     def _on_activated(self, widget, track_id, playlist_name):
-        if not Objects.player.is_party() and not self._is_loaded:
-            tracks = Objects.playlists.get_tracks_id(playlist_name)
-            Objects.player.set_user_playlist(tracks, track_id)
+        if not Objects.player.is_party():
+            if len(self._tracks) == 0:
+                self._tracks = Objects.playlists.get_tracks_id(playlist_name)
+            Objects.player.set_user_playlist(self._tracks, track_id)
             self._is_loaded = True
         Objects.player.load(track_id)
