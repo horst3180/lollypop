@@ -69,10 +69,10 @@ class FullScreen(Gtk.Window):
             settings.set_property("gtk-application-prefer-dark-theme", True)
             if not is_playing:
                 Objects.player.set_party(True)
-        elif is_playing:
+        if is_playing:
             self._change_play_btn_status(self._pause_image, _("Pause"))
             self._on_current_changed(Objects.player)
-        if is_playing and not self._timeout:
+        if not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
         self.fullscreen()
