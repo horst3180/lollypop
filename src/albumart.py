@@ -58,7 +58,8 @@ class AlbumArt:
             return CACHE_PATH_JPG
         else:
             self.get(album_id, size)
-            return self.get_path(album_id, size)
+            if os.path.exists(CACHE_PATH_JPG):
+                return CACHE_PATH_JPG
 
     """
         Look for covers in dir, folder.jpg if exist,
