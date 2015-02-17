@@ -80,7 +80,7 @@ class Player(GObject.GObject):
         # Albums already played
         self._shuffle_albums_backup = []
         # Tracks already played for current album
-        self._shuffle_album_tracks_history = []
+        self._shuffle_history = {}
         # Party mode
         self._is_party = False
         # Available party ids
@@ -285,7 +285,7 @@ class Player(GObject.GObject):
     """
     def set_party(self, party):
         self._shuffle_prev_tracks = []
-        self._shuffle_album_tracks_history = []
+        self._shuffle_history = {}
         self._shuffle_albums_backup = []
         self._user_playlist = None
         if party:
@@ -350,7 +350,7 @@ class Player(GObject.GObject):
                    genre_id, limit_to_artist):
         self._albums = []
         self._shuffle_prev_tracks = []
-        self._shuffle_album_tracks_history = []
+        self._shuffle_history = {}
         self._shuffle_albums_backup = []
         # We are not playing a user playlist anymore
         self._user_playlist = None
@@ -466,6 +466,16 @@ class Player(GObject.GObject):
 # PRIVATE             #
 #######################
     """
+        Add a track to shuffle history
+        @param track id as int
+        @param album id as int
+    """
+    def _add_to_shuffle_history(self, track_id, album_id):
+        if self.current.album_id not in self._shuffle_history.keys():
+            self._shuffle_history[self.current.album_id] = []
+        self._shuffle_history[self.current.album_id].append(self.current.id)
+
+    """
         Shuffle/Un-shuffle playlist based on shuffle setting
     """
     def _shuffle_playlist(self):
@@ -482,7 +492,8 @@ class Player(GObject.GObject):
             self._context.position = 0
         # Shuffle Tracks, just add current to history
         elif self._shuffle == SHUFFLE_TRACKS and self.current.id:
-            self._shuffle_album_tracks_history.append(self.current.id)
+            self._add_to_shuffle_history(self.current.id,
+                                         self.current.album_id)
         # When shuffle none or shuffle albums and a user playlist is defined
         # Unshuffle
         elif self._shuffle in [SHUFFLE_NONE, SHUFFLE_ALBUMS]:
@@ -502,7 +513,7 @@ class Player(GObject.GObject):
     def _set_shuffle(self, settings, value):
         self._shuffle = Objects.settings.get_enum('shuffle')
         self._shuffle_albums_backup = []
-        self._shuffle_album_tracks_history = []
+        self._shuffle_history = {}
         self._shuffle_prev_tracks = []
 
         if self._shuffle == SHUFFLE_TRACKS or self._user_playlist:
@@ -582,7 +593,7 @@ class Player(GObject.GObject):
         if not track_id:
             self._albums = self._shuffle_albums_backup
             self._shuffle_prev_tracks = []
-            self._shuffle_album_tracks_history = []
+            self._shuffle_history = {}
             self._shuffle_albums_backup = []
             self._shuffle_next(force)
             return
@@ -601,12 +612,12 @@ class Player(GObject.GObject):
                                key=lambda *args: random.random()):
             tracks = Objects.albums.get_tracks(album_id, sql)
             for track in sorted(tracks, key=lambda *args: random.random()):
-                if track not in self._shuffle_album_tracks_history:
+                if album_id not in self._shuffle_history.keys() or\
+                   track not in self._shuffle_history[album_id]:
                     return track
             # No new tracks for this album, remove it
             self._albums.remove(album_id)
-            for track_id in Objects.albums.get_tracks(album_id):
-                self._shuffle_album_tracks_history.remove(track_id)
+            self._shuffle_history.pop(album_id)
             self._shuffle_albums_backup.append(album_id)
 
         return None
@@ -620,7 +631,8 @@ class Player(GObject.GObject):
         # Add track to shuffle history if needed
         if self._shuffle != SHUFFLE_NONE or self._is_party:
             self._shuffle_prev_tracks.append(self.current.id)
-            self._shuffle_album_tracks_history.append(self.current.id)
+            self._add_to_shuffle_history(self.current.id,
+                                         self.current.album_id)
 
     """
         On error, next()
