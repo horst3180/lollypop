@@ -85,7 +85,6 @@ class Application(Gtk.Application):
         Notify.init("Lollypop")
         if self._appmenu:
             menu = self._setup_app_menu()
-            self._add_accelerators()
             self.set_app_menu(menu)
 
     """
@@ -118,15 +117,6 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add default accelerators
-    """
-    def _add_accelerators(self):
-        self.add_accelerator("<Control>p", "app.settings")
-        self.add_accelerator("<Control>f", "app.fullscreen")
-        self.add_accelerator("<Control>r", "app.update_db")
-        self.add_accelerator("<Control>q", "app.quit")
-
     """
         Hide window
     """
