@@ -171,11 +171,12 @@ class AlbumArt:
     """
     def get_google_arts(self, search):
         try:
-            response = urllib.request.urlopen("https://ajax.googleapis.com/\
-                                              ajax/services/search/images\
-                                              ?&q=%s&v=1.0&start=0&rsz=8" %
+            response = urllib.request.urlopen("https://ajax.googleapis.com/"\
+                                              "ajax/services/search/images"\
+                                              "?&q=%s&v=1.0&start=0&rsz=8" %
                                               urllib.parse.quote(search))
-        except:
+        except Exception as e:
+            print(e)
             return None
 
         data = response.read()
