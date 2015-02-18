@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
 from lollypop.define import Objects, ART_SIZE_MONSTER
@@ -58,6 +58,7 @@ class FullScreen(Gtk.Window):
                                self._on_progress_press_button)
         self._timelabel = self._ui.get_object('playback')
         self._total_time_label = self._ui.get_object('duration')
+        self.connect('key-release-event', self._on_key_release_event)
 
     """
         Init signals, set color and go party mode if nothing is playing
@@ -124,6 +125,15 @@ class FullScreen(Gtk.Window):
                                 seconds_to_string(player.current.duration)
                                            )
             self._timelabel.set_text("0:00")
+
+    """
+        Destroy window if Esc
+        @param widget as Gtk.Widget
+        @param event as Gdk.event
+    """
+    def _on_key_release_event(self, widget, event):
+        if event.keyval == Gdk.KEY_Escape :
+            self.destroy()
 
     """
         Go to prev track
