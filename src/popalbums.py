@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from _thread import start_new_thread
 
 from lollypop.view import ArtistView
-from lollypop.define import Objects
+from lollypop.define import Objects, COMPILATIONS
 
 
 # Show a popup with current artist albums
@@ -47,8 +47,6 @@ class PopAlbums(Gtk.Popover):
     """
     def populate(self):
         artist_id = Objects.player.current.performer_id
-        if artist_id == -1:
-            artist_id = Objects.player.current.artist_id
 
         genre_id = Objects.player.current.genre_id
 
