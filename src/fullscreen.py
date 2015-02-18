@@ -77,6 +77,7 @@ class FullScreen(Gtk.Window):
         if not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
+        self._update_position()
         self.fullscreen()
 
     """
