@@ -75,6 +75,10 @@ class Toolbar:
 
         self._party_btn = self._ui.get_object('party-button')
         self._party_btn.connect("toggled", self._on_party_btn_toggled)
+        partyAction = Gio.SimpleAction.new('party', None)
+        partyAction.connect('activate', self._activate_party_button)
+        app.add_action(partyAction)
+        app.add_accelerator("<Alt>p", "app.party")
 
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
@@ -92,6 +96,7 @@ class Toolbar:
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
         app.add_action(searchAction)
+        app.add_accelerator("<Alt>f", "app.search")
         app.add_accelerator("<Control>s", "app.search")
 
         queue_button = self._ui.get_object('queue-button')
@@ -305,10 +310,16 @@ class Toolbar:
         self._play_btn.set_tooltip_text(status)
 
     """
-        Set party mode on if party button active
-        @param obj as unused
+        Activate party button
     """
-    def _on_party_btn_toggled(self, obj):
+    def _activate_party_button(self, action, param):
+        self._party_btn.set_active(not self._party_btn.get_active())
+ 
+    """
+        Set party mode on if party button active
+        @param obj as Gtk.button
+    """
+    def _on_party_btn_toggled(self, button):
         settings = Gtk.Settings.get_default()
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
