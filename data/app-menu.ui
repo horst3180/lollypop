@@ -5,7 +5,7 @@
 	<item>
         <attribute name="action">app.settings</attribute>
         <attribute name="label" translatable="yes">_Preferences</attribute>
-        <attribute name="accel">&lt;Primary&gt;p</attribute>
+        <attribute name="accel">&lt;Primary&gt;s</attribute>
       </item>
 	 <item>
         <attribute name="action">app.update_db</attribute>
@@ -15,7 +15,7 @@
       <item>
         <attribute name="action">app.fullscreen</attribute>
         <attribute name="label" translatable="yes">_Fullscreen</attribute>
-        <attribute name="accel">&lt;Alt&gt;f</attribute>
+        <attribute name="accel">&lt;Primary&gt;m</attribute>
       </item>
       <item>
         <attribute name="action">app.about</attribute>

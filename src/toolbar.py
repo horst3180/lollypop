@@ -78,7 +78,7 @@ class Toolbar:
         partyAction = Gio.SimpleAction.new('party', None)
         partyAction.connect('activate', self._activate_party_button)
         app.add_action(partyAction)
-        app.add_accelerator("<Alt>p", "app.party")
+        app.add_accelerator("<Control>p", "app.party")
 
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
@@ -96,7 +96,7 @@ class Toolbar:
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
         app.add_action(searchAction)
-        app.add_accelerator("<Alt>s", "app.search")
+        app.add_accelerator("<Control>f", "app.search")
 
         queue_button = self._ui.get_object('queue-button')
         queue_button.connect("clicked", self._on_queue_btn_clicked)
