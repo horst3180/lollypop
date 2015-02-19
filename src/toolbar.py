@@ -96,8 +96,7 @@ class Toolbar:
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
         app.add_action(searchAction)
-        app.add_accelerator("<Alt>f", "app.search")
-        app.add_accelerator("<Control>s", "app.search")
+        app.add_accelerator("<Alt>s", "app.search")
 
         queue_button = self._ui.get_object('queue-button')
         queue_button.connect("clicked", self._on_queue_btn_clicked)

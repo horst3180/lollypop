@@ -15,7 +15,7 @@
       <item>
         <attribute name="action">app.fullscreen</attribute>
         <attribute name="label" translatable="yes">_Fullscreen</attribute>
-        <attribute name="accel">&lt;Primary&gt;f</attribute>
+        <attribute name="accel">&lt;Alt&gt;f</attribute>
       </item>
       <item>
         <attribute name="action">app.about</attribute>
