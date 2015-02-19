@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib, Gio
 
 from lollypop.define import Objects, SHUFFLE_NONE, ART_SIZE_SMALL
 from lollypop.search import SearchWidget
@@ -27,8 +27,9 @@ from lollypop.popalbums import PopAlbums
 class Toolbar:
     """
         Init toolbar/headerbar ui
+        @param app as Gtk.Application
     """
-    def __init__(self):
+    def __init__(self, app):
         # Prevent updating progress while seeking
         self._seeking = False
         # Update pogress position
@@ -88,6 +89,10 @@ class Toolbar:
         search_button.connect("clicked", self._on_search_btn_clicked)
         self._search = SearchWidget()
         self._search.set_relative_to(search_button)
+        searchAction = Gio.SimpleAction.new('search', None)
+        searchAction.connect('activate', self._on_search_btn_clicked)
+        app.add_action(searchAction)
+        app.add_accelerator("<Control>s", "app.search")
 
         queue_button = self._ui.get_object('queue-button')
         queue_button.connect("clicked", self._on_queue_btn_clicked)
@@ -278,9 +283,9 @@ class Toolbar:
 
     """
         Show search widget on search button clicked
-        @param button as Gtk.Button
+        @param obj as Gtk.Button or Gtk.Action
     """
-    def _on_search_btn_clicked(self, button):
+    def _on_search_btn_clicked(self, obj, param=None):
         self._search.show()
 
     """

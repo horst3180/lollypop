@@ -267,7 +267,7 @@ class Window(Gtk.ApplicationWindow):
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self._toolbar = Toolbar()
+        self._toolbar = Toolbar(self.get_application())
         self._toolbar.header_bar.show()
         self._toolbar.get_view_genres_btn().connect(
                                             "toggled",
