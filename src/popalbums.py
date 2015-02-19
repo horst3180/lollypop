@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from _thread import start_new_thread
 
 from lollypop.view import ArtistView
-from lollypop.define import Objects, COMPILATIONS
+from lollypop.define import Objects
 
 
 # Show a popup with current artist albums

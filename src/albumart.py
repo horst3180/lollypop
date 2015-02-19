@@ -171,8 +171,8 @@ class AlbumArt:
     """
     def get_google_arts(self, search):
         try:
-            response = urllib.request.urlopen("https://ajax.googleapis.com/"\
-                                              "ajax/services/search/images"\
+            response = urllib.request.urlopen("https://ajax.googleapis.com/"
+                                              "ajax/services/search/images"
                                               "?&q=%s&v=1.0&start=0&rsz=8" %
                                               urllib.parse.quote(search))
         except Exception as e:

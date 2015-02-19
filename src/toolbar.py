@@ -165,7 +165,8 @@ class Toolbar:
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
-                menu = PopMainMenu(Objects.player.current.id, False, True, widget)
+                menu = PopMainMenu(Objects.player.current.id,
+                                   False, True, widget)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True
@@ -313,7 +314,7 @@ class Toolbar:
     """
     def _activate_party_button(self, action, param):
         self._party_btn.set_active(not self._party_btn.get_active())
- 
+
     """
         Set party mode on if party button active
         @param obj as Gtk.button

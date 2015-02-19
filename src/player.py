@@ -38,11 +38,13 @@ class CurrentTrack:
         self.duration = None
         self.path = None
 
+
 # Represent playback context
 class CurrentContext:
     def __init__(self):
         self.album_id = None
         self.position = None
+
 
 # Player object used to manage playback and playlists
 class Player(GObject.GObject):
@@ -229,7 +231,8 @@ class Player(GObject.GObject):
             if force:
                 self.load(self._user_playlist[self._context.position])
             else:
-                self._load_track(self._user_playlist[self._context.position], sql)
+                self._load_track(self._user_playlist[self._context.position],
+                                 sql)
         # Get a random album/track
         elif self._shuffle == SHUFFLE_TRACKS or self._is_party:
             self._shuffle_next(force, sql)

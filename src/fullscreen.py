@@ -132,7 +132,7 @@ class FullScreen(Gtk.Window):
         @param event as Gdk.event
     """
     def _on_key_release_event(self, widget, event):
-        if event.keyval == Gdk.KEY_Escape :
+        if event.keyval == Gdk.KEY_Escape:
             self.destroy()
 
     """
