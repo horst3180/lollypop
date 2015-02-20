@@ -665,6 +665,9 @@ class PlaylistEditWidget:
         if iterator:
             if column.get_title() == "pixbuf2":
                 self._show_infobar(path)
+            else:
+                self._infobar.hide()
+
     """
         On selection changed, show infobar
         @param selection as Gtk.TreeSelection
@@ -674,8 +677,6 @@ class PlaylistEditWidget:
         if  count > 1:
             self._infobar_label.set_markup(_("Remove this tracks?"))
             self._infobar.show()
-        elif count == 0:
-            self._infobar.hide()
 
     """
         Hide window
