@@ -211,30 +211,29 @@ class AlbumArt:
                                                                    False,
                                                                    None)
                 break
-            elif isinstance(tag, list):
-                if tag.startswith("APIC:"):
-                    audiotag = filetag.tags[tag]
-                    # TODO check type by pref
-                    stream = Gio.MemoryInputStream.new_from_data(audiotag.data,
+            elif tag.startswith("APIC:"):
+                audiotag = filetag.tags[tag]
+                # TODO check type by pref
+                stream = Gio.MemoryInputStream.new_from_data(audiotag.data,
+                                                             None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                                   size,
+                                                                   size,
+                                                                   False,
+                                                                   None)
+                break
+            elif tag == "covr":
+                data = filetag.tags["covr"]
+                if len(data) > 0:
+                    stream = Gio.MemoryInputStream.new_from_data(data[0],
                                                                  None)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                       size,
-                                                                       size,
-                                                                       False,
-                                                                       None)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                                   stream,
+                                                                   size,
+                                                                   size,
+                                                                   False,
+                                                                   None)
                     break
-                elif tag == "covr":
-                    data = filetag.tags["covr"]
-                    if len(data) > 0:
-                        stream = Gio.MemoryInputStream.new_from_data(data[0],
-                                                                     None)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                                       stream,
-                                                                       size,
-                                                                       size,
-                                                                       False,
-                                                                       None)
-                        break
         return pixbuf
 
     """
