@@ -7,6 +7,7 @@
     <file preprocess="xml-stripblanks">TrackRow.ui</file>
     <file preprocess="xml-stripblanks">QueueWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistView.ui</file>
+    <file preprocess="xml-stripblanks">PlaylistWidget.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>

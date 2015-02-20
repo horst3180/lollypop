@@ -251,6 +251,12 @@ class PlaylistWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._tracks = []
         self.set_property("margin", 5)
+
+        self._ui = Gtk.Builder()
+        self._ui.add_from_resource(
+                '/org/gnome/Lollypop/PlaylistWidget.ui'
+                                  )
+        
         self._tracks_widget1 = TracksWidget(False)
         self._tracks_widget2 = TracksWidget(False)
         self._tracks_widget1.connect('activated',
@@ -264,10 +270,9 @@ class PlaylistWidget(Gtk.Grid):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._playlist_view = Gtk.Grid()
-        self._playlist_view.add(self._tracks_widget1)
-        self._playlist_view.add(self._tracks_widget2)
-        self._playlist_view.show()
+        self._playlist_widget = self._ui.get_object('scroll')
+        self._ui.get_object('grid').add(self._tracks_widget1)
+        self._ui.get_object('grid').add(self._tracks_widget2)
 
         self._stack = Gtk.Stack()
         self._playlist_edit = PlaylistEditWidget(playlist_name,
@@ -275,8 +280,8 @@ class PlaylistWidget(Gtk.Grid):
                                                  infobar_label,
                                                  self)
         self._stack.add(self._playlist_edit.widget)
-        self._stack.add(self._playlist_view)
-        self._stack.set_visible_child(self._playlist_view)
+        self._stack.add(self._playlist_widget)
+        self._stack.set_visible_child(self._playlist_widget)
         self._stack.set_transition_duration(500)
         self._stack.set_property('expand', True)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -317,7 +322,7 @@ class PlaylistWidget(Gtk.Grid):
             self._stack.set_visible_child(self._playlist_edit.widget)
             self._playlist_edit.populate()
         else:
-            self._stack.set_visible_child(self._playlist_view)
+            self._stack.set_visible_child(self._playlist_widget)
 
     """
         Clear tracks

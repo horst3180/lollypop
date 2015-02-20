@@ -390,7 +390,7 @@ class PlaylistView(View):
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
-        self.add(self._ui.get_object('PlaylistView'))
+
         self._ui.get_object('edit_btn').connect('toggled',
                                                 self._on_edit_btn_toggled,
                                                 playlist_name)
@@ -399,7 +399,10 @@ class PlaylistView(View):
                                                self._ui.get_object('infobar'),
                                                self._ui.get_object('infobarlabel'))
         self._playlist_widget.show()
-        self._ui.get_object('scrolled').add(self._playlist_widget)
+        
+        widget = self._ui.get_object('PlaylistView')
+        self.add(widget)
+        widget.attach(self._playlist_widget, 0, 2, 2, 1)
 
         self._header = self._ui.get_object('header')
 

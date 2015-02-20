@@ -571,7 +571,7 @@ class PlaylistEditWidget:
         populate view if needed
     """
     def populate(self):
-        self._view.set_property('width-request',
+        self._ui.get_object('scroll').set_property('width-request',
                                 self._parent.get_allocated_width()/2)
         if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
