@@ -487,6 +487,7 @@ class PlaylistView(View):
         self._playlist_widget.edit(False)
         self._back_btn.hide()
         self._edit_btn.show()
+        self._ui.get_object('infobar').hide()
         self._title.show()
 
     """

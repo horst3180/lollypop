@@ -250,6 +250,7 @@ class PlaylistWidget(Gtk.Grid):
     def __init__(self, playlist_name, infobar, infobar_label):
         Gtk.Grid.__init__(self)
         self._tracks = []
+        self._infobar = infobar
         self.set_property("margin", 5)
 
         self._ui = Gtk.Builder()
@@ -322,6 +323,7 @@ class PlaylistWidget(Gtk.Grid):
             self._stack.set_visible_child(self._playlist_edit.widget)
             self._playlist_edit.populate()
         else:
+            self._infobar.hide()
             self._stack.set_visible_child(self._playlist_widget)
 
     """
