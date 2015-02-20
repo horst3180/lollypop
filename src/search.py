@@ -16,7 +16,6 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects, ART_SIZE_MEDIUM
-from lollypop.playlists import PlaylistsManagePopup
 from lollypop.utils import translate_artist_name
 
 
@@ -24,9 +23,11 @@ from lollypop.utils import translate_artist_name
 class SearchRow(Gtk.ListBoxRow):
     """
         Init row widgets
+        @param parent as Gtk.Widget
     """
-    def __init__(self):
+    def __init__(self, parent):
         Gtk.ListBoxRow.__init__(self)
+        self._parent = parent
         self.id = None
         self.is_track = False
         self._ui = Gtk.Builder()
@@ -96,8 +97,8 @@ class SearchRow(Gtk.ListBoxRow):
         @param button as Gtk.Button
     """
     def _on_playlist_clicked(self, button):
-        popup = PlaylistsManagePopup(self.id, not self.is_track)
-        popup.show()
+        window = self._parent.get_toplevel()
+        window.show_playlist_manager(self.id, not self.is_track)
 
     """
         Add track to queue
@@ -134,10 +135,11 @@ class SearchWidget(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
+        @param parent as Gtk.Widget
     """
-    def __init__(self):
+    def __init__(self, parent):
         Gtk.Popover.__init__(self)
-
+        self._parent = parent
         self._in_thread = False
         self._stop_thread = False
         self._timeout = None
@@ -307,7 +309,7 @@ class SearchWidget(Gtk.Popover):
         if len(results) > 0:
             result = results.pop(0)
             if not self._exists(result):
-                search_row = SearchRow()
+                search_row = SearchRow(self._parent)
                 search_row.set_artist(result.artist)
                 if result.count != -1:
                     result.title += " (%s)" % result.count

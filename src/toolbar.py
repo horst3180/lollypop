@@ -91,7 +91,7 @@ class Toolbar:
 
         search_button = self._ui.get_object('search-button')
         search_button.connect("clicked", self._on_search_btn_clicked)
-        self._search = SearchWidget()
+        self._search = SearchWidget(self.header_bar)
         self._search.set_relative_to(search_button)
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)

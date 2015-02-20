@@ -276,7 +276,7 @@ class PlaylistsManager(GObject.GObject):
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)
-class PlaylistsManagePopup:
+class PlaylistsManageWidget(Gtk.Bin):
 
     """
         Init Popover ui with a scrolled treeview
@@ -285,7 +285,8 @@ class PlaylistsManagePopup:
         @param parent as Gtk.Widget
     """
     def __init__(self, object_id, is_album, parent):
-
+        Gtk.Bin.__init__(self)
+        self._parent = parent
         self._object_id = object_id
         self._is_album = is_album
         self._deleted_path = None
@@ -296,20 +297,23 @@ class PlaylistsManagePopup:
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
-                '/org/gnome/Lollypop/PlaylistsManagePopup.ui'
+                '/org/gnome/Lollypop/PlaylistsManageWidget.ui'
                                   )
 
         self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
 
+        if object_id != -1:
+            self._ui.get_object('close_btn').show()
+
         self._view = self._ui.get_object('view')
         self._view.set_model(self._model)
 
         self._ui.connect_signals(self)
 
-        self._popup = self._ui.get_object('popup')
-        self._popup.set_transient_for(parent.get_toplevel())
+        self.add(self._ui.get_object('widget'))
+        
         self._infobar = self._ui.get_object('infobar')
         self._infobar_label = self._ui.get_object('infobarlabel')
 
@@ -338,18 +342,26 @@ class PlaylistsManagePopup:
         self._view.append_column(column2)
 
     """
-        Show playlist popup
+        Calculate size
     """
-    def show(self):
-        self._popup.set_property('width-request', 600)
-        size_setting = Objects.settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self._popup.set_property('height-request', size_setting[1]*0.5)
-        else:
-            self._popup.set_property('height-request', 600)
+    def calculate_size(self):
+        if self._parent:
+            self._ui.get_object('scroll').set_property('width-request',
+                                    self._parent.get_allocated_width()/2)
 
-        start_new_thread(self._append_playlists, ())
-        self._popup.show()
+    """
+        Populate playlists, thread safe
+    """
+    def populate(self):
+        sql = Objects.db.get_cursor()
+        # Search if we need to select item or not
+        playlists = Objects.playlists.get()
+        for playlist in playlists:
+            selected = Objects.playlists.is_present(playlist,
+                                                    self._object_id,
+                                                    self._is_album,
+                                                    sql)
+            GLib.idle_add(self._append_playlist, playlist, selected)
 
 #######################
 # PRIVATE             #
@@ -361,20 +373,6 @@ class PlaylistsManagePopup:
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
         return a > b
-
-    """
-        Append playlists, thread safe
-    """
-    def _append_playlists(self):
-        sql = Objects.db.get_cursor()
-        # Search if we need to select item or not
-        playlists = Objects.playlists.get()
-        for playlist in playlists:
-            selected = Objects.playlists.is_present(playlist,
-                                                    self._object_id,
-                                                    self._is_album,
-                                                    sql)
-            GLib.idle_add(self._append_playlist, playlist, selected)
 
     """
         Append a playlist
@@ -394,6 +392,14 @@ class PlaylistsManagePopup:
         self._infobar_label.set_text(_("Remove \"%s\"?") %
                                      self._model.get_value(iterator, 1))
         self._infobar.show()
+
+    """
+        Restore previous view
+        @param button as Gtk.Button
+    """
+    def _on_close_btn_clicked(self, button):
+        window = self._parent.get_toplevel()
+        window.destroy_current_view()
 
     """
         Hide infobar

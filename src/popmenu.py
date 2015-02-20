@@ -16,7 +16,6 @@ from gi.repository import Gio
 from _thread import start_new_thread
 
 from lollypop.define import Objects
-from lollypop.playlists import PlaylistsManagePopup
 
 
 # Show a contextual menu for object
@@ -174,8 +173,8 @@ class PopMainMenu(Gio.Menu):
         @param is album as bool
     """
     def _add_to_playlists(self, action, variant, object_id, is_album):
-        popup = PlaylistsManagePopup(object_id, is_album, self._parent)
-        popup.show()
+        window = self._parent.get_toplevel()
+        window.show_playlist_manager(object_id, is_album)
 
     """
         Add to playlist

@@ -16,7 +16,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
-from lollypop.playlists import PlaylistsManagePopup
+from lollypop.playlists import PlaylistsManageWidget
 from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
@@ -42,18 +42,20 @@ class LoadingView(Gtk.Bin):
 
 
 # PlaylistConfigureView view used to manage playlists
-class PlaylistConfigureView(Gtk.Bin):
-    def __init__(self):
+class PlaylistManageView(Gtk.Bin):
+    """
+         @param object id as int
+         @param is album as bool
+    """
+    def __init__(self, object_id=-1, is_album=False):
         Gtk.Bin.__init__(self)
-        self.set_property('halign', Gtk.Align.CENTER)
-        self.set_property('valign', Gtk.Align.CENTER)
-        button = Gtk.Button(_("Manage playlists"))
-        button.connect('clicked', self._on_button_clicked)
-        button.show()
-        self.add(button)
+        self._widget = PlaylistsManageWidget(object_id, is_album, self)
+        self._widget.show()
+        self.add(self._widget)
 
     def populate(self):
-        pass
+        self._widget.populate()
+        GLib.idle_add(self._widget.calculate_size)
 
     def remove_signals(self):
         pass
@@ -64,13 +66,6 @@ class PlaylistConfigureView(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Show playlists management dialog
-        @param button as Gtk.Button
-    """
-    def _on_button_clicked(self, button):
-        popup = PlaylistsManagePopup(-1, False, button)
-        popup.show()
 
 
 # Generic view

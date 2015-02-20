@@ -23,7 +23,7 @@ from lollypop.toolbar import Toolbar
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view import AlbumView, ArtistView
-from lollypop.view import PlaylistView, PlaylistConfigureView, LoadingView
+from lollypop.view import PlaylistView, PlaylistManageView, LoadingView
 
 
 # Main window
@@ -113,6 +113,29 @@ class Window(Gtk.ApplicationWindow):
                                    GLib.Variant(
                                         'i',
                                         self._list_two.get_selected_item()))
+
+    """
+        Show playlist manager for playlist id/object_id
+        @param object id as int
+        @param is_album as bool
+    """
+    def show_playlist_manager(self, object_id, is_album):
+        old_view = self._stack.get_visible_child()
+        view = PlaylistManageView(object_id, is_album)
+        view.show()
+        self._stack.add(view)
+        self._stack.set_visible_child(view)
+        start_new_thread(view.populate, ())
+        if isinstance(old_view, PlaylistManageView):
+            old_view.destroy()
+           
+    """
+        Destroy current view
+    """
+    def destroy_current_view(self):
+        view = self._stack.get_visible_child()
+        view.hide()
+        GLib.timeout_add(2000, view.destroy)
 
 ############
 # Private  #
@@ -414,17 +437,18 @@ class Window(Gtk.ApplicationWindow):
         @param genre id as int
     """
     def _update_view_detailed(self, object_id, genre_id):
+        old_view = self._stack.get_visible_child()
         if genre_id == PLAYLISTS:
             self._update_view_playlists(object_id)
         elif object_id == ALL or object_id == POPULARS:
             self._update_view_genres(object_id)
         else:
-            old_view = self._stack.get_visible_child()
+            
             view = ArtistView(object_id, genre_id, True)
             self._stack.add(view)
             start_new_thread(view.populate, ())
             self._stack.set_visible_child(view)
-            self._clean_view(old_view)
+        self._clean_view(old_view)
 
     """
         Update albums view
@@ -452,7 +476,7 @@ class Window(Gtk.ApplicationWindow):
         if playlist_name:
             view = PlaylistView(playlist_name)
         else:
-            view = PlaylistConfigureView()
+            view = PlaylistManageView()
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
