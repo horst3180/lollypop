@@ -437,18 +437,17 @@ class Window(Gtk.ApplicationWindow):
         @param genre id as int
     """
     def _update_view_detailed(self, object_id, genre_id):
-        old_view = self._stack.get_visible_child()
         if genre_id == PLAYLISTS:
             self._update_view_playlists(object_id)
         elif object_id == ALL or object_id == POPULARS:
             self._update_view_genres(object_id)
         else:
-            
+            old_view = self._stack.get_visible_child()
             view = ArtistView(object_id, genre_id, True)
             self._stack.add(view)
             start_new_thread(view.populate, ())
             self._stack.set_visible_child(view)
-        self._clean_view(old_view)
+            self._clean_view(old_view)
 
     """
         Update albums view
@@ -461,6 +460,7 @@ class Window(Gtk.ApplicationWindow):
         start_new_thread(view.populate, ())
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
+
     """
         Update playlist view
         @param playlist id as int
