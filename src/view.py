@@ -397,7 +397,7 @@ class PlaylistView(View):
         
         widget = self._ui.get_object('PlaylistView')
         self.add(widget)
-        widget.attach(self._playlist_widget, 0, 2, 2, 1)
+        widget.attach(self._playlist_widget, 0, 3, 2, 1)
 
         self._header = self._ui.get_object('header')
 
