@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-17 14:37+0100\n"
+"POT-Creation-Date: 2015-02-20 13:20+0100\n"
 "PO-Revision-Date: 2015-01-10 11:51+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -124,28 +124,28 @@ msgstr "Odtwarza i zarządza kolekcją muzyki"
 msgid "Music player for the GNOME desktop"
 msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
 
-#: ../src/toolbar.py:241 ../src/toolbar.py:270
+#: ../src/toolbar.py:251 ../src/toolbar.py:280
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
 
-#: ../src/toolbar.py:251 ../src/toolbar.py:267 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:333
+#: ../src/window.py:332
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/window.py:334 ../src/popmenu.py:48
+#: ../src/window.py:333 ../src/popmenu.py:48
 #, fuzzy
 msgid "Playlists"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:335
+#: ../src/window.py:334
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/window.py:378
+#: ../src/window.py:377
 msgid "Compilations"
 msgstr "Składanki"
 
@@ -159,7 +159,7 @@ msgstr "Przechodzi do następnego nagrania"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:68
+#: ../src/notification.py:72
 #, python-format
 msgid "by %s, from %s"
 msgstr "w wykonaniu %s, z albumu %s"
@@ -179,21 +179,26 @@ msgstr "Nieznany"
 msgid "Compilation"
 msgstr "Składanka"
 
-#: ../src/playlists.py:392 ../src/playlists.py:632
+#: ../src/playlists.py:394 ../src/playlists.py:644
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usuń z kolejki"
 
-#: ../src/playlists.py:454 ../src/playlists.py:457
+#: ../src/playlists.py:456 ../src/playlists.py:459
 #, fuzzy
 msgid "New playlist "
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/view.py:31
+#: ../src/playlists.py:668
+#, fuzzy
+msgid "Remove this tracks?"
+msgstr "Odtwórz jako następne"
+
+#: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Wczytywanie, proszę czekać..."
 
-#: ../src/view.py:49
+#: ../src/view.py:50
 #, fuzzy
 msgid "Manage playlists"
 msgstr "Rozpoczyna odtwarzanie"
@@ -292,20 +297,6 @@ msgstr "_O programie"
 msgid "_Quit"
 msgstr "Za_kończ"
 
-#: ../data/PlaylistEditPopup.ui.h:1
-#, fuzzy
-msgid "Edit playlist"
-msgstr "Rozpoczyna odtwarzanie"
-
-#: ../data/PlaylistEditPopup.ui.h:2 ../data/PlaylistsManagePopup.ui.h:3
-#: ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Zamknij"
-
-#: ../data/PlaylistEditPopup.ui.h:3 ../data/PlaylistsManagePopup.ui.h:4
-msgid "Confirm"
-msgstr ""
-
 #: ../data/PlaylistsManagePopup.ui.h:1
 #, fuzzy
 msgid "Add to playlists"
@@ -315,6 +306,18 @@ msgstr "Rozpoczyna odtwarzanie"
 #, fuzzy
 msgid "New playlist"
 msgstr "Rozpoczyna odtwarzanie"
+
+#: ../data/PlaylistsManagePopup.ui.h:3 ../data/SettingsDialog.ui.h:1
+msgid "Close"
+msgstr "Zamknij"
+
+#: ../data/PlaylistsManagePopup.ui.h:4 ../data/PlaylistView.ui.h:2
+msgid "Confirm"
+msgstr ""
+
+#: ../data/PlaylistView.ui.h:1
+msgid "Edit"
+msgstr ""
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -389,6 +392,10 @@ msgstr "Kolekcja"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Wybiera zawartość trybu imprezowego"
+
+#, fuzzy
+#~ msgid "Edit playlist"
+#~ msgstr "Rozpoczyna odtwarzanie"
 
 #, fuzzy
 #~ msgid "Empty playlist?"
