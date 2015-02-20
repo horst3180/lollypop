@@ -670,10 +670,11 @@ class PlaylistEditWidget:
         @param selection as Gtk.TreeSelection
     """
     def _on_selection_changed(self, selection):
-        if selection.count_selected_rows() > 1:
+        count = selection.count_selected_rows()
+        if  count > 1:
             self._infobar_label.set_markup(_("Remove this tracks?"))
             self._infobar.show()
-        else:
+        elif count == 0:
             self._infobar.hide()
 
     """
