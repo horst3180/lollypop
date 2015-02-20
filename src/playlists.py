@@ -458,7 +458,7 @@ class PlaylistsManageWidget(Gtk.Bin):
             existing_playlists.append(item[1])
 
         # Search for an available name
-        count = len(self._model) + 1
+        count = 1
         name = _("New playlist ")+str(count)
         while name in existing_playlists:
             count += 1
