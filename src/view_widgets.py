@@ -17,7 +17,7 @@ from cgi import escape
 from lollypop.define import Objects, COMPILATIONS, ART_SIZE_BIG
 from lollypop.tracks import TracksWidget
 from lollypop.popmenu import PopMainMenu
-from lollypop.playlists import PlaylistEditPopup
+from lollypop.playlists import PlaylistEditWidget
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
@@ -244,14 +244,13 @@ class PlaylistWidget(Gtk.Grid):
     """
         Init playlist Widget
         @param playlist name as str
+        @param infobar as Gtk.InfoBar
+        @param label as Gtk.Label
     """
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_name, infobar, infobar_label):
         Gtk.Grid.__init__(self)
         self._tracks = []
         self.set_property("margin", 5)
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistWidget.ui')
-
         self._tracks_widget1 = TracksWidget(False)
         self._tracks_widget2 = TracksWidget(False)
         self._tracks_widget1.connect('activated',
@@ -265,16 +264,25 @@ class PlaylistWidget(Gtk.Grid):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._ui.get_object('menu').connect('clicked',
-                                            self._pop_menu,
-                                            playlist_name)
-        self._ui.get_object('tracks').add(self._tracks_widget1)
-        self._ui.get_object('tracks').add(self._tracks_widget2)
+        self._playlist_view = Gtk.Grid()
+        self._playlist_view.add(self._tracks_widget1)
+        self._playlist_view.add(self._tracks_widget2)
+        self._playlist_view.show()
 
-        self._header = self._ui.get_object('header')
+        self._stack = Gtk.Stack()
+        self._playlist_edit = PlaylistEditWidget(playlist_name,
+                                                 infobar,
+                                                 infobar_label,
+                                                 self)
+        self._stack.add(self._playlist_edit.widget)
+        self._stack.add(self._playlist_view)
+        self._stack.set_visible_child(self._playlist_view)
+        self._stack.set_transition_duration(500)
+        self._stack.set_property('expand', True)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.show()
 
-        self._ui.get_object('title').set_label(playlist_name)
-        self.add(self._ui.get_object('PlaylistWidget'))
+        self.add(self._stack)
 
     """
         Populate list one
@@ -301,6 +309,17 @@ class PlaylistWidget(Gtk.Grid):
         self._tracks_widget2.update_playing(track_id)
 
     """
+        Popup menu for playlist
+        @param edit as bool
+    """
+    def edit(self, edit):
+        if edit:
+            self._stack.set_visible_child(self._playlist_edit.widget)
+            self._playlist_edit.populate()
+        else:
+            self._stack.set_visible_child(self._playlist_view)
+
+    """
         Clear tracks
     """
     def clear(self):
@@ -309,7 +328,11 @@ class PlaylistWidget(Gtk.Grid):
             child.destroy()
         for child in self._tracks_widget2.get_children():
             child.destroy()
-
+    """
+        Delete playlist after confirmation
+    """
+    def delete_confirmed(self):
+        self._playlist_edit.delete_confirmed()
 #######################
 # PRIVATE             #
 #######################
@@ -332,15 +355,6 @@ class PlaylistWidget(Gtk.Grid):
 
         widget.add_track(track_id, pos, title, length, None, True)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1)
-
-    """
-        Popup menu for playlist
-        @param widget as Gtk.Button
-        @param playlist name as str
-    """
-    def _pop_menu(self, widget, playlist_name):
-        popup = PlaylistEditPopup(playlist_name, widget)
-        popup.show()
 
     """
         On track activation, play track

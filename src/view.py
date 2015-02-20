@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, GObject, Gdk, GLib
 from gettext import gettext as _
+from _thread import start_new_thread
 
 from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
 from lollypop.playlists import PlaylistsManagePopup
@@ -383,19 +384,27 @@ class PlaylistView(View):
         Init PlaylistView ui with a scrolled grid of PlaylistWidgets
         @param playlist name as str
     """
-    def __init__(self, name):
+    def __init__(self, playlist_name):
         View.__init__(self)
-        self._name = name
+        self._playlist_name = playlist_name
 
-        self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.set_vexpand(True)
-        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                        Gtk.PolicyType.AUTOMATIC)
-        self._scrolledWindow.show()
-        self.add(self._scrolledWindow)
-        self._widget = PlaylistWidget(name)
-        self._widget.show()
-        self._scrolledWindow.add(self._widget)
+        self._ui = Gtk.Builder()
+        self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
+        self.add(self._ui.get_object('PlaylistView'))
+        self._ui.get_object('edit_btn').connect('toggled',
+                                                self._on_edit_btn_toggled,
+                                                playlist_name)
+                                                
+        self._playlist_widget = PlaylistWidget(playlist_name,
+                                               self._ui.get_object('infobar'),
+                                               self._ui.get_object('infobarlabel'))
+        self._playlist_widget.show()
+        self._ui.get_object('scrolled').add(self._playlist_widget)
+
+        self._header = self._ui.get_object('header')
+
+        self._ui.get_object('title').set_label(playlist_name)
+        self._ui.connect_signals(self)
 
     """
         Populate view with tracks from playlist
@@ -403,12 +412,12 @@ class PlaylistView(View):
     """
     def populate(self):
         sql = Objects.db.get_cursor()
-        tracks = Objects.playlists.get_tracks_id(self._name, sql)
+        tracks = Objects.playlists.get_tracks_id(self._playlist_name, sql)
         mid_tracks = int(0.5+len(tracks)/2)
-        GLib.idle_add(self._widget.populate_list_one,
+        GLib.idle_add(self._playlist_widget.populate_list_one,
                       tracks[:mid_tracks],
                       1)
-        GLib.idle_add(self._widget.populate_list_two,
+        GLib.idle_add(self._playlist_widget.populate_list_two,
                       tracks[mid_tracks:],
                       mid_tracks + 1)
 
@@ -417,15 +426,60 @@ class PlaylistView(View):
         @return name as str
     """
     def get_name(self):
-        return self._name
+        return self._playlist_name
 
+    """
+        Do show, connect signals
+    """
+    def do_show(self):
+        Objects.playlists.connect("playlist-changed",
+                                  self._update_view)
+        View.do_show(self)
+
+    """
+        Do hide, disconnect signals
+    """
+    def do_hide(self):
+        Objects.playlists.disconnect_by_func(self._update_view)
+        View.do_hide(self)
 #######################
 # PRIVATE             #
 #######################
+    """
+        Update tracks widgets
+        @param playlist name as str
+    """
+    def _update_view(self, playlist_name):
+        self._playlist_widget.clear()
+        start_new_thread(self.populate, ())
+
+    """
+        Delete playlist after confirmation
+        @param button as Gtk.Button
+    """
+    def _on_delete_confirm(self, button):
+        self._playlist_widget.delete_confirmed()
+
+    """
+        Hide infobar
+        @param widget as Gtk.Infobar
+        @param reponse id as int
+    """
+    def _on_response(self, infobar, response_id):
+        if response_id == Gtk.ResponseType.CLOSE:
+            infobar.hide()
+
+    """
+        Edit playlist
+        @param button as Gtk.Button
+        @param playlist name as str
+    """
+    def _on_edit_btn_toggled(self, button, playlist_name):
+        self._playlist_widget.edit(button.get_active())
 
     """
         Update the content view
         @param player as Player
     """
     def _update_content(self, player):
-        self._widget.update_playing_track(player.current.id)
+        self._playlist_widget.update_playing_track(player.current.id)
