@@ -667,6 +667,8 @@ class PlaylistEditWidget:
         if selection.count_selected_rows() > 1:
             self._infobar_label.set_markup(_("Remove this tracks?"))
             self._infobar.show()
+        else:
+            self._infobar.hide()
 
     """
         Hide window
