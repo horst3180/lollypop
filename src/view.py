@@ -386,9 +386,9 @@ class PlaylistView(View):
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
 
-        self._ui.get_object('edit_btn').connect('toggled',
-                                                self._on_edit_btn_toggled,
-                                                playlist_name)
+        self._edit_btn = self._ui.get_object('edit_btn')
+        self._back_btn = self._ui.get_object('back_btn')
+        self._title = self._ui.get_object('title')
                                                 
         self._playlist_widget = PlaylistWidget(playlist_name,
                                                self._ui.get_object('infobar'),
@@ -472,8 +472,22 @@ class PlaylistView(View):
         @param button as Gtk.Button
         @param playlist name as str
     """
-    def _on_edit_btn_toggled(self, button, playlist_name):
-        self._playlist_widget.edit(button.get_active())
+    def _on_edit_btn_clicked(self, button):
+        self._playlist_widget.edit(True)
+        self._edit_btn.hide()
+        self._title.hide()
+        self._back_btn.show()
+
+    """
+        Do not edit playlist
+        @param button as Gtk.Button
+        @param playlist name as str
+    """
+    def _on_back_btn_clicked(self, button):
+        self._playlist_widget.edit(False)
+        self._back_btn.hide()
+        self._edit_btn.show()
+        self._title.show()
 
     """
         Update the content view

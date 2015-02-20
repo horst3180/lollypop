@@ -144,15 +144,13 @@
             <property name="margin_top">5</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
+            <property name="always_show_image">True</property>
             <signal name="clicked" handler="_on_close_btn_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
       <packing>
