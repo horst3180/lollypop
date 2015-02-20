@@ -158,6 +158,7 @@ class Window(Gtk.ApplicationWindow):
             view = self._stack.get_visible_child()
             if isinstance(view, LoadingView):
                 view.destroy()
+                self._restore_view_state()
 
     """
         Update list one
