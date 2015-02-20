@@ -26,7 +26,10 @@
             <signal name="key-press-event" handler="_on_keyboard_event" swapped="no"/>
             <signal name="row-activated" handler="_on_row_activated" swapped="no"/>
             <child internal-child="selection">
-              <object class="GtkTreeSelection" id="treeview-selection1"/>
+              <object class="GtkTreeSelection" id="treeview-selection1">
+                <property name="mode">multiple</property>
+                <signal name="changed" handler="_on_selection_changed" swapped="no"/>
+              </object>
             </child>
           </object>
         </child>

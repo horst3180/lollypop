@@ -522,7 +522,6 @@ class PlaylistEditWidget:
     def __init__(self, playlist_name, infobar, infobar_label, parent):
         self._parent = parent
         self._playlist_name = playlist_name
-        self._deleted_path = None
         self._tracks_orig = []
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                                 "list-remove-symbolic",
@@ -580,8 +579,14 @@ class PlaylistEditWidget:
         Delete playlist after confirmation
     """
     def delete_confirmed(self):
-        if self._deleted_path:
-            iterator = self._model.get_iter(self._deleted_path)
+        selection = self._view.get_selection()
+        selected = selection.get_selected_rows()
+        rows = []
+        for item in selected[1]:
+            rows.append(Gtk.TreeRowReference.new(self._model, item))
+
+        for row in rows:
+            iterator = self._model.get_iter(row.get_path())
             self._model.remove(iterator)
         self._infobar.hide()
         self._deleted_path = None
@@ -636,7 +641,6 @@ class PlaylistEditWidget:
     """
     def _show_infobar(self, path):
         iterator = self._model.get_iter(path)
-        self._deleted_path = path
         self._infobar_label.set_markup(_("Remove \"%s\"?") %
                                        self._model.get_value(
                                                             iterator,
@@ -655,6 +659,14 @@ class PlaylistEditWidget:
         if iterator:
             if column.get_title() == "pixbuf2":
                 self._show_infobar(path)
+    """
+        On selection changed, show infobar
+        @param selection as Gtk.TreeSelection
+    """
+    def _on_selection_changed(self, selection):
+        if selection.count_selected_rows() > 1:
+            self._infobar_label.set_markup(_("Remove this tracks?"))
+            self._infobar.show()
 
     """
         Hide window
