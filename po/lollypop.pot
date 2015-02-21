@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-20 13:20+0100\n"
+"POT-Creation-Date: 2015-02-21 20:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,19 +124,19 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:332
+#: ../src/window.py:355
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/window.py:333 ../src/popmenu.py:48
+#: ../src/window.py:356 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:334
+#: ../src/window.py:357
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:377
+#: ../src/window.py:400
 msgid "Compilations"
 msgstr ""
 
@@ -170,62 +170,58 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:394 ../src/playlists.py:644
+#: ../src/playlists.py:392 ../src/playlists.py:650
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:456 ../src/playlists.py:459
+#: ../src/playlists.py:462 ../src/playlists.py:465
 msgid "New playlist "
 msgstr ""
 
-#: ../src/playlists.py:668
-msgid "Remove this tracks?"
+#: ../src/playlists.py:678
+msgid "Remove these tracks?"
 msgstr ""
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/view.py:50
-msgid "Manage playlists"
-msgstr ""
-
-#: ../src/popmenu.py:43
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr ""
 
-#: ../src/popmenu.py:63
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr ""
 
-#: ../src/popmenu.py:79
+#: ../src/popmenu.py:78
 msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:92
+#: ../src/popmenu.py:91
 #, python-format
 msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:100
+#: ../src/popmenu.py:99
 #, python-format
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:145 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:151
+#: ../src/popmenu.py:150
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:153
+#: ../src/popmenu.py:152
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:158
+#: ../src/popmenu.py:157
 msgid "Remove from queue"
 msgstr ""
 
@@ -243,7 +239,7 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:150
+#: ../src/search.py:152
 msgid "Search:"
 msgstr ""
 
@@ -283,20 +279,12 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
-#: ../data/PlaylistsManagePopup.ui.h:1
-msgid "Add to playlists"
-msgstr ""
-
-#: ../data/PlaylistsManagePopup.ui.h:2
-msgid "New playlist"
-msgstr ""
-
-#: ../data/PlaylistsManagePopup.ui.h:3 ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr ""
-
-#: ../data/PlaylistsManagePopup.ui.h:4 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
+msgstr ""
+
+#: ../data/PlaylistsManageWidget.ui.h:2
+msgid "New playlist"
 msgstr ""
 
 #: ../data/PlaylistView.ui.h:1
@@ -341,6 +329,10 @@ msgstr ""
 
 #: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Close"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2

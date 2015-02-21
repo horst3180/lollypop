@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-20 13:20+0100\n"
+"POT-Creation-Date: 2015-02-21 20:51+0100\n"
 "PO-Revision-Date: 2015-01-11 21:44+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -128,19 +128,19 @@ msgstr "Pause"
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:332
+#: ../src/window.py:355
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/window.py:333 ../src/popmenu.py:48
+#: ../src/window.py:356 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/window.py:334
+#: ../src/window.py:357
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:377
+#: ../src/window.py:400
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -174,62 +174,58 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:394 ../src/playlists.py:644
+#: ../src/playlists.py:392 ../src/playlists.py:650
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlists.py:456 ../src/playlists.py:459
+#: ../src/playlists.py:462 ../src/playlists.py:465
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
-#: ../src/playlists.py:668
-msgid "Remove this tracks?"
+#: ../src/playlists.py:678
+msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
 
-#: ../src/view.py:50
-msgid "Manage playlists"
-msgstr "Gérer les listes de lecture"
-
-#: ../src/popmenu.py:43
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/popmenu.py:63
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Lire seulement cet album"
 
-#: ../src/popmenu.py:79
+#: ../src/popmenu.py:78
 msgid "Add to others"
 msgstr "Ajouter aux autres"
 
-#: ../src/popmenu.py:92
+#: ../src/popmenu.py:91
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Supprimer de \"%s\""
 
-#: ../src/popmenu.py:100
+#: ../src/popmenu.py:99
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/popmenu.py:145 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
-#: ../src/popmenu.py:151
+#: ../src/popmenu.py:150
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:153
+#: ../src/popmenu.py:152
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:158
+#: ../src/popmenu.py:157
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
@@ -247,7 +243,7 @@ msgstr "Configurer lollypop"
 msgid "The the"
 msgstr "The the Les les La Le la le"
 
-#: ../src/search.py:150
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Recherche:"
 
@@ -287,21 +283,13 @@ msgstr "À _propos"
 msgid "_Quit"
 msgstr "_Quitter"
 
-#: ../data/PlaylistsManagePopup.ui.h:1
-msgid "Add to playlists"
-msgstr "Ajouter aux listes de lecture"
-
-#: ../data/PlaylistsManagePopup.ui.h:2
-msgid "New playlist"
-msgstr "Nouvelle liste de lecture"
-
-#: ../data/PlaylistsManagePopup.ui.h:3 ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Fermer"
-
-#: ../data/PlaylistsManagePopup.ui.h:4 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
 msgstr "Confirmer"
+
+#: ../data/PlaylistsManageWidget.ui.h:2
+msgid "New playlist"
+msgstr "Nouvelle liste de lecture"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
@@ -347,6 +335,10 @@ msgstr "artist"
 msgid "Add to playlist"
 msgstr "Ajouter à la liste de lecture"
 
+#: ../data/SettingsDialog.ui.h:1
+msgid "Close"
+msgstr "Fermer"
+
 #: ../data/SettingsDialog.ui.h:2
 msgid "Darken views"
 msgstr "Vues sombres"
@@ -378,6 +370,12 @@ msgstr "Musique"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
+
+#~ msgid "Manage playlists"
+#~ msgstr "Gérer les listes de lecture"
+
+#~ msgid "Add to playlists"
+#~ msgstr "Ajouter aux listes de lecture"
 
 #~ msgid "Edit playlist"
 #~ msgstr "Modifier la liste de lecture"

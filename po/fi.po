@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-20 13:20+0100\n"
+"POT-Creation-Date: 2015-02-21 20:51+0100\n"
 "PO-Revision-Date: 2015-01-06 12:42+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -129,20 +129,20 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/window.py:332
+#: ../src/window.py:355
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/window.py:333 ../src/popmenu.py:48
+#: ../src/window.py:356 ../src/popmenu.py:47
 #, fuzzy
 msgid "Playlists"
 msgstr "Toista"
 
-#: ../src/window.py:334
+#: ../src/window.py:357
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/window.py:377
+#: ../src/window.py:400
 msgid "Compilations"
 msgstr "Kokoelmat"
 
@@ -176,67 +176,62 @@ msgstr "Tuntematon"
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:394 ../src/playlists.py:644
+#: ../src/playlists.py:392 ../src/playlists.py:650
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poista jonosta"
 
-#: ../src/playlists.py:456 ../src/playlists.py:459
+#: ../src/playlists.py:462 ../src/playlists.py:465
 #, fuzzy
 msgid "New playlist "
 msgstr "Toista"
 
-#: ../src/playlists.py:668
+#: ../src/playlists.py:678
 #, fuzzy
-msgid "Remove this tracks?"
+msgid "Remove these tracks?"
 msgstr "Seuraavat kappaleet"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/view.py:50
-#, fuzzy
-msgid "Manage playlists"
-msgstr "Toista"
-
-#: ../src/popmenu.py:43
+#: ../src/popmenu.py:42
 #, fuzzy
 msgid "Playback"
 msgstr "Toista"
 
-#: ../src/popmenu.py:63
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Toista vain tämä albumi"
 
-#: ../src/popmenu.py:79
+#: ../src/popmenu.py:78
 #, fuzzy
 msgid "Add to others"
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:92
+#: ../src/popmenu.py:91
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Poista jonosta"
 
-#: ../src/popmenu.py:100
+#: ../src/popmenu.py:99
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:145 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:151
+#: ../src/popmenu.py:150
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:153
+#: ../src/popmenu.py:152
 msgid "Next track"
 msgstr "Seuraava kappale"
 
-#: ../src/popmenu.py:158
+#: ../src/popmenu.py:157
 msgid "Remove from queue"
 msgstr "Poista jonosta"
 
@@ -254,7 +249,7 @@ msgstr "Lollypopin asetukset"
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:150
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Etsi:"
 
@@ -294,23 +289,14 @@ msgstr "_Tietoja"
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../data/PlaylistsManagePopup.ui.h:1
-#, fuzzy
-msgid "Add to playlists"
-msgstr "Toista"
+#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+msgid "Confirm"
+msgstr ""
 
-#: ../data/PlaylistsManagePopup.ui.h:2
+#: ../data/PlaylistsManageWidget.ui.h:2
 #, fuzzy
 msgid "New playlist"
 msgstr "Toista"
-
-#: ../data/PlaylistsManagePopup.ui.h:3 ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Sulje"
-
-#: ../data/PlaylistsManagePopup.ui.h:4 ../data/PlaylistView.ui.h:2
-msgid "Confirm"
-msgstr ""
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
@@ -357,6 +343,10 @@ msgstr "esittäjä"
 msgid "Add to playlist"
 msgstr "Toista"
 
+#: ../data/SettingsDialog.ui.h:1
+msgid "Close"
+msgstr "Sulje"
+
 #: ../data/SettingsDialog.ui.h:2
 msgid "Darken views"
 msgstr "Tummat näkymät"
@@ -389,6 +379,14 @@ msgstr "Musiikki"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
+
+#, fuzzy
+#~ msgid "Manage playlists"
+#~ msgstr "Toista"
+
+#, fuzzy
+#~ msgid "Add to playlists"
+#~ msgstr "Toista"
 
 #, fuzzy
 #~ msgid "Edit playlist"

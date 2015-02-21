@@ -675,7 +675,7 @@ class PlaylistEditWidget:
     def _on_selection_changed(self, selection):
         count = selection.count_selected_rows()
         if  count > 1:
-            self._infobar_label.set_markup(_("Remove this tracks?"))
+            self._infobar_label.set_markup(_("Remove these tracks?"))
             self._infobar.show()
 
     """

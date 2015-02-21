@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-20 13:20+0100\n"
+"POT-Creation-Date: 2015-02-21 20:51+0100\n"
 "PO-Revision-Date: 2015-01-10 11:51+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -132,20 +132,20 @@ msgstr "Wstrzymuje odtwarzanie"
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:332
+#: ../src/window.py:355
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/window.py:333 ../src/popmenu.py:48
+#: ../src/window.py:356 ../src/popmenu.py:47
 #, fuzzy
 msgid "Playlists"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/window.py:334
+#: ../src/window.py:357
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/window.py:377
+#: ../src/window.py:400
 msgid "Compilations"
 msgstr "Składanki"
 
@@ -179,67 +179,62 @@ msgstr "Nieznany"
 msgid "Compilation"
 msgstr "Składanka"
 
-#: ../src/playlists.py:394 ../src/playlists.py:644
+#: ../src/playlists.py:392 ../src/playlists.py:650
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usuń z kolejki"
 
-#: ../src/playlists.py:456 ../src/playlists.py:459
+#: ../src/playlists.py:462 ../src/playlists.py:465
 #, fuzzy
 msgid "New playlist "
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/playlists.py:668
+#: ../src/playlists.py:678
 #, fuzzy
-msgid "Remove this tracks?"
+msgid "Remove these tracks?"
 msgstr "Odtwórz jako następne"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Wczytywanie, proszę czekać..."
 
-#: ../src/view.py:50
-#, fuzzy
-msgid "Manage playlists"
-msgstr "Rozpoczyna odtwarzanie"
-
-#: ../src/popmenu.py:43
+#: ../src/popmenu.py:42
 #, fuzzy
 msgid "Playback"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/popmenu.py:63
+#: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Odtwórz tylko ten album"
 
-#: ../src/popmenu.py:79
+#: ../src/popmenu.py:78
 #, fuzzy
 msgid "Add to others"
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmenu.py:92
+#: ../src/popmenu.py:91
 #, fuzzy, python-format
 msgid "Remove from \"%s\""
 msgstr "Usuń z kolejki"
 
-#: ../src/popmenu.py:100
+#: ../src/popmenu.py:99
 #, fuzzy, python-format
 msgid "Add to \"%s\""
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmenu.py:145 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmenu.py:151
+#: ../src/popmenu.py:150
 msgid "Next tracks"
 msgstr "Odtwórz jako następne"
 
-#: ../src/popmenu.py:153
+#: ../src/popmenu.py:152
 msgid "Next track"
 msgstr "Odtwórz jako następny"
 
-#: ../src/popmenu.py:158
+#: ../src/popmenu.py:157
 msgid "Remove from queue"
 msgstr "Usuń z kolejki"
 
@@ -257,7 +252,7 @@ msgstr "Preferencje Lollypop"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:150
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Wyszukiwanie:"
 
@@ -297,23 +292,14 @@ msgstr "_O programie"
 msgid "_Quit"
 msgstr "Za_kończ"
 
-#: ../data/PlaylistsManagePopup.ui.h:1
-#, fuzzy
-msgid "Add to playlists"
-msgstr "Rozpoczyna odtwarzanie"
+#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+msgid "Confirm"
+msgstr ""
 
-#: ../data/PlaylistsManagePopup.ui.h:2
+#: ../data/PlaylistsManageWidget.ui.h:2
 #, fuzzy
 msgid "New playlist"
 msgstr "Rozpoczyna odtwarzanie"
-
-#: ../data/PlaylistsManagePopup.ui.h:3 ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Zamknij"
-
-#: ../data/PlaylistsManagePopup.ui.h:4 ../data/PlaylistView.ui.h:2
-msgid "Confirm"
-msgstr ""
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
@@ -360,6 +346,10 @@ msgstr "wykonawca"
 msgid "Add to playlist"
 msgstr "Rozpoczyna odtwarzanie"
 
+#: ../data/SettingsDialog.ui.h:1
+msgid "Close"
+msgstr "Zamknij"
+
 #: ../data/SettingsDialog.ui.h:2
 msgid "Darken views"
 msgstr "Zaciemniony wygląd"
@@ -392,6 +382,14 @@ msgstr "Kolekcja"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Wybiera zawartość trybu imprezowego"
+
+#, fuzzy
+#~ msgid "Manage playlists"
+#~ msgstr "Rozpoczyna odtwarzanie"
+
+#, fuzzy
+#~ msgid "Add to playlists"
+#~ msgstr "Rozpoczyna odtwarzanie"
 
 #, fuzzy
 #~ msgid "Edit playlist"
