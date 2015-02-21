@@ -528,6 +528,7 @@ class PlaylistEditWidget:
     def __init__(self, playlist_name, infobar, infobar_label, parent):
         self._parent = parent
         self._playlist_name = playlist_name
+        self._save_on_disk = True
         self._tracks_orig = []
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                                 "list-remove-symbolic",
@@ -585,6 +586,7 @@ class PlaylistEditWidget:
         Delete playlist after confirmation
     """
     def delete_confirmed(self):
+        self._save_on_disk = False
         selection = self._view.get_selection()
         selected = selection.get_selected_rows()
         rows = []
@@ -595,7 +597,8 @@ class PlaylistEditWidget:
             iterator = self._model.get_iter(row.get_path())
             self._model.remove(iterator)
         self._infobar.hide()
-        self._deleted_path = None
+        self._save_on_disk = True
+        self._update_on_disk()
 #######################
 # PRIVATE             #
 #######################
@@ -691,7 +694,8 @@ class PlaylistEditWidget:
         @param data as unused
     """
     def _on_row_deleted(self, path, data):
-        self._update_on_disk()
+        if self._save_on_disk:
+            self._update_on_disk()
 
     """
         Update playlist on disk
