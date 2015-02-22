@@ -598,6 +598,8 @@ class PlaylistEditWidget:
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
+        self._view.get_selection().unselect_all()
+        self._view.grab_focus()
         self._update_on_disk()
 #######################
 # PRIVATE             #
@@ -633,6 +635,7 @@ class PlaylistEditWidget:
             self._tracks_orig.append(filepath)
             GLib.idle_add(self._append_track, tracks)
         else:
+            self._view.grab_focus()
             self._in_thread = False
 
     """
