@@ -33,7 +33,7 @@ class PlaylistsManager(GObject.GObject):
         # Add or remove a playlist
         'playlists-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
         # Objects added/removed to/from playlist
-        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, ())
+        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,))
     }
 
     def __init__(self):
@@ -158,7 +158,7 @@ class PlaylistsManager(GObject.GObject):
         self.add(playlist_name)
         for filepath in tracks_path:
             self._add_track(playlist_name, filepath)
-        GLib.timeout_add(1000, self.emit, "playlist-changed")
+        GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
 
     """
         Return availables tracks id for playlist
@@ -179,7 +179,7 @@ class PlaylistsManager(GObject.GObject):
     """
     def add_track(self, playlist_name, filepath):
         self._add_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed")
+        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
     """
         Add tracks to playlist if not already present
@@ -189,7 +189,7 @@ class PlaylistsManager(GObject.GObject):
     def add_tracks(self, playlist_name, tracks_path):
         for filepath in tracks_path:
             self._add_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed")
+        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
     """
         Remove track from playlist
@@ -198,7 +198,7 @@ class PlaylistsManager(GObject.GObject):
     """
     def remove_track(self, playlist_name, filepath):
         self._remove_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed")
+        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
     """
         Remove tracks from playlist
@@ -208,7 +208,7 @@ class PlaylistsManager(GObject.GObject):
     def remove_tracks(self, playlist_name, tracks_path):
         for filepath in tracks_path:
             self._remove_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed")
+        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
     """
         Return True if object_id is already present in playlist

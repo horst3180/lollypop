@@ -445,11 +445,13 @@ class PlaylistView(View):
 #######################
     """
         Update tracks widgets
+        @param manager as PlaylistsManager
         @param playlist name as str
     """
-    def _update_view(self, playlist_name):
-        self._playlist_widget.clear()
-        start_new_thread(self.populate, ())
+    def _update_view(self, manager, playlist_name):
+        if playlist_name == self._playlist_name:
+            self._playlist_widget.clear()
+            start_new_thread(self.populate, ())
 
     """
         Delete playlist after confirmation
