@@ -18,6 +18,7 @@ src/albumart.py
 src/selectionlist.py
 src/playlists.py
 src/queue.py
+src/fullscreen.py
 src/view.py
 src/popmenu.py
 src/popimages.py
@@ -32,7 +33,7 @@ src/collectionscanner.py
 [type: gettext/glade]data/AlbumWidget.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/app-menu.ui
-[type: gettext/glade]data/FullScreen.ui
+#[type: gettext/glade]data/FullScreen.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/PlaylistEditWidget.ui
@@ -42,4 +43,3 @@ src/collectionscanner.py
 [type: gettext/glade]data/headerbar.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SettingsDialog.ui
-
