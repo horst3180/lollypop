@@ -33,7 +33,6 @@ src/collectionscanner.py
 [type: gettext/glade]data/AlbumWidget.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/app-menu.ui
-#[type: gettext/glade]data/FullScreen.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/PlaylistEditWidget.ui
