@@ -325,6 +325,12 @@ class PlaylistWidget(Gtk.Grid):
             self._stack.set_visible_child(self._playlist_widget)
 
     """
+        Unselect all in edit widget
+    """
+    def unselectall(self):
+        self._playlist_edit.unselectall()
+
+    """
         Clear tracks
     """
     def clear(self):

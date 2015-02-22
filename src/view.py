@@ -468,6 +468,7 @@ class PlaylistView(View):
     def _on_response(self, infobar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
             infobar.hide()
+            self._playlist_widget.unselectall()
 
     """
         Edit playlist

@@ -601,6 +601,13 @@ class PlaylistEditWidget:
         self._view.get_selection().unselect_all()
         self._view.grab_focus()
         self._update_on_disk()
+
+    """
+        Unselect all in view
+    """
+    def unselectall(self):
+        self._view.get_selection().unselect_all()
+        self._view.grab_focus()
 #######################
 # PRIVATE             #
 #######################
@@ -683,13 +690,6 @@ class PlaylistEditWidget:
         if  count > 1:
             self._infobar_label.set_markup(_("Remove these tracks?"))
             self._infobar.show()
-
-    """
-        Hide window
-        @param widget as Gtk.Button
-    """
-    def _on_close_clicked(self, widget):
-        self._popup.hide()
 
     """
         Only catch drag & drop successful
