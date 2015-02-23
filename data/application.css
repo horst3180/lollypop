@@ -27,20 +27,6 @@ Gtk.ListBoxRow .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
-
-@define-color lollypop_base_color #393F3F;
-@define-color lollypop_text_color #eeeeec;
-
-.black {
-	background-color: @lollypop_base_color;
-	color: @lollypop_text_color;
-}
-
-.black GtkScrollbar.trough {
-	background-color: @lollypop_base_color;
-	color: @lollypop_text_color;
-}
-
 .trackswidget {
 	background-color: transparent;
 }
