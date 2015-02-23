@@ -378,14 +378,14 @@ class DatabaseAlbums:
         elif not artist_id and not genre_id:
             result = sql.execute("SELECT albums.rowid FROM albums,artists\
                                   WHERE artists.rowid=albums.artist_id\
-                                  ORDER BY artists.name, albums.name\
-                                  COLLATE NOCASE, albums.year")
+                                  ORDER BY artists.name, albums.year,\
+                                  albums.name COLLATE NOCASE")
         # Get albums for genre
         elif not artist_id:
             result = sql.execute("SELECT albums.rowid FROM albums, artists\
                                   WHERE genre_id=? and artists.rowid=artist_id\
-                                  ORDER BY artists.name, albums.name\
-                                  COLLATE NOCASE, albums.year", (genre_id,))
+                                  ORDER BY artists.name, albums.year,\
+                                  albums.name COLLATE NOCASE", (genre_id,))
         # Get albums for artist
         elif not genre_id:
             result = sql.execute("SELECT DISTINCT rowid FROM albums\
