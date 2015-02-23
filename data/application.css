@@ -8,12 +8,22 @@ GtkTreeView {
 }
 
 row:hover {
-        background-color: alpha(@theme_bg_color, 0.7);
+        background-image: none;
+        border-style: none;
+}
+
+row:selected {
+        background-image: none;
+        border-style: none;
+}
+
+GtkTreeView:selected {
+        background-color: alpha(@theme_bg_color, 0.9);
         color: @theme_fg_color;
 }
 
-row:selected{
-        background-color: alpha(@theme_bg_color, 0.9);
+GtkTreeView:hover {
+        background-color: alpha(@theme_bg_color, 0.7);
         color: @theme_fg_color;
 }
 
