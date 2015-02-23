@@ -20,6 +20,7 @@
 from gi.repository import Gtk, Gdk, GdkPixbuf, Gio
 import cairo
 import os
+import re
 import json
 import urllib.request
 import urllib.parse
@@ -156,13 +157,13 @@ class AlbumArt:
 
     """
         Remove cover from cache for album id
-        @param album id as int, size as int
+        @param album id as int
     """
-    def clean_cache(self, album_id, size):
+    def clean_cache(self, album_id):
         path = self._get_cache_path(album_id)
-        CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
-        if os.path.exists(CACHE_PATH_JPG):
-            os.remove(CACHE_PATH_JPG)
+        for f in os.listdir(self._CACHE_PATH):
+        	if re.search('%s_.*\.jpg' % path , f):
+        		os.remove(os.path.join(self._CACHE_PATH, f))
 
     """
         Get arts on google image corresponding to search

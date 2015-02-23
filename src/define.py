@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gdk
 
 # This is global object initialised at lollypop start
 # member init order is important!
@@ -29,8 +30,9 @@ class Objects_:
 
 Objects = Objects_()
 
-ART_SIZE_MONSTER = 500
-ART_SIZE_BIG = 200
+# We want 500 and 200 in full hd
+ART_SIZE_MONSTER = int(500*Gdk.Screen.get_default().get_width()/1920)
+ART_SIZE_BIG = int(200*Gdk.Screen.get_default().get_width()/1920)
 ART_SIZE_MEDIUM = 48
 ART_SIZE_SMALL = 32
 
