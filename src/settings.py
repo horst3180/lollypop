@@ -138,8 +138,9 @@ class SettingsDialog(Gtk.Dialog):
     def _update_ui_setting(self, widget, state):
         Objects.settings.set_value('dark-ui',
                                    GLib.Variant('b', state))
-        settings = Gtk.Settings.get_default()
-        settings.set_property("gtk-application-prefer-dark-theme", state)
+        if not Objects.player.is_party():
+            settings = Gtk.Settings.get_default()
+            settings.set_property("gtk-application-prefer-dark-theme", state)
 
     """
         Update scan setting

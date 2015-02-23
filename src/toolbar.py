@@ -320,10 +320,11 @@ class Toolbar:
         @param obj as Gtk.button
     """
     def _on_party_btn_toggled(self, button):
-        settings = Gtk.Settings.get_default()
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
-        settings.set_property("gtk-application-prefer-dark-theme", active)
+        if not Objects.settings.get_value('dark-ui'):
+            settings = Gtk.Settings.get_default()
+            settings.set_property("gtk-application-prefer-dark-theme", active)
         Objects.player.set_party(active)
 
     """
