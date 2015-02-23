@@ -7,13 +7,13 @@ GtkTreeView {
 	text-shadow: none
 }
 
-GtkTreeView:selected {
-        background-color: alpha(@theme_bg_color, 0.9);
+row:hover {
+        background-color: alpha(@theme_bg_color, 0.7);
         color: @theme_fg_color;
 }
 
-GtkTreeView:hover {
-        background-color: alpha(@theme_bg_color, 0.7);
+row:selected{
+        background-color: alpha(@theme_bg_color, 0.9);
         color: @theme_fg_color;
 }
 
