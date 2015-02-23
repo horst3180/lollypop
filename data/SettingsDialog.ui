@@ -64,7 +64,7 @@
                     <property name="halign">start</property>
                     <property name="margin_right">50</property>
                     <property name="margin_end">50</property>
-                    <property name="label" translatable="yes">Darken views</property>
+                    <property name="label" translatable="yes">Use dark theme variant</property>
                     <property name="ellipsize">end</property>
                   </object>
                   <packing>
@@ -87,7 +87,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSwitch" id="switch_view">
+                  <object class="GtkSwitch" id="switch_dark">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>

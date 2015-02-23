@@ -78,8 +78,6 @@ class View(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        if Objects.settings.get_value('dark-view'):
-            self.get_style_context().add_class('black')
         Objects.player.connect("current-changed", self._on_current_changed)
         Objects.player.connect("cover-changed", self._on_cover_changed)
         # Stop populate thread

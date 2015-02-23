@@ -83,16 +83,6 @@ class Window(Gtk.ApplicationWindow):
         self._scanner.update(self._progress, False)
         self._clean_view(old_view)
 
-    """
-        Update view class
-        @param bool
-    """
-    def update_view_class(self, dark):
-        current_view = self._stack.get_visible_child()
-        if dark:
-            current_view.get_style_context().add_class('black')
-        else:
-            current_view.get_style_context().remove_class('black')
 
     """
         Add an application menu to window

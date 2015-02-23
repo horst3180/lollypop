@@ -36,9 +36,9 @@ class SettingsDialog(Gtk.Dialog):
         switch_scan.set_state(Objects.settings.get_value('startup-scan'))
         switch_scan.connect('state-set', self._update_scan_setting)
 
-        switch_view = builder.get_object('switch_view')
-        switch_view.set_state(Objects.settings.get_value('dark-view'))
-        switch_view.connect('state-set', self._update_view_setting)
+        switch_view = builder.get_object('switch_dark')
+        switch_view.set_state(Objects.settings.get_value('dark-ui'))
+        switch_view.connect('state-set', self._update_ui_setting)
 
         switch_background = builder.get_object('switch_background')
         switch_background.set_state(Objects.settings.get_value(
@@ -135,11 +135,11 @@ class SettingsDialog(Gtk.Dialog):
         Update view setting
         @param widget as unused, state as widget state
     """
-    def _update_view_setting(self, widget, state):
-        Objects.settings.set_value('dark-view',
+    def _update_ui_setting(self, widget, state):
+        Objects.settings.set_value('dark-ui',
                                    GLib.Variant('b', state))
-        if self._window:
-            self._window.update_view_class(state)
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", state)
 
     """
         Update scan setting

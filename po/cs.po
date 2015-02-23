@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-21 20:51+0100\n"
+"POT-Creation-Date: 2015-02-23 07:28+0100\n"
 "PO-Revision-Date: 2015-01-06 11:40+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -73,8 +73,8 @@ msgid "Do not show genres list"
 msgstr "Neukazovat seznam žánrů"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
-msgid "Show albums/artists view as dark"
-msgstr "Ukázat pohled na alba/umělce jako tmavý"
+msgid "Use dark gtk theme"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
@@ -122,28 +122,30 @@ msgstr "Přehrávejte a pořádejte svoji hudební sbírku"
 msgid "Music player for the GNOME desktop"
 msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 
-#: ../src/toolbar.py:251 ../src/toolbar.py:280
+#: ../src/toolbar.py:251 ../src/toolbar.py:280 ../src/fullscreen.py:76
+#: ../src/fullscreen.py:172
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../src/fullscreen.py:176
+#: ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/window.py:355
+#: ../src/window.py:345
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/window.py:356 ../src/popmenu.py:47
+#: ../src/window.py:346 ../src/popmenu.py:47
 #, fuzzy
 msgid "Playlists"
 msgstr "Přehrát"
 
-#: ../src/window.py:357
+#: ../src/window.py:347
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/window.py:400
+#: ../src/window.py:390
 msgid "Compilations"
 msgstr "Kompilace"
 
@@ -177,17 +179,17 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
-#: ../src/playlists.py:392 ../src/playlists.py:650
+#: ../src/playlists.py:396 ../src/playlists.py:671
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit z řady"
 
-#: ../src/playlists.py:462 ../src/playlists.py:465
+#: ../src/playlists.py:470 ../src/playlists.py:473
 #, fuzzy
 msgid "New playlist "
 msgstr "Přehrát"
 
-#: ../src/playlists.py:678
+#: ../src/playlists.py:699
 #, fuzzy
 msgid "Remove these tracks?"
 msgstr "Další skladby"
@@ -349,8 +351,8 @@ msgid "Close"
 msgstr "Zavřít"
 
 #: ../data/SettingsDialog.ui.h:2
-msgid "Darken views"
-msgstr "Tmavé pohledy"
+msgid "Use dark theme variant"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
@@ -380,6 +382,12 @@ msgstr "Hudba"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
+
+#~ msgid "Show albums/artists view as dark"
+#~ msgstr "Ukázat pohled na alba/umělce jako tmavý"
+
+#~ msgid "Darken views"
+#~ msgstr "Tmavé pohledy"
 
 #, fuzzy
 #~ msgid "Manage playlists"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-21 20:51+0100\n"
+"POT-Creation-Date: 2015-02-23 07:28+0100\n"
 "PO-Revision-Date: 2015-01-09 14:54+0000\n"
 "Last-Translator: Noah Hüsser <yatekii@yatekii.ch>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
@@ -73,8 +73,8 @@ msgid "Do not show genres list"
 msgstr "Verberge die Liste der Genres"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
-msgid "Show albums/artists view as dark"
-msgstr "Dunkle Album/Künstler Ansicht"
+msgid "Use dark gtk theme"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
@@ -121,28 +121,30 @@ msgstr "Spiele und organisiere die Musiksammlung"
 msgid "Music player for the GNOME desktop"
 msgstr "Musikspieler für GNOME Desktop"
 
-#: ../src/toolbar.py:251 ../src/toolbar.py:280
+#: ../src/toolbar.py:251 ../src/toolbar.py:280 ../src/fullscreen.py:76
+#: ../src/fullscreen.py:172
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../data/headerbar.ui.h:5
+#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../src/fullscreen.py:176
+#: ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Play"
 
-#: ../src/window.py:355
+#: ../src/window.py:345
 msgid "Popular albums"
 msgstr "Beliebte Alben"
 
-#: ../src/window.py:356 ../src/popmenu.py:47
+#: ../src/window.py:346 ../src/popmenu.py:47
 #, fuzzy
 msgid "Playlists"
 msgstr "Play"
 
-#: ../src/window.py:357
+#: ../src/window.py:347
 msgid "All artists"
 msgstr "Alle Künstler"
 
-#: ../src/window.py:400
+#: ../src/window.py:390
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -176,17 +178,17 @@ msgstr "Unbekannt"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:392 ../src/playlists.py:650
+#: ../src/playlists.py:396 ../src/playlists.py:671
 #, fuzzy, python-format
 msgid "Remove \"%s\"?"
 msgstr "Aus Warteschlange entfernen"
 
-#: ../src/playlists.py:462 ../src/playlists.py:465
+#: ../src/playlists.py:470 ../src/playlists.py:473
 #, fuzzy
 msgid "New playlist "
 msgstr "Play"
 
-#: ../src/playlists.py:678
+#: ../src/playlists.py:699
 #, fuzzy
 msgid "Remove these tracks?"
 msgstr "Nächste Titel"
@@ -348,8 +350,8 @@ msgid "Close"
 msgstr "Schliessen"
 
 #: ../data/SettingsDialog.ui.h:2
-msgid "Darken views"
-msgstr "Verdunkle Ansichten"
+msgid "Use dark theme variant"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
@@ -379,6 +381,12 @@ msgstr "Musik"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Wähle was im partymodus verfügbar sein soll"
+
+#~ msgid "Show albums/artists view as dark"
+#~ msgstr "Dunkle Album/Künstler Ansicht"
+
+#~ msgid "Darken views"
+#~ msgstr "Verdunkle Ansichten"
 
 #, fuzzy
 #~ msgid "Manage playlists"
