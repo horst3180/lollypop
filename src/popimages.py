@@ -157,6 +157,7 @@ class PopImages(Gtk.Popover):
             Objects.art.clean_cache(self._album_id, ART_SIZE_SMALL)
             Objects.art.clean_cache(self._album_id, ART_SIZE_MEDIUM)
             Objects.art.clean_cache(self._album_id, ART_SIZE_BIG)
+            Objects.art.clean_cache(self._album_id, ART_SIZE_MONSTER)
             Objects.player.announce_cover_update(self._album_id)
         except Exception as e:
             print("Check rights on ", album_path)
