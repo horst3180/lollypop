@@ -119,7 +119,7 @@
         <property name="receives_default">True</property>
         <property name="halign">end</property>
         <property name="valign">start</property>
-        <property name="margin_right">5</property>
+        <property name="margin_end">5</property>
         <property name="margin_top">5</property>
         <property name="image">close_image</property>
         <property name="relief">none</property>
@@ -211,8 +211,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">start</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
+            <property name="margin_start">5</property>
+            <property name="margin_end">5</property>
             <property name="margin_start">5</property>
             <property name="margin_end">5</property>
             <property name="hexpand">True</property>
