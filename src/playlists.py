@@ -348,8 +348,6 @@ class PlaylistsManageWidget(Gtk.Bin):
         if self._parent:
             self._ui.get_object('scroll').set_property('width-request',
                                     self._parent.get_allocated_width()/2)
-            self._view.grab_focus()
-            self._view.get_selection().unselect_all()
 
     """
         Populate playlists, thread safe
@@ -358,12 +356,7 @@ class PlaylistsManageWidget(Gtk.Bin):
         sql = Objects.db.get_cursor()
         # Search if we need to select item or not
         playlists = Objects.playlists.get()
-        for playlist in playlists:
-            selected = Objects.playlists.is_present(playlist,
-                                                    self._object_id,
-                                                    self._is_album,
-                                                    sql)
-            GLib.idle_add(self._append_playlist, playlist, selected)
+        GLib.idle_add(self._append_playlists, playlists)
 
 #######################
 # PRIVATE             #
@@ -378,11 +371,20 @@ class PlaylistsManageWidget(Gtk.Bin):
 
     """
         Append a playlist
-        @param playlist name as str
+        @param playlists as [str]
         @param playlist selected as bool
     """
-    def _append_playlist(self, playlist_name, selected):
-        self._model.append([selected, playlist_name, self._del_pixbuf])
+    def _append_playlists(self, playlists):
+        if len(playlists) > 0:
+            playlist = playlists.pop(0)
+            selected = Objects.playlists.is_present(playlist,
+                                                    self._object_id,
+                                                    self._is_album)
+            self._model.append([selected, playlist, self._del_pixbuf])
+            GLib.idle_add(self._append_playlists, playlists)
+        else:
+            self._view.grab_focus()
+            self._view.get_selection().unselect_all()
 
     """
         Show infobar
