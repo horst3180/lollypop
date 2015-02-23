@@ -348,6 +348,8 @@ class PlaylistsManageWidget(Gtk.Bin):
         if self._parent:
             self._ui.get_object('scroll').set_property('width-request',
                                     self._parent.get_allocated_width()/2)
+            self._view.grab_focus()
+            self._view.get_selection().unselect_all()
 
     """
         Populate playlists, thread safe
@@ -409,6 +411,8 @@ class PlaylistsManageWidget(Gtk.Bin):
     def _on_response(self, infobar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
+            self._view.grab_focus()
+            self._view.get_selection().unselect_all()
 
     """
         Delete playlist
@@ -431,6 +435,8 @@ class PlaylistsManageWidget(Gtk.Bin):
             self._model.remove(iterator)
             self._deleted_path = None
             self._infobar.hide()
+            self._view.grab_focus()
+            self._view.get_selection().unselect_all()
 
     """
         Delete item if Delete was pressed
@@ -598,16 +604,16 @@ class PlaylistEditWidget:
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
-        self._view.get_selection().unselect_all()
         self._view.grab_focus()
+        self._view.get_selection().unselect_all()
         self._update_on_disk()
 
     """
         Unselect all in view
     """
     def unselectall(self):
-        self._view.get_selection().unselect_all()
         self._view.grab_focus()
+        self._view.get_selection().unselect_all()
 #######################
 # PRIVATE             #
 #######################
