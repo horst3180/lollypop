@@ -484,10 +484,19 @@ class Window(Gtk.ApplicationWindow):
         selection_list.connect('item-selected', callback)
 
     """
-        Clean view
+        Clean view, delayed to let lollypop load others views
+        smoothly
         @param view as View
     """
     def _clean_view(self, view):
+        GLib.timeout_add(2000, self._real_clean_view,
+                         view, priority = GLib.PRIORITY_LOW)
+
+    """
+        Clean view
+        @param view as View
+    """
+    def _real_clean_view(self, view):
         if view:
             view.stop()
             self._stack.remove(view)
