@@ -41,9 +41,6 @@ class PopImages(Gtk.Popover):
         self._view.connect("child-activated", self._on_activate)
         self._view.show()
 
-        self.set_property('width-request', 700)
-        self.set_property('height-request', 400)
-
         viewport = Gtk.Viewport()
         viewport.add(self._view)
         viewport.set_property("valign", Gtk.Align.START)
@@ -71,6 +68,13 @@ class PopImages(Gtk.Popover):
     def populate(self, string):
         self._thread = True
         start_new_thread(self._populate, (string,))
+
+    """
+        Resize popover and set signals callback
+    """
+    def do_show(self):
+        self.set_size_request(700, 400)
+        Gtk.Popover.do_show(self)
 
 #######################
 # PRIVATE             #

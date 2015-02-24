@@ -29,8 +29,6 @@ class QueueWidget(Gtk.Popover):
     def __init__(self):
         Gtk.Popover.__init__(self)
 
-        self.set_property('width-request', 400)
-
         self._timeout = None
         self._in_drag = False
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
@@ -83,9 +81,9 @@ class QueueWidget(Gtk.Popover):
     def do_show(self):
         size_setting = Objects.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
-            self.set_property('height-request', size_setting[1]*0.7)
+            self.set_size_request(400, size_setting[1]*0.7)
         else:
-            self.set_property('height-request', 600)
+            self.set_size_request(400, 600)
 
         for track_id in Objects.player.get_queue():
             album_id = Objects.tracks.get_album_id(track_id)

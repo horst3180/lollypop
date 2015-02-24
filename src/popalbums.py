@@ -62,17 +62,15 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         self._clean_view(previous)
 
     """
-        Resize popover and set signals callback
+        Resize popover
     """
     def do_show(self):
         size_setting = Objects.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
-            self.set_property('width-request', size_setting[0]*0.65)
-            self.set_property('height-request', size_setting[1]*0.8)
+            self.set_size_request(size_setting[0]*0.65, size_setting[1]*0.8)
         else:
-            self.set_property('width-request', 600)
-            self.set_property('height-request', 600)
+            self.set_size_request(600, 600)
         Gtk.Popover.do_show(self)
 
 #######################
