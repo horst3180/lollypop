@@ -24,14 +24,14 @@ from lollypop.utils import translate_artist_name
 # Container for a view
 class ViewContainer:
     def __init__(self, duration):
-        self._timeout_cleaner = None
-        self._to_clean = []
+        self._duration = duration
         self._stack = Gtk.Stack()
         # Don't pass resize request to parent
         self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
         self._stack.set_transition_duration(duration)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._stack.show()
+
 #######################
 # PRIVATE             #
 #######################
@@ -42,34 +42,19 @@ class ViewContainer:
     def _clean_view(self, view):
         if view:
             view.stop()
-            self._to_clean.append(view)
-            if not self._timeout_cleaner:
-                self._timeout_cleaner = GLib.timeout_add(
-                                                     1000,
-                                                     self._smooth_clean_views)
+            # Delayed destroy as we have an animation running
+            # Gtk.StackTransitionType.CROSSFADE
+            GLib.timeout_add(self._duration,
+                             self._delayed_clean_view,
+                             view)
 
     """
-        Clean view smoothly,
-        @param valid view as View, if None, pop from _to_clean
+        Clean view
+        @param valid view as View
     """
-    def _smooth_clean_views(self, view=None):
-        if not view:
-            view = self._to_clean.pop(0)
-        if view.clean():
-            self._stack.remove(view)
-            view.remove_signals()
-            view.destroy()
-            # Look for other views to clean
-            if len(self._to_clean) > 0:
-                self._timeout_cleaner = GLib.timeout_add(100,
-                                                         self._smooth_clean_views)
-            # We're done
-            else:
-                self._timeout_cleaner = None
-        else:
-            self._timeout_cleaner = GLib.timeout_add(100,
-                                                     self._smooth_clean_views,
-                                                     view)
+    def _delayed_clean_view(self, view):
+        view.remove_signals()
+        view.destroy()
 
 
 # Loading view used on db update
@@ -89,9 +74,6 @@ class LoadingView(Gtk.Bin):
 
     def stop(self):
         pass
-
-    def clean(self):
-        return True
 
 
 # PlaylistConfigureView view used to manage playlists
@@ -115,9 +97,6 @@ class PlaylistManageView(Gtk.Bin):
 
     def stop(self):
         pass
-
-    def clean(self):
-        return True
 
 
 #######################
@@ -150,12 +129,6 @@ class View(Gtk.Grid):
             Objects.player.disconnect(self._cover_signal)
             self._cover_signal = None
 
-    """
-        Clean the view, starting by cleaning child
-        @return bool, True if clean
-    """
-    def clean(self):
-        return True
 
 #######################
 # PRIVATE             #
@@ -251,16 +224,6 @@ class ArtistView(View):
         GLib.idle_add(self._add_albums, albums)
         sql.close()
 
-    """
-        Clean the view, starting by cleaning child
-        @return bool, True if clean
-    """
-    def clean(self):
-        for child in self._albumbox.get_children():
-            if child.remove_child():
-                child.destroy()
-            return False
-        return True
 
 #######################
 # PRIVATE             #
@@ -363,16 +326,6 @@ class AlbumView(View):
         GLib.idle_add(self._add_albums, albums)
         sql.close()
 
-    """
-        Clean the view, starting by cleaning child
-        @return bool, True if clean
-    """
-    def clean(self):
-        for child in self._albumbox.get_children():
-            if child.get_children()[0].remove_child():
-                child.destroy()
-            return False
-        return True
 
 #######################
 # PRIVATE             #
@@ -503,17 +456,6 @@ class PlaylistView(View):
         GLib.idle_add(self._playlist_widget.populate_list_two,
                       tracks[mid_tracks:],
                       mid_tracks + 1)
-
-    """
-        Clean the view, starting by cleaning child
-        @return bool, True if clean
-    """
-    def clean(self):
-        if self._playlist_widget.remove_child():
-            self._playlist_widget.destroy()
-            return True
-        else:
-            return False
 
     """
         Return playlist name
