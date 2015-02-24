@@ -373,7 +373,7 @@ class DatabaseAlbums:
         if artist_id and genre_id:
             result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=? and genre_id=?\
-                                  ORDER BY year, name", (artist_id, genre_id))
+                                  ORDER BY year, name COLLATE NOCASE", (artist_id, genre_id))
         # Get albums for all artists
         elif not artist_id and not genre_id:
             result = sql.execute("SELECT albums.rowid FROM albums,artists\
@@ -392,8 +392,7 @@ class DatabaseAlbums:
         elif not genre_id:
             result = sql.execute("SELECT DISTINCT rowid FROM albums\
                                   WHERE artist_id=?\
-                                  GROUP BY name\
-                                  ORDER BY year, name", (artist_id,))
+                                  ORDER BY year, name COLLATE NOCASE", (artist_id,))
 
         for row in result:
             albums += row
