@@ -14,18 +14,19 @@
 from gi.repository import Gtk
 from _thread import start_new_thread
 
-from lollypop.view import ArtistView
+from lollypop.view import ArtistView, ViewContainer
 from lollypop.define import Objects
 
 
 # Show a popup with current artist albums
-class PopAlbums(Gtk.Popover):
+class PopAlbums(Gtk.Popover, ViewContainer):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
     """
     def __init__(self):
         Gtk.Popover.__init__(self)
+        ViewContainer.__init__(self, 1000)
 
         self._widgets = []
         self._populating_view = None
@@ -34,10 +35,6 @@ class PopAlbums(Gtk.Popover):
 
         self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
-        self._stack = Gtk.Stack()
-        self._stack.set_transition_duration(1000)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
         self.add(self._stack)
 
         Objects.player.connect("current-changed", self._update_content)
@@ -54,21 +51,15 @@ class PopAlbums(Gtk.Popover):
         if self._artist_id == artist_id and self._genre_id == genre_id:
             return
 
+        previous = self._stack.get_visible_child()
         view = ArtistView(artist_id, genre_id, False)
-        self._stack.add(view)
-        if self._artist_id:
-                view.connect('finished', self._switch_view)
-                # Destroy hidden view, which are in populate() thread
-                for child in self._stack.get_children():
-                    if child != view and\
-                       self._stack.get_visible_child() != child:
-                        child.destroy()
-        else:
-            self._switch_view(view)
+        view.show()
         start_new_thread(view.populate, ())
         self._artist_id = artist_id
         self._genre_id = genre_id
-        view.show()
+        self._stack.add(view)
+        self._stack.set_visible_child(view)
+        self._clean_view(previous)
 
     """
         Resize popover and set signals callback
@@ -87,18 +78,6 @@ class PopAlbums(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-
-    """
-        Switch to view
-        @param view as ArtistView
-    """
-    def _switch_view(self, view):
-        previous = self._stack.get_visible_child()
-        self._stack.set_visible_child(view)
-        if previous and previous != view:
-            previous.stop()
-            previous.destroy()
-
     """
         Update the content view
         @param player as Player

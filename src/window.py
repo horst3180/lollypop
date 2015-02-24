@@ -22,12 +22,12 @@ from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
-from lollypop.view import AlbumView, ArtistView
+from lollypop.view import ViewContainer, AlbumView, ArtistView
 from lollypop.view import PlaylistView, PlaylistManageView, LoadingView
 
 
 # Main window
-class Window(Gtk.ApplicationWindow):
+class Window(Gtk.ApplicationWindow, ViewContainer):
     """
         Init window objects
     """
@@ -35,8 +35,8 @@ class Window(Gtk.ApplicationWindow):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
-
-        self._timeout = None
+        ViewContainer.__init__(self, 500)
+        self._timeout_configure = None
         # SelectionList::update() is based on index in values tuple.
         # For db objects, it's rowid so it will works.
         # For playlists, we just use a static int and increment it over time
@@ -293,14 +293,8 @@ class Window(Gtk.ApplicationWindow):
         self._list_two.visible = False
 
         loading_view = LoadingView()
-
-        self._stack = Gtk.Stack()
         self._stack.add(loading_view)
         self._stack.set_visible_child(loading_view)
-        self._stack.set_transition_duration(500)
-        self._stack.set_property('expand', True)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
 
         self._progress = Gtk.ProgressBar()
 
@@ -484,26 +478,6 @@ class Window(Gtk.ApplicationWindow):
         selection_list.connect('item-selected', callback)
 
     """
-        Clean view, delayed to let lollypop load others views
-        smoothly
-        @param view as View
-    """
-    def _clean_view(self, view):
-        GLib.timeout_add(2000, self._real_clean_view,
-                         view, priority = GLib.PRIORITY_LOW)
-
-    """
-        Clean view
-        @param view as View
-    """
-    def _real_clean_view(self, view):
-        if view:
-            view.stop()
-            self._stack.remove(view)
-            view.remove_signals()
-            view.destroy()
-
-    """
         Update view based on selected object
         @param list as SelectionList
         @param object id as int
@@ -573,16 +547,16 @@ class Window(Gtk.ApplicationWindow):
         @param: event as Gtk.Event
     """
     def _on_configure_event(self, widget, event):
-        if self._timeout:
-            GLib.source_remove(self._timeout)
-        self._timeout = GLib.timeout_add(500, self._save_size_position, widget)
+        if self._timeout_configure:
+            GLib.source_remove(self._timeout_configure)
+        self._timeout_configure = GLib.timeout_add(500, self._save_size_position, widget)
 
     """
         Save window state, update current view content size
         @param: widget as Gtk.Window
     """
     def _save_size_position(self, widget):
-        self._timeout = None
+        self._timeout_configure = None
         size = widget.get_size()
         Objects.settings.set_value('window-size',
                                    GLib.Variant('ai',

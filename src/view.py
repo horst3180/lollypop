@@ -21,6 +21,51 @@ from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
 
+# Container for a view
+class ViewContainer:
+    def __init__(self, duration):
+        self._timeout_cleaner = None
+        self._to_clean = []
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(duration)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.show()
+#######################
+# PRIVATE             #
+#######################
+    """
+        Clean view
+        @param view as View
+    """
+    def _clean_view(self, view):
+        if view:
+            view.stop()
+            self._to_clean.append(view)
+            if not self._timeout_cleaner:
+                self._timeout_cleaner = GLib.timeout_add(
+                                                     1000,
+                                                     self._smooth_clean_views)
+
+    """
+        Clean view smoothly,
+        @param valid view as View, if None, pop from _to_clean
+    """
+    def _smooth_clean_views(self, view=None):
+        if not view:
+            view = self._to_clean.pop(0)
+        if view.clean():
+            self._stack.remove(view)
+            view.remove_signals()
+            view.destroy()
+            # Look for other views to clean
+            if len(self._to_clean) > 0:
+                GLib.timeout_add(500, self._smooth_clean_views)
+            # We're done
+            else:
+                self._timeout_cleaner = None
+        else:
+            GLib.timeout_add(500, self._smooth_clean_views, view)
+
 
 # Loading view used on db update
 class LoadingView(Gtk.Bin):
@@ -39,6 +84,9 @@ class LoadingView(Gtk.Bin):
 
     def stop(self):
         pass
+
+    def clean(self):
+        return True
 
 
 # PlaylistConfigureView view used to manage playlists
@@ -63,6 +111,10 @@ class PlaylistManageView(Gtk.Bin):
     def stop(self):
         pass
 
+    def clean(self):
+        return True
+
+
 #######################
 # PRIVATE             #
 #######################
@@ -70,9 +122,6 @@ class PlaylistManageView(Gtk.Bin):
 
 # Generic view
 class View(Gtk.Grid):
-    __gsignals__ = {
-        'finished': (GObject.SIGNAL_RUN_FIRST, None, ())
-    }
 
     def __init__(self):
         Gtk.Grid.__init__(self)
@@ -89,6 +138,13 @@ class View(Gtk.Grid):
     def remove_signals(self):
         Objects.player.disconnect_by_func(self._on_current_changed)
         Objects.player.disconnect_by_func(self._on_cover_changed)
+
+    """
+        Clean the view, starting by cleaning child
+        @return bool, True if clean
+    """
+    def clean(self):
+        return True
 
 #######################
 # PRIVATE             #
@@ -184,6 +240,17 @@ class ArtistView(View):
         GLib.idle_add(self._add_albums, albums)
         sql.close()
 
+    """
+        Clean the view, starting by cleaning child
+        @return bool, True if clean
+    """
+    def clean(self):
+        for child in self._albumbox.get_children():
+            if child.remove_child():
+                child.destroy()
+            return False
+        return True
+
 #######################
 # PRIVATE             #
 #######################
@@ -226,7 +293,6 @@ class ArtistView(View):
             GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
         else:
             self._stop = False
-            self.emit('finished')
 
 
 # Album view is a flowbox of albums widgets with album name and artist name
@@ -285,6 +351,17 @@ class AlbumView(View):
 
         GLib.idle_add(self._add_albums, albums)
         sql.close()
+
+    """
+        Clean the view, starting by cleaning child
+        @return bool, True if clean
+    """
+    def clean(self):
+        for child in self._albumbox.get_children():
+            if child.get_children()[0].remove_child():
+                child.destroy()
+            return False
+        return True
 
 #######################
 # PRIVATE             #
@@ -368,7 +445,6 @@ class AlbumView(View):
             GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
         else:
             self._stop = False
-            self.emit('finished')
 
 
 # Playlist view is a vertical grid with album's covers
@@ -418,6 +494,17 @@ class PlaylistView(View):
                       mid_tracks + 1)
 
     """
+        Clean the view, starting by cleaning child
+        @return bool, True if clean
+    """
+    def clean(self):
+        if self._playlist_widget.remove_child():
+            self._playlist_widget.destroy()
+            return True
+        else:
+            return False
+
+    """
         Return playlist name
         @return name as str
     """
@@ -438,6 +525,7 @@ class PlaylistView(View):
     def do_hide(self):
         Objects.playlists.disconnect_by_func(self._update_view)
         View.do_hide(self)
+
 #######################
 # PRIVATE             #
 #######################

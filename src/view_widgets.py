@@ -75,6 +75,13 @@ class AlbumWidget(Gtk.Grid):
     def get_id(self):
         return self._album_id
 
+    """
+        Remove one child
+        @return bool True if no more tracks available
+    """
+    def remove_child(self):
+        return True
+
 
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(Gtk.Grid):
@@ -161,10 +168,21 @@ class AlbumDetailedWidget(Gtk.Grid):
     def get_id(self):
         return self._album_id
 
+    """
+        Remove one child
+        @return bool True if no more tracks available
+    """
+    def remove_child(self):
+        for widget in self._tracks_widget1, self._tracks_widget2:
+            for child in widget.get_children():
+                child.destroy()
+                return False
+
+        return True
+
 #######################
 # PRIVATE             #
 #######################
-
     """
         Popup menu for album
         @param widget as Gtk.Button
@@ -331,19 +349,22 @@ class PlaylistWidget(Gtk.Grid):
         self._playlist_edit.unselectall()
 
     """
-        Clear tracks
-    """
-    def clear(self):
-        self._tracks = []
-        for child in self._tracks_widget1.get_children():
-            child.destroy()
-        for child in self._tracks_widget2.get_children():
-            child.destroy()
-    """
         Delete playlist after confirmation
     """
     def delete_confirmed(self):
         self._playlist_edit.delete_confirmed()
+
+    """
+        Remove one child
+        @return bool True if no more tracks available
+    """
+    def remove_child(self):
+        for widget in self._tracks_widget1, self._tracks_widget2:
+            for child in widget.get_children():
+                child.destroy()
+                return False
+                
+        return True
 #######################
 # PRIVATE             #
 #######################
