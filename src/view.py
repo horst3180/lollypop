@@ -61,13 +61,13 @@ class ViewContainer:
             view.destroy()
             # Look for other views to clean
             if len(self._to_clean) > 0:
-                self._timeout_cleaner = GLib.timeout_add(500,
+                self._timeout_cleaner = GLib.timeout_add(100,
                                                          self._smooth_clean_views)
             # We're done
             else:
                 self._timeout_cleaner = None
         else:
-            self._timeout_cleaner = GLib.timeout_add(500,
+            self._timeout_cleaner = GLib.timeout_add(100,
                                                      self._smooth_clean_views,
                                                      view)
 
