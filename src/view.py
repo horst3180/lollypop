@@ -59,12 +59,15 @@ class ViewContainer:
             view.destroy()
             # Look for other views to clean
             if len(self._to_clean) > 0:
-                GLib.timeout_add(500, self._smooth_clean_views)
+                self._timeout_cleaner = GLib.timeout_add(500,
+                                                         self._smooth_clean_views)
             # We're done
             else:
                 self._timeout_cleaner = None
         else:
-            GLib.timeout_add(500, self._smooth_clean_views, view)
+            self._timeout_cleaner = GLib.timeout_add(500,
+                                                     self._smooth_clean_views,
+                                                     view)
 
 
 # Loading view used on db update
@@ -127,8 +130,10 @@ class View(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        Objects.player.connect("current-changed", self._on_current_changed)
-        Objects.player.connect("cover-changed", self._on_cover_changed)
+        self._current_signal = Objects.player.connect("current-changed",
+                                                      self._on_current_changed)
+        self._cover_signal = Objects.player.connect("cover-changed",
+                                                    self._on_cover_changed)
         # Stop populate thread
         self._stop = False
 
@@ -136,8 +141,12 @@ class View(Gtk.Grid):
         Remove signals on player object
     """
     def remove_signals(self):
-        Objects.player.disconnect_by_func(self._on_current_changed)
-        Objects.player.disconnect_by_func(self._on_cover_changed)
+        if self._current_signal:
+            Objects.player.disconnect(self._current_signal)
+            self._current_signal = None
+        if self._cover_signal:
+            Objects.player.disconnect(self._cover_signal)
+            self._cover_signal = None
 
     """
         Clean the view, starting by cleaning child
