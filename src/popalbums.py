@@ -33,8 +33,6 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         self._artist_id = None
         self._genre_id = None
 
-        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-
         self.add(self._stack)
 
         Objects.player.connect("current-changed", self._update_content)
