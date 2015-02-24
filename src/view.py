@@ -27,6 +27,8 @@ class ViewContainer:
         self._timeout_cleaner = None
         self._to_clean = []
         self._stack = Gtk.Stack()
+        # Don't pass resize request to parent
+        self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
         self._stack.set_transition_duration(duration)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._stack.show()
