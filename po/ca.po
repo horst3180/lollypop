@@ -1,0 +1,373 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Adolfo Jayme Barrientos, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-23 07:28+0100\n"
+"PO-Revision-Date: 2015-02-23 08:01+0000\n"
+"Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:1
+msgid "Window size"
+msgstr "Mida de la finestra"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:2
+msgid "Window size (width and height)."
+msgstr "Mida de la finestra (amplada i alçada)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:3
+msgid "Window position"
+msgstr "Posició de la finestra"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:4
+msgid "Window position (x and y)."
+msgstr "Posició de la finestra (x i y)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:5
+msgid "Window maximized"
+msgstr "Finestra maximitzada"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:6
+msgid "Window maximized state."
+msgstr "Estat maximitzat de la finestra."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Enabled genres in party mode"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+msgid "Ids for genres."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+msgid "Music paths"
+msgstr "Camins de la música"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+msgid "When empty, use XDG_MUSIC_DIR"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "DO NOT MODIFY"
+msgstr "NO HO MODIFIQUEU"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Scan library at startup"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "Do not show genres list"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Use dark gtk theme"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Show stylized covers"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
+msgid "Continue playback when closed"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid "Restore previous view"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid "Shuffle mode"
+msgstr ""
+
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+msgid ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
+msgid "Lollypop"
+msgstr "Lollypop"
+
+#: ../data/lollypop.desktop.in.h:2
+msgid "Music Player"
+msgstr "Reproductor de música"
+
+#: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
+msgid "Play and organize your music collection"
+msgstr "Reproduïu i organitzeu la vostra col·lecció musical"
+
+#: ../data/lollypop.appdata.xml.in.h:3
+msgid "Music player for the GNOME desktop"
+msgstr "Reproductor musical per a l’escriptori del GNOME"
+
+#: ../src/toolbar.py:251 ../src/toolbar.py:280 ../src/fullscreen.py:76
+#: ../src/fullscreen.py:172
+msgid "Pause"
+msgstr "Fes una pausa"
+
+#: ../src/toolbar.py:261 ../src/toolbar.py:277 ../src/fullscreen.py:176
+#: ../data/headerbar.ui.h:5
+msgid "Play"
+msgstr "Reprodueix"
+
+#: ../src/window.py:345
+msgid "Popular albums"
+msgstr "Àlbums populars"
+
+#: ../src/window.py:346 ../src/popmenu.py:47
+msgid "Playlists"
+msgstr "Llistes"
+
+#: ../src/window.py:347
+msgid "All artists"
+msgstr "Tots els artistes"
+
+#: ../src/window.py:390
+msgid "Compilations"
+msgstr "Compilacions"
+
+#: ../src/notification.py:41 ../data/headerbar.ui.h:4
+msgid "Previous"
+msgstr "Anterior"
+
+#: ../src/notification.py:45 ../data/headerbar.ui.h:6
+msgid "Next"
+msgstr "Següent"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:72
+#, python-format
+msgid "by %s, from %s"
+msgstr ""
+
+#: ../src/database_artists.py:62
+msgid "Many artists"
+msgstr ""
+
+#: ../src/database_artists.py:70 ../src/database_albums.py:149
+#: ../src/database_tracks.py:168 ../src/database_genres.py:67
+#: ../src/collectionscanner.py:182 ../src/collectionscanner.py:196
+#: ../src/collectionscanner.py:201
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../src/database_albums.py:166
+msgid "Compilation"
+msgstr "Compilació"
+
+#: ../src/playlists.py:396 ../src/playlists.py:671
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr ""
+
+#: ../src/playlists.py:470 ../src/playlists.py:473
+msgid "New playlist "
+msgstr "Llista nova"
+
+#: ../src/playlists.py:699
+msgid "Remove these tracks?"
+msgstr ""
+
+#: ../src/view.py:32
+msgid "Loading please wait..."
+msgstr "S’està carregant, espereu-vos…"
+
+#: ../src/popmenu.py:42
+msgid "Playback"
+msgstr "Reproducció"
+
+#: ../src/popmenu.py:62
+msgid "Only play this album"
+msgstr "Reprodueix només aquest àlbum"
+
+#: ../src/popmenu.py:78
+msgid "Add to others"
+msgstr ""
+
+#: ../src/popmenu.py:91
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Treu de «%s»"
+
+#: ../src/popmenu.py:99
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Afegeix a «%s»"
+
+#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Afegeix a la cua"
+
+#: ../src/popmenu.py:150
+msgid "Next tracks"
+msgstr "Peces següents"
+
+#: ../src/popmenu.py:152
+msgid "Next track"
+msgstr "Peça següent"
+
+#: ../src/popmenu.py:157
+msgid "Remove from queue"
+msgstr "Treu de la cua"
+
+#: ../src/popimages.py:63
+msgid "Select a cover art for this album"
+msgstr "Trieu una caràtula per a aquest àlbum"
+
+#: ../src/settings.py:33
+msgid "Configure lollypop"
+msgstr "Configura el Lollypop"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:25
+msgid "The the"
+msgstr "The the El el La la Els els Les les L' l' L’ l’"
+
+#: ../src/search.py:152
+msgid "Search:"
+msgstr "Cerca:"
+
+#: ../data/AboutDialog.ui.in.h:1
+msgid "A music player for GNOME."
+msgstr "Un reproductor musical per al GNOME."
+
+#: ../data/AboutDialog.ui.in.h:2
+msgid "Visit Lollypop website"
+msgstr "Lloc web del Lollypop"
+
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Cua:"
+
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Neteja la cua"
+
+#: ../data/app-menu.ui.h:1
+msgid "_Preferences"
+msgstr "_Preferències"
+
+#: ../data/app-menu.ui.h:2
+msgid "_Update music"
+msgstr "Act_ualitza la música"
+
+#: ../data/app-menu.ui.h:3
+msgid "_Fullscreen"
+msgstr "_Pantalla sencera"
+
+#: ../data/app-menu.ui.h:4
+msgid "_About"
+msgstr "_Quant a"
+
+#: ../data/app-menu.ui.h:5
+msgid "_Quit"
+msgstr "_Surt"
+
+#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+msgid "Confirm"
+msgstr "Confirma"
+
+#: ../data/PlaylistsManageWidget.ui.h:2
+msgid "New playlist"
+msgstr "Llista nova"
+
+#: ../data/PlaylistView.ui.h:1
+msgid "Edit"
+msgstr ""
+
+#: ../data/headerbar.ui.h:1
+msgid "No shuffle"
+msgstr ""
+
+#: ../data/headerbar.ui.h:2
+msgid "Shuffle albums"
+msgstr ""
+
+#: ../data/headerbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr ""
+
+#: ../data/headerbar.ui.h:7
+msgid "Shuffle"
+msgstr ""
+
+#: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:11
+msgid "Party mode"
+msgstr ""
+
+#: ../data/headerbar.ui.h:9
+msgid "Search"
+msgstr "Cerca"
+
+#: ../data/headerbar.ui.h:10
+msgid "Queue"
+msgstr ""
+
+#: ../data/headerbar.ui.h:11
+msgid "Show genres"
+msgstr "Mostra els gèneres"
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr "artista"
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
+msgstr "Afegeix a la llista"
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Close"
+msgstr "Tanca"
+
+#: ../data/SettingsDialog.ui.h:2
+msgid "Use dark theme variant"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:3
+msgid "Update music on startup"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:5
+msgid "Restore view on startup"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:6
+msgid "Configure lollypop behaviour"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:7
+msgid "Behaviour"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:8
+msgid "Select music folders"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:9
+msgid "Music"
+msgstr "Música"
+
+#: ../data/SettingsDialog.ui.h:10
+msgid "Select what will be available in party mode"
+msgstr ""
