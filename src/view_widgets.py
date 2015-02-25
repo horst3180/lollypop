@@ -336,6 +336,16 @@ class PlaylistWidget(Gtk.Grid):
     def delete_confirmed(self):
         self._playlist_edit.delete_confirmed()
 
+    """
+        Clear tracks
+    """
+    def clear(self):
+        self._tracks = []
+        for child in self._tracks_widget1.get_children():
+            child.destroy()
+        for child in self._tracks_widget2.get_children():
+            child.destroy()
+
 #######################
 # PRIVATE             #
 #######################
