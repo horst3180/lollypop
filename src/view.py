@@ -42,7 +42,7 @@ class ViewContainer:
     def _clean_view(self, view):
         if view:
             view.stop()
-            # Delayed destroy as we have an animation running
+            # Delayed destroy as we may have an animation running
             # Gtk.StackTransitionType.CROSSFADE
             GLib.timeout_add(self._duration,
                              self._delayed_clean_view,
