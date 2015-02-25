@@ -1,22 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
-# Nathan, 2015
+# Nathan Follens, 2015
+# Nathan Follens, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 07:28+0100\n"
-"PO-Revision-Date: 2015-01-06 10:31+0000\n"
-"Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
-"nl/)\n"
-"Language: nl\n"
+"PO-Revision-Date: 2015-02-23 14:12+0000\n"
+"Last-Translator: Nathan Follens\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -73,11 +73,11 @@ msgstr "Geef lijst met genres niet weer"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Donker GTK-thema gebruiken"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Gestileerde albumhoezen weergeven"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -85,7 +85,7 @@ msgstr "Doorgaan met afspelen wanneer gesloten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Restore previous view"
-msgstr ""
+msgstr "Vorig uitzicht herstellen"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
@@ -93,14 +93,16 @@ msgstr "INTERN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
-msgstr ""
+msgstr "Willekeurige volgorde-modus"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige volgorde)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -133,9 +135,8 @@ msgid "Popular albums"
 msgstr "Populaire albums"
 
 #: ../src/window.py:346 ../src/popmenu.py:47
-#, fuzzy
 msgid "Playlists"
-msgstr "Afspelen"
+msgstr "Afspeellijsten"
 
 #: ../src/window.py:347
 msgid "All artists"
@@ -176,26 +177,23 @@ msgid "Compilation"
 msgstr "Compilatie"
 
 #: ../src/playlists.py:396 ../src/playlists.py:671
-#, fuzzy, python-format
+#, python-format
 msgid "Remove \"%s\"?"
-msgstr "Verwijderen uit wachtrij"
+msgstr "\"%s\" verwijderen?"
 
 #: ../src/playlists.py:470 ../src/playlists.py:473
-#, fuzzy
 msgid "New playlist "
-msgstr "Afspelen"
+msgstr "Nieuwe afspeellijst"
 
 #: ../src/playlists.py:699
-#, fuzzy
 msgid "Remove these tracks?"
-msgstr "Volgende nummers"
+msgstr "Deze nummers verwijderen?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Bezig met laden, gelieve te wachten..."
 
 #: ../src/popmenu.py:42
-#, fuzzy
 msgid "Playback"
 msgstr "Afspelen"
 
@@ -204,19 +202,18 @@ msgid "Only play this album"
 msgstr "Alleen dit album afspelen"
 
 #: ../src/popmenu.py:78
-#, fuzzy
 msgid "Add to others"
-msgstr "Toevoegen aan wachtrij"
+msgstr "Toevoegen aan andere"
 
 #: ../src/popmenu.py:91
-#, fuzzy, python-format
+#, python-format
 msgid "Remove from \"%s\""
-msgstr "Verwijderen uit wachtrij"
+msgstr "Verwijderen uit \"%s\""
 
 #: ../src/popmenu.py:99
-#, fuzzy, python-format
+#, python-format
 msgid "Add to \"%s\""
-msgstr "Toevoegen aan wachtrij"
+msgstr "Toevoegen aan \"%s\""
 
 #: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -278,7 +275,7 @@ msgstr "Muziek _updaten"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Volledig scherm"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
@@ -290,32 +287,31 @@ msgstr "_Afsluiten"
 
 #: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr ""
+msgstr "Bevestigen"
 
 #: ../data/PlaylistsManageWidget.ui.h:2
-#, fuzzy
 msgid "New playlist"
-msgstr "Afspelen"
+msgstr "Nieuwe afspeellijst"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Bewerken"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
-msgstr ""
+msgstr "Geen willekeurige volgorde"
 
 #: ../data/headerbar.ui.h:2
 msgid "Shuffle albums"
-msgstr ""
+msgstr "Albums in willekeurige volgorde"
 
 #: ../data/headerbar.ui.h:3
 msgid "Shuffle tracks"
-msgstr ""
+msgstr "Nummers in willekeurige volgorde"
 
 #: ../data/headerbar.ui.h:7
 msgid "Shuffle"
-msgstr "Willekeurig"
+msgstr "Willekeurige volgorde"
 
 #: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:11
 msgid "Party mode"
@@ -338,9 +334,8 @@ msgid "artist"
 msgstr "artiest"
 
 #: ../data/SearchRow.ui.h:2
-#, fuzzy
 msgid "Add to playlist"
-msgstr "Afspelen"
+msgstr "Toevoegen aan afspeellijst"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -348,16 +343,15 @@ msgstr "Sluiten"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Donkere thema-variant gebruiken"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Update muziek bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:5
-#, fuzzy
 msgid "Restore view on startup"
-msgstr "Update muziek bij opstarten"
+msgstr "Uitzicht herstellen bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
@@ -378,29 +372,3 @@ msgstr "Muziek"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Selecteer wat beschikbaar is in feestmodus"
-
-#~ msgid "Show albums/artists view as dark"
-#~ msgstr "Geef albums/artiesten met donker thema weer"
-
-#~ msgid "Darken views"
-#~ msgstr "Maak weergaves donkerder"
-
-#, fuzzy
-#~ msgid "Manage playlists"
-#~ msgstr "Afspelen"
-
-#, fuzzy
-#~ msgid "Add to playlists"
-#~ msgstr "Afspelen"
-
-#, fuzzy
-#~ msgid "Edit playlist"
-#~ msgstr "Afspelen"
-
-#, fuzzy
-#~ msgid "Empty playlist?"
-#~ msgstr "Afspelen"
-
-#, fuzzy
-#~ msgid "Empty playlist"
-#~ msgstr "Afspelen"

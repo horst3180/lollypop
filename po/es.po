@@ -1,8 +1,9 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
+# Adolfo Jayme Barrientos, 2015
 # Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>, 2015
 # karlinux <karlinux47@gmail.com>, 2014-2015
 msgid ""
@@ -10,14 +11,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 07:28+0100\n"
-"PO-Revision-Date: 2015-01-06 10:31+0000\n"
-"Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
-"language/es/)\n"
-"Language: es\n"
+"PO-Revision-Date: 2015-02-24 10:40+0000\n"
+"Last-Translator: Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,11 +74,11 @@ msgstr "No mostrar la lista de género"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Usar tema oscuro"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Mostrar carátulas estilizadas"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -86,7 +86,7 @@ msgstr "Continuar con la reproducción cuando esté cerrado"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Restore previous view"
-msgstr ""
+msgstr "Restaurar la vista anterior"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
@@ -94,14 +94,16 @@ msgstr "INTERNO"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
-msgstr ""
+msgstr "Modo aleatorio"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "El valor determina si se aleatorizarán las pistas y los álbumes. Los valores permitidos son: «none» (desactivar modo aleatorio), «tracks» (mezclar las pistas) y «albums» (mezclar los álbumes)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -134,9 +136,8 @@ msgid "Popular albums"
 msgstr "Álbumes populares"
 
 #: ../src/window.py:346 ../src/popmenu.py:47
-#, fuzzy
 msgid "Playlists"
-msgstr "Reproducir"
+msgstr "Listas"
 
 #: ../src/window.py:347
 msgid "All artists"
@@ -177,47 +178,43 @@ msgid "Compilation"
 msgstr "Recopilación"
 
 #: ../src/playlists.py:396 ../src/playlists.py:671
-#, fuzzy, python-format
+#, python-format
 msgid "Remove \"%s\"?"
-msgstr "Suprimir de la cola"
+msgstr "¿Quiere quitar «%s»?"
 
 #: ../src/playlists.py:470 ../src/playlists.py:473
-#, fuzzy
 msgid "New playlist "
-msgstr "Reproducir"
+msgstr "Lista nueva"
 
 #: ../src/playlists.py:699
-#, fuzzy
 msgid "Remove these tracks?"
-msgstr "Próximas pistas"
+msgstr "¿Eliminar estas canciones?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Cargando, paciencia..."
 
 #: ../src/popmenu.py:42
-#, fuzzy
 msgid "Playback"
-msgstr "Reproducir"
+msgstr "Reproducción"
 
 #: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Sólo reproducir este álbum"
 
 #: ../src/popmenu.py:78
-#, fuzzy
 msgid "Add to others"
-msgstr "Añadir a la cola"
+msgstr "Añadir a otros"
 
 #: ../src/popmenu.py:91
-#, fuzzy, python-format
+#, python-format
 msgid "Remove from \"%s\""
-msgstr "Suprimir de la cola"
+msgstr "Quitar de «%s»"
 
 #: ../src/popmenu.py:99
-#, fuzzy, python-format
+#, python-format
 msgid "Add to \"%s\""
-msgstr "Añadir a la cola"
+msgstr "Añadir a «%s»"
 
 #: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -279,7 +276,7 @@ msgstr "_Actualizar la música"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Pantalla completa"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
@@ -291,28 +288,27 @@ msgstr "_Salir"
 
 #: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: ../data/PlaylistsManageWidget.ui.h:2
-#, fuzzy
 msgid "New playlist"
-msgstr "Reproducir"
+msgstr "Lista nueva"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
-msgstr ""
+msgstr "Desactivar modo aleatorio"
 
 #: ../data/headerbar.ui.h:2
 msgid "Shuffle albums"
-msgstr ""
+msgstr "Albunes aleatorios"
 
 #: ../data/headerbar.ui.h:3
 msgid "Shuffle tracks"
-msgstr ""
+msgstr "Canciones aleatorias"
 
 #: ../data/headerbar.ui.h:7
 msgid "Shuffle"
@@ -339,9 +335,8 @@ msgid "artist"
 msgstr "artista"
 
 #: ../data/SearchRow.ui.h:2
-#, fuzzy
 msgid "Add to playlist"
-msgstr "Reproducir"
+msgstr "Añadir a una lista"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -349,16 +344,15 @@ msgstr "Cerrar"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Usar variante oscura"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Actualizar la música al inicio"
 
 #: ../data/SettingsDialog.ui.h:5
-#, fuzzy
 msgid "Restore view on startup"
-msgstr "Actualizar la música al inicio"
+msgstr "Restaurar vista al iniciar"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
@@ -379,29 +373,3 @@ msgstr "Música"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Seleccione lo que estará disponible en el modo fiesta"
-
-#~ msgid "Show albums/artists view as dark"
-#~ msgstr "Mostrar la vista de álbumes/artistas en vista oscura"
-
-#~ msgid "Darken views"
-#~ msgstr "Vista oscura"
-
-#, fuzzy
-#~ msgid "Manage playlists"
-#~ msgstr "Reproducir"
-
-#, fuzzy
-#~ msgid "Add to playlists"
-#~ msgstr "Reproducir"
-
-#, fuzzy
-#~ msgid "Edit playlist"
-#~ msgstr "Reproducir"
-
-#, fuzzy
-#~ msgid "Empty playlist?"
-#~ msgstr "Reproducir"
-
-#, fuzzy
-#~ msgid "Empty playlist"
-#~ msgstr "Reproducir"

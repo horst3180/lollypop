@@ -9,5 +9,6 @@ trans.de = po/de.po
 trans.fr = po/fr.po
 trans.it = po/it.po
 trans.nl = po/nl.po
+trans.ca = po/ca.po
 type = PO
 

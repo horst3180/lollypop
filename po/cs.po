@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # fri, 2014
 # fri, 2015
@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 07:28+0100\n"
-"PO-Revision-Date: 2015-01-06 11:40+0000\n"
+"PO-Revision-Date: 2015-02-23 10:33+0000\n"
 "Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
-"cs/)\n"
-"Language: cs\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,11 +73,11 @@ msgstr "Neukazovat seznam žánrů"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Použít tmavý motiv GTK"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Ukázat stylizované obaly"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -86,7 +85,7 @@ msgstr "Pokračovat v přehrávání při zavření"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Restore previous view"
-msgstr ""
+msgstr "Obnovit předchozí pohled"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
@@ -96,15 +95,14 @@ msgstr "VNITŘNÍ"
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: "
-"\"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba"
-"\" (zamíchat alba)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: \"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba\" (zamíchat alba)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -137,9 +135,8 @@ msgid "Popular albums"
 msgstr "Oblíbená alba"
 
 #: ../src/window.py:346 ../src/popmenu.py:47
-#, fuzzy
 msgid "Playlists"
-msgstr "Přehrát"
+msgstr "Seznamy skladeb"
 
 #: ../src/window.py:347
 msgid "All artists"
@@ -180,47 +177,43 @@ msgid "Compilation"
 msgstr "Kompilace"
 
 #: ../src/playlists.py:396 ../src/playlists.py:671
-#, fuzzy, python-format
+#, python-format
 msgid "Remove \"%s\"?"
-msgstr "Odstranit z řady"
+msgstr "Odstranit \"%s\"?"
 
 #: ../src/playlists.py:470 ../src/playlists.py:473
-#, fuzzy
 msgid "New playlist "
-msgstr "Přehrát"
+msgstr "Nový seznam skladeb"
 
 #: ../src/playlists.py:699
-#, fuzzy
 msgid "Remove these tracks?"
-msgstr "Další skladby"
+msgstr "Odstranit tyto skladby?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Nahrává se. Počkejte, prosím..."
 
 #: ../src/popmenu.py:42
-#, fuzzy
 msgid "Playback"
-msgstr "Přehrát"
+msgstr "Přehrávání"
 
 #: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Přehrát pouze toto album"
 
 #: ../src/popmenu.py:78
-#, fuzzy
 msgid "Add to others"
-msgstr "Přidat do řady"
+msgstr "Přidat do ostatních"
 
 #: ../src/popmenu.py:91
-#, fuzzy, python-format
+#, python-format
 msgid "Remove from \"%s\""
-msgstr "Odstranit z řady"
+msgstr "Odstranit z \"%s\""
 
 #: ../src/popmenu.py:99
-#, fuzzy, python-format
+#, python-format
 msgid "Add to \"%s\""
-msgstr "Přidat do řady"
+msgstr "Přidat do \"%s\""
 
 #: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -282,7 +275,7 @@ msgstr "_Aktualizovat hudbu"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Na celou obrazovku"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
@@ -294,16 +287,15 @@ msgstr "_Ukončit"
 
 #: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdit"
 
 #: ../data/PlaylistsManageWidget.ui.h:2
-#, fuzzy
 msgid "New playlist"
-msgstr "Přehrát"
+msgstr "Nový seznam skladeb"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Upravit"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -342,9 +334,8 @@ msgid "artist"
 msgstr "Umělec"
 
 #: ../data/SearchRow.ui.h:2
-#, fuzzy
 msgid "Add to playlist"
-msgstr "Přehrát"
+msgstr "Přidat do seznamu skladeb"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -352,16 +343,15 @@ msgstr "Zavřít"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Použít variantu a tmavým vzhledem"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Aktualizovat hudbu při spuštění"
 
 #: ../data/SettingsDialog.ui.h:5
-#, fuzzy
 msgid "Restore view on startup"
-msgstr "Aktualizovat hudbu při spuštění"
+msgstr "Obnovit pohled při spuštění"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
@@ -382,29 +372,3 @@ msgstr "Hudba"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
-
-#~ msgid "Show albums/artists view as dark"
-#~ msgstr "Ukázat pohled na alba/umělce jako tmavý"
-
-#~ msgid "Darken views"
-#~ msgstr "Tmavé pohledy"
-
-#, fuzzy
-#~ msgid "Manage playlists"
-#~ msgstr "Přehrát"
-
-#, fuzzy
-#~ msgid "Add to playlists"
-#~ msgstr "Přehrát"
-
-#, fuzzy
-#~ msgid "Edit playlist"
-#~ msgstr "Přehrát"
-
-#, fuzzy
-#~ msgid "Empty playlist?"
-#~ msgstr "Přehrát"
-
-#, fuzzy
-#~ msgid "Empty playlist"
-#~ msgstr "Přehrát"

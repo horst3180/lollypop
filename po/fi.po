@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2014-2015
 msgid ""
@@ -9,14 +9,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 07:28+0100\n"
-"PO-Revision-Date: 2015-01-06 12:42+0000\n"
+"PO-Revision-Date: 2015-02-23 09:31+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
-"language/fi/)\n"
-"Language: fi\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -73,11 +72,11 @@ msgstr "Älä näytä tyylilajiluetteloa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Käytä tummaa teemaa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Näytä tyylitellyt kansikuvitukset"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -85,7 +84,7 @@ msgstr "Jatka toistoa, kun sovellus suljetaan"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Restore previous view"
-msgstr ""
+msgstr "Palauta edellinen näkymä"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
@@ -95,15 +94,14 @@ msgstr ""
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Arvo määrittää sekoitetaanko kappaleet/albumit. Sallitut arvot ovat "
-"seuraavat: \"none\" (ei sekoitusta), \"tracks\" (sekoita kappaleet), \"albums"
-"\" (sekoita albumit)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Arvo määrittää sekoitetaanko kappaleet/albumit. Sallitut arvot ovat seuraavat: \"none\" (ei sekoitusta), \"tracks\" (sekoita kappaleet), \"albums\" (sekoita albumit)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -136,9 +134,8 @@ msgid "Popular albums"
 msgstr "Suositut albumit"
 
 #: ../src/window.py:346 ../src/popmenu.py:47
-#, fuzzy
 msgid "Playlists"
-msgstr "Toista"
+msgstr "Soittolistat"
 
 #: ../src/window.py:347
 msgid "All artists"
@@ -179,47 +176,43 @@ msgid "Compilation"
 msgstr "Kokoelma"
 
 #: ../src/playlists.py:396 ../src/playlists.py:671
-#, fuzzy, python-format
+#, python-format
 msgid "Remove \"%s\"?"
-msgstr "Poista jonosta"
+msgstr "Poistetaanko \"%s\"?"
 
 #: ../src/playlists.py:470 ../src/playlists.py:473
-#, fuzzy
 msgid "New playlist "
-msgstr "Toista"
+msgstr "Uusi soittolista"
 
 #: ../src/playlists.py:699
-#, fuzzy
 msgid "Remove these tracks?"
-msgstr "Seuraavat kappaleet"
+msgstr "Poistetaanko nämä kappaleet?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
 #: ../src/popmenu.py:42
-#, fuzzy
 msgid "Playback"
-msgstr "Toista"
+msgstr "Toisto"
 
 #: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Toista vain tämä albumi"
 
 #: ../src/popmenu.py:78
-#, fuzzy
 msgid "Add to others"
-msgstr "Lisää jonoon"
+msgstr "Lisää muihin"
 
 #: ../src/popmenu.py:91
-#, fuzzy, python-format
+#, python-format
 msgid "Remove from \"%s\""
-msgstr "Poista jonosta"
+msgstr "Poista kohteesta \"%s\""
 
 #: ../src/popmenu.py:99
-#, fuzzy, python-format
+#, python-format
 msgid "Add to \"%s\""
-msgstr "Lisää jonoon"
+msgstr "Lisää kohteeseen \"%s\""
 
 #: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -281,7 +274,7 @@ msgstr "_Päivitä musiikki"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Koko näyttö"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
@@ -293,16 +286,15 @@ msgstr "_Lopeta"
 
 #: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr ""
+msgstr "Vahvista"
 
 #: ../data/PlaylistsManageWidget.ui.h:2
-#, fuzzy
 msgid "New playlist"
-msgstr "Toista"
+msgstr "Uusi soittolista"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -341,9 +333,8 @@ msgid "artist"
 msgstr "esittäjä"
 
 #: ../data/SearchRow.ui.h:2
-#, fuzzy
 msgid "Add to playlist"
-msgstr "Toista"
+msgstr "Lisää soittolistalle"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -351,16 +342,15 @@ msgstr "Sulje"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Käytä tumman teeman muunnelmaa"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Päivitä musiikki käynnistyessä"
 
 #: ../data/SettingsDialog.ui.h:5
-#, fuzzy
 msgid "Restore view on startup"
-msgstr "Päivitä musiikki käynnistyessä"
+msgstr "Palauta näkymä käynnistyksen yhteydessä"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
@@ -381,29 +371,3 @@ msgstr "Musiikki"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
-
-#~ msgid "Show albums/artists view as dark"
-#~ msgstr "Näytä albumien/esittäjien näkymä tummana"
-
-#~ msgid "Darken views"
-#~ msgstr "Tummat näkymät"
-
-#, fuzzy
-#~ msgid "Manage playlists"
-#~ msgstr "Toista"
-
-#, fuzzy
-#~ msgid "Add to playlists"
-#~ msgstr "Toista"
-
-#, fuzzy
-#~ msgid "Edit playlist"
-#~ msgstr "Toista"
-
-#, fuzzy
-#~ msgid "Empty playlist?"
-#~ msgstr "Toista"
-
-#, fuzzy
-#~ msgid "Empty playlist"
-#~ msgstr "Toista"

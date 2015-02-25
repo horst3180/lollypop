@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 07:28+0100\n"
-"PO-Revision-Date: 2015-01-06 11:31+0000\n"
+"PO-Revision-Date: 2015-02-23 16:01+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
-"language/it/)\n"
-"Language: it\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,11 +73,11 @@ msgstr "Non mostrare l'elenco dei generi"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Usa il tema gtk scuro"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Mostra copertine stilizzate"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -86,7 +85,7 @@ msgstr "Continua la riproduzione quando è chiuso"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Restore previous view"
-msgstr ""
+msgstr "Riprisitina la vista precedente"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
@@ -96,15 +95,14 @@ msgstr "INTERNO"
 msgid "Shuffle mode"
 msgstr "Modalità mescola"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Questo valore identifica se mischiare tracce/album. I valori consentiti "
-"sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album"
-"\" (album casuale)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Questo valore identifica se mischiare tracce/album. I valori consentiti sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album\" (album casuale)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -137,9 +135,8 @@ msgid "Popular albums"
 msgstr "Album popolari"
 
 #: ../src/window.py:346 ../src/popmenu.py:47
-#, fuzzy
 msgid "Playlists"
-msgstr "Esegui"
+msgstr "Playlists"
 
 #: ../src/window.py:347
 msgid "All artists"
@@ -180,47 +177,43 @@ msgid "Compilation"
 msgstr "Compilation"
 
 #: ../src/playlists.py:396 ../src/playlists.py:671
-#, fuzzy, python-format
+#, python-format
 msgid "Remove \"%s\"?"
-msgstr "Rimuovi dalla coda"
+msgstr "Rimuovi \"%s\"?"
 
 #: ../src/playlists.py:470 ../src/playlists.py:473
-#, fuzzy
 msgid "New playlist "
-msgstr "Esegui"
+msgstr "Nuova playlist"
 
 #: ../src/playlists.py:699
-#, fuzzy
 msgid "Remove these tracks?"
-msgstr "Prossime tracce"
+msgstr "Rimuovere queste tracce?"
 
 #: ../src/view.py:32
 msgid "Loading please wait..."
 msgstr "Caricando, attendere..."
 
 #: ../src/popmenu.py:42
-#, fuzzy
 msgid "Playback"
-msgstr "Esegui"
+msgstr "Riproduci"
 
 #: ../src/popmenu.py:62
 msgid "Only play this album"
 msgstr "Esegui solo questo album"
 
 #: ../src/popmenu.py:78
-#, fuzzy
 msgid "Add to others"
-msgstr "Aggiungi alla coda"
+msgstr "Aggiungi ad altri"
 
 #: ../src/popmenu.py:91
-#, fuzzy, python-format
+#, python-format
 msgid "Remove from \"%s\""
-msgstr "Rimuovi dalla coda"
+msgstr "Rimuovi da \"%s\""
 
 #: ../src/popmenu.py:99
-#, fuzzy, python-format
+#, python-format
 msgid "Add to \"%s\""
-msgstr "Aggiungi alla coda"
+msgstr "Aggiungi a \"%s\""
 
 #: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -282,7 +275,7 @@ msgstr "_Aggiorna musica"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Fullscreen"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
@@ -294,16 +287,15 @@ msgstr "_Esci"
 
 #: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr ""
+msgstr "Conferma"
 
 #: ../data/PlaylistsManageWidget.ui.h:2
-#, fuzzy
 msgid "New playlist"
-msgstr "Esegui"
+msgstr "Nuova playlist"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Modifica"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -342,9 +334,8 @@ msgid "artist"
 msgstr "artista"
 
 #: ../data/SearchRow.ui.h:2
-#, fuzzy
 msgid "Add to playlist"
-msgstr "Esegui"
+msgstr "Aggiungi alla playlsit"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -352,16 +343,15 @@ msgstr "Chiudi"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Usa il tema nella variante scura"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Aggiorna musca all'avvio"
 
 #: ../data/SettingsDialog.ui.h:5
-#, fuzzy
 msgid "Restore view on startup"
-msgstr "Aggiorna musca all'avvio"
+msgstr "Ripristina la vista all'avvio"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Configure lollypop behaviour"
@@ -382,29 +372,3 @@ msgstr "Musica"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Scegli cosa dev'essere disponibile in modalità party"
-
-#~ msgid "Show albums/artists view as dark"
-#~ msgstr "Mostra la visualizzazione album/artista come scuro"
-
-#~ msgid "Darken views"
-#~ msgstr "Visualizzazioni più scure"
-
-#, fuzzy
-#~ msgid "Manage playlists"
-#~ msgstr "Esegui"
-
-#, fuzzy
-#~ msgid "Add to playlists"
-#~ msgstr "Esegui"
-
-#, fuzzy
-#~ msgid "Edit playlist"
-#~ msgstr "Esegui"
-
-#, fuzzy
-#~ msgid "Empty playlist?"
-#~ msgstr "Esegui"
-
-#, fuzzy
-#~ msgid "Empty playlist"
-#~ msgstr "Esegui"
