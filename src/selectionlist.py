@@ -181,13 +181,13 @@ class SelectionList(GObject.GObject):
             icon = 'avatar-default-symbolic'
         elif object_id == COMPILATIONS:
             icon = 'system-users-symbolic'
-        if icon:
-            return Gtk.IconTheme.get_default().load_icon(
+        else:
+            icon = 'go-next-symbolic'
+       
+        return Gtk.IconTheme.get_default().load_icon(
                                             icon,
                                             16,
                                             0)
-        else:
-            return None
 
     """
         Sort model
