@@ -47,7 +47,7 @@ class SelectionList(GObject.GObject):
         column0.set_expand(True)
 
         renderer1 = Gtk.CellRendererPixbuf()
-        renderer1.set_property('stock-size', 22)
+        renderer1.set_property('stock-size', 16)
         column1 = Gtk.TreeViewColumn("pixbuf1", renderer1, pixbuf=2)
         
         self._view.append_column(column0)
@@ -178,11 +178,13 @@ class SelectionList(GObject.GObject):
         elif object_id == PLAYLISTS:
             icon = 'emblem-documents-symbolic'
         elif object_id == ALL:
+            icon = 'avatar-default-symbolic'
+        elif object_id == COMPILATIONS:
             icon = 'system-users-symbolic'
         if icon:
             return Gtk.IconTheme.get_default().load_icon(
                                             icon,
-                                            22,
+                                            16,
                                             0)
         else:
             return None
