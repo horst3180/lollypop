@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GdkPixbuf, GObject, Pango
 
 from lollypop.utils import translate_artist_name
-from lollypop.define import POPULARS, COMPILATIONS, ALL
+from lollypop.define import POPULARS, COMPILATIONS, ALL, PLAYLISTS
 
 
 # A selection list is a artists or genres scrolled treeview
@@ -30,7 +30,7 @@ class SelectionList(GObject.GObject):
     def __init__(self):
         GObject.GObject.__init__(self)
 
-        self._model = Gtk.ListStore(int, str)
+        self._model = Gtk.ListStore(int, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
         self._sort = False
@@ -39,11 +39,20 @@ class SelectionList(GObject.GObject):
 
         self._view = Gtk.TreeView(self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
-        self._renderer = Gtk.CellRendererText()
-        self._renderer.set_property('ellipsize-set', True)
-        self._renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        self._column = Gtk.TreeViewColumn('', self._renderer, text=1)
-        self._view.append_column(self._column)
+        
+        renderer0 = Gtk.CellRendererText()
+        renderer0.set_property('ellipsize-set', True)
+        renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column0 = Gtk.TreeViewColumn('', renderer0, text=1)
+        column0.set_expand(True)
+
+        renderer1 = Gtk.CellRendererPixbuf()
+        renderer1.set_property('stock-size', 22)
+        column1 = Gtk.TreeViewColumn("pixbuf1", renderer1, pixbuf=2)
+        
+        self._view.append_column(column0)
+        self._view.append_column(column1)
+        
         self._view.set_headers_visible(False)
         self._view.show()
 
@@ -74,7 +83,9 @@ class SelectionList(GObject.GObject):
             # Translating artist@@@@the => The artist
             if self._is_artists:
                 string = translate_artist_name(string)
-            self._model.append([object_id, string])
+            self._model.append([object_id,
+                                string,
+                                self._get_pixbuf(object_id)])
 
     """
         Clear the list
@@ -106,7 +117,9 @@ class SelectionList(GObject.GObject):
                     string = translate_artist_name(value[1])
                 else:
                     string = value[1]
-                self._model.append([value[0], string])
+                self._model.append([value[0],
+                                   string,
+                                   self._get_pixbuf(value[0])])
         # Disable sort
         self._values = None
 
@@ -154,6 +167,26 @@ class SelectionList(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Return pixbuf for id
+        @param ojbect_id as id
+    """
+    def _get_pixbuf(self, object_id):
+        icon = None
+        if object_id == POPULARS:
+            icon = 'emblem-favorite-symbolic'
+        elif object_id == PLAYLISTS:
+            icon = 'emblem-documents-symbolic'
+        elif object_id == ALL:
+            icon = 'system-users-symbolic'
+        if icon:
+            return Gtk.IconTheme.get_default().load_icon(
+                                            icon,
+                                            22,
+                                            0)
+        else:
+            return None
+
     """
         Sort model
     """
