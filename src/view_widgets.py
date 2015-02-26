@@ -290,20 +290,26 @@ class PlaylistWidget(Gtk.Grid):
         self.add(self._stack)
 
     """
-        Populate list one
+        Populate list one, thread safe
         @param track's ids as array of int
         @param track position as int
     """
     def populate_list_one(self, tracks, pos):
-        self._add_tracks(tracks, self._tracks_widget1, pos)
+        GLib.idle_add(self._add_tracks, 
+                      tracks,
+                      self._tracks_widget1,
+                      pos)
 
     """
-        Populate list two
+        Populate list two, thread safe
         @param track's ids as array of int
         @param track position as int
     """
     def populate_list_two(self, tracks, pos):
-        self._add_tracks(tracks, self._tracks_widget2, pos)
+         GLib.idle_add(self._add_tracks, 
+                      tracks,
+                      self._tracks_widget2,
+                      pos)
 
     """
         Update playing track

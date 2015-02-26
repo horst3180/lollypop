@@ -450,12 +450,10 @@ class PlaylistView(View):
         sql = Objects.db.get_cursor()
         tracks = Objects.playlists.get_tracks_id(self._playlist_name, sql)
         mid_tracks = int(0.5+len(tracks)/2)
-        GLib.idle_add(self._playlist_widget.populate_list_one,
-                      tracks[:mid_tracks],
-                      1)
-        GLib.idle_add(self._playlist_widget.populate_list_two,
-                      tracks[mid_tracks:],
-                      mid_tracks + 1)
+        self._playlist_widget.populate_list_one(tracks[:mid_tracks],
+                                                1)
+        self._playlist_widget.populate_list_two(tracks[mid_tracks:],
+                                                mid_tracks + 1)
 
     """
         Return playlist name
