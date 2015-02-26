@@ -61,6 +61,7 @@ class ViewContainer:
 class LoadingView(Gtk.Bin):
     def __init__(self):
         Gtk.Bin.__init__(self)
+        self.set_property('expand', True)
         self.set_property('halign', Gtk.Align.CENTER)
         self.set_property('valign', Gtk.Align.CENTER)
         label = Gtk.Label()
