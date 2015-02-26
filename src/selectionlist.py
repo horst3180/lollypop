@@ -37,6 +37,11 @@ class SelectionList(GObject.GObject):
         self._values = None
         self._is_artists = False
 
+        self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                            'go-next-symbolic',
+                                            16,
+                                            0)
+
         self._view = Gtk.TreeView(self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
         
@@ -181,13 +186,14 @@ class SelectionList(GObject.GObject):
             icon = 'avatar-default-symbolic'
         elif object_id == COMPILATIONS:
             icon = 'system-users-symbolic'
-        else:
-            icon = 'go-next-symbolic'
-       
-        return Gtk.IconTheme.get_default().load_icon(
+        
+        if icon:
+            return Gtk.IconTheme.get_default().load_icon(
                                             icon,
                                             16,
                                             0)
+        else:
+            return self._default_pixbuf
 
     """
         Sort model
