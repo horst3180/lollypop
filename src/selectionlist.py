@@ -95,6 +95,16 @@ class SelectionList(GObject.GObject):
                                 string,
                                 self._get_pixbuf(object_id)])
 
+    """ 
+        Remove row from model
+        @param object id as int
+    """
+    def remove(self, object_id):
+        for item in self._model:
+            if item[0] == object_id:
+                self._model.remove(item.iter)
+                break
+
     """
         Clear the list
     """
@@ -173,9 +183,9 @@ class SelectionList(GObject.GObject):
         return len(self._model)
 
     """
-        Add device
+        Add volume
         @param device name as str
-        @param object id as int
+        @param object id as int <  -1000
     """
     def add_device(self, device, object_id):
         for item in self._model:

@@ -16,8 +16,9 @@ from gi.repository import Gdk
 # This is a multimedia device
 class Device:
     def __init__(self):
+        self.id = None
         self.name = None
-        self.uri = None
+        self.path = None
 
 # This is global object initialised at lollypop start
 # member init order is important!
