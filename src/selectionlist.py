@@ -41,7 +41,10 @@ class SelectionList(GObject.GObject):
                                             'go-next-symbolic',
                                             16,
                                             0)
-
+        self._device_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                            'multimedia-player-symbolic',
+                                            16,
+                                            0)
         self._view = Gtk.TreeView(self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
         
@@ -168,6 +171,20 @@ class SelectionList(GObject.GObject):
     """
     def length(self):
         return len(self._model)
+
+    """
+        Add device
+        @param device name as str
+        @param object id as int
+    """
+    def add_device(self, device, object_id):
+        for item in self._model:
+            if item[0] >= 0:
+                self._model.insert_before(item.iter,
+                                          [object_id,
+                                           device,
+                                           self._device_pixbuf])
+                return
 
 #######################
 # PRIVATE             #

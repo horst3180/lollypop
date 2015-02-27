@@ -16,7 +16,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 from os import environ
 
-from lollypop.define import Objects, POPULARS, ALL, PLAYLISTS
+from lollypop.define import Objects, POPULARS, ALL, PLAYLISTS, Device, DEVICES
 from lollypop.define import COMPILATIONS
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
@@ -44,6 +44,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         # Playlist do not have id (not in db),
         # so we use an index to retrieve playlist name
         self._playlists = []
+        # Same for devices, as device are in list one,
+        # Index will start at -DEVICES
+        self._devices = []
 
         self._setup_window()
         self._setup_view()
@@ -57,6 +60,13 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                 self._list_one.select_item(0)
 
         self._setup_media_keys()
+
+        # Volume manager, mount availables mtp devices
+        self._volumes = Gio.VolumeMonitor.get()
+        self._volumes.connect('volume-added', self._on_volume_added)
+        self._volumes.connect('volume-removed', self._on_volume_removed)
+        for mount in self._volumes.get_mounts():
+            self._add_mount(mount)
 
         party_settings = Objects.settings.get_value('party-ids')
         ids = []
@@ -478,6 +488,30 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         selection_list.connect('item-selected', callback)
 
     """
+        Mount volume
+        @param vol as Gio.Volume
+    """
+    def _mount(self, vol):
+        if vol.get_identifier(Gio.VOLUME_IDENTIFIER_KIND_CLASS)\
+                == "network":
+            return
+        mo = Gio.MountOperation()
+        mo.set_anonymous(True)
+        vol.mount(Gio.MountMountFlags.NONE, mo, None, self._on_mount)
+
+    """
+        Add mounted volume to list
+    """
+    def _add_mount(self, mount):
+       if mount.get_root().get_path().find('mtp:') != -1:
+            device = Device()
+            device.name = mount.get_name()
+            device.uri = mount.get_root().get_path()
+            print(device.uri)
+            self._devices.append(device)
+            self._list_one.add_device(device.name, len(self._devices)+1-DEVICES) 
+
+    """
         Update view based on selected object
         @param list as SelectionList
         @param object id as int
@@ -588,3 +622,34 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                                    GLib.Variant(
                                         'i',
                                         self._paned_list_view.get_position()))
+
+    """
+        On volume connected, mount it
+        @param vm as Gio.VolumeMonitor
+        @param vol as Gio.Volume
+    """
+    def _on_volume_added(self, vm, vol):
+        print(vol.get_mount().get_root().get_path())
+
+    """
+        On volume removed, clean selection list
+        @param vm as Gio.VolumeMonitor
+        @param vol as Gio.Volume
+    """
+    def _on_volume_removed(self, vm, vol):
+        pass
+
+    """
+        Add devices if mtp
+        @param vol as Gio.Volume
+        @param result as Gio.AsyncResult
+    """
+    def _on_mount(self, vol, result):
+        return
+        print(mount, vol.can_mount())
+        if not mount:
+            try:
+                vol.mount_finish(result)
+            except:
+        print(vol.get_mount().get_root().get_path())
+        
