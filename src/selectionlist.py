@@ -206,18 +206,9 @@ class SelectionList(GObject.GObject):
         if not self._values:
             return False
 
-        if a == POPULARS:
+        # Do not order static entries
+        if a < 0:
             return False
-        elif a == ALL:
-            if b == POPULARS:
-                return True
-            else:
-                return False
-        elif a == COMPILATIONS:
-            if b == POPULARS or b == ALL:
-                return True
-            else:
-                return False
         else:
             pos_a = 0
             for rowid, string in self._values:
