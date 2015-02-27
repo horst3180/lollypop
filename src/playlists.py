@@ -276,10 +276,10 @@ class PlaylistsManager(GObject.GObject):
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)
-class PlaylistsManageWidget(Gtk.Bin):
+class PlaylistsManagerWidget(Gtk.Bin):
 
     """
-        Init Popover ui with a scrolled treeview
+        Init ui with a scrolled treeview
         @param object id as int
         @param is album as bool
         @param parent as Gtk.Widget
@@ -297,7 +297,7 @@ class PlaylistsManageWidget(Gtk.Bin):
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
-                '/org/gnome/Lollypop/PlaylistsManageWidget.ui'
+                '/org/gnome/Lollypop/PlaylistsManagerWidget.ui'
                                   )
 
         self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
@@ -305,7 +305,7 @@ class PlaylistsManageWidget(Gtk.Bin):
         self._model.set_sort_func(1, self._sort_items)
 
         if object_id != -1:
-            self._ui.get_object('close_btn').show()
+            self._ui.get_object('back_btn').show()
 
         self._view = self._ui.get_object('view')
         self._view.set_model(self._model)
@@ -401,7 +401,7 @@ class PlaylistsManageWidget(Gtk.Bin):
         Restore previous view
         @param button as Gtk.Button
     """
-    def _on_close_btn_clicked(self, button):
+    def _on_back_btn_clicked(self, button):
         window = self._parent.get_toplevel()
         window.destroy_current_view()
 
@@ -448,13 +448,6 @@ class PlaylistsManageWidget(Gtk.Bin):
         if event.keyval == 65535:
             path, column = self._view.get_cursor()
             self._show_infobar(path)
-    """
-        Hide window
-        @param widget as Gtk.Button
-    """
-    def _on_close_clicked(self, widget):
-        self._popup.hide()
-        self._model.clear()
 
     """
         Add new playlist

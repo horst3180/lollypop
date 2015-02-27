@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 from _thread import start_new_thread
-from os import environ
+import os
 
 from lollypop.define import Objects, Device, POPULARS, ALL, PLAYLISTS, DEVICES
 from lollypop.define import COMPILATIONS
@@ -22,7 +22,7 @@ from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
-from lollypop.view import ViewContainer, AlbumView, ArtistView
+from lollypop.view import ViewContainer, AlbumView, ArtistView, DeviceView
 from lollypop.view import PlaylistView, PlaylistManageView, LoadingView
 
 
@@ -46,7 +46,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         self._playlists = []
         # Same for volumes, as volumes are in list one,
         # Index will start at -VOLUMES
-        self._devices = []
+        self._devices = {}
         self._devices_index = DEVICES
 
         self._setup_window()
@@ -312,7 +312,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         vgrid.show()
 
         # Only set headerbar on Gnome Shell and Pantheon Shell
-        DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
+        DESKTOP = os.environ.get("XDG_CURRENT_DESKTOP")
         if DESKTOP and ("GNOME" in DESKTOP or "Pantheon" in DESKTOP):
             self.set_titlebar(self._toolbar.header_bar)
             self._toolbar.header_bar.set_show_close_button(True)
@@ -425,28 +425,35 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._update_view_playlists(None)
 
     """
-        Update detailed view
+        Update current view with device view
+        @param object id as int
+    """
+    def _update_view_device(self, object_id):
+        old_view = self._stack.get_visible_child()
+        view = DeviceView(self._devices[object_id])
+        view.show()
+        self._stack.add(view)
+        start_new_thread(view.populate, ())
+        self._stack.set_visible_child(view)
+        self._clean_view(old_view)
+
+    """
+        Update current view with artists view
         @param object id as int
         @param genre id as int
     """
-    def _update_view_detailed(self, object_id, genre_id):
-        if genre_id == PLAYLISTS:
-            self._update_view_playlists(object_id)
-        elif object_id == ALL or object_id == POPULARS:
-            self._update_view_genres(object_id)
-        else:
-            old_view = self._stack.get_visible_child()
-            view = ArtistView(object_id, genre_id, True)
-            self._stack.add(view)
-            start_new_thread(view.populate, ())
-            self._stack.set_visible_child(view)
-            self._clean_view(old_view)
+    def _update_view_artists(self, object_id, genre_id):
+        old_view = self._stack.get_visible_child()
+        view = ArtistView(object_id, genre_id, True)
+        self._stack.add(view)
+        start_new_thread(view.populate, ())
+        self._stack.set_visible_child(view)
+        self._clean_view(old_view)
 
     """
-        Update albums view
-        @param genre id as int
+        Update current view with albums view
     """
-    def _update_view_genres(self, genre_id):
+    def _update_view_albums(self, genre_id):
         old_view = self._stack.get_visible_child()
         view = AlbumView(genre_id)
         self._stack.add(view)
@@ -455,7 +462,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         self._clean_view(old_view)
 
     """
-        Update playlist view
+        Update current view with playlist view
         @param playlist id as int
     """
     def _update_view_playlists(self, playlist_id):
@@ -500,7 +507,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             dev.id = self._devices_index
             dev.name = volume.get_name()
             dev.path = path
-            self._devices.append(dev)
+            self._devices[self._devices_index] = dev
             self._list_one.add_device(dev.name, dev.id)
 
     """
@@ -508,14 +515,11 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         @param volume as Gio.Volume
     """
     def _remove_device(self, volume):
-        if volume is None:
-            return
-        path = volume.get_activation_root().get_path()
-        for dev in self._devices:
-            if dev.path == path:
-                self._devices.remove(dev)
+        for dev in self._devices.values():
+            if not os.path.exists(dev.path):
                 self._list_one.remove(dev.id)
-                break
+                del self._devices[dev.id]
+            break
 
     """
         Update view based on selected object
@@ -527,23 +531,30 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._setup_list_playlists(False)
             self._list_two.widget.show()
             self._list_two.visible = True
+        elif object_id < DEVICES:
+            self._list_two.widget.hide()
+            self._list_two.visible = False
+            self._update_view_device(object_id)
+        elif object_id == POPULARS:
+            self._list_two.widget.hide()
+            self._list_two.visible = False
+            self._list_two.clear()
+            self._update_view_albums(object_id)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
             self._list_two.visible = False
             self._list_two.clear()
-            self._update_view_detailed(object_id, None)
-        else:
-            if object_id == POPULARS:
-                self._list_two.widget.hide()
-                self._list_two.visible = False
-                self._list_two.clear()
+            if object_id == ALL:
+                self._update_view_albums(object_id)
             else:
-                self._clear_list(self._list_two, self._on_list_two_selected)
-                self._setup_list_artists(self._list_two, object_id, False)
-                self._list_two.widget.show()
-                self._list_two.visible = True
-            self._update_view_genres(object_id)
-
+                self._update_view_artists(object_id, None)
+        else:
+            self._clear_list(self._list_two, self._on_list_two_selected)
+            self._setup_list_artists(self._list_two, object_id, False)
+            self._list_two.widget.show()
+            self._list_two.visible = True
+            self._update_view_albums(object_id)
+            
     """
         Update view based on selected object
         @param list as SelectionList
@@ -553,8 +564,8 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if self._list_one.get_selected_id() == PLAYLISTS:
             self._update_view_playlists(object_id)
         else:
-            self._update_view_detailed(object_id,
-                                       self._list_one.get_selected_id())
+            self._update_view_artists(object_id,
+                                      self._list_one.get_selected_id())
 
     """
         On genres button toggled, update lists/views

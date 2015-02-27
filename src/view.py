@@ -16,7 +16,8 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
-from lollypop.playlists import PlaylistsManageWidget
+from lollypop.playlists import PlaylistsManagerWidget
+from lollypop.devicemanager import DeviceManagerWidget
 from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
@@ -77,7 +78,7 @@ class LoadingView(Gtk.Bin):
         pass
 
 
-# PlaylistConfigureView view used to manage playlists
+# Playlist view used to manage playlists
 class PlaylistManageView(Gtk.Bin):
     """
          @param object id as int
@@ -85,7 +86,29 @@ class PlaylistManageView(Gtk.Bin):
     """
     def __init__(self, object_id=-1, is_album=False):
         Gtk.Bin.__init__(self)
-        self._widget = PlaylistsManageWidget(object_id, is_album, self)
+        self._widget = PlaylistsManagerWidget(object_id, is_album, self)
+        self._widget.show()
+        self.add(self._widget)
+
+    def populate(self):
+        self._widget.populate()
+        GLib.idle_add(self._widget.calculate_size)
+
+    def remove_signals(self):
+        pass
+
+    def stop(self):
+        pass
+
+
+# Playlist synchronisation view
+class DeviceView(Gtk.Bin):
+    """
+         @param path
+    """
+    def __init__(self, path):
+        Gtk.Bin.__init__(self)
+        self._widget = DeviceManagerWidget(path, self)
         self._widget.show()
         self.add(self._widget)
 

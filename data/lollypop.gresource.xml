@@ -8,10 +8,11 @@
     <file preprocess="xml-stripblanks">QueueWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistWidget.ui</file>
+    <file preprocess="xml-stripblanks">DeviceManager.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
-    <file preprocess="xml-stripblanks">PlaylistsManageWidget.ui</file>
+    <file preprocess="xml-stripblanks">PlaylistsManagerWidget.ui</file>
     <file>application.css</file>
     <file preprocess="xml-stripblanks">AlbumWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>

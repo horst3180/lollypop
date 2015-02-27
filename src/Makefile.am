@@ -28,5 +28,6 @@ app_PYTHON = \
 	popimages.py\
 	popalbums.py\
 	popmenu.py\
+	devicemanager.py\
 	collectionscanner.py
 
