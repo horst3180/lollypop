@@ -574,6 +574,8 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
         self._clear_list(self._list_one, self._on_list_one_selected)
         self._setup_lists(False)
+        for volume in self._vm.get_volumes():
+            self._add_device(volume)
 
     """
         Update playlist view if we are in playlist view
