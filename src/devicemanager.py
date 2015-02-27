@@ -32,16 +32,13 @@ class DeviceManagerWidget(Gtk.Bin):
         self._device = device
         self._playlists = None
 
-        ls = os.listdir(device.path)
-        if len(ls) > 0:
-            self._path = "%s/%s/Music/%s" % (device.path, ls[0], "lollypop")
-
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
                 '/org/gnome/Lollypop/DeviceManager.ui'
                                   )
 
         self._ui.get_object('sync_btn').set_label(_("Synchronize %s") % device.name)
+        self._memory_combo = self._ui.get_object('memory_combo')
 
         self._model = Gtk.ListStore(bool, str)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
@@ -84,12 +81,21 @@ class DeviceManagerWidget(Gtk.Bin):
         Populate playlists, thread safe
     """
     def populate(self):
-        if not os.path.exists(self._path):
-            os.mkdir(self._path)
-        self._playlists = os.listdir(self._path) 
-        sql = Objects.db.get_cursor()
-        # Search if we need to select item or not
-        playlists = Objects.playlists.get()
+        files = os.listdir(self._device.path)
+        for f in files:
+            self._memory_combo.append_text(f)
+        self._memory_combo.set_active(0)
+        if len(files) > 0:
+            self._path = "%s/%s/Music/%s" % (self._device.path, files[0], "lollypop")
+            try:
+                if not os.path.exists(self._path):
+                    os.mkdir(self._path)
+                self._playlists = os.listdir(self._path)
+            except:
+                self._playlists = []
+            
+            # Search if we need to select item or not
+            playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
        
 #######################
@@ -119,12 +125,16 @@ class DeviceManagerWidget(Gtk.Bin):
             self._view.get_selection().unselect_all()
 
     """
-        Sync with deviice
+        Start synchronisation
         @param widget as Gtk.Button
     """
     def _on_sync_clicked(self, widget):
-        pass
+        start_new_thread(self._sync, ())
 
+    """
+        Sync playlists with device as this:
+        
+    """
     """
         Make dir in device
         @param name as str
@@ -134,6 +144,22 @@ class DeviceManagerWidget(Gtk.Bin):
             os.mkdir("%s/%s" % (self._path, name))
         except Exception as e:
             print(e)
+
+    """
+        Update path
+        @param combo as Gtk.ComboxText
+    """
+    def _on_memory_combo_changed(self, combo):
+        text = combo.get_active_text()
+        self._path = "%s/%s/Music/%s" % (self._device.path, text, "lollypop")
+        try:
+            if not os.path.exists(self._path):
+                os.mkdir(self._path)
+            self._playlists = os.listdir(self._path)
+        except:
+            self._playlists = []
+        for item in self._model:
+            item[0] = item[1] in self._playlists
 
     """
         When playlist is activated, add object to playlist

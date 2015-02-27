@@ -353,7 +353,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         Populate playlists, thread safe
     """
     def populate(self):
-        sql = Objects.db.get_cursor()
         # Search if we need to select item or not
         playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
