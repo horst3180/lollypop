@@ -20,6 +20,10 @@ from lollypop.define import Objects, ALL, POPULARS
 from lollypop.define import SHUFFLE_NONE, SHUFFLE_ALBUMS, SHUFFLE_TRACKS
 from lollypop.utils import translate_artist_name
 
+class GstPlayFlags:
+    GST_PLAY_FLAG_VIDEO = 1 << 0 # We want video output
+    GST_PLAY_FLAG_AUDIO = 1 << 1 # We want audio output
+    GST_PLAY_FLAG_TEXT = 1 << 3 # We want subtitle output
 
 # Represent current playing track
 class CurrentTrack:
@@ -91,6 +95,9 @@ class Player(GObject.GObject):
         self._queue = []
 
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
+        flags = self._playbin.get_property("flags")
+        flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
+        self._playbin.set_property("flags", flags)
         self._playbin.connect("about-to-finish",
                               self._on_stream_about_to_finish)
         self._rg_setup()
