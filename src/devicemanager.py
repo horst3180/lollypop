@@ -37,6 +37,8 @@ class DeviceManagerWidget(Gtk.Bin):
         self._playlists = None
         self._syncing = False
         self._in_thread = False
+        self._total = 0  # Total files to sync
+        self._done = 0   # Handled files on sync
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
@@ -141,10 +143,10 @@ class DeviceManagerWidget(Gtk.Bin):
 
     """
         Update progress bar status
-        @param scanned items as int, total items as int
     """
-    def _update_progress(self, current, total):
-        self._progress.set_fraction(current/total)
+    def _update_progress(self):
+        self._done += 1
+        self._progress.set_fraction(self._done/self._total)
 
     """
         Sync playlists with device as this
@@ -154,14 +156,18 @@ class DeviceManagerWidget(Gtk.Bin):
         self._in_thread = True
         sql = Objects.db.get_cursor()
         stat = os.statvfs(self._path)
-        # Calculate number of tracks to be copied
-        total = 0
+        # For progress bar
+        self._total = 1
+        self._done = 0
+        
         for playlist in playlists:
-            total += len(Objects.playlists.get_tracks(playlist))
-        
-        # Do copy
-        i = 0
-        
+            self._total += len(Objects.playlists.get_tracks(playlist))
+            # Old tracks
+            for root, dirs, files in os.walk(self._path):
+                if root.find(playlist) != -1:
+                    for f in files:
+                        self._total += 1
+
         # Delete old playlists on device
         for f in os.listdir(self._path):
             if not self._syncing:
@@ -172,6 +178,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._delete(object_path)
             elif os.path.isdir(object_path) and f not in playlists:
                 rmtree(object_path)
+        GLib.idle_add(self._update_progress)
 
         # Clean playlists paths
         for playlist in playlists:
@@ -246,9 +253,10 @@ class DeviceManagerWidget(Gtk.Bin):
                                album_name, track_name))           
                 if not os.path.exists(dst_path):
                     try:
-                        copyfile(track_path, dst_path)             
+                        copyfile(track_path, dst_path)
                     except Exception as e:
                         print("DeviceManagerWidget::_copy_to_device(): %s" % e)
+                GLib.idle_add(self._update_progress)
             if m3u:
                 m3u.close()
 
@@ -280,6 +288,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 filepath = os.path.join(root, f)
                 if not filepath in dst_tracks:
                     self._delete(filepath)
+                GLib.idle_add(self._update_progress)
 
     """
         Delete file
@@ -314,36 +323,6 @@ class DeviceManagerWidget(Gtk.Bin):
             print("DeviceManagerWidget::_rmdir(): %s" % e)
 
     """
-        Create playlist m3u header
-        @param name as str
-    """
-    def _create_m3u_header(self, name):
-        print('_create_m3u_header()')
-        path = "%s/%s.m3u" % (self._path, name)
-        try:
-            f = open(path, "w")
-            f.write("#EXTM3U\n")
-            f.close()
-        except Exception as e:
-            print("DeviceManagerWidget::_create_m3u_header(): %s" % e)
-
-    """
-        Add track to m3u
-        @param name as str
-        @param trackpath as str
-    """
-    def _add_to_m3u(self, name, trackpath):
-        print('_add_to_m3u()', trackpath)
-        path = "%s/%s.m3u" % (self._path, name)
-        try:
-            print('exist?', os.path.exists(path))
-            f = open(path, "a")
-            f.write(trackpath+'\n')
-            f.close()
-        except Exception as e:
-            print("DeviceManagerWidget::_add_to_m3u(): %s" % e)
-
-    """
         Start synchronisation
         @param widget as Gtk.Button
     """
@@ -352,11 +331,13 @@ class DeviceManagerWidget(Gtk.Bin):
             self._syncing = False
             self._memory_combo.show()
             self._view.set_sensitive(True)
-            self._progress.hide()
+            # Don't hide now to let 100% visible
+            GLib.timeout_add(1000, self._progress.hide)
             self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
         elif not self._in_thread:
             self._syncing = True
             self._memory_combo.hide()
+            self._progress.set_fraction(0.0)
             self._progress.show()
             self._view.set_sensitive(False)
             self._syncing_btn.set_label(_("Cancel synchronization"))
