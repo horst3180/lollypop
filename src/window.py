@@ -447,7 +447,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             device.view = view
             view.show()
             start_new_thread(view.populate, ())
-        self._stack.add(view)
+            self._stack.add(view)
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 

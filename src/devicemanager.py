@@ -84,9 +84,7 @@ class DeviceManagerWidget(Gtk.Bin):
     """
     def populate(self):
         files = os.listdir(self._device.path)
-        for f in files:
-            self._memory_combo.append_text(f)
-        self._memory_combo.set_active(0)
+        GLib.idle_add(self._set_combo_text, files)
         if len(files) > 0:
             self._path = "%s/%s/Music/%s" % (self._device.path, files[0], "lollypop")
             try:
@@ -110,6 +108,15 @@ class DeviceManagerWidget(Gtk.Bin):
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
         return a > b
+
+    """
+        Set combobox text
+        @param text list as [str]
+    """
+    def _set_combo_text(self, text_list):
+        for text in text_list:
+            self._memory_combo.append_text(text)
+        self._memory_combo.set_active(0)
 
     """
         Append a playlist
