@@ -536,7 +536,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                 device = self._devices[dev.id]
                 if device.view:
                     device.view.destroy()
-                del self._device[dev.id]
+                del self._devices[dev.id]
             break
 
     """
