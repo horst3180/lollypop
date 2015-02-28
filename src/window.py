@@ -16,7 +16,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 import os
 
-from lollypop.define import Objects, Device, POPULARS, ALL, PLAYLISTS, DEVICES
+from lollypop.define import Objects, POPULARS, ALL, PLAYLISTS, DEVICES
 from lollypop.define import COMPILATIONS
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
@@ -25,6 +25,14 @@ from lollypop.playlists import PlaylistsManager
 from lollypop.view import ViewContainer, AlbumView, ArtistView, DeviceView
 from lollypop.view import PlaylistView, PlaylistManageView, LoadingView
 
+
+# This is a multimedia device
+class Device:
+    def __init__(self):
+        self.id = None
+        self.name = None
+        self.path = None
+        self.view = None
 
 # Main window
 class Window(Gtk.ApplicationWindow, ViewContainer):
@@ -425,15 +433,21 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._update_view_playlists(None)
 
     """
-        Update current view with device view
+        Update current view with device view,
+        Use existing view if available
         @param object id as int
     """
     def _update_view_device(self, object_id):
         old_view = self._stack.get_visible_child()
-        view = DeviceView(self._devices[object_id])
-        view.show()
+        device = self._devices[object_id]
+        if device.view:
+            view = device.view
+        else:
+            view = DeviceView(device)
+            device.view = view
+            view.show()
+            start_new_thread(view.populate, ())
         self._stack.add(view)
-        start_new_thread(view.populate, ())
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 
@@ -518,7 +532,10 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         for dev in self._devices.values():
             if not os.path.exists(dev.path):
                 self._list_one.remove(dev.id)
-                del self._devices[dev.id]
+                device = self._device[dev.id]
+                if device.view:
+                    device.view.destroy()
+                del self._device[dev.id]
             break
 
     """

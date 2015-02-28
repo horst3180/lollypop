@@ -41,7 +41,7 @@ class ViewContainer:
         @param view as View
     """
     def _clean_view(self, view):
-        if view:
+        if view and not isinstance(view, DeviceView):
             view.stop()
             # Delayed destroy as we may have an animation running
             # Gtk.StackTransitionType.CROSSFADE

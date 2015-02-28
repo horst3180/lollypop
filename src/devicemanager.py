@@ -31,13 +31,15 @@ class DeviceManagerWidget(Gtk.Bin):
         self._parent = parent
         self._device = device
         self._playlists = None
+        self._syncing = False
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
                 '/org/gnome/Lollypop/DeviceManager.ui'
                                   )
 
-        self._ui.get_object('sync_btn').set_label(_("Synchronize %s") % device.name)
+        self._sync_btn = self._ui.get_object('sync_btn')
+        self._sync_btn.set_label(_("Synchronize %s") % device.name)
         self._memory_combo = self._ui.get_object('memory_combo')
 
         self._model = Gtk.ListStore(bool, str)
@@ -125,13 +127,6 @@ class DeviceManagerWidget(Gtk.Bin):
             self._view.get_selection().unselect_all()
 
     """
-        Start synchronisation
-        @param widget as Gtk.Button
-    """
-    def _on_sync_clicked(self, widget):
-        start_new_thread(self._sync, ())
-
-    """
         Sync playlists with device as this:
         
     """
@@ -144,6 +139,24 @@ class DeviceManagerWidget(Gtk.Bin):
             os.mkdir("%s/%s" % (self._path, name))
         except Exception as e:
             print(e)
+
+
+    """
+        Start synchronisation
+        @param widget as Gtk.Button
+    """
+    def _on_sync_clicked(self, widget):
+        if self._syncing:
+            self._syncing = False
+            self._memory_combo.show()
+            self._view.set_sensitive(True)
+            self._sync_btn.set_label(_("Synchronize %s") % self._device.name)
+        else:
+            self._syncing = True
+            self._memory_combo.hide()
+            self._view.set_sensitive(False)
+            self._sync_btn.set_label(_("Cancel synchronization"))
+            #start_new_thread(self._sync, ())
 
     """
         Update path
