@@ -104,11 +104,12 @@ class PlaylistManageView(Gtk.Bin):
 # Playlist synchronisation view
 class DeviceView(Gtk.Bin):
     """
-         @param path
+         @param device as Device
+         @param progress as Gtk.ProgressBar
     """
-    def __init__(self, path):
+    def __init__(self, device, progress):
         Gtk.Bin.__init__(self)
-        self._widget = DeviceManagerWidget(path, self)
+        self._widget = DeviceManagerWidget(device, progress, self)
         self._widget.show()
         self.add(self._widget)
 

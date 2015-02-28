@@ -117,6 +117,23 @@ class DatabaseTracks:
         return -1
 
     """
+        Get album name for track id
+        @param track id as int
+        @return album name as str
+    """
+    def get_album_name(self, track_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT albums.name from albums,tracks\
+                              WHERE tracks.rowid=? AND\
+                              tracks.album_id=albums.rowid", (track_id,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return v[0]
+
+        return _("Unknown")
+
+    """
         Get mtime for tracks
         WARNING: Should be called before anything is shown on screen
         @param None

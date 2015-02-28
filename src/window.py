@@ -89,16 +89,17 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         Update music database
     """
     def update_db(self):
-        self._list_one.widget.hide()
-        self._list_two.widget.hide()
+        if not self._progress.is_visible():
+            self._list_one.widget.hide()
+            self._list_two.widget.hide()
 
-        old_view = self._stack.get_visible_child()
-        view = LoadingView()
-        self._stack.add(view)
-        self._stack.set_visible_child(view)
-        self.save_view_state()
-        self._scanner.update(self._progress, False)
-        self._clean_view(old_view)
+            old_view = self._stack.get_visible_child()
+            view = LoadingView()
+            self._stack.add(view)
+            self._stack.set_visible_child(view)
+            self.save_view_state()
+            self._scanner.update(self._progress, False)
+            self._clean_view(old_view)
 
 
     """
@@ -165,13 +166,13 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _setup_scanner(self):
         self._scanner = CollectionScanner()
         self._scanner.connect("scan-finished", self._update_lists)
-
-        if Objects.tracks.is_empty():
-            self._scanner.update(self._progress, False)
-            return True
-        elif Objects.settings.get_value('startup-scan'):
-            self._scanner.update(self._progress, True)
-            return False
+        if not self._progress.is_visible():
+            if Objects.tracks.is_empty():
+                self._scanner.update(self._progress, False)
+                return True
+            elif Objects.settings.get_value('startup-scan'):
+                self._scanner.update(self._progress, True)
+                return False
 
     """
         Update lists after scan
@@ -443,7 +444,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if device.view:
             view = device.view
         else:
-            view = DeviceView(device)
+            view = DeviceView(device, self._progress)
             device.view = view
             view.show()
             start_new_thread(view.populate, ())

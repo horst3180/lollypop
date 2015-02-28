@@ -70,10 +70,10 @@ class AlbumArt:
         @param album id as int
         @return cover file path as string
     """
-    def get_art_path(self, album_id):
-        album_path = Objects.albums.get_path(album_id)
-        album_name = Objects.albums.get_name(album_id)
-        artist_name = Objects.albums.get_artist_name(album_id)
+    def get_art_path(self, album_id, sql=None):
+        album_path = Objects.albums.get_path(album_id, sql)
+        album_name = Objects.albums.get_name(album_id, sql)
+        artist_name = Objects.albums.get_artist_name(album_id, sql)
         try:
             if os.path.exists(album_path + "/folder.jpg"):
                 return album_path + "/folder.jpg"

@@ -13,10 +13,12 @@
 
 from gi.repository import Gtk, GLib, Pango
 import os
+from shutil import copyfile, rmtree
 from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects
+from lollypop.utils import translate_artist_name
 
 # Dialog for synchronize mtp devices
 class DeviceManagerWidget(Gtk.Bin):
@@ -24,22 +26,25 @@ class DeviceManagerWidget(Gtk.Bin):
     """
         Init ui with a scrolled treeview
         @param device as Device
+        @param progress bar as Gtk.ProgressBar
         @param parent as Gtk.Widget
     """
-    def __init__(self, device, parent):
+    def __init__(self, device, progress, parent):
         Gtk.Bin.__init__(self)
         self._parent = parent
         self._device = device
+        self._progress = progress
         self._playlists = None
         self._syncing = False
+        self._in_thread = False
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
                 '/org/gnome/Lollypop/DeviceManager.ui'
                                   )
 
-        self._sync_btn = self._ui.get_object('sync_btn')
-        self._sync_btn.set_label(_("Synchronize %s") % device.name)
+        self._syncing_btn = self._ui.get_object('sync_btn')
+        self._syncing_btn.set_label(_("Synchronize %s") % device.name)
         self._memory_combo = self._ui.get_object('memory_combo')
 
         self._model = Gtk.ListStore(bool, str)
@@ -86,7 +91,8 @@ class DeviceManagerWidget(Gtk.Bin):
         files = os.listdir(self._device.path)
         GLib.idle_add(self._set_combo_text, files)
         if len(files) > 0:
-            self._path = "%s/%s/Music/%s" % (self._device.path, files[0], "lollypop")
+            self._path = "%s/%s/Music/%s" %\
+                        (self._device.path, files[0], "lollypop")
             try:
                 if not os.path.exists(self._path):
                     os.mkdir(self._path)
@@ -134,19 +140,208 @@ class DeviceManagerWidget(Gtk.Bin):
             self._view.get_selection().unselect_all()
 
     """
-        Sync playlists with device as this:
+        Update progress bar status
+        @param scanned items as int, total items as int
+    """
+    def _update_progress(self, current, total):
+        self._progress.set_fraction(current/total)
+
+    """
+        Sync playlists with device as this
+        @param playlists as [str]
+    """
+    def _sync(self, playlists):
+        self._in_thread = True
+        sql = Objects.db.get_cursor()
+        stat = os.statvfs(self._path)
+        # Calculate number of tracks to be copied
+        total = 0
+        for playlist in playlists:
+            total += len(Objects.playlists.get_tracks(playlist))
+        
+        # Do copy
+        i = 0
+        
+        # Delete old playlists on device
+        for f in os.listdir(self._path):
+            if not self._syncing:
+                self._in_thread = False
+                return
+            object_path = "%s/%s" % (self._path, f)
+            if os.path.isfile(object_path) and f.endswith(".m3u"):
+                self._delete(object_path)
+            elif os.path.isdir(object_path) and f not in playlists:
+                rmtree(object_path)
+
+        # Clean playlists paths
+        for playlist in playlists:
+            if not self._syncing:
+                self._in_thread = False
+                return
+            self._clean_playlist_path(playlist, sql)
+
+        # Delete empty directories
+        for root, dirs, files in os.walk(self._path):
+            for d in dirs:
+                if not self._syncing:
+                    self._in_thread = False
+                    return
+                dirpath = os.path.join(root, d)
+                if len(os.listdir(dirpath)) == 0:
+                    self._rmdir(dirpath)
+       
+        self._copy_to_device(playlists, sql)
+        if self._syncing:
+            GLib.idle_add(self._on_sync_clicked, None)
+        self._in_thread = False
+
+    """
+        Copy file from playlist to device
+        @param playlists as [str]
+        @param sql cursor
+    """
+    def _copy_to_device(self, playlists, sql):
+        for playlist in playlists:
+            path = "%s/%s" % (self._path, playlist)
+            self._mkdir(path)
+            # Create playlist
+            try:
+                m3u = open("%s/%s.m3u" % (self._path, playlist), "w")
+                m3u.write("#EXTM3U\n")
+            except:
+                m3u = None
+            #available = self._stat.f_frsize * self._stat.f_bavail
+            
+            # Start copying
+            tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
+            for track_id in tracks_id:
+                if not self._syncing:
+                    return
+                artist_name = translate_artist_name(
+                                  Objects.tracks.get_artist_name(track_id, sql))
+                album_id = Objects.tracks.get_album_id(track_id, sql)
+                album_name = Objects.albums.get_name(album_id, sql)
+                track_path = Objects.tracks.get_path(track_id, sql)
+                on_device_album_path = "%s/%s/%s_%s" % (self._path,
+                                       playlist, artist_name, album_name)
+                                       
+                self._mkdir(on_device_album_path)
+                
+                # Copy album art
+                art = Objects.art.get_art_path(album_id, sql)
+                if art:
+                    dst_art = "%s/folder.jpg" % on_device_album_path
+                    if not os.path.exists(dst_art):
+                        try:
+                            copyfile(art, dst_art)             
+                        except Exception as e:
+                            print("DeviceManagerWidget::"
+                                  "_copy_to_device(): %s" % e)
+                     
+                track_name = os.path.basename(track_path)
+                dst_path = "%s/%s" % (on_device_album_path, track_name)
+                if m3u:
+                    m3u.write("%s/%s_%s/%s\n" %\
+                              (playlist,artist_name,
+                               album_name, track_name))           
+                if not os.path.exists(dst_path):
+                    try:
+                        copyfile(track_path, dst_path)             
+                    except Exception as e:
+                        print("DeviceManagerWidget::_copy_to_device(): %s" % e)
+            if m3u:
+                m3u.close()
+
+    """
+        Delete files not available in playlist
+        @param playlist as str
+        @param sql cursor
+    """
+    def _clean_playlist_path(self, playlist, sql):
+        tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
+        dst_tracks = []
+        for track_id in tracks_id:
+            if not self._syncing:
+                return
+            artist_name = translate_artist_name(
+                                Objects.tracks.get_artist_name(track_id, sql))
+            album_name = Objects.tracks.get_album_name(track_id, sql)
+            track_path = Objects.tracks.get_path(track_id, sql)
+            album_path = "%s/%s/%s_%s" % (self._path,
+                         playlist, artist_name, album_name)
+            track_name = os.path.basename(track_path)
+            dst_path = "%s/%s" % (album_path, track_name)
+            dst_tracks.append(dst_path)
+        # Delete file on device and not in playlists
+        for root, dirs, files in os.walk("%s/%s" % (self._path, playlist)):
+            for f in files:
+                if not self._syncing:
+                    return
+                filepath = os.path.join(root, f)
+                if not filepath in dst_tracks:
+                    self._delete(filepath)
+
+    """
+        Delete file
+        @param path as str
+    """
+    def _delete(self, path):
+        try:
+            os.remove(path)
+        except Exception as e:
+            print("DeviceManagerWidget::_delete(): %s" % e)
         
     """
-    """
         Make dir in device
+        @param path as str
+    """
+    def _mkdir(self, path):
+        try:
+            if not os.path.exists(path):
+                os.mkdir(path)
+        except Exception as e:
+            print("DeviceManagerWidget::_mkdir(): %s" % e)
+
+    """
+        Remove dir in device
+        @param path as str
+    """
+    def _rmdir(self, path):
+        try:
+            if os.path.exists(path):
+                os.rmdir(path)
+        except Exception as e:
+            print("DeviceManagerWidget::_rmdir(): %s" % e)
+
+    """
+        Create playlist m3u header
         @param name as str
     """
-    def _mkdir(self, name):
+    def _create_m3u_header(self, name):
+        print('_create_m3u_header()')
+        path = "%s/%s.m3u" % (self._path, name)
         try:
-            os.mkdir("%s/%s" % (self._path, name))
+            f = open(path, "w")
+            f.write("#EXTM3U\n")
+            f.close()
         except Exception as e:
-            print(e)
+            print("DeviceManagerWidget::_create_m3u_header(): %s" % e)
 
+    """
+        Add track to m3u
+        @param name as str
+        @param trackpath as str
+    """
+    def _add_to_m3u(self, name, trackpath):
+        print('_add_to_m3u()', trackpath)
+        path = "%s/%s.m3u" % (self._path, name)
+        try:
+            print('exist?', os.path.exists(path))
+            f = open(path, "a")
+            f.write(trackpath+'\n')
+            f.close()
+        except Exception as e:
+            print("DeviceManagerWidget::_add_to_m3u(): %s" % e)
 
     """
         Start synchronisation
@@ -157,13 +352,19 @@ class DeviceManagerWidget(Gtk.Bin):
             self._syncing = False
             self._memory_combo.show()
             self._view.set_sensitive(True)
-            self._sync_btn.set_label(_("Synchronize %s") % self._device.name)
-        else:
+            self._progress.hide()
+            self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
+        elif not self._in_thread:
             self._syncing = True
             self._memory_combo.hide()
+            self._progress.show()
             self._view.set_sensitive(False)
-            self._sync_btn.set_label(_("Cancel synchronization"))
-            #start_new_thread(self._sync, ())
+            self._syncing_btn.set_label(_("Cancel synchronization"))
+            playlists = []
+            for item in self._model:
+                if item[0]:
+                    playlists.append(item[1])
+            start_new_thread(self._sync, (playlists,))
 
     """
         Update path
