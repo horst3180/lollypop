@@ -209,6 +209,7 @@ class DeviceManagerWidget(Gtk.Bin):
     """
     def _copy_to_device(self, playlists, sql):
         for playlist in playlists:
+            print('copy', playlist)
             path = "%s/%s" % (self._path, playlist)
             self._mkdir(path)
             # Create playlist
@@ -266,6 +267,7 @@ class DeviceManagerWidget(Gtk.Bin):
         @param sql cursor
     """
     def _clean_playlist_path(self, playlist, sql):
+        print('clean: ', playlist)
         tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
         dst_tracks = []
         for track_id in tracks_id:

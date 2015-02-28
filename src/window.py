@@ -533,7 +533,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         for dev in self._devices.values():
             if not os.path.exists(dev.path):
                 self._list_one.remove(dev.id)
-                device = self._device[dev.id]
+                device = self._devices[dev.id]
                 if device.view:
                     device.view.destroy()
                 del self._device[dev.id]
