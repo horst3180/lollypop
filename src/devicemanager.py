@@ -365,11 +365,15 @@ class DeviceManagerWidget(Gtk.Bin):
     def _on_memory_combo_changed(self, combo):
         text = combo.get_active_text()
         self._path = "%s/%s/Music/%s" % (self._device.path, text, "lollypop")
+        music_path = "%s/%s/Music" % (self._device.path, text)
         try:
+            if not os.path.exists(music_path):
+                os.mkdir(music_path)
             if not os.path.exists(self._path):
                 os.mkdir(self._path)
             self._playlists = os.listdir(self._path)
-        except:
+        except Exception as e:
+            print("DeviceManagerWidget::_on_memory_combo_changed: %s" % e)
             self._playlists = []
         for item in self._model:
             item[0] = item[1] in self._playlists
