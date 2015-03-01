@@ -185,7 +185,7 @@ class DeviceManagerWidget(Gtk.Bin):
                         for f in files:
                             scan_total += 1
             
-            self._total = scan_total
+            self._total = scan_total + scan_total / 3
             self._done = scan_total/3
 
             # Delete old playlists on device
