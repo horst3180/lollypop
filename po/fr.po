@@ -384,4 +384,4 @@ msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr "Synchronisez votre appareil avec ces listes de lectures"
+msgstr "Synchronisez votre appareil avec ces listes de lecture"
