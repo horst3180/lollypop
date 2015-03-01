@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-01 01:41+0100\n"
+"POT-Creation-Date: 2015-03-01 19:15+0100\n"
 "PO-Revision-Date: 2015-02-23 14:12+0000\n"
 "Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -196,12 +196,12 @@ msgstr "Deze nummers verwijderen?"
 msgid "Loading please wait..."
 msgstr "Bezig met laden, gelieve te wachten..."
 
-#: ../src/devicemanager.py:49 ../src/devicemanager.py:335
+#: ../src/devicemanager.py:50 ../src/devicemanager.py:355
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:342
+#: ../src/devicemanager.py:360
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -384,3 +384,7 @@ msgstr "Muziek"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Selecteer wat beschikbaar is in feestmodus"
+
+#: ../data/DeviceManager.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr ""

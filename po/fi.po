@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-01 01:41+0100\n"
+"POT-Creation-Date: 2015-03-01 19:15+0100\n"
 "PO-Revision-Date: 2015-02-23 09:31+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -194,12 +194,12 @@ msgstr "Poistetaanko nämä kappaleet?"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/devicemanager.py:49 ../src/devicemanager.py:335
+#: ../src/devicemanager.py:50 ../src/devicemanager.py:355
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:342
+#: ../src/devicemanager.py:360
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -382,3 +382,7 @@ msgstr "Musiikki"
 #: ../data/SettingsDialog.ui.h:10
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
+
+#: ../data/DeviceManager.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr ""
