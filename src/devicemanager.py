@@ -39,6 +39,7 @@ class DeviceManagerWidget(Gtk.Bin):
         self._in_thread = False
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
+        self._fraction = 0.0
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
@@ -134,11 +135,23 @@ class DeviceManagerWidget(Gtk.Bin):
             self._view.get_selection().unselect_all()
 
     """
-        Update progress bar status
+        Update progress bar smoothly
     """
     def _update_progress(self):
-        self._done += 1
-        self._progress.set_fraction(self._done/self._total)
+        current = self._progress.get_fraction()
+        if self._syncing:
+            progress = (self._fraction-current)/10000
+        else:
+            progress = 0.001
+
+        if current < self._fraction:
+            self._progress.set_fraction(current+progress)
+            if not self._progress.is_visible():
+                self._progress.show()
+        if self._syncing or current < 1.0:
+            GLib.idle_add(self._update_progress)
+        else:
+           GLib.timeout_add(1000, self._progress.hide)
 
     """
         Sync playlists with device as this
@@ -146,25 +159,30 @@ class DeviceManagerWidget(Gtk.Bin):
     """
     def _sync(self, playlists):
         try:
+            GLib.idle_add(self._progress.set_fraction, 0.0)
             self._in_thread = True
             sql = Objects.db.get_cursor()
             stat = os.statvfs(self._path)
             # For progress bar
             self._total = len(playlists)
             self._done = 0
-
-            total = 1
+            self._fraction = 0.0
+            GLib.idle_add(self._update_progress)
+            scan_total = 1
             for playlist in playlists:
-                GLib.idle_add(self._update_progress)
-                total += len(Objects.playlists.get_tracks(playlist))
+                self._done += 1
+                self._fraction = self._done/self._total
+                scan_total += len(Objects.playlists.get_tracks(playlist))
                 # Old tracks
                 for root, dirs, files in os.walk(self._path):
                     if root.find(playlist) != -1:
                         for f in files:
-                            total += 1
+                            scan_total += 1
             
-            self._total = total
+            self._total = scan_total
             self._done = 0
+            self._fraction = 0.0
+            GLib.idle_add(self._progress.set_fraction, 0.0)
 
             # Delete old playlists on device
             for f in os.listdir(self._path):
@@ -176,7 +194,8 @@ class DeviceManagerWidget(Gtk.Bin):
                     self._delete(object_path)
                 elif os.path.isdir(object_path) and f not in playlists:
                     rmtree(object_path)
-            GLib.idle_add(self._update_progress)
+            self._done += 1
+            self._fraction = self._done/self._total
 
             # Clean playlists paths
             for playlist in playlists:
@@ -196,6 +215,7 @@ class DeviceManagerWidget(Gtk.Bin):
                         self._rmdir(dirpath)
            
             self._copy_to_device(playlists, sql)
+            self._fraction = 1.0
             if self._syncing:
                 GLib.idle_add(self._on_sync_clicked, None)
             self._in_thread = False
@@ -250,7 +270,8 @@ class DeviceManagerWidget(Gtk.Bin):
 
                 if not os.path.exists(dst_path):
                     copyfile(track_path, dst_path)
-                GLib.idle_add(self._update_progress)
+                self._done += 1
+                self._fraction = self._done/self._total
             if m3u:
                 m3u.close()
 
@@ -283,7 +304,8 @@ class DeviceManagerWidget(Gtk.Bin):
                     filepath = os.path.join(root, f)
                     if not filepath in dst_tracks:
                         self._delete(filepath)
-                GLib.idle_add(self._update_progress)
+                self._done += 1
+                self._fraction = self._done/self._total
 
     """
         Delete file
@@ -326,14 +348,10 @@ class DeviceManagerWidget(Gtk.Bin):
             self._syncing = False
             self._memory_combo.show()
             self._view.set_sensitive(True)
-            # Don't hide now to let 100% visible
-            GLib.timeout_add(1000, self._progress.hide)
             self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
         elif not self._in_thread:
             self._syncing = True
             self._memory_combo.hide()
-            self._progress.set_fraction(0.0)
-            self._progress.show()
             self._view.set_sensitive(False)
             self._syncing_btn.set_label(_("Cancel synchronization"))
             playlists = []
