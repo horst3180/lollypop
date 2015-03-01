@@ -515,7 +515,10 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _add_device(self, volume):
         if volume is None:
             return
-        path = volume.get_activation_root().get_path()
+        root = volume.get_activation_root()
+        if root is None:
+            return
+        path = root.get_path()
         if path.find('mtp:') != -1:
             self._devices_index -= 1
             dev = Device()
