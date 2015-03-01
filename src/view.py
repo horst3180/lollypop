@@ -115,6 +115,9 @@ class DeviceView(Gtk.Bin):
     def populate(self):
         self._widget.populate()
 
+    def is_syncing(self):
+        return self._widget.is_syncing()
+
     def remove_signals(self):
         pass
 

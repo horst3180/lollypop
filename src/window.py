@@ -441,7 +441,13 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _update_view_device(self, object_id):
         old_view = self._stack.get_visible_child()
         device = self._devices[object_id]
-        if device.view:
+
+        # Only restore previous widget if not syncing
+        if device and device.view and not device.view.is_syncing():
+            device.destroy()
+            device = None
+
+        if device and device.view:
             view = device.view
         else:
             view = DeviceView(device, self._progress)

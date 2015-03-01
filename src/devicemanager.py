@@ -99,6 +99,12 @@ class DeviceManagerWidget(Gtk.Bin):
             playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
        
+    """
+        @return True if syncing
+    """
+    def is_syncing(self):
+        return self._is_syncing
+
 #######################
 # PRIVATE             #
 #######################
