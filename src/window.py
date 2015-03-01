@@ -444,10 +444,10 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
 
         # Only restore previous widget if not syncing
         if device and device.view and not device.view.is_syncing():
-            device.destroy()
-            device = None
+            device.view.destroy()
+            device.view = None
 
-        if device and device.view:
+        if device.view:
             view = device.view
         else:
             view = DeviceView(device, self._progress)

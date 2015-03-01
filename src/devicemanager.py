@@ -103,7 +103,7 @@ class DeviceManagerWidget(Gtk.Bin):
         @return True if syncing
     """
     def is_syncing(self):
-        return self._is_syncing
+        return self._syncing
 
 #######################
 # PRIVATE             #
@@ -219,12 +219,12 @@ class DeviceManagerWidget(Gtk.Bin):
                         self._rmdir(dirpath)
            
             self._copy_to_device(playlists, sql)
-            self._fraction = 1.0
-            if self._syncing:
-                GLib.idle_add(self._on_sync_clicked, None)
-            self._in_thread = False
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
+        self._fraction = 1.0
+        if self._syncing:
+            GLib.idle_add(self._on_sync_clicked, None)
+        self._in_thread = False
 
     """
         Copy file from playlist to device
@@ -353,7 +353,7 @@ class DeviceManagerWidget(Gtk.Bin):
             self._memory_combo.show()
             self._view.set_sensitive(True)
             self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
-        elif not self._in_thread:
+        elif not self._in_thread and not self._progress.is_visible():
             self._syncing = True
             self._memory_combo.hide()
             self._view.set_sensitive(False)

@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GdkPixbuf, GObject, Pango
 
 from lollypop.utils import translate_artist_name
-from lollypop.define import POPULARS, COMPILATIONS, ALL, PLAYLISTS
+from lollypop.define import POPULARS, COMPILATIONS, ALL, PLAYLISTS, DEVICES
 
 
 # A selection list is a artists or genres scrolled treeview
@@ -121,7 +121,8 @@ class SelectionList(GObject.GObject):
             for value in values:
                 if item[1] == value[1]:
                     found = True
-            if not found:
+            # Remove not found items but not devices
+            if not found and item[0] > DEVICES:
                 self._model.remove(item.iter)
 
         self._values = values
