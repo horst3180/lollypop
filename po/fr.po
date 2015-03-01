@@ -1,20 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-23 07:28+0100\n"
+"POT-Creation-Date: 2015-03-01 01:41+0100\n"
 "PO-Revision-Date: 2015-02-23 08:11+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
+"fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -93,14 +94,15 @@ msgstr "INTERNE"
 msgid "Shuffle mode"
 msgstr "Mode de lecture aléatoire"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
-msgstr "La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les morceaux), \"albums\" (mélanger les albums)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+"La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs "
+"valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les "
+"morceaux), \"albums\" (mélanger les albums)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -128,19 +130,19 @@ msgstr "Pause"
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/window.py:345
+#: ../src/window.py:357
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/window.py:346 ../src/popmenu.py:47
+#: ../src/window.py:358 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/window.py:347
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/window.py:390
+#: ../src/window.py:402
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -164,9 +166,9 @@ msgid "Many artists"
 msgstr "Plusieurs artistes"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
-#: ../src/database_tracks.py:168 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:182 ../src/collectionscanner.py:196
-#: ../src/collectionscanner.py:201
+#: ../src/database_tracks.py:134 ../src/database_tracks.py:185
+#: ../src/database_genres.py:67 ../src/collectionscanner.py:182
+#: ../src/collectionscanner.py:196 ../src/collectionscanner.py:201
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -174,22 +176,31 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:396 ../src/playlists.py:671
+#: ../src/playlists.py:387 ../src/playlists.py:655
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlists.py:470 ../src/playlists.py:473
+#: ../src/playlists.py:454 ../src/playlists.py:457
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
-#: ../src/playlists.py:699
+#: ../src/playlists.py:683
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
-#: ../src/view.py:32
+#: ../src/view.py:69
 msgid "Loading please wait..."
 msgstr "Chargement, veuillez patienter"
+
+#: ../src/devicemanager.py:49 ../src/devicemanager.py:335
+#, python-format
+msgid "Synchronize %s"
+msgstr "Synchroniser %s"
+
+#: ../src/devicemanager.py:342
+msgid "Cancel synchronization"
+msgstr "Annuler la synchronisation"
 
 #: ../src/popmenu.py:42
 msgid "Playback"
@@ -229,7 +240,7 @@ msgstr "Morceau suivant"
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/popimages.py:63
+#: ../src/popimages.py:58
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
@@ -243,7 +254,7 @@ msgstr "Configurer lollypop"
 msgid "The the"
 msgstr "The the Les les La Le la le"
 
-#: ../src/search.py:152
+#: ../src/search.py:150
 msgid "Search:"
 msgstr "Recherche:"
 
@@ -283,11 +294,11 @@ msgstr "À _propos"
 msgid "_Quit"
 msgstr "_Quitter"
 
-#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: ../data/PlaylistsManageWidget.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:2
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 

@@ -20,6 +20,7 @@ src/playlists.py
 src/queue.py
 src/fullscreen.py
 src/view.py
+src/devicemanager.py
 src/popmenu.py
 src/popimages.py
 src/settings.py
@@ -36,7 +37,7 @@ src/collectionscanner.py
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/PlaylistEditWidget.ui
-[type: gettext/glade]data/PlaylistsManageWidget.ui
+[type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistView.ui
 [type: gettext/glade]data/ArtistView.ui
 [type: gettext/glade]data/headerbar.ui

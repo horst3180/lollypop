@@ -92,7 +92,6 @@ class PlaylistManageView(Gtk.Bin):
 
     def populate(self):
         self._widget.populate()
-        GLib.idle_add(self._widget.calculate_size)
 
     def remove_signals(self):
         pass
@@ -115,7 +114,6 @@ class DeviceView(Gtk.Bin):
 
     def populate(self):
         self._widget.populate()
-        GLib.idle_add(self._widget.calculate_size)
 
     def remove_signals(self):
         pass

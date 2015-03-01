@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-23 07:28+0100\n"
+"POT-Creation-Date: 2015-03-01 01:41+0100\n"
 "PO-Revision-Date: 2015-02-23 08:01+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/"
+"language/ca/)\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -94,13 +95,11 @@ msgstr ""
 msgid "Shuffle mode"
 msgstr ""
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -129,19 +128,19 @@ msgstr "Fes una pausa"
 msgid "Play"
 msgstr "Reprodueix"
 
-#: ../src/window.py:345
+#: ../src/window.py:357
 msgid "Popular albums"
 msgstr "Àlbums populars"
 
-#: ../src/window.py:346 ../src/popmenu.py:47
+#: ../src/window.py:358 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Llistes"
 
-#: ../src/window.py:347
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Tots els artistes"
 
-#: ../src/window.py:390
+#: ../src/window.py:402
 msgid "Compilations"
 msgstr "Compilacions"
 
@@ -165,9 +164,9 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
-#: ../src/database_tracks.py:168 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:182 ../src/collectionscanner.py:196
-#: ../src/collectionscanner.py:201
+#: ../src/database_tracks.py:134 ../src/database_tracks.py:185
+#: ../src/database_genres.py:67 ../src/collectionscanner.py:182
+#: ../src/collectionscanner.py:196 ../src/collectionscanner.py:201
 msgid "Unknown"
 msgstr "Desconegut"
 
@@ -175,22 +174,31 @@ msgstr "Desconegut"
 msgid "Compilation"
 msgstr "Compilació"
 
-#: ../src/playlists.py:396 ../src/playlists.py:671
+#: ../src/playlists.py:387 ../src/playlists.py:655
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:470 ../src/playlists.py:473
+#: ../src/playlists.py:454 ../src/playlists.py:457
 msgid "New playlist "
 msgstr "Llista nova"
 
-#: ../src/playlists.py:699
+#: ../src/playlists.py:683
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/view.py:32
+#: ../src/view.py:69
 msgid "Loading please wait..."
 msgstr "S’està carregant, espereu-vos…"
+
+#: ../src/devicemanager.py:49 ../src/devicemanager.py:335
+#, python-format
+msgid "Synchronize %s"
+msgstr ""
+
+#: ../src/devicemanager.py:342
+msgid "Cancel synchronization"
+msgstr ""
 
 #: ../src/popmenu.py:42
 msgid "Playback"
@@ -230,7 +238,7 @@ msgstr "Peça següent"
 msgid "Remove from queue"
 msgstr "Treu de la cua"
 
-#: ../src/popimages.py:63
+#: ../src/popimages.py:58
 msgid "Select a cover art for this album"
 msgstr "Trieu una caràtula per a aquest àlbum"
 
@@ -244,7 +252,7 @@ msgstr "Configura el Lollypop"
 msgid "The the"
 msgstr "The the El el La la Els els Les les L' l' L’ l’"
 
-#: ../src/search.py:152
+#: ../src/search.py:150
 msgid "Search:"
 msgstr "Cerca:"
 
@@ -284,11 +292,11 @@ msgstr "_Quant a"
 msgid "_Quit"
 msgstr "_Surt"
 
-#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
 msgstr "Confirma"
 
-#: ../data/PlaylistsManageWidget.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:2
 msgid "New playlist"
 msgstr "Llista nova"
 

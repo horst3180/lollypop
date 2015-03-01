@@ -342,14 +342,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._view.append_column(column2)
 
     """
-        Calculate size
-    """
-    def calculate_size(self):
-        if self._parent:
-            self._ui.get_object('scroll').set_property('width-request',
-                                    self._parent.get_allocated_width()/2)
-
-    """
         Populate playlists, thread safe
     """
     def populate(self):

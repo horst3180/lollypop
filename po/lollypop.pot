@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-23 07:28+0100\n"
+"POT-Creation-Date: 2015-03-01 01:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -126,19 +126,19 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/window.py:345
+#: ../src/window.py:357
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/window.py:346 ../src/popmenu.py:47
+#: ../src/window.py:358 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:347
+#: ../src/window.py:359
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:390
+#: ../src/window.py:402
 msgid "Compilations"
 msgstr ""
 
@@ -162,9 +162,9 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
-#: ../src/database_tracks.py:168 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:182 ../src/collectionscanner.py:196
-#: ../src/collectionscanner.py:201
+#: ../src/database_tracks.py:134 ../src/database_tracks.py:185
+#: ../src/database_genres.py:67 ../src/collectionscanner.py:182
+#: ../src/collectionscanner.py:196 ../src/collectionscanner.py:201
 msgid "Unknown"
 msgstr ""
 
@@ -172,21 +172,30 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:396 ../src/playlists.py:671
+#: ../src/playlists.py:387 ../src/playlists.py:655
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:470 ../src/playlists.py:473
+#: ../src/playlists.py:454 ../src/playlists.py:457
 msgid "New playlist "
 msgstr ""
 
-#: ../src/playlists.py:699
+#: ../src/playlists.py:683
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/view.py:32
+#: ../src/view.py:69
 msgid "Loading please wait..."
+msgstr ""
+
+#: ../src/devicemanager.py:49 ../src/devicemanager.py:335
+#, python-format
+msgid "Synchronize %s"
+msgstr ""
+
+#: ../src/devicemanager.py:342
+msgid "Cancel synchronization"
 msgstr ""
 
 #: ../src/popmenu.py:42
@@ -227,7 +236,7 @@ msgstr ""
 msgid "Remove from queue"
 msgstr ""
 
-#: ../src/popimages.py:63
+#: ../src/popimages.py:58
 msgid "Select a cover art for this album"
 msgstr ""
 
@@ -241,7 +250,7 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:152
+#: ../src/search.py:150
 msgid "Search:"
 msgstr ""
 
@@ -281,11 +290,11 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
-#: ../data/PlaylistsManageWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
 msgstr ""
 
-#: ../data/PlaylistsManageWidget.ui.h:2
+#: ../data/PlaylistsManagerWidget.ui.h:2
 msgid "New playlist"
 msgstr ""
 
