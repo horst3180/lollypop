@@ -164,7 +164,7 @@ class DeviceManagerWidget(Gtk.Bin):
             sql = Objects.db.get_cursor()
             stat = os.statvfs(self._path)
             # For progress bar
-            self._total = len(playlists)
+            self._total = len(playlists)*3
             self._done = 0
             self._fraction = 0.0
             GLib.idle_add(self._update_progress)
@@ -180,9 +180,7 @@ class DeviceManagerWidget(Gtk.Bin):
                             scan_total += 1
             
             self._total = scan_total
-            self._done = 0
-            self._fraction = 0.0
-            GLib.idle_add(self._progress.set_fraction, 0.0)
+            self._done = scan_total/3
 
             # Delete old playlists on device
             for f in os.listdir(self._path):
