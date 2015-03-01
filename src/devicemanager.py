@@ -145,59 +145,62 @@ class DeviceManagerWidget(Gtk.Bin):
         @param playlists as [str]
     """
     def _sync(self, playlists):
-        self._in_thread = True
-        sql = Objects.db.get_cursor()
-        stat = os.statvfs(self._path)
-        # For progress bar
-        self._total = len(playlists)
-        self._done = 0
+        try:
+            self._in_thread = True
+            sql = Objects.db.get_cursor()
+            stat = os.statvfs(self._path)
+            # For progress bar
+            self._total = len(playlists)
+            self._done = 0
 
-        total = 1
-        for playlist in playlists:
-            GLib.idle_add(self._update_progress)
-            total += len(Objects.playlists.get_tracks(playlist))
-            # Old tracks
-            for root, dirs, files in os.walk(self._path):
-                if root.find(playlist) != -1:
-                    for f in files:
-                        total += 1
-        
-        self._total = total
-        self._done = 0
+            total = 1
+            for playlist in playlists:
+                GLib.idle_add(self._update_progress)
+                total += len(Objects.playlists.get_tracks(playlist))
+                # Old tracks
+                for root, dirs, files in os.walk(self._path):
+                    if root.find(playlist) != -1:
+                        for f in files:
+                            total += 1
+            
+            self._total = total
+            self._done = 0
 
-        # Delete old playlists on device
-        for f in os.listdir(self._path):
-            if not self._syncing:
-                self._in_thread = False
-                return
-            object_path = "%s/%s" % (self._path, f)
-            if os.path.isfile(object_path) and f.endswith(".m3u"):
-                self._delete(object_path)
-            elif os.path.isdir(object_path) and f not in playlists:
-                rmtree(object_path)
-        GLib.idle_add(self._update_progress)
-
-        # Clean playlists paths
-        for playlist in playlists:
-            if not self._syncing:
-                self._in_thread = False
-                return
-            self._clean_playlist_path(playlist, sql)
-
-        # Delete empty directories
-        for root, dirs, files in os.walk(self._path):
-            for d in dirs:
+            # Delete old playlists on device
+            for f in os.listdir(self._path):
                 if not self._syncing:
                     self._in_thread = False
                     return
-                dirpath = os.path.join(root, d)
-                if len(os.listdir(dirpath)) == 0:
-                    self._rmdir(dirpath)
-       
-        self._copy_to_device(playlists, sql)
-        if self._syncing:
-            GLib.idle_add(self._on_sync_clicked, None)
-        self._in_thread = False
+                object_path = "%s/%s" % (self._path, f)
+                if os.path.isfile(object_path) and f.endswith(".m3u"):
+                    self._delete(object_path)
+                elif os.path.isdir(object_path) and f not in playlists:
+                    rmtree(object_path)
+            GLib.idle_add(self._update_progress)
+
+            # Clean playlists paths
+            for playlist in playlists:
+                if not self._syncing:
+                    self._in_thread = False
+                    return
+                self._clean_playlist_path(playlist, sql)
+
+            # Delete empty directories
+            for root, dirs, files in os.walk(self._path):
+                for d in dirs:
+                    if not self._syncing:
+                        self._in_thread = False
+                        return
+                    dirpath = os.path.join(root, d)
+                    if len(os.listdir(dirpath)) == 0:
+                        self._rmdir(dirpath)
+           
+            self._copy_to_device(playlists, sql)
+            if self._syncing:
+                GLib.idle_add(self._on_sync_clicked, None)
+            self._in_thread = False
+        except Exception as e:
+            print("DeviceManagerWidget::_sync(): %s" % e)
 
     """
         Copy file from playlist to device
@@ -236,11 +239,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 if art:
                     dst_art = "%s/folder.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
-                        try:
-                            copyfile(art, dst_art)             
-                        except Exception as e:
-                            print("DeviceManagerWidget::"
-                                  "_copy_to_device(): %s" % e)
+                       copyfile(art, dst_art)             
 
                 track_name = os.path.basename(track_path)
                 dst_path = "%s/%s" % (on_device_album_path, track_name)
@@ -250,10 +249,7 @@ class DeviceManagerWidget(Gtk.Bin):
                                album_name, track_name))
 
                 if not os.path.exists(dst_path):
-                    try:
-                        copyfile(track_path, dst_path)
-                    except Exception as e:
-                        print("DeviceManagerWidget::_copy_to_device(): %s" % e)
+                    copyfile(track_path, dst_path)
                 GLib.idle_add(self._update_progress)
             if m3u:
                 m3u.close()
