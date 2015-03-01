@@ -191,6 +191,7 @@ class DeviceManagerWidget(Gtk.Bin):
             # Delete old playlists on device
             for f in os.listdir(self._path):
                 if not self._syncing:
+                    self._fraction = 1.0
                     self._in_thread = False
                     return
                 object_path = "%s/%s" % (self._path, f)
@@ -204,6 +205,7 @@ class DeviceManagerWidget(Gtk.Bin):
             # Clean playlists paths
             for playlist in playlists:
                 if not self._syncing:
+                    self._fraction = 1.0
                     self._in_thread = False
                     return
                 self._clean_playlist_path(playlist, sql)
@@ -212,6 +214,7 @@ class DeviceManagerWidget(Gtk.Bin):
             for root, dirs, files in os.walk(self._path):
                 for d in dirs:
                     if not self._syncing:
+                        self._fraction = 1.0
                         self._in_thread = False
                         return
                     dirpath = os.path.join(root, d)
@@ -247,6 +250,8 @@ class DeviceManagerWidget(Gtk.Bin):
             tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
             for track_id in tracks_id:
                 if not self._syncing:
+                    self._fraction = 1.0
+                    self._in_thread = False
                     return
                 artist_name = translate_artist_name(
                                   Objects.tracks.get_artist_name(track_id, sql))
@@ -289,6 +294,8 @@ class DeviceManagerWidget(Gtk.Bin):
         dst_tracks = []
         for track_id in tracks_id:
             if not self._syncing:
+                self._fraction = 1.0
+                self._in_thread = False
                 return
             artist_name = translate_artist_name(
                                 Objects.tracks.get_artist_name(track_id, sql))
@@ -303,6 +310,8 @@ class DeviceManagerWidget(Gtk.Bin):
         for root, dirs, files in os.walk("%s/%s" % (self._path, playlist)):
             for f in files:
                 if not self._syncing:
+                    self._fraction = 1.0
+                    self._in_thread = False
                     return
                 if f != "folder.jpg":
                     filepath = os.path.join(root, f)
