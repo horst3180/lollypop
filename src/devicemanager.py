@@ -36,6 +36,7 @@ class DeviceManagerWidget(Gtk.Bin):
         self._progress = progress
         self._playlists = None
         self._syncing = False
+        self._errors = False
         self._in_thread = False
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
@@ -167,8 +168,8 @@ class DeviceManagerWidget(Gtk.Bin):
         try:
             GLib.idle_add(self._progress.set_fraction, 0.0)
             self._in_thread = True
+            self._errors = False
             sql = Objects.db.get_cursor()
-            stat = os.statvfs(self._path)
             # For progress bar
             self._total = len(playlists)*3
             self._done = 0
@@ -224,6 +225,7 @@ class DeviceManagerWidget(Gtk.Bin):
             self._copy_to_device(playlists, sql)
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
+            self._errors = True
         self._fraction = 1.0
         if self._syncing:
             GLib.idle_add(self._on_sync_clicked, None)
@@ -353,6 +355,19 @@ class DeviceManagerWidget(Gtk.Bin):
             print("DeviceManagerWidget::_rmdir(): %s" % e)
 
     """
+        Show information bar with error message
+    """
+    def _show_info_bar(self):
+        error_label = self._ui.get_object('error-label')
+        stat = os.statvfs(self._path)
+        if stat.f_frsize * stat.f_bavail == 0:
+            error_text = _("No free space available on device")
+        else:
+            error_text = _("Unknown error while syncing")
+        error_label.set_text(error_text)
+        self._ui.get_object('infobar').show()
+
+    """
         Start synchronisation
         @param widget as Gtk.Button
     """
@@ -362,6 +377,8 @@ class DeviceManagerWidget(Gtk.Bin):
             self._memory_combo.show()
             self._view.set_sensitive(True)
             self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
+            if not self._errors:
+                self._show_info_bar()
         elif not self._in_thread and not self._progress.is_visible():
             self._syncing = True
             self._memory_combo.hide()
@@ -372,6 +389,15 @@ class DeviceManagerWidget(Gtk.Bin):
                 if item[0]:
                     playlists.append(item[1])
             start_new_thread(self._sync, (playlists,))
+
+    """
+        Hide infobar
+        @param widget as Gtk.Infobar
+        @param reponse id as int
+    """
+    def _on_response(self, infobar, response_id):
+        if response_id == Gtk.ResponseType.CLOSE:
+            self._infobar.hide()
 
     """
         Update path
