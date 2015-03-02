@@ -270,7 +270,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 if art:
                     dst_art = "%s/folder.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
-                       copyfile(art, dst_art)             
+                        copyfile(art, dst_art)             
 
                 track_name = os.path.basename(track_path)
                 dst_path = "%s/%s" % (on_device_album_path, track_name)

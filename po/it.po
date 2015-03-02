@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-01 19:15+0100\n"
+"POT-Creation-Date: 2015-03-02 07:36+0100\n"
 "PO-Revision-Date: 2015-02-23 16:01+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
@@ -195,12 +195,20 @@ msgstr "Rimuovere queste tracce?"
 msgid "Loading please wait..."
 msgstr "Caricando, attendere..."
 
-#: ../src/devicemanager.py:50 ../src/devicemanager.py:355
+#: ../src/devicemanager.py:51 ../src/devicemanager.py:379
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:360
+#: ../src/devicemanager.py:364
+msgid "No free space available on device"
+msgstr ""
+
+#: ../src/devicemanager.py:366
+msgid "Unknown error while syncing"
+msgstr ""
+
+#: ../src/devicemanager.py:386
 msgid "Cancel synchronization"
 msgstr ""
 
