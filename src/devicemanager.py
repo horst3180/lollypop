@@ -176,34 +176,39 @@ class DeviceManagerWidget(Gtk.Bin):
             self._fraction = 0.0
             GLib.idle_add(self._update_progress)
             scan_total = 1
+            # New tracks
             for playlist in playlists:
                 self._done += 1
                 self._fraction = self._done/self._total
                 scan_total += len(Objects.playlists.get_tracks(playlist))
-                # Old tracks
-                for root, dirs, files in os.walk(self._path):
-                    if root.find(playlist) != -1:
-                        for f in files:
-                            scan_total += 1
+            # Old tracks
+            for root, dirs, files in os.walk(self._path):
+                for f in files:
+                    scan_total += 1
             
             self._total = scan_total + scan_total / 3
             self._done = scan_total/3
 
-            # Delete old playlists on device
+            # Copy new tracks to device
+            self._copy_to_device(playlists, sql)
+
+            # Delete old playlists/dirs on device
             for f in os.listdir(self._path):
                 if not self._syncing:
                     self._fraction = 1.0
                     self._in_thread = False
                     return
                 object_path = "%s/%s" % (self._path, f)
-                if os.path.isfile(object_path) and f.endswith(".m3u"):
+                if os.path.isfile(object_path) and\
+                   f.endswith(".m3u") and\
+                   f[:-4] not in playlists:
                     self._delete(object_path)
                 elif os.path.isdir(object_path) and f not in playlists:
-                    rmtree(object_path)
+                    self._clean_playlist_path(f, None)
             self._done += 1
             self._fraction = self._done/self._total
 
-            # Clean playlists paths
+            # Clean playlists (remove obsolete files)
             for playlist in playlists:
                 if not self._syncing:
                     self._fraction = 1.0
@@ -212,17 +217,8 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._clean_playlist_path(playlist, sql)
 
             # Delete empty directories
-            for root, dirs, files in os.walk(self._path):
-                for d in dirs:
-                    if not self._syncing:
-                        self._fraction = 1.0
-                        self._in_thread = False
-                        return
-                    dirpath = os.path.join(root, d)
-                    if len(os.listdir(dirpath)) == 0:
-                        self._rmdir(dirpath)
+            self._del_empty_dirs(self._path)
            
-            self._copy_to_device(playlists, sql)
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
             self._errors = True
@@ -288,12 +284,17 @@ class DeviceManagerWidget(Gtk.Bin):
 
     """
         Delete files not available in playlist
+        if sql None, delete all files
         @param playlist as str
         @param sql cursor
     """
     def _clean_playlist_path(self, playlist, sql):
-        tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
+        if sql:
+            tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
+        else:
+            tracks_id = []
         dst_tracks = []
+
         for track_id in tracks_id:
             if not self._syncing:
                 self._fraction = 1.0
@@ -308,6 +309,7 @@ class DeviceManagerWidget(Gtk.Bin):
             track_name = os.path.basename(track_path)
             dst_path = "%s/%s" % (album_path, track_name)
             dst_tracks.append(dst_path)
+
         # Delete file on device and not in playlists
         for root, dirs, files in os.walk("%s/%s" % (self._path, playlist)):
             for f in files:
@@ -323,6 +325,24 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._fraction = self._done/self._total
 
     """
+        Del empty dirs, folder.jpg doesn't count
+        @param path as str
+    """
+    def _del_empty_dirs(self, path):
+        for root, dirs, files in os.walk(path, topdown=False):
+            for d in dirs:
+                if not self._syncing:
+                    self._fraction = 1.0
+                    self._in_thread = False
+                    return
+                dirpath = os.path.join(root, d)
+                ls = os.listdir(dirpath)
+                if len(ls) == 1:
+                    if ls[0] == "folder.jpg":
+                        self._delete("%s/%s" % (dirpath, ls[0]))
+                if len(ls) < 2:
+                    self._rmdir(dirpath) 
+    """
         Delete file
         @param path as str
     """
@@ -331,7 +351,7 @@ class DeviceManagerWidget(Gtk.Bin):
             os.remove(path)
         except Exception as e:
             print("DeviceManagerWidget::_delete(): %s" % e)
-        
+
     """
         Make dir in device
         @param path as str
