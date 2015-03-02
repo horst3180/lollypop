@@ -379,7 +379,7 @@ class DeviceManagerWidget(Gtk.Bin):
             self._memory_combo.show()
             self._view.set_sensitive(True)
             self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
-            if not self._errors:
+            if self._errors:
                 self._show_info_bar()
         elif not self._in_thread and not self._progress.is_visible():
             self._syncing = True
