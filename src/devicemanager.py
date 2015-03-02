@@ -34,7 +34,7 @@ class DeviceManagerWidget(Gtk.Bin):
         self._parent = parent
         self._device = device
         self._progress = progress
-        self._playlists = None
+        self._on_disk_playlists = None
         self._syncing = False
         self._errors = False
         self._in_thread = False
@@ -92,12 +92,12 @@ class DeviceManagerWidget(Gtk.Bin):
             try:
                 if not os.path.exists(self._path):
                     os.mkdir(self._path)
-                self._playlists = os.listdir(self._path)
+                self._on_disk_playlists = os.listdir(self._path)
             except:
-                self._playlists = []
+                self._on_disk_playlists = []
             
-            # Search if we need to select item or not
-            playlists = Objects.playlists.get()
+
+        playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
        
     """
@@ -134,7 +134,7 @@ class DeviceManagerWidget(Gtk.Bin):
     def _append_playlists(self, playlists):
         if len(playlists) > 0:
             playlist = playlists.pop(0)
-            selected = playlist in self._playlists
+            selected = playlist in self._on_disk_playlists
             self._model.append([selected, playlist])
             GLib.idle_add(self._append_playlists, playlists)
         else:
@@ -365,8 +365,8 @@ class DeviceManagerWidget(Gtk.Bin):
         if stat.f_frsize * stat.f_bavail < 1048576:
             error_text = _("No free space available on device")
         else:
-            error_text = _("Unknown error while syncing, try to close music"
-                           " apps or reboot your device")
+            error_text = _("Unknown error while syncing,"
+                           " try to reboot your device")
         error_label.set_text(error_text)
         self._ui.get_object('infobar').show()
 
@@ -413,12 +413,12 @@ class DeviceManagerWidget(Gtk.Bin):
         try:
             if not os.path.exists(music_path):
                 os.mkdir(music_path)
-            self._playlists = os.listdir(self._path)
+            self._on_disk_playlists = os.listdir(self._path)
         except Exception as e:
             print("DeviceManagerWidget::_on_memory_combo_changed: %s" % e)
-            self._playlists = []
+            self._on_disk_playlists = []
         for item in self._model:
-            item[0] = item[1] in self._playlists
+            item[0] = item[1] in self._on_disk_playlists
 
     """
         When playlist is activated, add object to playlist
