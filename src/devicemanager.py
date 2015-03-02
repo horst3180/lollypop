@@ -360,7 +360,9 @@ class DeviceManagerWidget(Gtk.Bin):
     def _show_info_bar(self):
         error_label = self._ui.get_object('error-label')
         stat = os.statvfs(self._path)
-        if stat.f_frsize * stat.f_bavail == 0:
+        # Check available size, seems to be 1024 but can't test with
+        # my android device, so less than 1Mo should be a good test
+        if stat.f_frsize * stat.f_bavail < 1048576:
             error_text = _("No free space available on device")
         else:
             error_text = _("Unknown error while syncing")
