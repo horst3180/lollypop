@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-02 18:36+0100\n"
+"POT-Creation-Date: 2015-03-02 21:46+0100\n"
 "PO-Revision-Date: 2015-02-23 08:11+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -203,10 +203,8 @@ msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
 
 #: ../src/devicemanager.py:368
-msgid ""
-"Unknown error while syncing, try to close music apps or reboot your device"
-msgstr ""
-"Erreur inconnue lors de la synchronisation, essayez de fermer les applications de musique ou de redémarrer votre appareil"
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre appareil"
 
 #: ../src/devicemanager.py:389
 msgid "Cancel synchronization"
@@ -395,4 +393,3 @@ msgstr "Selectionnez ce qui sera disponible en mode soirée"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
-
