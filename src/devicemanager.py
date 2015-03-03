@@ -193,9 +193,10 @@ class DeviceManagerWidget(Gtk.Bin):
             if self._syncing:
                 self._remove_from_device(playlists, sql)
 
-            # Delete empty directories
+            # Empty dirs, do not remove them or sync will fail
+            # I/O errors...
             if self._syncing:
-                self._del_empty_dirs(self._path+"/tracks")
+                self._empty_dirs(self._path+"/tracks")
 
             # Delete old playlists
             for f in os.listdir(self._path):
@@ -311,7 +312,7 @@ class DeviceManagerWidget(Gtk.Bin):
         Del empty dirs, folder.jpg doesn't count
         @param path as str
     """
-    def _del_empty_dirs(self, path):
+    def _empty_dirs(self, path):
         for root, dirs, files in os.walk(path, topdown=False):
             for d in dirs:
                 if not self._syncing:
