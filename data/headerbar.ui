@@ -345,14 +345,6 @@
 
 
   </object>
-  <object class="GtkSizeGroup" id="size1">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="search-button"/>
-      <widget name="party-button"/>
-      <widget name="shuffle-button"/>
-    </widgets>
-  </object>
   <object class="GtkGrid" id="title-box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
