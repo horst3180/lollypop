@@ -145,10 +145,7 @@
               <object class="GtkBox" id="nowplaying_labels">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
                 <property name="orientation">vertical</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="artist">
                     <property name="visible">True</property>
@@ -161,7 +158,7 @@
                     <property name="max_width_chars">24</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="0.90000000000000002"/>
+                      <attribute name="scale" value="0.9"/>
                     </attributes>
                   </object>
                   <packing>
@@ -181,7 +178,7 @@
                     <property name="width_chars">8</property>
                     <property name="max_width_chars">24</property>
                     <attributes>
-                      <attribute name="scale" value="0.90000000000000002"/>
+                      <attribute name="scale" value="0.9"/>
                     </attributes>
                   </object>
                   <packing>
