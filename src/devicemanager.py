@@ -13,7 +13,6 @@
 
 from gi.repository import Gtk, GLib, Pango
 import os
-from time import sleep
 from shutil import copyfile, rmtree
 from gettext import gettext as _
 from _thread import start_new_thread
@@ -22,9 +21,6 @@ from lollypop.define import Objects
 from lollypop.utils import translate_artist_name
 
 # Dialog for synchronize mtp devices
-# We use Gvfs for file transfert, seems to hang
-# on load, so will add some sleeps to prevent it
-# from doing I/O errors
 class DeviceManagerWidget(Gtk.Bin):
 
     """
@@ -188,16 +184,19 @@ class DeviceManagerWidget(Gtk.Bin):
             for root, dirs, files in os.walk(self._path+"/tracks"):
                 for f in files:
                     self._total += 1
-            print("apres")
+
             # Copy new tracks to device
-            self._copy_to_device(playlists, sql)
+            if self._syncing:
+                self._copy_to_device(playlists, sql)
 
             # Remove old tracks from device
-            self._remove_from_device(playlists, sql)
+            if self._syncing:
+                self._remove_from_device(playlists, sql)
 
             # Delete empty directories
-            self._del_empty_dirs(self._path+"/tracks")
-           
+            if self._syncing:
+                self._del_empty_dirs(self._path+"/tracks")
+
             # Delete old playlists
             for f in os.listdir(self._path):
                 if f.endswith(".m3u") and f[:-4] not in playlists:
@@ -206,6 +205,7 @@ class DeviceManagerWidget(Gtk.Bin):
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
             self._errors = True
+        print('fin')
         self._fraction = 1.0
         if self._syncing:
             GLib.idle_add(self._on_sync_clicked, None)
@@ -222,7 +222,6 @@ class DeviceManagerWidget(Gtk.Bin):
             try:
                 m3u = open("%s/%s.m3u" % (self._path, playlist), "w")
                 m3u.write("#EXTM3U\n")
-                sleep(0.1)
             except:
                 m3u = None
             
@@ -249,18 +248,16 @@ class DeviceManagerWidget(Gtk.Bin):
                     dst_art = "%s/folder.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
                         copyfile(art, dst_art)
-                        sleep(0.1)
 
                 track_name = os.path.basename(track_path)
                 dst_path = "%s/%s" % (on_device_album_path, track_name)
                 if m3u:
                     m3u.write("tracks/%s_%s/%s\n" %\
                               (artist_name, album_name, track_name))
-                    sleep(0.1)
                 if not os.path.exists(dst_path):
                     copyfile(track_path, dst_path)
+                else:
                     self._done += 1
-                    sleep(0.1)
                 self._done += 1
                 self._fraction = self._done/self._total
             if m3u:
@@ -328,8 +325,7 @@ class DeviceManagerWidget(Gtk.Bin):
                         self._delete("%s/%s" % (dirpath, ls[0]))
                         self._done += 1
                         self._fraction = self._done/self._total
-                if len(ls) < 2:
-                    self._rmdir(dirpath) 
+
     """
         Delete file
         @param path as str
@@ -337,7 +333,6 @@ class DeviceManagerWidget(Gtk.Bin):
     def _delete(self, path):
         try:
             os.remove(path)
-            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_delete(): %s" % e)
 
@@ -348,7 +343,6 @@ class DeviceManagerWidget(Gtk.Bin):
     def _mkdir(self, path):
         try:
             os.makedirs(path, exist_ok=True)
-            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_mkdir(): %s" % e)
 
@@ -360,7 +354,6 @@ class DeviceManagerWidget(Gtk.Bin):
         try:
             if os.path.exists(path):
                 os.rmdir(path)
-                sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_rmdir(): %s" % e)
 
