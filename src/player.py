@@ -626,9 +626,12 @@ class Player(GObject.GObject):
                    track not in self._shuffle_history[album_id]:
                     return track
             # No new tracks for this album, remove it
+            # If albums not in shuffle history, it's not present
+            # in db anymore (update since shuffle set)
+            if album_id in self._shuffle_history.keys():
+                self._shuffle_history.pop(album_id)
+                self._shuffle_albums_backup.append(album_id)
             self._albums.remove(album_id)
-            self._shuffle_history.pop(album_id)
-            self._shuffle_albums_backup.append(album_id)
 
         return None
 
