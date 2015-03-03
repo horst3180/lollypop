@@ -206,7 +206,6 @@ class DeviceManagerWidget(Gtk.Bin):
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
             self._errors = True
-        print('fin')
         self._fraction = 1.0
         if self._syncing:
             GLib.idle_add(self._on_sync_clicked, None)
