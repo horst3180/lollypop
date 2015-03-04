@@ -130,6 +130,7 @@
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="spacing">8</property>
+            <property name="height-request">42</property>
             <child>
               <object class="GtkImage" id="cover">
                 <property name="visible">False</property>
