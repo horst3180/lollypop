@@ -34,13 +34,9 @@ class Toolbar:
         self._seeking = False
         # Update pogress position
         self._timeout = None
-        # label transition
-        self._transition = None
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
-        self._ui.connect_signals(self)
-
         self.header_bar = self._ui.get_object('header-bar')
         self.header_bar.set_custom_title(self._ui.get_object('title-box'))
 
@@ -60,7 +56,6 @@ class Toolbar:
         self._timelabel = self._ui.get_object('playback')
         self._total_time_label = self._ui.get_object('duration')
 
-        self._stack = self._ui.get_object('stack')
         self._title_label = self._ui.get_object('title')
         self._artist_label = self._ui.get_object('artist')
         self._cover = self._ui.get_object('cover')
@@ -186,18 +181,6 @@ class Toolbar:
                                                         ART_SIZE_SMALL))
 
     """
-        On enter notify in infobox, show artist
-        params can be None
-        @param widget as Gtk.Widget
-        @param event as Gtk.Event
-    """
-    def _on_enter_notify(self, widget, event):
-        self._stack.set_visible_child(self._artist_label)
-        if self._transition:
-            GLib.source_remove(self._transition)
-        self._transition = GLib.timeout_add(3000, self._stack_transition)
- 
-    """
         On press, mark player as seeking
         @param unused
     """
@@ -234,9 +217,6 @@ class Toolbar:
             self._progress.set_sensitive(False)
             self._play_btn.set_sensitive(False)
             self._next_btn.set_sensitive(False)
-            if self._transition:
-                GLib.source_remove(self._transition)
-                self._transition = None
             self._title_label.set_text("")
             self._artist_label.set_text("")
         else:
@@ -249,10 +229,8 @@ class Toolbar:
             else:
                 self._cover.hide()
 
-            self._stack.set_tooltip_text(player.current.album)
             self._title_label.set_text(player.current.title)
             self._artist_label.set_text(player.current.artist)
-            self._on_enter_notify(None, None)
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
             self._total_time_label.set_text(
@@ -260,13 +238,6 @@ class Toolbar:
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()
-
-    """
-        Transition in title stack
-    """
-    def _stack_transition(self):
-       self._stack.set_visible_child(self._title_label)
-       self._transition = None
 
     """
         Update buttons and progress bar
