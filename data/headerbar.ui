@@ -130,7 +130,6 @@
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="spacing">8</property>
-            <property name="height-request">42</property>
             <child>
               <object class="GtkImage" id="cover">
                 <property name="visible">False</property>
@@ -159,7 +158,7 @@
                     <property name="max_width_chars">24</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="0.9"/>
+                      <attribute name="scale" value="0.7"/>
                     </attributes>
                   </object>
                   <packing>
@@ -179,7 +178,7 @@
                     <property name="width_chars">8</property>
                     <property name="max_width_chars">24</property>
                     <attributes>
-                      <attribute name="scale" value="0.9"/>
+                      <attribute name="scale" value="0.7"/>
                     </attributes>
                   </object>
                   <packing>
