@@ -123,33 +123,57 @@
     <child>
       <object class="GtkEventBox" id="infobox">
         <property name="visible">True</property>
+        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="margin_end">10</property>
+            <property name="valign">center</property>
+            <property name="spacing">8</property>
             <child>
               <object class="GtkImage" id="cover">
                 <property name="visible">False</property>
                 <property name="can_focus">True</property>
-                <property name="margin_end">8</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="title">
+              <object class="GtkStack" id="stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="xalign">0</property>
-                <property name="ellipsize">middle</property>
-                <property name="width_chars">8</property>
+                <property name="transition-duration">500</property>
+                <child>
+                  <object class="GtkLabel" id="artist">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="xalign">0</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="width_chars">8</property>
+                    <property name="max_width_chars">24</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="title">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="xalign">0</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="width_chars">8</property>
+                    <property name="max_width_chars">24</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
