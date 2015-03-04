@@ -248,11 +248,12 @@ class Toolbar:
                 self._cover.show()
             else:
                 self._cover.hide()
-
+            self._stack.set_transition_type(Gtk.StackTransitionType.NONE)
             self._stack.set_tooltip_text(player.current.album)
-            self._title_label.set_text('')
             self._artist_label.set_text(player.current.artist)
             self._on_enter_notify(None, None)
+            self._title_label.set_text(player.current.title)
+            self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
             self._total_time_label.set_text(
@@ -265,7 +266,6 @@ class Toolbar:
         Transition in title stack
     """
     def _stack_transition(self):
-       self._title_label.set_text(Objects.player.current.title)
        self._stack.set_visible_child(self._title_label)
        self._transition = None
 
