@@ -147,6 +147,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="transition-duration">500</property>
+                <property name="transition-type">1</property>
                 <child>
                   <object class="GtkLabel" id="artist">
                     <property name="visible">True</property>
