@@ -13,6 +13,7 @@
 
 from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
+from cgi import escape
 
 from lollypop.define import Objects, SHUFFLE_NONE, ART_SIZE_SMALL
 from lollypop.search import SearchWidget
@@ -60,9 +61,7 @@ class Toolbar:
         self._timelabel = self._ui.get_object('playback')
         self._total_time_label = self._ui.get_object('duration')
 
-        self._stack = self._ui.get_object('stack')
         self._title_label = self._ui.get_object('title')
-        self._artist_label = self._ui.get_object('artist')
         self._cover = self._ui.get_object('cover')
         self._infobox = self._ui.get_object('infobox')
         self._infobox.connect("button-press-event", self._pop_infobox)
@@ -184,18 +183,6 @@ class Toolbar:
         if Objects.player.current.album_id == album_id:
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
                                                         ART_SIZE_SMALL))
-
-    """
-        On enter notify in infobox, show artist
-        params can be None
-        @param widget as Gtk.Widget
-        @param event as Gtk.Event
-    """
-    def _on_enter_notify(self, widget, event):
-        self._stack.set_visible_child(self._artist_label)
-        if self._transition:
-            GLib.source_remove(self._transition)
-        self._transition = GLib.timeout_add(3000, self._stack_transition)
  
     """
         On press, mark player as seeking
@@ -238,7 +225,6 @@ class Toolbar:
                 GLib.source_remove(self._transition)
                 self._transition = None
             self._title_label.set_text("")
-            self._artist_label.set_text("")
         else:
             self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
@@ -248,12 +234,11 @@ class Toolbar:
                 self._cover.show()
             else:
                 self._cover.hide()
-            self._stack.set_transition_type(Gtk.StackTransitionType.NONE)
-            self._stack.set_tooltip_text(player.current.album)
-            self._artist_label.set_text(player.current.artist)
-            self._on_enter_notify(None, None)
-            self._title_label.set_text(player.current.title)
-            self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+
+            self._infobox.set_tooltip_text(player.current.album)
+            self._title_label.set_markup("<b>%s</b> - %s" %\
+                                         (escape(player.current.artist),
+                                          escape(player.current.title)))
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
             self._total_time_label.set_text(
@@ -261,13 +246,6 @@ class Toolbar:
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()
-
-    """
-        Transition in title stack
-    """
-    def _stack_transition(self):
-       self._stack.set_visible_child(self._title_label)
-       self._transition = None
 
     """
         Update buttons and progress bar
