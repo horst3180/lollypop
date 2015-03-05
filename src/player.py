@@ -572,7 +572,8 @@ class Player(GObject.GObject):
             print("please check your gstreamer installation...")
             return
 
-        self._rgvolume.props.pre_amp = 0.0
+        self._rgvolume.props.pre_amp = Objects.settings.get_value(
+                                            "replaygain").get_double()
 
         self._rgfilter.add(self._rgvolume)
         self._rgfilter.add(self._rg_audioconvert1)
