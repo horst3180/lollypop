@@ -13,6 +13,7 @@
 
 from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
+from cgi import escape
 
 from lollypop.define import Objects, SHUFFLE_NONE, ART_SIZE_SMALL
 from lollypop.search import SearchWidget
@@ -217,8 +218,8 @@ class Toolbar:
             self._progress.set_sensitive(False)
             self._play_btn.set_sensitive(False)
             self._next_btn.set_sensitive(False)
-            self._title_label.set_text("")
-            self._artist_label.set_text("")
+            self._title_label.hide()
+            self._artist_label.hide()
         else:
             self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
@@ -229,8 +230,12 @@ class Toolbar:
             else:
                 self._cover.hide()
 
-            self._title_label.set_text(player.current.title)
-            self._artist_label.set_text(player.current.artist)
+            self._title_label.show()
+            self._title_label.set_markup("<span font_desc='Sans 10.5'>%s</span>" %\
+                                         escape(player.current.title))
+            self._artist_label.show()
+            self._artist_label.set_markup("<span font_desc='Sans 10.5'>%s</span>" %\
+                                          escape(player.current.artist))
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
             self._total_time_label.set_text(
