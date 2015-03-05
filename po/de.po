@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Mark Gerlach, 2015
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015
@@ -11,14 +11,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-02 21:46+0100\n"
-"PO-Revision-Date: 2015-02-23 08:24+0000\n"
-"Last-Translator: Mathias Rudolf <manifre.rudolf@gmail.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
-"de/)\n"
-"Language: de\n"
+"PO-Revision-Date: 2015-03-03 10:34+0000\n"
+"Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -59,7 +58,7 @@ msgstr "Musikpfade"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr "wenn leer, benütze XDG_MUSIC_DIR"
+msgstr "wenn leer, benutze XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "DO NOT MODIFY"
@@ -97,14 +96,14 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Zufallsmodus"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks"
-"\" (zufälliger Titel), \"albums\" (zufälliges Album)"
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks\" (zufälliger Titel), \"albums\" (zufälliges Album)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -193,7 +192,7 @@ msgstr "Diese Titel entfernen?"
 
 #: ../src/view.py:69
 msgid "Loading please wait..."
-msgstr "Laden, bitte warten..."
+msgstr "Lade, bitte warten..."
 
 #: ../src/devicemanager.py:51 ../src/devicemanager.py:382
 #, python-format

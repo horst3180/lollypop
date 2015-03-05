@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 msgid ""
@@ -9,14 +9,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-02 21:46+0100\n"
-"PO-Revision-Date: 2015-02-23 08:01+0000\n"
+"PO-Revision-Date: 2015-03-03 10:34+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/"
-"language/ca/)\n"
-"Language: ca\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -57,7 +56,7 @@ msgstr "Camins de la música"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr ""
+msgstr "Quan sigui buit, utilitza XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "DO NOT MODIFY"
@@ -69,15 +68,15 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Do not show genres list"
-msgstr ""
+msgstr "No mostris la llista de gèneres"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Utilitza el tema fosc del Gtk+"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Mostra les caràtules estilitzades"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -89,17 +88,19 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
-msgstr ""
+msgstr "INTERN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Shuffle mode"
-msgstr ""
+msgstr "Mode aleatori"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -157,11 +158,11 @@ msgstr "Següent"
 #: ../src/notification.py:72
 #, python-format
 msgid "by %s, from %s"
-msgstr ""
+msgstr "per %s, de l’àlbum %s"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
-msgstr ""
+msgstr "Molts artistes"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
@@ -310,7 +311,7 @@ msgstr "Llista nova"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Edita"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
@@ -330,7 +331,7 @@ msgstr ""
 
 #: ../data/headerbar.ui.h:8 ../data/SettingsDialog.ui.h:11
 msgid "Party mode"
-msgstr ""
+msgstr "Mode festa"
 
 #: ../data/headerbar.ui.h:9
 msgid "Search"
@@ -338,7 +339,7 @@ msgstr "Cerca"
 
 #: ../data/headerbar.ui.h:10
 msgid "Queue"
-msgstr ""
+msgstr "Cua"
 
 #: ../data/headerbar.ui.h:11
 msgid "Show genres"
@@ -358,7 +359,7 @@ msgstr "Tanca"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Utilitza la variant fosca del tema"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"

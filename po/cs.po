@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # fri, 2014
 # fri, 2015
@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-02 21:46+0100\n"
-"PO-Revision-Date: 2015-02-23 10:33+0000\n"
+"PO-Revision-Date: 2015-03-03 14:19+0000\n"
 "Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
-"cs/)\n"
-"Language: cs\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -96,15 +95,14 @@ msgstr "VNITŘNÍ"
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
-msgstr ""
-"Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: "
-"\"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba"
-"\" (zamíchat alba)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
+"albums)."
+msgstr "Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: \"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba\" (zamíchat alba)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -198,19 +196,19 @@ msgstr "Nahrává se. Počkejte, prosím..."
 #: ../src/devicemanager.py:51 ../src/devicemanager.py:382
 #, python-format
 msgid "Synchronize %s"
-msgstr ""
+msgstr "Seřídit %s"
 
 #: ../src/devicemanager.py:366
 msgid "No free space available on device"
-msgstr ""
+msgstr "Na zařízení není žádné volné místo"
 
 #: ../src/devicemanager.py:368
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
+msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
 #: ../src/devicemanager.py:389
 msgid "Cancel synchronization"
-msgstr ""
+msgstr "Zrušit seřizování"
 
 #: ../src/popmenu.py:42
 msgid "Playback"
@@ -394,4 +392,4 @@ msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
 
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr ""
+msgstr "Seřídit zařízení s tímto seznamem skladeb"
