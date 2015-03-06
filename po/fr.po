@@ -390,7 +390,7 @@ msgstr "Restaurer la vue au démarrage"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Play albums on 2nd click"
-msgstr "Lire les albums au second click"
+msgstr "Lire les albums au second clic"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Configure lollypop behaviour"
