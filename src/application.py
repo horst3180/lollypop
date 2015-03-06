@@ -70,8 +70,8 @@ class Application(Gtk.Application):
         Objects.art = AlbumArt()
 
         settings = Gtk.Settings.get_default()
-        if Objects.settings.get_value('dark-ui'):
-            settings.set_property("gtk-application-prefer-dark-theme", True)
+        dark = Objects.settings.get_value('dark-ui')
+        settings.set_property("gtk-application-prefer-dark-theme", dark)
 
         self.add_action(Objects.settings.create_action('shuffle'))
         self._window = None
