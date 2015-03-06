@@ -50,6 +50,7 @@ class CollectionScanner(GObject.GObject):
             else:
                 print("You need to add a music path"
                       " to org.gnome.Lollypop in dconf")
+                return
 
         if not self._in_thread:
             self._progress = progress
