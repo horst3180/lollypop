@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GdkPixbuf, GObject, Pango
 
 from lollypop.utils import translate_artist_name
-from lollypop.define import POPULARS, COMPILATIONS, ALL, PLAYLISTS, DEVICES
+from lollypop.define import Navigation
 
 
 # A selection list is a artists or genres scrolled treeview
@@ -47,7 +47,7 @@ class SelectionList(GObject.GObject):
                                             0)
         self._view = Gtk.TreeView(self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
-        
+
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
         renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
@@ -57,10 +57,10 @@ class SelectionList(GObject.GObject):
         renderer1 = Gtk.CellRendererPixbuf()
         renderer1.set_property('stock-size', 16)
         column1 = Gtk.TreeViewColumn("pixbuf1", renderer1, pixbuf=2)
-        
+
         self._view.append_column(column0)
         self._view.append_column(column1)
-        
+
         self._view.set_headers_visible(False)
         self._view.show()
 
@@ -95,7 +95,7 @@ class SelectionList(GObject.GObject):
                                 string,
                                 self._get_pixbuf(object_id)])
 
-    """ 
+    """
         Remove row from model
         @param object id as int
     """
@@ -122,7 +122,7 @@ class SelectionList(GObject.GObject):
                 if item[1] == value[1]:
                     found = True
             # Remove not found items but not devices
-            if not found and item[0] > DEVICES:
+            if not found and item[0] > Navigation.DEVICES:
                 self._model.remove(item.iter)
 
         self._values = values
@@ -206,15 +206,15 @@ class SelectionList(GObject.GObject):
     """
     def _get_pixbuf(self, object_id):
         icon = None
-        if object_id == POPULARS:
+        if object_id == Navigation.POPULARS:
             icon = 'emblem-favorite-symbolic'
-        elif object_id == PLAYLISTS:
+        elif object_id == Navigation.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
-        elif object_id == ALL:
+        elif object_id == Navigation.ALL:
             icon = 'avatar-default-symbolic'
-        elif object_id == COMPILATIONS:
+        elif object_id == Navigation.COMPILATIONS:
             icon = 'system-users-symbolic'
-        
+
         if icon:
             return Gtk.IconTheme.get_default().load_icon(
                                             icon,

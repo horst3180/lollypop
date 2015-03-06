@@ -162,8 +162,8 @@ class AlbumArt:
     def clean_cache(self, album_id):
         path = self._get_cache_path(album_id)
         for f in os.listdir(self._CACHE_PATH):
-        	if re.search('%s_.*\.jpg' % path , f):
-        		os.remove(os.path.join(self._CACHE_PATH, f))
+            if re.search('%s_.*\.jpg' % path, f):
+                os.remove(os.path.join(self._CACHE_PATH, f))
 
     """
         Get arts on google image corresponding to search

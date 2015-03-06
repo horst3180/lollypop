@@ -11,16 +11,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GObject, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Objects, COMPILATIONS, ALL, POPULARS
+from lollypop.define import Objects, Navigation
 from lollypop.playlists import PlaylistsManagerWidget
 from lollypop.devicemanager import DeviceManagerWidget
 from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
+
 
 # Container for a view
 class ViewContainer:
@@ -237,10 +238,10 @@ class ArtistView(View):
     """
     def populate(self):
         sql = Objects.db.get_cursor()
-        if self._artist_id == COMPILATIONS:
+        if self._artist_id == Navigation.COMPILATIONS:
             albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)
-        elif self._genre_id == ALL:
+        elif self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(self._artist_id,
                                             None,
                                             sql)
@@ -342,9 +343,9 @@ class AlbumView(View):
     """
     def populate(self):
         sql = Objects.db.get_cursor()
-        if self._genre_id == ALL:
+        if self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
-        elif self._genre_id == POPULARS:
+        elif self._genre_id == Navigation.POPULARS:
             albums = Objects.albums.get_populars(sql)
         else:
             albums = Objects.albums.get_compilations(self._genre_id, sql)
@@ -454,12 +455,13 @@ class PlaylistView(View):
         self._edit_btn = self._ui.get_object('edit_btn')
         self._back_btn = self._ui.get_object('back_btn')
         self._title = self._ui.get_object('title')
-                                                
-        self._playlist_widget = PlaylistWidget(playlist_name,
-                                               self._ui.get_object('infobar'),
-                                               self._ui.get_object('infobarlabel'))
+
+        self._playlist_widget = PlaylistWidget(
+                                           playlist_name,
+                                           self._ui.get_object('infobar'),
+                                           self._ui.get_object('infobarlabel'))
         self._playlist_widget.show()
-        
+
         widget = self._ui.get_object('PlaylistView')
         self.add(widget)
         widget.attach(self._playlist_widget, 0, 3, 2, 1)

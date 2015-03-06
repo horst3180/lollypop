@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-from lollypop.define import Objects, COMPILATIONS, ALL
+from lollypop.define import Objects, Navigation
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -179,7 +179,7 @@ class DatabaseAlbums:
         if v and len(v) > 0:
             return v[0]
 
-        return COMPILATIONS
+        return Navigation.COMPILATIONS
 
     """
         Get compilation artists id
@@ -191,7 +191,8 @@ class DatabaseAlbums:
             sql = Objects.sql
         artists = []
         result = sql.execute("SELECT artist_id from tracks where album_id=?\
-                              AND artist_id=?", (album_id, COMPILATIONS))
+                              AND artist_id=?", (album_id,
+                                                 Navigation.COMPILATIONS))
         for row in result:
             artists += row
         return artists
@@ -373,7 +374,8 @@ class DatabaseAlbums:
         if artist_id and genre_id:
             result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=? and genre_id=?\
-                                  ORDER BY year, name COLLATE NOCASE", (artist_id, genre_id))
+                                  ORDER BY year, name COLLATE NOCASE",
+                                 (artist_id, genre_id))
         # Get albums for all artists
         elif not artist_id and not genre_id:
             result = sql.execute("SELECT albums.rowid FROM albums,artists\
@@ -392,7 +394,8 @@ class DatabaseAlbums:
         elif not genre_id:
             result = sql.execute("SELECT DISTINCT rowid FROM albums\
                                   WHERE artist_id=?\
-                                  ORDER BY year, name COLLATE NOCASE", (artist_id,))
+                                  ORDER BY year, name COLLATE NOCASE",
+                                 (artist_id,))
 
         for row in result:
             albums += row
@@ -409,7 +412,7 @@ class DatabaseAlbums:
         albums = []
         result = []
         # Get all compilations
-        if genre_id == ALL or not genre_id:
+        if genre_id == Navigation.ALL or not genre_id:
             result = sql.execute("SELECT albums.rowid FROM albums\
                                   WHERE artist_id=-1\
                                   ORDER BY albums.name, albums.year")
@@ -438,7 +441,7 @@ class DatabaseAlbums:
                               AND albums.artist_id == ?\
                               GROUP BY album_id\
                               HAVING COUNT(DISTINCT tracks.artist_id) == 1", (
-                              COMPILATIONS,))
+                              Navigation.COMPILATIONS,))
 
         for artist_id, album_id, album_name, album_genre in result:
             existing_id = self.get_id(album_name, artist_id, album_genre, sql)

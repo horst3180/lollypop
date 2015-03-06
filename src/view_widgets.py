@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib
 from cgi import escape
 
-from lollypop.define import Objects, COMPILATIONS, ArtSize
+from lollypop.define import Objects, Navigation, ArtSize
 from lollypop.tracks import TracksWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.playlists import PlaylistEditWidget
@@ -185,7 +185,8 @@ class AlbumDetailedWidget(Gtk.Grid):
                 length in Objects.albums.get_tracks_infos(album_id):
 
             # If we are listening to a compilation, prepend artist name
-            if self._artist_id == COMPILATIONS or self._artist_id != artist_id:
+            if self._artist_id == Navigation.COMPILATIONS or\
+               self._artist_id != artist_id:
                 artist_name = translate_artist_name(
                                     Objects.tracks.get_artist_name(track_id))
                 title = artist_name + " - " + title
@@ -255,7 +256,7 @@ class PlaylistWidget(Gtk.Grid):
         self._ui.add_from_resource(
                 '/org/gnome/Lollypop/PlaylistWidget.ui'
                                   )
-        
+
         self._tracks_widget1 = TracksWidget(False)
         self._tracks_widget2 = TracksWidget(False)
         self._tracks_widget1.connect('activated',
@@ -294,7 +295,7 @@ class PlaylistWidget(Gtk.Grid):
         @param track position as int
     """
     def populate_list_one(self, tracks, pos):
-        GLib.idle_add(self._add_tracks, 
+        GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
                       pos)
@@ -305,7 +306,7 @@ class PlaylistWidget(Gtk.Grid):
         @param track position as int
     """
     def populate_list_two(self, tracks, pos):
-         GLib.idle_add(self._add_tracks, 
+        GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
                       pos)

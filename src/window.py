@@ -16,8 +16,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 import os
 
-from lollypop.define import Objects, POPULARS, ALL, PLAYLISTS, DEVICES
-from lollypop.define import COMPILATIONS
+from lollypop.define import Objects, Navigation
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.toolbar import Toolbar
 from lollypop.selectionlist import SelectionList
@@ -33,6 +32,7 @@ class Device:
         self.name = None
         self.path = None
         self.view = None
+
 
 # Main window
 class Window(Gtk.ApplicationWindow, ViewContainer):
@@ -55,7 +55,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         # Same for volumes, as volumes are in list one,
         # Index will start at -VOLUMES
         self._devices = {}
-        self._devices_index = DEVICES
+        self._devices_index = Navigation.DEVICES
 
         self._setup_window()
         self._setup_view()
@@ -101,7 +101,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._scanner.update(self._progress, False)
             self._clean_view(old_view)
 
-
     """
         Add an application menu to window
         @parma: menu as Gio.Menu
@@ -136,7 +135,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         start_new_thread(view.populate, ())
         if isinstance(old_view, PlaylistManageView):
             old_view.destroy()
-           
+
     """
         Destroy current view
     """
@@ -206,7 +205,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _update_list_two(self, updater):
         object_id = self._list_one.get_selected_id()
-        if object_id == PLAYLISTS:
+        if object_id == Navigation.PLAYLISTS:
             self._setup_list_playlists(object_id)
         elif isinstance(updater, CollectionScanner):
             self._setup_list_artists(self._list_two, object_id, True)
@@ -354,9 +353,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _get_headers(self):
         items = []
-        items.append((POPULARS, _("Popular albums")))
-        items.append((PLAYLISTS, _("Playlists")))
-        items.append((ALL, _("All artists")))
+        items.append((Navigation.POPULARS, _("Popular albums")))
+        items.append((Navigation.PLAYLISTS, _("Playlists")))
+        items.append((Navigation.ALL, _("All artists")))
         return items
 
     """
@@ -367,7 +366,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if self._show_genres:
             self._setup_list_genres(self._list_one, update)
         else:
-            self._setup_list_artists(self._list_one, ALL, update)
+            self._setup_list_artists(self._list_one, Navigation.ALL, update)
 
     """
         Setup list for genres
@@ -399,7 +398,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if selection_list == self._list_one:
             items = self._get_headers()
         if len(Objects.albums.get_compilations(genre_id)) > 0:
-            items.append((COMPILATIONS, _("Compilations")))
+            items.append((Navigation.COMPILATIONS, _("Compilations")))
 
         items += Objects.artists.get(genre_id)
 
@@ -554,15 +553,15 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         @param object id as int
     """
     def _on_list_one_selected(self, selection_list, object_id):
-        if object_id == PLAYLISTS:
+        if object_id == Navigation.PLAYLISTS:
             self._setup_list_playlists(False)
             self._list_two.widget.show()
             self._list_two.visible = True
-        elif object_id < DEVICES:
+        elif object_id < Navigation.DEVICES:
             self._list_two.widget.hide()
             self._list_two.visible = False
             self._update_view_device(object_id)
-        elif object_id == POPULARS:
+        elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
             self._list_two.visible = False
             self._list_two.clear()
@@ -571,7 +570,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._list_two.widget.hide()
             self._list_two.visible = False
             self._list_two.clear()
-            if object_id == ALL:
+            if object_id == Navigation.ALL:
                 self._update_view_albums(object_id)
             else:
                 self._update_view_artists(object_id, None)
@@ -581,14 +580,14 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._list_two.widget.show()
             self._list_two.visible = True
             self._update_view_albums(object_id)
-            
+
     """
         Update view based on selected object
         @param list as SelectionList
         @param object id as int
     """
     def _on_list_two_selected(self, selection_list, object_id):
-        if self._list_one.get_selected_id() == PLAYLISTS:
+        if self._list_one.get_selected_id() == Navigation.PLAYLISTS:
             self._update_view_playlists(object_id)
         else:
             self._update_view_artists(object_id,
@@ -629,7 +628,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _on_configure_event(self, widget, event):
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
-        self._timeout_configure = GLib.timeout_add(500, self._save_size_position, widget)
+        self._timeout_configure = GLib.timeout_add(500,
+                                                   self._save_size_position,
+                                                   widget)
 
     """
         Save window state, update current view content size

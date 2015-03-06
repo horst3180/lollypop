@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk
-
 # This is global object initialised at lollypop start
 # member init order is important!
+
+
 class Objects_:
     def __init__(self):
         self.settings = None
@@ -28,6 +28,7 @@ class Objects_:
         self.player = None
         self.art = None
 
+
 class ArtSize_:
     def __init__(self):
         self.SMALL = 32
@@ -35,12 +36,14 @@ class ArtSize_:
         self.BIG = 200
         self.MONSTER = 500
 
+
 class Shuffle_:
     def __init__(self):
         self.NONE = 0
         self.TRACKS = 1
         self.ALBUMS = 2
-        
+
+
 class Navigation_:
     def __init__(self):
         self.COMPILATIONS = -1
@@ -48,18 +51,8 @@ class Navigation_:
         self.PLAYLISTS = -3
         self.ALL = -4
         self.DEVICES = -1000
-        
+
 Objects = Objects_()
 ArtSize = ArtSize_()
 Shuffle = Shuffle_()
 Navigation = Navigation_()
-
-SHUFFLE_NONE = 0
-SHUFFLE_TRACKS = 1
-SHUFFLE_ALBUMS = 2
-
-COMPILATIONS = -1
-POPULARS = -2
-PLAYLISTS = -3
-ALL = -4
-DEVICES = -1000

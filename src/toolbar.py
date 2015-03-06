@@ -15,7 +15,7 @@ from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
 from cgi import escape
 
-from lollypop.define import Objects, SHUFFLE_NONE, ArtSize
+from lollypop.define import Objects, Shuffle, ArtSize
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.queue import QueueWidget
@@ -129,7 +129,7 @@ class Toolbar:
     """
     def _set_shuffle_icon(self):
         shuffle = Objects.settings.get_enum('shuffle')
-        if shuffle == SHUFFLE_NONE:
+        if shuffle == Shuffle.NONE:
             self._shuffle_btn_image.set_from_icon_name(
                                     "media-playlist-consecutive-symbolic",
                                     Gtk.IconSize.SMALL_TOOLBAR)
@@ -231,10 +231,12 @@ class Toolbar:
                 self._cover.hide()
 
             self._title_label.show()
-            self._title_label.set_markup("<span font_desc='Sans 10.5'>%s</span>" %\
+            self._title_label.set_markup("<span font_desc='Sans 10.5'>"
+                                         "%s</span>" %
                                          escape(player.current.title))
             self._artist_label.show()
-            self._artist_label.set_markup("<span font_desc='Sans 10.5'>%s</span>" %\
+            self._artist_label.set_markup("<span font_desc='Sans 10.5'>"
+                                          "%s</span>" %
                                           escape(player.current.artist))
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)

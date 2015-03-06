@@ -13,12 +13,13 @@
 
 from gi.repository import Gtk, GLib, Pango
 import os
-from shutil import copyfile, rmtree
+from shutil import copyfile
 from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects
 from lollypop.utils import translate_artist_name
+
 
 # Dialog for synchronize mtp devices
 class DeviceManagerWidget(Gtk.Bin):
@@ -61,7 +62,7 @@ class DeviceManagerWidget(Gtk.Bin):
         self._ui.connect_signals(self)
 
         self.add(self._ui.get_object('widget'))
-        
+
         self._infobar = self._ui.get_object('infobar')
         self._infobar_label = self._ui.get_object('infobarlabel')
 
@@ -95,11 +96,10 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._on_disk_playlists = os.listdir(self._path)
             except:
                 self._on_disk_playlists = []
-            
 
         playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
-       
+
     """
         @return True if syncing
     """
@@ -158,7 +158,7 @@ class DeviceManagerWidget(Gtk.Bin):
         if self._syncing or current < 1.0:
             GLib.idle_add(self._update_progress)
         else:
-           GLib.timeout_add(1000, self._progress.hide)
+            GLib.timeout_add(1000, self._progress.hide)
 
     """
         Sync playlists with device as this
@@ -224,7 +224,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 m3u.write("#EXTM3U\n")
             except:
                 m3u = None
-            
+
             # Start copying
             tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
             for track_id in tracks_id:
@@ -233,12 +233,13 @@ class DeviceManagerWidget(Gtk.Bin):
                     self._in_thread = False
                     return
                 artist_name = translate_artist_name(
-                                  Objects.tracks.get_artist_name(track_id, sql))
+                                 Objects.tracks.get_artist_name(track_id, sql))
                 album_id = Objects.tracks.get_album_id(track_id, sql)
                 album_name = Objects.albums.get_name(album_id, sql)
                 track_path = Objects.tracks.get_path(track_id, sql)
                 on_device_album_path = "%s/tracks/%s_%s" % (self._path,
-                                       artist_name, album_name)
+                                                            artist_name,
+                                                            album_name)
 
                 self._mkdir(on_device_album_path)
 
@@ -252,7 +253,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 track_name = os.path.basename(track_path)
                 dst_path = "%s/%s" % (on_device_album_path, track_name)
                 if m3u:
-                    m3u.write("tracks/%s_%s/%s\n" %\
+                    m3u.write("tracks/%s_%s/%s\n" %
                               (artist_name, album_name, track_name))
                 if not os.path.exists(dst_path):
                     copyfile(track_path, dst_path)
@@ -288,7 +289,8 @@ class DeviceManagerWidget(Gtk.Bin):
             album_name = Objects.tracks.get_album_name(track_id, sql)
             track_path = Objects.tracks.get_path(track_id, sql)
             album_path = "%s/tracks/%s_%s" % (self._path,
-                         artist_name, album_name)
+                                              artist_name,
+                                              album_name)
             track_name = os.path.basename(track_path)
             dst_path = "%s/%s" % (album_path, track_name)
             tracks_path.append(dst_path)
@@ -302,7 +304,7 @@ class DeviceManagerWidget(Gtk.Bin):
                     return
                 if f != "folder.jpg":
                     filepath = os.path.join(root, f)
-                    if not filepath in tracks_path:
+                    if filepath not in tracks_path:
                         self._delete(filepath)
                 self._done += 1
                 self._fraction = self._done/self._total
@@ -382,7 +384,8 @@ class DeviceManagerWidget(Gtk.Bin):
             self._syncing = False
             self._memory_combo.show()
             self._view.set_sensitive(True)
-            self._syncing_btn.set_label(_("Synchronize %s") % self._device.name)
+            self._syncing_btn.set_label(_("Synchronize %s") %
+                                        self._device.name)
             if self._errors:
                 self._show_info_bar()
         elif not self._in_thread and not self._progress.is_visible():
@@ -430,6 +433,4 @@ class DeviceManagerWidget(Gtk.Bin):
     def _on_playlist_toggled(self, view, path):
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
-        name = self._model.get_value(iterator, 1)
         self._model.set_value(iterator, 0, toggle)
-

@@ -18,7 +18,7 @@ from gi.repository import GLib, GObject
 from _thread import start_new_thread
 import mutagen
 
-from lollypop.define import Objects, COMPILATIONS
+from lollypop.define import Objects, Navigation
 from lollypop.utils import format_artist_name
 
 
@@ -255,7 +255,7 @@ class CollectionScanner(GObject.GObject):
                 Objects.artists.add(performer, sql)
                 performer_id = Objects.artists.get_id(performer, sql)
         else:
-            performer_id = COMPILATIONS
+            performer_id = Navigation.COMPILATIONS
 
         # Get genre id, add genre if missing
         genre_id = Objects.genres.get_id(genre, sql)

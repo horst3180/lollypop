@@ -19,8 +19,7 @@ import os
 from cgi import escape
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
-from lollypop.define import Objects, COMPILATIONS
-from lollypop.define import ArtSize
+from lollypop.define import Objects, Navigation, ArtSize
 from lollypop.utils import translate_artist_name
 
 
@@ -55,7 +54,7 @@ class PlaylistsManager(GObject.GObject):
         filename = self.PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
         try:
             if not os.path.exists(filename):
-                GLib.idle_add(self.emit, "playlists-changed")    
+                GLib.idle_add(self.emit, "playlists-changed")
             f = open(filename, "w")
             f.write("#EXTM3U\n")
             if get_desc:
@@ -315,7 +314,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._ui.connect_signals(self)
 
         self.add(self._ui.get_object('widget'))
-        
+
         self._infobar = self._ui.get_object('infobar')
         self._infobar_label = self._ui.get_object('infobarlabel')
 
@@ -571,7 +570,8 @@ class PlaylistEditWidget:
         populate view if needed
     """
     def populate(self):
-        self._ui.get_object('scroll').set_property('width-request',
+        self._ui.get_object('scroll').set_property(
+                                'width-request',
                                 self._parent.get_allocated_width()/2)
         if not self._model:
             start_new_thread(self._append_tracks, ())
@@ -623,7 +623,7 @@ class PlaylistEditWidget:
             filepath = Objects.tracks.get_path(track_id)
             album_id = Objects.tracks.get_album_id(track_id)
             artist_id = Objects.tracks.get_performer_id(track_id)
-            if artist_id == COMPILATIONS:
+            if artist_id == Navigation.COMPILATIONS:
                 artist_id = Objects.tracks.get_artist_id(track_id)
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
@@ -681,7 +681,7 @@ class PlaylistEditWidget:
     """
     def _on_selection_changed(self, selection):
         count = selection.count_selected_rows()
-        if  count > 1:
+        if count > 1:
             self._infobar_label.set_markup(_("Remove these tracks?"))
             self._infobar.show()
 
