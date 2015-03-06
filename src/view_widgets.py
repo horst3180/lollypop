@@ -365,6 +365,8 @@ class PlaylistWidget(Gtk.Grid):
         if len(tracks) == 0:
             return
         track_id = tracks.pop(0)
+        if track_id == -1:
+            return
         (title, filepath, length, artist_id, album_id) =\
             Objects.tracks.get_infos(track_id)
         title = "<b>%s</b>\n %s" %\

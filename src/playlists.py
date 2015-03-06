@@ -48,15 +48,20 @@ class PlaylistsManager(GObject.GObject):
     """
         Add a playlist (Thread safe)
         @param playlist name as str
+        @param get file descriptor as bool
+        @return file descriptor if 2nd param True
     """
-    def add(self, playlist_name):
+    def add(self, playlist_name, get_desc=False):
         filename = self.PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
         try:
             if not os.path.exists(filename):
                 GLib.idle_add(self.emit, "playlists-changed")    
             f = open(filename, "w")
             f.write("#EXTM3U\n")
-            f.close()
+            if get_desc:
+                return f
+            else:
+                f.close()
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
 
@@ -155,10 +160,14 @@ class PlaylistsManager(GObject.GObject):
         @param tracks path as [str]
     """
     def set_tracks(self, playlist_name, tracks_path):
-        self.add(playlist_name)
+        f = self.add(playlist_name, True)
         for filepath in tracks_path:
-            self._add_track(playlist_name, filepath)
+            self._add_track(f, playlist_name, filepath)
         GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
+        try:
+            f.close()
+        except Exception as e:
+            print("PlaylistsManager::set_tracks: %s" % e)
 
     """
         Return availables tracks id for playlist
@@ -187,27 +196,23 @@ class PlaylistsManager(GObject.GObject):
         @param tracks filepath as [str]
     """
     def add_tracks(self, playlist_name, tracks_path):
-        for filepath in tracks_path:
-            self._add_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-
-    """
-        Remove track from playlist
-        @param playlist name as str
-        @param track filepath as str
-    """
-    def remove_track(self, playlist_name, filepath):
-        self._remove_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
+        try:
+            f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
+            for filepath in tracks_path:
+                self._add_track(f, playlist_name, filepath)
+            GLib.idle_add(self.emit, "playlist-changed", playlist_name)
+            f.close()
+        except Exception as e:
+                print("PlaylistsManager::add_tracks: %s" % e)
 
     """
         Remove tracks from playlist
         @param playlist name as str
-        @param tracks filepath as [str]
+        @param tracks to remove as [str]
     """
-    def remove_tracks(self, playlist_name, tracks_path):
-        for filepath in tracks_path:
-            self._remove_track(playlist_name, filepath)
+    def remove_tracks(self, playlist_name, tracks_to_remove):
+        playlist_tracks = self.get_tracks(playlist_name)
+        self._remove_tracks(playlist_name, playlist_tracks, tracks_to_remove)
         GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
     """
@@ -242,34 +247,31 @@ class PlaylistsManager(GObject.GObject):
 #######################
     """
         Add track to playlist if not already present
+        @param f as file descriptor
         @param playlist name as str
         @param track filepath as str
     """
-    def _add_track(self, playlist_name, filepath):
+    def _add_track(self, f, playlist_name, filepath):
         tracks = self.get_tracks(playlist_name)
         # Do nothing if uri already present in playlist
         if filepath not in tracks:
             try:
-                f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
                 f.write(filepath+'\n')
-                f.close()
             except Exception as e:
-                print("PlaylistsManager::add_track: %s" % e)
+                print("PlaylistsManager::_add_track: %s" % e)
 
     """
         Remove track from playlist
         @param playlist name as str
-        @param track filepath as str
+        @param playlist tracks as [str]
+        @param tracks to remove as [str]
     """
-    def _remove_track(self, playlist_name, filepath):
+    def _remove_tracks(self, playlist_name, playlist_tracks, tracks_to_remove):
         try:
-            f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
-            lines = f.readlines()
-            f.close()
             f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
-            for path in lines:
-                if path[:-1] != filepath:
-                    f.write(path)
+            for path in playlist_tracks:
+                if path not in tracks_to_remove:
+                    f.write(path+'\n')
             f.close()
         except Exception as e:
             print("PlaylistsManager::remove_tracks: %s" % e)
