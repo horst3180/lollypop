@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 22:55+0100\n"
+"POT-Creation-Date: 2015-03-06 23:12+0100\n"
 "PO-Revision-Date: 2015-03-03 10:34+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
@@ -389,7 +389,7 @@ msgid "Restore view on startup"
 msgstr "Ansicht beim Start wiederherstellen"
 
 #: ../data/SettingsDialog.ui.h:6
-msgid "Play albums automatically"
+msgid "Play albums on 2nd click"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:7

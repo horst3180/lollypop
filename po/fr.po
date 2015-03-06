@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 22:55+0100\n"
+"POT-Creation-Date: 2015-03-06 23:12+0100\n"
 "PO-Revision-Date: 2015-03-05 20:23+0000\n"
 "Last-Translator: Cédric Bellegarde <gnumdk@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -389,8 +389,8 @@ msgid "Restore view on startup"
 msgstr "Restaurer la vue au démarrage"
 
 #: ../data/SettingsDialog.ui.h:6
-msgid "Play albums automatically"
-msgstr "Lire les albums automatiquement"
+msgid "Play albums on 2nd click"
+msgstr "Lire les albums au second click"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Configure lollypop behaviour"
@@ -415,3 +415,6 @@ msgstr "Selectionnez ce qui sera disponible en mode soirée"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
+
+#~ msgid "Play albums automatically"
+#~ msgstr "Lire les albums automatiquement"

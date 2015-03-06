@@ -415,16 +415,17 @@ class AlbumView(View):
     """
     def _on_album_activated(self, flowbox, child):
         if self._album_id == child.get_child().get_id():
-            self._album_id = None
-            self._stack.hide()
+             if Objects.settings.get_value('auto-play'):
+                Objects.player.play_album(self._album_id)
+             else:
+                self._album_id = None
+                self._stack.hide()
         else:
             self._album_id = child.get_child().get_id()
             self._populate_context(self._album_id)
             self._stack.show()
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))
-            if Objects.settings.get_value('auto-play'):
-                Objects.player.play_album(self._album_id)
 
     """
         Pop an album and add it to the view,

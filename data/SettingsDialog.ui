@@ -154,7 +154,7 @@
                     <property name="halign">start</property>
                     <property name="margin_right">50</property>
                     <property name="margin_end">50</property>
-                    <property name="label" translatable="yes">Play albums automatically</property>
+                    <property name="label" translatable="yes">Play albums on 2nd click</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
