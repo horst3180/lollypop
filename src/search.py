@@ -227,13 +227,13 @@ class SearchWidget(Gtk.Popover):
             self._stop_thread = True
             GLib.timeout_add(100, self._do_filtering)
 
-        if self._text_entry.get_text() != "":
-            if self._timeout:
+        if self._timeout:
                 GLib.source_remove(self._timeout)
+                self._timeout = None
+
+        if self._text_entry.get_text() != "":
             self._timeout = GLib.timeout_add(100, self._do_filtering_thread)
         else:
-            if self._timeout:
-                GLib.source_remove(self._timeout)
             self._clear([])
 
     """
