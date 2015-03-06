@@ -51,8 +51,6 @@
                 <property name="can_focus">False</property>
                 <property name="margin_start">5</property>
                 <property name="margin_end">5</property>
-                <property name="margin_start">5</property>
-                <property name="margin_end">5</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <property name="row_spacing">5</property>
@@ -62,7 +60,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_end">50</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Use dark theme variant</property>
                     <property name="ellipsize">end</property>
@@ -77,7 +74,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_end">50</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Update music on startup</property>
                   </object>
@@ -111,7 +107,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_end">50</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Continue playback when closed</property>
                   </object>
@@ -152,6 +147,30 @@
                     <property name="top_attach">2</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkLabel" id="autoplay">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="margin_right">50</property>
+                    <property name="margin_end">50</property>
+                    <property name="label" translatable="yes">Play albums automatically</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="switch_autoplay">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">4</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -173,8 +192,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
-                <property name="margin_start">10</property>
-                <property name="margin_end">10</property>
                 <property name="margin_start">10</property>
                 <property name="margin_end">10</property>
                 <property name="orientation">vertical</property>

@@ -423,6 +423,8 @@ class AlbumView(View):
             self._stack.show()
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))
+            if Objects.settings.get_value('auto-play'):
+                Objects.player.play_album(self._album_id)
 
     """
         Pop an album and add it to the view,

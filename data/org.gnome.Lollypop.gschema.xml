@@ -71,6 +71,11 @@
             <summary>Restore previous view</summary>
             <description></description>
         </key>
+        <key type="b" name="auto-play">
+            <default>false</default>
+            <summary>Auto play albums on click</summary>
+            <description></description>
+        </key>
 		 <key type="i" name="paned-mainlist-width">
             <default>150</default>
             <summary>INTERNAL</summary>

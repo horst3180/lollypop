@@ -50,6 +50,10 @@ class SettingsDialog(Gtk.Dialog):
         switch_state.set_state(Objects.settings.get_value('save-state'))
         switch_state.connect('state-set', self._update_state_setting)
 
+        switch_autoplay = builder.get_object('switch_autoplay')
+        switch_autoplay.set_state(Objects.settings.get_value('auto-play'))
+        switch_autoplay.connect('state-set', self._update_autoplay_setting)
+
         close_button = builder.get_object('close_btn')
         close_button.connect('clicked', self._edit_settings_close)
 
@@ -164,6 +168,13 @@ class SettingsDialog(Gtk.Dialog):
     """
     def _update_state_setting(self, widget, state):
         Objects.settings.set_value('save-state',
+                                   GLib.Variant('b', state))
+    """
+        Update auto play setting
+        @param widget as unused, state as widget state
+    """
+    def _update_autoplay_setting(self, widget, state):
+        Objects.settings.set_value('auto-play',
                                    GLib.Variant('b', state))
 
     """
