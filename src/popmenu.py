@@ -36,7 +36,7 @@ class PopMainMenu(Gio.Menu):
 
         if not toolbar_context:
             playback_menu = Gio.Menu()
-            if is_album:
+            if is_album and not Objects.player.is_party():
                 self._set_album_actions(app, playback_menu, object_id)
             self._set_queue_actions(app, playback_menu, object_id, is_album)
             self.insert_section(0, _("Playback"), playback_menu)
