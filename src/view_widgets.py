@@ -95,7 +95,6 @@ class AlbumDetailedWidget(Gtk.Grid):
     def __init__(self, album_id, genre_id, limit_to_artist,
                  show_menu, size_group):
         Gtk.Grid.__init__(self)
-        self.set_property("margin", 5)
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
