@@ -306,13 +306,15 @@ class AlbumView(View):
     def __init__(self, genre_id):
         View.__init__(self)
         self._genre_id = genre_id
-        self._artist_id = None
+        self._album_id = None
         self._albumsongs = None
         self._context_widget = None
+        self._play_album_on_activate = False
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._albumbox.connect("child-activated", self._on_album_activated)
+        self._albumbox.connect("button-press-event", self._on_button_press_event)
         self._albumbox.set_max_children_per_line(100)
 
         self._scrolledWindow = Gtk.ScrolledWindow()
@@ -410,16 +412,30 @@ class AlbumView(View):
         self._stack.set_visible_child(view)
 
     """
+        Just mark activation to play album
+        @param widget as Gtk.Widget
+        @param eventbutton as Gdk.EventButton
+    """
+    def _on_button_press_event(self, widget, eventbutton):
+        if eventbutton.type == Gdk.EventType._2BUTTON_PRESS:
+            self._play_album_on_activate = True
+            return True
+
+    """
         Show Context view for activated album
         @param flowbox, children
     """
     def _on_album_activated(self, flowbox, child):
-        if self._artist_id == child.get_child().get_id():
-            self._artist_id = None
+        if self._play_album_on_activate:
+            Objects.player.play_album(child.get_child().get_id(),
+                                      self._genre_id)
+            self._play_album_on_activate = False
+        elif self._album_id == child.get_child().get_id():
+            self._album_id = None
             self._stack.hide()
         else:
-            self._artist_id = child.get_child().get_id()
-            self._populate_context(self._artist_id)
+            self._album_id = child.get_child().get_id()
+            self._populate_context(self._album_id)
             self._stack.show()
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))

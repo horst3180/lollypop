@@ -280,15 +280,23 @@ class Player(GObject.GObject):
     """
         Play album
         @param album id as int
+        @param genre id as int
     """
-    def play_album(self, album_id):
+    def play_album(self, album_id, genre_id=None):
         # Empty user playlist
         self._user_playlist = None
         # Get first track from album
         track_id = Objects.albums.get_tracks(album_id)[0]
         Objects.player.load(track_id)
         if not Objects.player.is_party():
-            Objects.player.set_album(album_id)
+            if genre_id:
+                self.set_albums(self.current.id,
+                                self.current.album_id,
+                                self.current.artist_id,
+                                genre_id,
+                                False)
+            else:
+                self.set_album(album_id)
 
     """
         Set party mode on if party is True
@@ -350,6 +358,9 @@ class Player(GObject.GObject):
     """
     def set_album(self, album_id):
         self._albums = [album_id]
+        self._context.album_id = album_id
+        tracks = Objects.albums.get_tracks(album_id)
+        self._context.position = tracks.index(self.current.id)
 
     """
         Set album list (for next/prev)
