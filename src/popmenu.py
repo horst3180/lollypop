@@ -112,11 +112,11 @@ class PopMainMenu(Gio.Menu):
         append = True
         prepend = True
         delete = True
-        if len(queue) == 0:
+        if not queue:
             append = False
         if not is_album:
             if object_id in queue:
-                if len(queue) > 0 and queue[0] == object_id:
+                if queue and queue[0] == object_id:
                     prepend = False
                 append = False
             else:

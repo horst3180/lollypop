@@ -175,7 +175,7 @@ class SettingsDialog(Gtk.Dialog):
         main_path = self._main_chooser.get_dir()
         choosers = self._chooser_box.get_children()
         if main_path == GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)\
-           and len(choosers) == 0:
+           and not choosers:
             paths = []
         else:
             paths.append(main_path)

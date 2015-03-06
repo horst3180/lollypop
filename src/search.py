@@ -198,9 +198,8 @@ class SearchWidget(Gtk.Popover):
         Remove row not existing in view, thread safe
     """
     def _clear(self, results):
-        length = len(results)
         for child in self._view.get_children():
-            if length == 0 or not child.exists(results):
+            if not results or not child.exists(results):
                 GLib.idle_add(child.destroy)
 
     """

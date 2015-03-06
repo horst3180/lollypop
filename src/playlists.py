@@ -573,7 +573,7 @@ class PlaylistEditWidget:
     def populate(self):
         self._ui.get_object('scroll').set_property('width-request',
                                 self._parent.get_allocated_width()/2)
-        if len(self._model) == 0:
+        if not self._model:
             start_new_thread(self._append_tracks, ())
 
     """

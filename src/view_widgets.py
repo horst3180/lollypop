@@ -363,7 +363,7 @@ class PlaylistWidget(Gtk.Grid):
         @param track position as int
     """
     def _add_tracks(self, tracks, widget, pos):
-        if len(tracks) == 0:
+        if not tracks:
             return
         track_id = tracks.pop(0)
         if track_id == -1:
@@ -386,7 +386,7 @@ class PlaylistWidget(Gtk.Grid):
     """
     def _on_activated(self, widget, track_id, playlist_name):
         if not Objects.player.is_party():
-            if len(self._tracks) == 0:
+            if not self._tracks:
                 self._tracks = Objects.playlists.get_tracks_id(playlist_name)
             Objects.player.set_user_playlist(self._tracks, track_id)
             self._is_loaded = True

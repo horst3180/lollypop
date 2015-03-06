@@ -44,7 +44,7 @@ class CollectionScanner(GObject.GObject):
     def update(self,  progress, smooth):
         self._smooth = smooth
         paths = Objects.settings.get_value('music-path')
-        if len(paths) == 0:
+        if not paths:
             if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
                 paths = [GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)]
             else:
