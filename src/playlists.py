@@ -600,8 +600,8 @@ class PlaylistEditWidget:
         Unselect all in view
     """
     def unselectall(self):
-        self._view.grab_focus()
         self._view.get_selection().unselect_all()
+        self._view.grab_focus()
 #######################
 # PRIVATE             #
 #######################

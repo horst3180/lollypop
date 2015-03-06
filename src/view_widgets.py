@@ -329,6 +329,7 @@ class PlaylistWidget(Gtk.Grid):
             self._playlist_edit.populate()
         else:
             self._stack.set_visible_child(self._playlist_widget)
+            self._playlist_edit.unselectall()
 
     """
         Unselect all in edit widget
