@@ -18,7 +18,7 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.define import Objects, ART_SIZE_BIG
+from lollypop.define import Objects, ArtSize
 
 
 class MPRIS(dbus.service.Object):
@@ -169,7 +169,7 @@ class MPRIS(dbus.service.Object):
             self._metadata['xesam:genre'] = [Objects.player.current.genre]
             self._metadata['xesam:url'] = "file://"+Objects.player.current.path
             cover_path = Objects.art.get_path(Objects.player.current.album_id,
-                                              ART_SIZE_BIG)
+                                              ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
 

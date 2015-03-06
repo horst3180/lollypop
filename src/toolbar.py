@@ -15,7 +15,7 @@ from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
 from cgi import escape
 
-from lollypop.define import Objects, SHUFFLE_NONE, ART_SIZE_SMALL
+from lollypop.define import Objects, SHUFFLE_NONE, ArtSize
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.queue import QueueWidget
@@ -179,7 +179,7 @@ class Toolbar:
     def _update_cover(self, obj, album_id):
         if Objects.player.current.album_id == album_id:
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ART_SIZE_SMALL))
+                                                        ArtSize.SMALL))
 
     """
         On press, mark player as seeking
@@ -223,7 +223,7 @@ class Toolbar:
         else:
             self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
-            art = Objects.art.get(player.current.album_id,  ART_SIZE_SMALL)
+            art = Objects.art.get(player.current.album_id,  ArtSize.SMALL)
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.show()

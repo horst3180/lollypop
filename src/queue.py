@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
-from lollypop.define import Objects, ART_SIZE_MEDIUM
+from lollypop.define import Objects, ArtSize
 from lollypop.utils import translate_artist_name
 
 ######################################################################
@@ -54,7 +54,7 @@ class QueueWidget(Gtk.Popover):
         self._widget = self._ui.get_object('widget')
 
         renderer0 = Gtk.CellRendererPixbuf()
-        renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
+        renderer0.set_property('stock-size', ArtSize.MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
 
         renderer1 = Gtk.CellRendererText()
@@ -90,7 +90,7 @@ class QueueWidget(Gtk.Popover):
             artist_id = Objects.albums.get_artist_id(album_id)
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
-            art = Objects.art.get(album_id, ART_SIZE_MEDIUM)
+            art = Objects.art.get(album_id, ArtSize.MEDIUM)
             self._model.append([art,
                                 "<b>%s</b>\n%s" %
                                 (escape(translate_artist_name(artist_name)),

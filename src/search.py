@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Objects, ART_SIZE_MEDIUM
+from lollypop.define import Objects, ArtSize
 from lollypop.utils import translate_artist_name
 
 
@@ -312,7 +312,7 @@ class SearchWidget(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_title(result.title)
                 search_row.set_cover(Objects.art.get(result.album_id,
-                                                     ART_SIZE_MEDIUM))
+                                                     ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

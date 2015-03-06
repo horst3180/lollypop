@@ -28,7 +28,7 @@ from math import pi
 import mutagen
 import base64
 
-from lollypop.define import Objects, ART_SIZE_BIG
+from lollypop.define import Objects, ArtSize
 
 
 # Manage album's arts
@@ -255,7 +255,7 @@ class AlbumArt:
     """
     def _make_icon_frame(self, pixbuf, size):
         # No border on small covers, looks ugly
-        if size < ART_SIZE_BIG or not\
+        if size < ArtSize.BIG or not\
            Objects.settings.get_value('stylized-covers'):
             return pixbuf
 

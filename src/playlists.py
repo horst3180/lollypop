@@ -20,7 +20,7 @@ from cgi import escape
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
 from lollypop.define import Objects, COMPILATIONS
-from lollypop.define import ART_SIZE_SMALL, ART_SIZE_MEDIUM
+from lollypop.define import ArtSize
 from lollypop.utils import translate_artist_name
 
 
@@ -549,7 +549,7 @@ class PlaylistEditWidget:
         self._infobar_label = infobar_label
 
         renderer0 = Gtk.CellRendererPixbuf()
-        renderer0.set_property('stock-size', ART_SIZE_MEDIUM)
+        renderer0.set_property('stock-size', ArtSize.MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
 
         renderer1 = Gtk.CellRendererText()
@@ -627,7 +627,7 @@ class PlaylistEditWidget:
                 artist_id = Objects.tracks.get_artist_id(track_id)
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
-            art = Objects.art.get(album_id, ART_SIZE_SMALL)
+            art = Objects.art.get(album_id, ArtSize.SMALL)
             self._model.append([art,
                                "<b>%s</b>\n%s" % (
                                    escape(translate_artist_name(artist_name)),

@@ -19,10 +19,7 @@ import os
 from _thread import start_new_thread
 
 from lollypop.define import Objects
-from lollypop.define import ART_SIZE_SMALL
-from lollypop.define import ART_SIZE_MEDIUM
-from lollypop.define import ART_SIZE_BIG
-from lollypop.define import ART_SIZE_MONSTER
+from lollypop.define import ArtSize
 
 
 # Show a popover with album covers from the web
@@ -117,13 +114,13 @@ class PopImages(Gtk.Popover):
     def _add_pixbuf(self, stream):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                            stream, ART_SIZE_MONSTER,
-                                            ART_SIZE_MONSTER,
+                                            stream, ArtSize.MONSTER,
+                                            ArtSize.MONSTER,
                                             False,
                                             None)
             image = Gtk.Image()
-            image.set_from_pixbuf(pixbuf.scale_simple(ART_SIZE_BIG,
-                                                      ART_SIZE_BIG,
+            image.set_from_pixbuf(pixbuf.scale_simple(ArtSize.BIG,
+                                                      ArtSize.BIG,
                                                       2))
             image.show()
             self._view.add(image)

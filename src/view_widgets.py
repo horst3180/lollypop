@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib
 from cgi import escape
 
-from lollypop.define import Objects, COMPILATIONS, ART_SIZE_BIG
+from lollypop.define import Objects, COMPILATIONS, ArtSize
 from lollypop.tracks import TracksWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.playlists import PlaylistEditWidget
@@ -42,7 +42,7 @@ class AlbumWidget(Gtk.Grid):
         self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 
         self._cover = self._ui.get_object('cover')
-        self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
+        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
 
         album_name = Objects.albums.get_name(album_id)
         title = self._ui.get_object('title')
@@ -57,7 +57,7 @@ class AlbumWidget(Gtk.Grid):
         self.add(artist)
 
     def do_get_preferred_width(self):
-        return (ART_SIZE_BIG, ART_SIZE_BIG)
+        return (ArtSize.BIG, ArtSize.BIG)
 
     """
         Update cover for album id
@@ -66,7 +66,7 @@ class AlbumWidget(Gtk.Grid):
     def update_cover(self, album_id):
         if self._album_id == album_id:
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ART_SIZE_BIG))
+                                                        ArtSize.BIG))
 
     """
         Return album id for widget
@@ -117,7 +117,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         self._tracks_widget2.show()
 
         self._cover = self._ui.get_object('cover')
-        self._cover.set_from_pixbuf(Objects.art.get(album_id, ART_SIZE_BIG))
+        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
         self._ui.get_object('title').set_label(
                                             Objects.albums.get_name(album_id))
         self._ui.get_object('year').set_label(
@@ -151,7 +151,7 @@ class AlbumDetailedWidget(Gtk.Grid):
     def update_cover(self, album_id):
         if self._album_id == album_id:
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ART_SIZE_BIG))
+                                                        ArtSize.BIG))
 
     """
         Return album id for widget

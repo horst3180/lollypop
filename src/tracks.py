@@ -13,7 +13,7 @@
 
 from gi.repository import GObject, Gtk
 
-from lollypop.define import Objects, ART_SIZE_MEDIUM
+from lollypop.define import Objects, ArtSize
 from lollypop.popmenu import PopMainMenu
 from lollypop.utils import seconds_to_string
 
@@ -185,7 +185,7 @@ class TracksWidget(Gtk.ListBox):
         track_row.set_object_id(track_id)
         if show_cover:
             album_id = Objects.tracks.get_album_id(track_id)
-            track_row.set_cover(Objects.art.get(album_id, ART_SIZE_MEDIUM))
+            track_row.set_cover(Objects.art.get(album_id, ArtSize.MEDIUM))
         track_row.show()
         self.add(track_row)
 

@@ -28,13 +28,31 @@ class Objects_:
         self.player = None
         self.art = None
 
-Objects = Objects_()
+class ArtSize_:
+    def __init__(self):
+        self.SMALL = 32
+        self.MEDIUM = 48
+        self.BIG = 200
+        self.MONSTER = 500
 
-# We want 500 and 200 in full hd
-ART_SIZE_MONSTER = int(500*Gdk.Screen.get_default().get_width()/1920)
-ART_SIZE_BIG = int(200*Gdk.Screen.get_default().get_width()/1920)
-ART_SIZE_MEDIUM = 48
-ART_SIZE_SMALL = 32
+class Shuffle_:
+    def __init__(self):
+        self.NONE = 0
+        self.TRACKS = 1
+        self.ALBUMS = 2
+        
+class Navigation_:
+    def __init__(self):
+        self.COMPILATIONS = -1
+        self.POPULARS = -2
+        self.PLAYLISTS = -3
+        self.ALL = -4
+        self.DEVICES = -1000
+        
+Objects = Objects_()
+ArtSize = ArtSize_()
+Shuffle = Shuffle_()
+Navigation = Navigation_()
 
 SHUFFLE_NONE = 0
 SHUFFLE_TRACKS = 1

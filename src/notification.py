@@ -14,7 +14,7 @@
 from gi.repository import GLib, Notify
 from gettext import gettext as _
 
-from lollypop.define import Objects, ART_SIZE_BIG
+from lollypop.define import Objects, ArtSize
 
 
 class NotificationManager:
@@ -58,7 +58,7 @@ class NotificationManager:
     """
     def _on_current_changed(self, player):
         cover_path = Objects.art.get_path(player.current.album_id,
-                                          ART_SIZE_BIG)
+                                          ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))
