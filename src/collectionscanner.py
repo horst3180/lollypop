@@ -138,7 +138,7 @@ class CollectionScanner(GObject.GObject):
                     tracks.remove(filepath)
 
             except Exception as e:
-                print(filepath)
+                print(ascii(filepath))
                 print("CollectionScanner::_scan(): %s" % e)
             i += 1
             if self._smooth:
