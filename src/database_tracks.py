@@ -51,7 +51,7 @@ class DatabaseTracks:
                                                     album_id,
                                                     mtime))
         except Exception as e:
-            print("DatabaseTracks::add: ", e)
+            print("DatabaseTracks::add: ", e, ascii(filepath))
 
     """
         Return track id for path
