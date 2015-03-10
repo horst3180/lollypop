@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -573,7 +573,7 @@ class PlaylistEditWidget:
         self._ui.get_object('scroll').set_property(
                                 'width-request',
                                 self._parent.get_allocated_width()/2)
-        if not self._model:
+        if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
 
     """

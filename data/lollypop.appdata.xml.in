@@ -13,5 +13,5 @@
   <screenshot type="default" width="750" height="469">https://raw.githubusercontent.com/gnumdk/lollypop/gh-pages/images/lollypop1.png</screenshot>
  </screenshots>
  <url type="homepage">https://github.com/gnumdk/lollypop</url>
- <updatecontact>gnumdk@gmail.com</updatecontact>
+ <updatecontact>cedric.bellegarde@adishatz.org</updatecontact>
 </application>
