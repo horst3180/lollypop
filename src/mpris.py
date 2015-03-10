@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014-2015 Cedric Bellegarde <gnumdk@gmail.com>
+# Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # Copyright (c) 2013 Arnel A. Borja <kyoushuu@yahoo.com>
 # Copyright (c) 2013 Vadim Rutkovsky <vrutkovs@redhat.com>
 # This program is free software: you can redistribute it and/or modify
