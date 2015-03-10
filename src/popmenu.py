@@ -37,29 +37,45 @@ class PopMainMenu(Gio.Menu):
         if not toolbar_context:
             playback_menu = Gio.Menu()
             if is_album and not Objects.player.is_party():
-                self._set_album_actions(app, playback_menu, object_id)
+                self._set_playback_actions(app, playback_menu, object_id)
             self._set_queue_actions(app, playback_menu, object_id, is_album)
             self.insert_section(0, _("Playback"), playback_menu)
 
+        manage_menu = Gio.Menu()
+        self._set_manage_actions(app, manage_menu, object_id)
+        self.insert_section(1, _("Management"), manage_menu)
+
         playlist_menu = Gio.Menu()
         self._set_playlist_actions(app, playlist_menu, object_id, is_album)
-
-        self.insert_section(1, _("Playlists"), playlist_menu)
+        self.insert_section(2, _("Playlists"), playlist_menu)
 
 #######################
 # PRIVATE             #
 #######################
     """
-        Set album actions
+        Set playback actions
         @param app as Gio.Application
         @param menu as Gio.Menu
         @param object_id as int
     """
-    def _set_album_actions(self, app, menu, object_id):
+    def _set_playback_actions(self, app, menu, object_id):
         play_album_action = Gio.SimpleAction(name="play_album_action")
         app.add_action(play_album_action)
         play_album_action.connect('activate', self._play_album, object_id)
         menu.append(_("Only play this album"), 'app.play_album_action')
+       
+
+    """
+        Set management actions
+        @param app as Gio.Application
+        @param menu as Gio.Menu
+        @param object_id as int
+    """
+    def _set_manage_actions(self, app, menu, object_id):
+        edit_tags_action = Gio.SimpleAction(name="edit_tags_action")
+        app.add_action(edit_tags_action)
+        edit_tags_action.connect('activate', self._edit_tags, object_id)
+        menu.append(_("Edit tags"), 'app.edit_tags_action')
 
     """
         Set playlist actions
@@ -164,6 +180,15 @@ class PopMainMenu(Gio.Menu):
     """
     def _play_album(self, action, variant, album_id):
         Objects.player.play_album(album_id)
+
+    """
+        Edit album tags
+        @param SimpleAction
+        @param GVariant
+        @param album id as int
+    """
+    def _edit_tags(self, action, variant, album_id):
+        pass
 
     """
         Add to playlists
