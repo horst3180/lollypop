@@ -89,7 +89,7 @@ class DatabaseAlbums:
     def get_id(self, album_name, artist_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT rowid FROM albums where name=? COLLATE NOCASE\
+        result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=? AND genre_id=?", (album_name,
                                                                 artist_id,
                                                                 genre_id))
