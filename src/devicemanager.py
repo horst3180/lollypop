@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, GLib, Pango
 import os
+from time import sleep
 from shutil import copyfile
 from gettext import gettext as _
 from _thread import start_new_thread
@@ -257,6 +258,7 @@ class DeviceManagerWidget(Gtk.Bin):
                               (artist_name, album_name, track_name))
                 if not os.path.exists(dst_path):
                     copyfile(track_path, dst_path)
+                    sleep(0.1)
                 else:
                     self._done += 1
                 self._done += 1
@@ -335,6 +337,7 @@ class DeviceManagerWidget(Gtk.Bin):
     def _delete(self, path):
         try:
             os.remove(path)
+            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_delete(): %s" % e)
 
@@ -345,6 +348,7 @@ class DeviceManagerWidget(Gtk.Bin):
     def _mkdir(self, path):
         try:
             os.makedirs(path, exist_ok=True)
+            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_mkdir(): %s" % e)
 
@@ -356,6 +360,7 @@ class DeviceManagerWidget(Gtk.Bin):
         try:
             if os.path.exists(path):
                 os.rmdir(path)
+                sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_rmdir(): %s" % e)
 
