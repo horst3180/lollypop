@@ -42,8 +42,7 @@ class DatabaseGenres:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT rowid FROM genres\
-                              WHERE name=?\
-                              COLLATE NOCASE", (name,))
+                              WHERE name=?", (name,))
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]

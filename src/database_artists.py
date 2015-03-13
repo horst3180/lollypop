@@ -43,7 +43,7 @@ class DatabaseArtists:
             sql = Objects.sql
 
         result = sql.execute("SELECT rowid from artists\
-                              WHERE name=? COLLATE NOCASE", (name,))
+                              WHERE name=?", (name,))
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]

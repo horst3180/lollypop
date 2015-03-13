@@ -89,7 +89,7 @@ class DatabaseAlbums:
     def get_id(self, album_name, artist_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT rowid FROM albums where name=? COLLATE NOCASE\
+        result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=? AND genre_id=?", (album_name,
                                                                 artist_id,
                                                                 genre_id))
@@ -348,14 +348,13 @@ class DatabaseAlbums:
             sql = Objects.sql
         tracks = []
         artist_id = Objects.albums.get_artist_id(album_id, sql)
-        album_name = Objects.albums.get_name(album_id, sql)
         result = sql.execute("SELECT tracks.rowid, tracks.name,\
                               tracks.artist_id, tracks.filepath,\
                               tracks.length FROM tracks, albums\
-                              WHERE albums.artist_id=? AND albums.name=?\
+                              WHERE albums.artist_id=? AND albums.rowid=?\
                               AND albums.rowid=tracks.album_id\
                               ORDER BY discnumber, tracknumber", (artist_id,
-                                                                  album_name))
+                                                                  album_id))
         for row in result:
             tracks += (row,)
         return tracks
@@ -392,7 +391,7 @@ class DatabaseAlbums:
                                   albums.name COLLATE NOCASE", (genre_id,))
         # Get albums for artist
         elif not genre_id:
-            result = sql.execute("SELECT DISTINCT rowid FROM albums\
+            result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id,))

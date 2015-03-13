@@ -524,7 +524,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if root is None:
             return
         path = root.get_path()
-        if path.find('mtp:') != -1:
+        if path and path.find('mtp:') != -1:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
@@ -599,6 +599,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _on_genres_btn_toggled(self, button):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
         self._clear_list(self._list_one, self._on_list_one_selected)
+        self._clear_list(self._list_two, self._on_list_two_selected)
         self._setup_lists(False)
         for volume in self._vm.get_volumes():
             self._add_device(volume)
