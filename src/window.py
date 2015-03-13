@@ -524,7 +524,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if root is None:
             return
         path = root.get_path()
-        if path.find('mtp:') != -1:
+        if path and path.find('mtp:') != -1:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
