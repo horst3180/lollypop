@@ -391,7 +391,7 @@ class DatabaseAlbums:
                                   albums.name COLLATE NOCASE", (genre_id,))
         # Get albums for artist
         elif not genre_id:
-            result = sql.execute("SELECT DISTINCT rowid FROM albums\
+            result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id,))
