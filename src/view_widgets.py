@@ -169,7 +169,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param album id as int
     """
     def _pop_menu(self, widget):
-        menu = PopMainMenu(self._album_id, True, False, widget)
+        menu = PopMainMenu(self._album_id, self._genre_id, True, False, widget)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.show()
 

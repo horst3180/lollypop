@@ -563,7 +563,8 @@ class Player(GObject.GObject):
         # Restore position in current album
         elif self.current.id and\
                 self._shuffle in [Shuffle.NONE, Shuffle.ALBUMS]:
-            tracks = Objects.albums.get_tracks(self.current.album_id)
+            tracks = Objects.albums.get_tracks(self.current.album_id,
+                                               self.current.genre_id)
             self._context.album_id = self.current.album_id
             self._context.position = tracks.index(self.current.id)
         # Add current track too shuffle history
@@ -644,7 +645,9 @@ class Player(GObject.GObject):
     def _get_random(self, sql=None):
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
-            tracks = Objects.albums.get_tracks(album_id, sql)
+            tracks = Objects.albums.get_tracks(album_id,
+                                               self.current.genre_id,
+                                               sql)
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._shuffle_history.keys() or\
                    track not in self._shuffle_history[album_id]:

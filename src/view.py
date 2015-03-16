@@ -83,11 +83,15 @@ class LoadingView(Gtk.Bin):
 class PlaylistManageView(Gtk.Bin):
     """
          @param object id as int
+         @param genre id as int
          @param is album as bool
     """
-    def __init__(self, object_id=-1, is_album=False):
+    def __init__(self, object_id, genre_id, is_album=False):
         Gtk.Bin.__init__(self)
-        self._widget = PlaylistsManagerWidget(object_id, is_album, self)
+        self._widget = PlaylistsManagerWidget(object_id,
+                                              genre_id,
+                                              is_album,
+                                              self)
         self._widget.show()
         self.add(self._widget)
 

@@ -343,16 +343,28 @@ class DatabaseAlbums:
         Get tracks path for album id
         Will search track from albums from same artist
         with same name and different genre
-        @param Album id as int
+        @param album id as int
+        @param genre id as int
         @return Arrays of tracks id as int
     """
-    def get_tracks_path(self, album_id, sql=None):
+    def get_tracks_path(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
         tracks = []
-        result = sql.execute("SELECT tracks.filepath FROM tracks\
-                              WHERE album_id=?\
-                              ORDER BY discnumber, tracknumber", (album_id,))
+        if genre_id:
+            result = sql.execute("SELECT tracks.filepath\
+                                  FROM tracks, track_genres\
+                                  WHERE album_id=?\
+                                  AND track_genres.genre_id=?\
+                                  AND track_genres.track_id=tracks.rowid\
+                                  ORDER BY discnumber, tracknumber", (album_id,
+                                                                      genre_id))
+        else:
+            result = sql.execute("SELECT tracks.filepath\
+                                  FROM tracks\
+                                  WHERE album_id=?\
+                                  ORDER BY discnumber, tracknumber", 
+                                  (album_id))
         for row in result:
             tracks += row
         return tracks

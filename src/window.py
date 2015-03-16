@@ -499,7 +499,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if playlist_name:
             view = PlaylistView(playlist_name)
         else:
-            view = PlaylistManageView()
+            view = PlaylistManageView(-1, None)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)

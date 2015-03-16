@@ -108,7 +108,7 @@ class SearchRow(Gtk.ListBoxRow):
         if self.is_track:
             Objects.player.append_to_queue(self.id)
         else:
-            for track in Objects.albums.get_tracks(self.id):
+            for track in Objects.albums.get_tracks(self.id, None):
                 Objects.player.append_to_queue(track)
         button.hide()
 

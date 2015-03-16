@@ -91,7 +91,7 @@ class CollectionScanner(GObject.GObject):
             artist_id = artists[0]
             Objects.albums.set_artist_id(album_id, artist_id, sql)
             # Update album path
-            tracks = Objects.albums.get_tracks(album_id, sql)
+            tracks = Objects.albums.get_tracks(album_id, None, sql)
             filepath = Objects.tracks.get_path(tracks[0], sql)
             path = os.path.dirname(filepath)
             Objects.albums.set_path(album_id, path, sql)
@@ -198,9 +198,9 @@ class CollectionScanner(GObject.GObject):
             album = _("Unknown")
 
         if "genre" in keys:
-            genre = tag["genre"][0]
+            genres = tag["genre"][0]
         else:
-            genre = _("Unknown")
+            genres = _("Unknown")
 
         length = int(tag.info.length)
 
@@ -258,18 +258,24 @@ class CollectionScanner(GObject.GObject):
         else:
             performer_id = Navigation.COMPILATIONS
 
-        # Get genre id, add genre if missing
-        genre_id = Objects.genres.get_id(genre, sql)
-        if genre_id is None:
-            Objects.genres.add(genre, sql)
+        # Get all genres ids
+        genre_ids = []
+        for genre in genres.split(';'):
+            # Get genre id, add genre if missing            
             genre_id = Objects.genres.get_id(genre, sql)
+            if genre_id is None:
+                Objects.genres.add(genre, sql)
+                genre_id = Objects.genres.get_id(genre, sql)
+            genre_ids.append(genre_id)
 
         album_id = Objects.albums.get_id(album, performer_id, year, sql)
         if album_id is None:
             Objects.albums.add(album, performer_id,
                                year, path, popularity, sql)
             album_id = Objects.albums.get_id(album, performer_id, year, sql)
-        Objects.albums.add_genre(album_id, genre_id, sql)
+        
+        for genre_id in genre_ids:
+            Objects.albums.add_genre(album_id, genre_id, sql)
 
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path:
@@ -280,4 +286,6 @@ class CollectionScanner(GObject.GObject):
                            tracknumber, discnumber, artist_id,
                            album_id, mtime, sql)
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
-        Objects.tracks.add_genre(track_id, genre_id, sql)
+        
+        for genre_id in genre_ids:
+           Objects.tracks.add_genre(track_id, genre_id, sql)

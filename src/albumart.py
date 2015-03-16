@@ -134,7 +134,8 @@ class AlbumArt:
                 # Try to get from tags
                 else:
                     try:
-                        for track_id in Objects.albums.get_tracks(album_id):
+                        for track_id in Objects.albums.get_tracks(album_id,
+                                                                  None):
                             pixbuf = self._pixbuf_from_tags(track_id, size)
                             # We found a cover in tags
                             if pixbuf:

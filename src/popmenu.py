@@ -22,13 +22,15 @@ from lollypop.define import Objects
 class PopMainMenu(Gio.Menu):
     """
         Init menu model
-        @param: object id as int
-        @param: is album as bool
-        @param: toolbar context as bool => only show playlists
-        @param: parent as Gtk.Widget
+        @param object id as int
+        @param genre id as int
+        @param is album as bool
+        @param toolbar context as bool => only show playlists
+        @param parent as Gtk.Widget
     """
-    def __init__(self, object_id, is_album, toolbar_context, parent):
+    def __init__(self, object_id, genre_id, is_album, toolbar_context, parent):
         Gio.Menu.__init__(self)
+        self._genre_id = genre_id
         self._is_album = is_album
         self._parent = parent
         app = Gio.Application.get_default()
@@ -83,6 +85,7 @@ class PopMainMenu(Gio.Menu):
             app.add_action(action)
             if Objects.playlists.is_present(playlist,
                                             object_id,
+                                            self._genre_id,
                                             is_album):
                 action.connect('activate',
                                self._del_from_playlist,
@@ -123,7 +126,7 @@ class PopMainMenu(Gio.Menu):
                 delete = False
         else:
 
-            tracks = Objects.albums.get_tracks(object_id)
+            tracks = Objects.albums.get_tracks(object_id, self._genre_id)
             union = set(queue) & set(tracks)
             if len(union) == len(tracks):
                 append = False
@@ -187,7 +190,8 @@ class PopMainMenu(Gio.Menu):
     def _add_to_playlist(self, action, variant, object_id,
                          is_album, playlist_name):
         if is_album:
-            tracks_path = Objects.albums.get_tracks_path(object_id)
+            tracks_path = Objects.albums.get_tracks_path(object_id,
+                                                         self._genre_id)
         else:
             tracks_path = [Objects.tracks.get_path(object_id)]
 
@@ -205,7 +209,8 @@ class PopMainMenu(Gio.Menu):
     def _del_from_playlist(self, action, variant, object_id,
                            is_album, playlist_name):
         if is_album:
-            tracks_path = Objects.albums.get_tracks_path(object_id)
+            tracks_path = Objects.albums.get_tracks_path(object_id,
+                                                         self._genre_id)
         else:
             tracks_path = [Objects.tracks.get_path(object_id)]
 
@@ -220,7 +225,8 @@ class PopMainMenu(Gio.Menu):
     """
     def _append_to_queue(self, action, variant, album_id):
         if self._is_album:
-            for track_id in Objects.albums.get_tracks(album_id):
+            for track_id in Objects.albums.get_tracks(album_id,
+                                                      self._genre_id):
                 Objects.player.append_to_queue(track_id)
         else:
             Objects.player.append_to_queue(album_id)
@@ -233,7 +239,8 @@ class PopMainMenu(Gio.Menu):
     """
     def _prepend_to_queue(self, action, variant, album_id):
         if self._is_album:
-            for track_id in reversed(Objects.albums.get_tracks(album_id)):
+            for track_id in reversed(Objects.albums.get_tracks(album_id,
+                                                               self._genre_id)):
                 Objects.player.prepend_to_queue(track_id)
         else:
             Objects.player.prepend_to_queue(album_id)
@@ -246,7 +253,8 @@ class PopMainMenu(Gio.Menu):
     """
     def _del_from_queue(self, action, variant, album_id):
         if self._is_album:
-            for track_id in Objects.albums.get_tracks(album_id):
+            for track_id in Objects.albums.get_tracks(album_id,
+                                                      self._genre_id):
                 Objects.player.del_from_queue(track_id)
         else:
             Objects.player.del_from_queue(album_id)

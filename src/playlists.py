@@ -218,14 +218,18 @@ class PlaylistsManager(GObject.GObject):
         Return True if object_id is already present in playlist
         @param playlist name as str
         @param object id as int
+        @param genre id as int
         @param is an album as bool
         @param sql as sqlite cursor
         @return bool
     """
-    def is_present(self, playlist_name, object_id, is_album, sql=None):
+    def is_present(self, playlist_name, object_id,
+                   genre_id, is_album, sql=None):
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
-            tracks_path = Objects.albums.get_tracks_path(object_id, sql)
+            tracks_path = Objects.albums.get_tracks_path(object_id, 
+                                                         genre_id,
+                                                         sql)
         else:
             tracks_path = [Objects.tracks.get_path(object_id, sql)]
 
@@ -282,12 +286,14 @@ class PlaylistsManagerWidget(Gtk.Bin):
     """
         Init ui with a scrolled treeview
         @param object id as int
+        @param genre id as int
         @param is album as bool
         @param parent as Gtk.Widget
     """
-    def __init__(self, object_id, is_album, parent):
+    def __init__(self, object_id, genre_id, is_album, parent):
         Gtk.Bin.__init__(self)
         self._parent = parent
+        self._genre_id = genre_id
         self._object_id = object_id
         self._is_album = is_album
         self._deleted_path = None
@@ -371,6 +377,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             playlist = playlists.pop(0)
             selected = Objects.playlists.is_present(playlist,
                                                     self._object_id,
+                                                    self._genre_id,
                                                     self._is_album)
             self._model.append([selected, playlist, self._del_pixbuf])
             GLib.idle_add(self._append_playlists, playlists)
