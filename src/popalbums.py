@@ -31,7 +31,6 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         self._widgets = []
         self._populating_view = None
         self._artist_id = None
-        self._genre_id = None
 
         self.add(self._stack)
 
@@ -43,18 +42,15 @@ class PopAlbums(Gtk.Popover, ViewContainer):
     def populate(self):
         artist_id = Objects.player.current.performer_id
 
-        genre_id = Objects.player.current.genre_id
-
         # View already populated
-        if self._artist_id == artist_id and self._genre_id == genre_id:
+        if self._artist_id == artist_id:
             return
 
         previous = self._stack.get_visible_child()
-        view = ArtistView(artist_id, genre_id, False)
+        view = ArtistView(artist_id, False)
         view.show()
-        start_new_thread(view.populate, ())
+        start_new_thread(view.populate, (None,))
         self._artist_id = artist_id
-        self._genre_id = genre_id
         self._stack.add(view)
         self._stack.set_visible_child(view)
         self._clean_view(previous)

@@ -96,7 +96,7 @@ class DatabaseArtists:
             sql = Objects.sql
         artists = []
         result = []
-        if genre_id == Navigation.ALL:
+        if genre_id == Navigation.ALL or genre_id is None:
             # Only artist that really have an album
             result = sql.execute("SELECT rowid, name FROM artists\
                                   WHERE EXISTS\
@@ -105,9 +105,10 @@ class DatabaseArtists:
                                   ORDER BY name COLLATE NOCASE")
         else:
             result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists,albums\
+                                  FROM artists, albums, albums_genres\
                                   WHERE artists.rowid == albums.artist_id\
-                                  AND albums.genre_id=?\
+                                  AND albums_genres.genre_id=?\
+                                  AND albums_genres.album_id=albums.rowid\
                                   ORDER BY artists.name\
                                   COLLATE NOCASE", (genre_id,))
 

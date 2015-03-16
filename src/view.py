@@ -202,12 +202,12 @@ class View(Gtk.Grid):
 class ArtistView(View):
     """
         Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
-        @param: artist id as int
-        @param: genre id as int
-        @param: show_artist_details as bool
+        @param artist id as int
+        @param show_artist_details as bool
     """
-    def __init__(self, artist_id, genre_id, show_artist_details):
+    def __init__(self, artist_id, show_artist_details):
         View.__init__(self)
+        self._artist_id = artist_id
 
         if show_artist_details:
             self._ui = Gtk.Builder()
@@ -217,8 +217,6 @@ class ArtistView(View):
             artist_name = translate_artist_name(artist_name)
             self._ui.get_object('artist').set_label(artist_name)
 
-        self._artist_id = artist_id
-        self._genre_id = genre_id
         self._show_menu = show_artist_details
 
         self._albumbox = Gtk.Grid()
@@ -234,21 +232,22 @@ class ArtistView(View):
 
     """
         Populate the view, can be threaded
+        @param navigation id as int
     """
-    def populate(self):
+    def populate(self, navigation_id):
         sql = Objects.db.get_cursor()
         if self._artist_id == Navigation.COMPILATIONS:
-            albums = Objects.albums.get_compilations(self._genre_id,
+            albums = Objects.albums.get_compilations(navigation_id,
                                                      sql)
-        elif self._genre_id == Navigation.ALL:
+        elif navigation_id == Navigation.ALL:
             albums = Objects.albums.get_ids(self._artist_id,
                                             None,
                                             sql)
         else:
             albums = Objects.albums.get_ids(self._artist_id,
-                                            self._genre_id,
+                                            navigation_id,
                                             sql)
-        GLib.idle_add(self._add_albums, albums)
+        GLib.idle_add(self._add_albums, albums, navigation_id)
         sql.close()
 
 
@@ -276,12 +275,13 @@ class ArtistView(View):
         Pop an album and add it to the view,
         repeat operation until album list is empty
         @param [album ids as int]
+        @param genre id as int
     """
-    def _add_albums(self, albums):
+    def _add_albums(self, albums, genre_id):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         if len(albums) > 0 and not self._stop:
             widget = AlbumDetailedWidget(albums.pop(0),
-                                         self._genre_id,
+                                         genre_id,
                                          True,
                                          self._show_menu,
                                          size_group)
@@ -291,7 +291,8 @@ class ArtistView(View):
                 window = widget.eventbox.get_window()
                 if window:
                     window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-            GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._add_albums, albums,
+                          genre_id, priority=GLib.PRIORITY_LOW)
         else:
             self._stop = False
 
@@ -302,10 +303,10 @@ class AlbumView(View):
     """
         Init album view ui with a scrolled flow box and a scrolled context view
     """
-    def __init__(self, genre_id):
+    def __init__(self):
         View.__init__(self)
-        self._genre_id = genre_id
         self._album_id = None
+        self._genre_id = None
         self._albumsongs = None
         self._context_widget = None
 
@@ -339,14 +340,16 @@ class AlbumView(View):
 
     """
         Populate albums, thread safe
+        @param navigation id as int
     """
-    def populate(self):
+    def populate(self, navigation_id):
         sql = Objects.db.get_cursor()
-        if self._genre_id == Navigation.ALL:
+        if navigation_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
-        elif self._genre_id == Navigation.POPULARS:
+        elif navigation_id == Navigation.POPULARS:
             albums = Objects.albums.get_populars(sql)
         else:
+            self._genre_id = navigation_id
             albums = Objects.albums.get_compilations(self._genre_id, sql)
             albums += Objects.albums.get_ids(None, self._genre_id, sql)
 

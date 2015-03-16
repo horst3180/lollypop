@@ -25,25 +25,37 @@ class DatabaseAlbums:
         Add a new album to database
         @param Album name as string
         @param artist id as int,
-        @param genre id as int
         @param year as int,
         @param path as string
         @warning: commit needed
     """
-    def add(self, name, artist_id, genre_id,
-            year, path, popularity, sql=None):
+    def add(self, name, artist_id, year, path, popularity, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("INSERT INTO albums (name, artist_id, genre_id, year, path, popularity)\
-                     VALUES (?, ?, ?, ?, ?, ?)", (name, artist_id, genre_id,
-                                                  year, path, popularity))
+        sql.execute("INSERT INTO albums (name, artist_id, year, path,"
+                    "popularity) VALUES (?, ?, ?, ?, ?)",
+                    (name, artist_id, year, path, popularity))
+
+    """
+        Add genre to album
+        @param album_id as int
+        @param genre_id as int
+        @warning: commit needed
+    """
+    def add_genre(self, album_id, genre_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        genres = self.get_genre_ids(album_id, sql)
+        if genre_id not in genres:
+            sql.execute("INSERT INTO albums_genres (album_id, genre_id)"
+                        "VALUES (?, ?)", (album_id, genre_id))
 
     """
         Set artist id
         @param album id as int, artist_id as int
         @warning: commit needed
     """
-    def set_artist_id(self, album_id, artist_id, sql):
+    def set_artist_id(self, album_id, artist_id, sql=None):
         if not sql:
             sql = Objects.sql
         sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?",
@@ -82,17 +94,17 @@ class DatabaseAlbums:
     """
         Get album id
         @param Album name as string,
-        @param artist id(can be None) as int
-        @param genre_id as int
+        @param artist id as int
+        @param year as int
         @return Album id as int
     """
-    def get_id(self, album_name, artist_id, genre_id, sql=None):
+    def get_id(self, album_name, artist_id, year, sql=None):
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND artist_id=? AND genre_id=?", (album_name,
-                                                                artist_id,
-                                                                genre_id))
+                              AND artist_id=? AND year=?", (album_name,
+                                                            artist_id,
+                                                            year))
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]
@@ -100,37 +112,37 @@ class DatabaseAlbums:
         return None
 
     """
-        Get genre id
+        Get genre ids
         @param Album id as int
-        @return Genre id as int
+        @return Genres id as [int]
     """
-    def get_genre_id(self, album_id, sql=None):
+    def get_genre_ids(self, album_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT genre_id FROM albums WHERE rowid=?",
-                             (album_id,))
-        v = result.fetchone()
-        if v and len(v) > 0:
-            return v[0]
-
-        return -1
+        result = sql.execute("SELECT genre_id FROM albums_genres\
+                              WHERE album_id=?", (album_id,))
+        genres = []
+        for row in result:
+            genres += row
+        return genres
 
     """
         Get genre name
         @param Album id as int
-        @return Genre name as str
+        @return Genre name as str "genre1 genre2_..."
     """
     def get_genre_name(self, album_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT genres.name FROM albums,genres\
-                              WHERE albums.rowid=?\
-                              AND genres.rowid = albums.genre_id", (album_id,))
-        v = result.fetchone()
-        if v and len(v) > 0:
-            return v[0]
-
-        return ""
+        result = sql.execute("SELECT name FROM genres, albums_genres\
+                              WHERE albums_genres.album_id=?\
+                              AND albums_genres.genre_id=genres.rowid",
+                             (album_id,))
+        genres = ""
+        for row in result:
+            genres += row[0]
+            genres += " "
+        return genres
 
     """
         Get album name for album id
@@ -303,16 +315,25 @@ class DatabaseAlbums:
     """
         Get tracks for album id
         Will search track from albums
-        @param Album id as int
+        @param album id as int
+        @param genre id as int
         @return Arrays of tracks id as int
     """
-    def get_tracks(self, album_id, sql=None):
+    def get_tracks(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
         tracks = []
-        result = sql.execute("SELECT tracks.rowid FROM tracks\
-                              WHERE album_id=?\
-                              ORDER BY discnumber, tracknumber", (album_id,))
+        if genre_id:
+            result = sql.execute("SELECT tracks.rowid FROM tracks\
+                                  WHERE album_id=?\
+                                  AND tracks.genre_id=?\
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id, genre_id))
+        else:
+            result = sql.execute("SELECT tracks.rowid FROM tracks\
+                                  WHERE album_id=?\
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id,))
         for row in result:
             tracks += row
         return tracks
@@ -339,22 +360,34 @@ class DatabaseAlbums:
         Get tracks informations for album id
         Will search track from albums from same artist
         with same name and different genre
-        @param Album id as int, artist_id as int
+        @param album id as int
+        @param genre id as int
         @return Arrays of (tracks id as int, name as string, artist id as int,
                            filepath as string, length as int)
     """
-    def get_tracks_infos(self, album_id, sql=None):
+    def get_tracks_infos(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
         tracks = []
         artist_id = Objects.albums.get_artist_id(album_id, sql)
-        result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                              tracks.artist_id, tracks.filepath,\
-                              tracks.length FROM tracks, albums\
-                              WHERE albums.artist_id=? AND albums.rowid=?\
-                              AND albums.rowid=tracks.album_id\
-                              ORDER BY discnumber, tracknumber", (artist_id,
-                                                                  album_id))
+        if genre_id:
+            result = sql.execute("SELECT tracks.rowid, tracks.name,\
+                                  tracks.artist_id, tracks.filepath,\
+                                  tracks.length FROM tracks, albums\
+                                  WHERE albums.artist_id=? AND albums.rowid=?\
+                                  AND albums.rowid=tracks.album_id\
+                                  AND tracks.genre_id=?\
+                                  ORDER BY discnumber, tracknumber", (artist_id,
+                                                                      album_id,
+                                                                      genre_id))
+        else:
+            result = sql.execute("SELECT tracks.rowid, tracks.name,\
+                                  tracks.artist_id, tracks.filepath,\
+                                  tracks.length FROM tracks, albums\
+                                  WHERE albums.artist_id=? AND albums.rowid=?\
+                                  AND albums.rowid=tracks.album_id\
+                                  ORDER BY discnumber, tracknumber", (artist_id,
+                                                                      album_id))
         for row in result:
             tracks += (row,)
         return tracks
@@ -371,8 +404,11 @@ class DatabaseAlbums:
         result = []
         # Get albums for artist id and genre id
         if artist_id and genre_id:
-            result = sql.execute("SELECT rowid FROM albums\
-                                  WHERE artist_id=? and genre_id=?\
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, albums_genres\
+                                  WHERE artist_id=?\
+                                  AND albums_genres.genre_id=?\
+                                  AND albums_genres.album_id=albums.rowid\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id, genre_id))
         # Get albums for all artists
@@ -384,8 +420,11 @@ class DatabaseAlbums:
                                   albums.name COLLATE NOCASE")
         # Get albums for genre
         elif not artist_id:
-            result = sql.execute("SELECT albums.rowid FROM albums, artists\
-                                  WHERE genre_id=? and artists.rowid=artist_id\
+            result = sql.execute("SELECT albums.rowid FROM albums,\
+                                  albums_genres, artists\
+                                  WHERE albums_genres.genre_id=?\
+                                  AND artists.rowid=artist_id\
+                                  AND albums_genres.album_id=albums.rowid\
                                   ORDER BY artists.name COLLATE NOCASE,\
                                   albums.year,\
                                   albums.name COLLATE NOCASE", (genre_id,))
@@ -411,16 +450,19 @@ class DatabaseAlbums:
         albums = []
         result = []
         # Get all compilations
-        if genre_id == Navigation.ALL or not genre_id:
+        if genre_id == Navigation.ALL or genre_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums\
                                   WHERE artist_id=-1\
                                   ORDER BY albums.name, albums.year")
         # Get compilation for genre id
         else:
-            result = sql.execute("SELECT albums.rowid FROM albums\
-                                  WHERE genre_id=? and artist_id=-1\
-                                  ORDER BY albums.name,\
-                                  albums.year", (genre_id,))
+            result = sql.execute(
+                        "SELECT albums.rowid FROM albums, albums_genres\
+                         WHERE albums_genres.genre_id=?\
+                         AND albums_genres.album_id=albums.rowid\
+                         AND albums.artist_id=-1\
+                         ORDER BY albums.name,\
+                         albums.year", (genre_id,))
         for row in result:
             albums += row
         return albums
@@ -435,19 +477,21 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT DISTINCT tracks.artist_id, album_id,\
-                              albums.name, albums.genre_id FROM tracks, albums\
+                              albums.name, albums.year FROM tracks, albums\
                               WHERE albums.rowid == tracks.album_id\
                               AND albums.artist_id == ?\
                               GROUP BY album_id\
                               HAVING COUNT(DISTINCT tracks.artist_id) == 1", (
                               Navigation.COMPILATIONS,))
 
-        for artist_id, album_id, album_name, album_genre in result:
-            existing_id = self.get_id(album_name, artist_id, album_genre, sql)
+        for artist_id, album_id, album_name, album_year in result:
+            existing_id = self.get_id(album_name, artist_id, album_year, sql)
             # Some tracks from album have an album artist and some not
             if existing_id is not None and existing_id != album_id:
                 sql.execute("UPDATE tracks SET album_id=? WHERE album_id=?",
                             (existing_id, album_id))
+                for genre_id in self.get_genre_ids(album_id, sql):
+                    self.add_genre(existing_id, genre_id, sql)
                 sql.execute("DELETE FROM albums WHERE rowid == ?",
                             (album_id,))
             # Album is not a compilation,

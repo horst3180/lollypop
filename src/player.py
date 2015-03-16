@@ -49,6 +49,7 @@ class CurrentTrack:
 class CurrentContext:
     def __init__(self):
         self.album_id = None
+        self.genre_id = None
         self.position = None
 
 
@@ -247,7 +248,9 @@ class Player(GObject.GObject):
             self._shuffle_next(force, sql)
         elif self._context.position is not None:
             track_id = None
-            tracks = Objects.albums.get_tracks(self._context.album_id, sql)
+            tracks = Objects.albums.get_tracks(self._context.album_id,
+                                               self._context.genre_id,
+                                               sql)
             if self._context.position + 1 >= len(tracks):  # next album
                 pos = self._albums.index(self._context.album_id)
                 # we are on last album, go to first
@@ -257,7 +260,9 @@ class Player(GObject.GObject):
                     pos += 1
                 self._context.album_id = self._albums[pos]
                 self._context.position = 0
-                track_id = Objects.albums.get_tracks(self._albums[pos], sql)[0]
+                track_id = Objects.albums.get_tracks(self._albums[pos],
+                                                     self._context.genre_id,
+                                                     sql)[0]
             else:
                 self._context.position += 1
                 track_id = tracks[self._context.position]
@@ -286,7 +291,7 @@ class Player(GObject.GObject):
         # Empty user playlist
         self._user_playlist = None
         # Get first track from album
-        track_id = Objects.albums.get_tracks(album_id)[0]
+        track_id = Objects.albums.get_tracks(album_id, genre_id)[0]
         Objects.player.load(track_id)
         if not Objects.player.is_party():
             if genre_id:
@@ -324,10 +329,10 @@ class Player(GObject.GObject):
                 track_id = self._get_random()
                 self.load(track_id)
         else:
+            # We need to put some context, take first available genre
             if self.current.id:
-                genre_id = Objects.albums.get_genre_id(self.current.album_id)
                 self.set_albums(self.current.id, self.current.album_id,
-                                self.current.artist_id, genre_id, True)
+                                self.current.artist_id, None, True)
 
     """
         Set party ids to ids
@@ -359,7 +364,8 @@ class Player(GObject.GObject):
     def set_album(self, album_id):
         self._albums = [album_id]
         self._context.album_id = album_id
-        tracks = Objects.albums.get_tracks(album_id)
+        self._context.genre_id = None
+        tracks = Objects.albums.get_tracks(album_id, None)
         self._context.position = tracks.index(self.current.id)
 
     """
@@ -376,6 +382,7 @@ class Player(GObject.GObject):
         self._shuffle_prev_tracks = []
         self._shuffle_history = {}
         self._shuffle_albums_backup = []
+        self._context.genre_id = genre_id
         # We are not playing a user playlist anymore
         self._user_playlist = None
         # We are in all artists
@@ -393,7 +400,7 @@ class Player(GObject.GObject):
             self._albums += Objects.albums.get_ids(None, genre_id)
 
         self._context.album_id = album_id
-        tracks = Objects.albums.get_tracks(album_id)
+        tracks = Objects.albums.get_tracks(album_id, genre_id)
         self._context.position = tracks.index(track_id)
         # Shuffle album list if needed
         self._shuffle_playlist()
@@ -718,11 +725,8 @@ class Player(GObject.GObject):
                                         Objects.artists.get_name(
                                                 self.current.artist_id,
                                                 sql))
-        self.current.genre_id = Objects.albums.get_genre_id(
+        self.current.genre = Objects.albums.get_genre_name(
                                                 self.current.album_id,
-                                                sql)
-        self.current.genre = Objects.genres.get_name(
-                                                self.current.genre_id,
                                                 sql)
         self.current.duration = Objects.tracks.get_length(self.current.id, sql)
         self.current.number = Objects.tracks.get_number(self.current.id, sql)

@@ -264,12 +264,12 @@ class CollectionScanner(GObject.GObject):
             Objects.genres.add(genre, sql)
             genre_id = Objects.genres.get_id(genre, sql)
 
-        album_id = Objects.albums.get_id(album, performer_id, genre_id, sql)
+        album_id = Objects.albums.get_id(album, performer_id, year, sql)
         if album_id is None:
-            Objects.albums.add(album, performer_id, genre_id,
+            Objects.albums.add(album, performer_id,
                                year, path, popularity, sql)
-            album_id = Objects.albums.get_id(album, performer_id,
-                                             genre_id, sql)
+            album_id = Objects.albums.get_id(album, performer_id, year, sql)
+        Objects.albums.add_genre(album_id, genre_id, sql)
 
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path:
@@ -278,4 +278,4 @@ class CollectionScanner(GObject.GObject):
         # Add track to db
         Objects.tracks.add(title, filepath, length,
                            tracknumber, discnumber, artist_id,
-                           album_id, mtime, sql)
+                           album_id, genre_id, mtime, sql)

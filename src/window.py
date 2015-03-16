@@ -467,9 +467,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _update_view_artists(self, object_id, genre_id):
         old_view = self._stack.get_visible_child()
-        view = ArtistView(object_id, genre_id, True)
+        view = ArtistView(object_id, True)
         self._stack.add(view)
-        start_new_thread(view.populate, ())
+        start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 
@@ -478,9 +478,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _update_view_albums(self, genre_id):
         old_view = self._stack.get_visible_child()
-        view = AlbumView(genre_id)
+        view = AlbumView()
         self._stack.add(view)
-        start_new_thread(view.populate, ())
+        start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 

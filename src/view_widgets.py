@@ -129,12 +129,11 @@ class AlbumDetailedWidget(Gtk.Grid):
             self.eventbox.connect("button-press-event",
                                   self._show_web_art)
             self._ui.get_object('menu').connect('clicked',
-                                                self._pop_menu,
-                                                album_id)
+                                                self._pop_menu)
             self._ui.get_object('menu').show()
         else:
             self.eventbox = None
-        self._add_tracks(album_id)
+        self._add_tracks()
 
     """
         Update playing track
@@ -169,20 +168,20 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param widget as Gtk.Button
         @param album id as int
     """
-    def _pop_menu(self, widget, album_id):
-        menu = PopMainMenu(album_id, True, False, widget)
+    def _pop_menu(self, widget):
+        menu = PopMainMenu(self._album_id, True, False, widget)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.show()
 
     """
-        Add tracks for album_id to Album widget
-        @param album id as int
+        Add tracks for to Album widget
     """
-    def _add_tracks(self, album_id):
+    def _add_tracks(self):
         i = 1
-        mid_tracks = int(0.5+Objects.albums.get_count(album_id)/2)
+        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id)/2)
         for track_id, title, artist_id, filepath,\
-                length in Objects.albums.get_tracks_infos(album_id):
+                length in Objects.albums.get_tracks_infos(self._album_id,
+                                                          self._genre_id):
 
             # If we are listening to a compilation, prepend artist name
             if self._artist_id == Navigation.COMPILATIONS or\

@@ -31,25 +31,28 @@ class DatabaseTracks:
         @param discnumber as int
         @param artist_id as int
         @param album_id as int
+        @param genre_id as int
         @param mtime as int
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            artist_id, album_id, mtime, sql=None):
+            artist_id, album_id, genre_id, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         # Invalid encoding in filenames may raise an exception
         try:
-            sql.execute("INSERT INTO tracks (name, filepath, length, tracknumber,\
-                        discnumber, artist_id, album_id, mtime) VALUES\
-                        (?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                                    filepath,
-                                                    length,
-                                                    tracknumber,
-                                                    discnumber,
-                                                    artist_id,
-                                                    album_id,
-                                                    mtime))
+            sql.execute(
+                "INSERT INTO tracks (name, filepath, length, tracknumber,\
+                discnumber, artist_id, album_id, genre_id, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                               filepath,
+                                               length,
+                                               tracknumber,
+                                               discnumber,
+                                               artist_id,
+                                               album_id,
+                                               genre_id,
+                                               mtime))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 
@@ -315,10 +318,11 @@ class DatabaseTracks:
                      AND NOT EXISTS\
                         (SELECT rowid FROM albums\
                          WHERE artists.rowid = albums.artist_id)")
+        print("Missing a clean here")
         sql.execute("DELETE FROM genres\
                      WHERE NOT EXISTS\
-                        (SELECT rowid FROM albums\
-                         WHERE genres.rowid = albums.genre_id)")
+                        (SELECT rowid FROM tracks\
+                         WHERE genres.rowid = tracks.genre_id)")
 
     """
         Search for tracks looking like string

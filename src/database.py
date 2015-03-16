@@ -33,7 +33,6 @@ class Database:
     create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         artist_id INT NOT NULL,
-                        genre_id INT NOT NULL,
                         year INT NOT NULL,
                         path TEXT NOT NULL,
                         popularity INT NOT NULL)'''
@@ -41,6 +40,9 @@ class Database:
                                               name TEXT NOT NULL)'''
     create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)'''
+    create_albums_genres = '''CREATE TABLE albums_genres (
+                                                    album_id INT NOT NULL,
+                                                    genre_id INT NOT NULL)'''
     create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         filepath TEXT NOT NULL,
@@ -49,6 +51,7 @@ class Database:
                         discnumber INT,
                         artist_id INT NOT NULL,
                         album_id INT NOT NULL,
+                        genre_id INT NOT NULL,
                         mtime INT)'''
 
     version = 4
@@ -80,6 +83,7 @@ class Database:
             sql.execute(self.create_albums)
             sql.execute(self.create_artists)
             sql.execute(self.create_genres)
+            sql.execute(self.create_albums_genres)
             sql.execute(self.create_tracks)
             sql.commit()
             Objects.settings.set_value('db-version',
