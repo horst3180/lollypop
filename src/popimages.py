@@ -50,7 +50,6 @@ class PopImages(Gtk.Popover):
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         self._scroll.show()
-        self.connect("closed", self._stop_thread)
         label = Gtk.Label()
         label.set_text(_("Select a cover art for this album"))
         grid.add(label)
@@ -73,6 +72,13 @@ class PopImages(Gtk.Popover):
         self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
 
+    """
+        Kill thread
+    """
+    def do_hide(self):
+        self._thread = False
+        Gtk.Popover.do_hide(self)
+
 #######################
 # PRIVATE             #
 #######################
@@ -82,12 +88,6 @@ class PopImages(Gtk.Popover):
     def _populate(self, string):
         self._urls = Objects.art.get_google_arts(string)
         self._add_pixbufs()
-
-    """
-        On hide, stop thread
-    """
-    def _stop_thread(self, widget):
-        self._thread = False
 
     """
         Add urls to the view
