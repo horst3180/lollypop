@@ -41,6 +41,8 @@ class AlbumArt:
         Create cache path
     """
     def __init__(self):
+        self._favorite = Objects.settings.get_value(
+                                                'favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
             try:
                 os.mkdir(self._CACHE_PATH)
@@ -70,7 +72,7 @@ class AlbumArt:
             return None
 
     """
-        Look for covers in dir, folder.jpg if exist,
+        Look for covers in dir
         any supported image otherwise
         @param album id as int
         @return cover file path as string
@@ -80,12 +82,12 @@ class AlbumArt:
         album_name = Objects.albums.get_name(album_id, sql)
         artist_name = Objects.albums.get_artist_name(album_id, sql)
         try:
-            if os.path.exists(album_path + "/folder.jpg"):
-                return album_path + "/folder.jpg"
+            if os.path.exists(album_path + "/" + self._favorite):
+                return album_path + "/" + self._favorite
             # Used when having muliple albums in same folder
-            elif os.path.exists(album_path + "/folder_" + artist_name +
+            elif os.path.exists(album_path + "/" + artist_name +
                                 "_" + album_name + ".jpg"):
-                return album_path + "/folder_" +\
+                return album_path + "/" +\
                        artist_name + "_" + album_name + ".jpg"
 
             for file in os.listdir(album_path):
@@ -99,8 +101,8 @@ class AlbumArt:
                     return "%s/%s" % (album_path, file)
 
             return None
-        except:
-            pass
+        except Exception as e:
+            print("AlbumArt::get_art_path(): %s" % e)
 
     """
         Return pixbuf for album_id, covers are cached as jpg.
