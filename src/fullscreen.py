@@ -87,7 +87,7 @@ class FullScreen(Gtk.Window):
     def do_hide(self):
         Objects.player.disconnect_by_func(self._on_current_changed)
         Objects.player.disconnect_by_func(self._on_status_changed)
-        if not Objects.player.is_party():
+        if not Objects.player.is_party() and not Objects.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", False)
         if self._timeout:
