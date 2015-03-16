@@ -21,7 +21,7 @@ from lollypop.define import Navigation
 class SelectionList(GObject.GObject):
 
     __gsignals__ = {
-        'item-selected': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'item-selected': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
     }
 
     """
@@ -45,7 +45,7 @@ class SelectionList(GObject.GObject):
                                             'multimedia-player-symbolic',
                                             16,
                                             0)
-        self._view = Gtk.TreeView(self._model)
+        self._view = Gtk.TreeView(model=self._model)
         self._view.connect('cursor-changed', self._new_item_selected)
 
         renderer0 = Gtk.CellRendererText()

@@ -58,11 +58,11 @@ class Player(GObject.GObject):
     EPSILON = 0.001
 
     __gsignals__ = {
-        'current-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
-        'seeked': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'status-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
-        'queue-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
     """

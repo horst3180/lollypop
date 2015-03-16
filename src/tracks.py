@@ -144,7 +144,7 @@ class TrackRow(Gtk.ListBoxRow):
 class TracksWidget(Gtk.ListBox):
 
     __gsignals__ = {
-        'activated': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+        'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
     """
