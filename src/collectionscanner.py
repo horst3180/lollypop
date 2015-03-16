@@ -24,7 +24,7 @@ from lollypop.utils import format_artist_name
 
 class CollectionScanner(GObject.GObject):
     __gsignals__ = {
-        'scan-finished': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
     _mimes = ["mp3", "ogg", "flac", "m4a", "mp4", "opus"]
 

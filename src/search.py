@@ -147,7 +147,7 @@ class SearchWidget(Gtk.Popover):
         grid = Gtk.Grid()
         grid.set_property("orientation", Gtk.Orientation.VERTICAL)
 
-        label = Gtk.Label(_("Search:"))
+        label = Gtk.Label(label=_("Search:"))
         label.set_property("margin_start", 5)
         label.set_property("margin_end", 5)
         label.show()

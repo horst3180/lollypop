@@ -30,9 +30,9 @@ class PlaylistsManager(GObject.GObject):
                      "/.local/share/lollypop/playlists"
     __gsignals__ = {
         # Add or remove a playlist
-        'playlists-changed': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         # Objects added/removed to/from playlist
-        'playlist-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,))
+        'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
     def __init__(self):
