@@ -72,7 +72,10 @@ class AlbumArt:
             return None
 
     """
-        Look for covers in dir
+        Look for covers in dir:
+        - favorite from settings first
+        - Artist_Album.jpg then
+        - Any image else
         any supported image otherwise
         @param album id as int
         @return cover file path as string
