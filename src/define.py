@@ -16,41 +16,37 @@
 
 
 class Objects_:
-    def __init__(self):
-        self.settings = None
-        self.db = None
-        self.sql = None
-        self.albums = None
-        self.artists = None
-        self.genres = None
-        self.tracks = None
-        self.playlists = None
-        self.player = None
-        self.art = None
+    settings = None
+    db = None
+    sql = None
+    albums = None
+    artists = None
+    genres = None
+    tracks = None
+    playlists = None
+    player = None
+    art = None
 
 
 class ArtSize_:
-    def __init__(self):
-        self.SMALL = 32
-        self.MEDIUM = 48
-        self.BIG = 200
-        self.MONSTER = 500
+    SMALL = 32
+    MEDIUM = 48
+    BIG = 200
+    MONSTER = 500
 
 
 class Shuffle_:
-    def __init__(self):
-        self.NONE = 0
-        self.TRACKS = 1
-        self.ALBUMS = 2
+    NONE = 0
+    TRACKS = 1
+    ALBUMS = 2
 
 
 class Navigation_:
-    def __init__(self):
-        self.COMPILATIONS = -1
-        self.POPULARS = -2
-        self.PLAYLISTS = -3
-        self.ALL = -4
-        self.DEVICES = -1000
+    COMPILATIONS = -1
+    POPULARS = -2
+    PLAYLISTS = -3
+    ALL = -4
+    DEVICES = -1000
 
 Objects = Objects_()
 ArtSize = ArtSize_()

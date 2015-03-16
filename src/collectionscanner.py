@@ -45,8 +45,9 @@ class CollectionScanner(GObject.GObject):
         self._smooth = smooth
         paths = Objects.settings.get_value('music-path')
         if not paths:
-            if GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC):
-                paths = [GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)]
+            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
+                paths = [GLib.get_user_special_dir(
+                                          GLib.UserDirectory.DIRECTORY_MUSIC)]
             else:
                 print("You need to add a music path"
                       " to org.gnome.Lollypop in dconf")
