@@ -234,7 +234,7 @@ class ChooserWidget(Gtk.Grid):
         self._chooser_btn.set_property("margin", 5)
         self._chooser_btn.show()
         self.add(self._chooser_btn)
-        self._action_btn = Gtk.Button(None)
+        self._action_btn = Gtk.Button()
         self._action_btn.set_property("margin", 5)
         self._action_btn.show()
         self.add(self._action_btn)

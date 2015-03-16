@@ -152,7 +152,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_right">50</property>
                     <property name="margin_end">50</property>
                     <property name="label" translatable="yes">Play albums on 2nd click</property>
                   </object>
