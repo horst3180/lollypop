@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 23:12+0100\n"
+"POT-Creation-Date: 2015-03-16 09:29+0100\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/"
+"language/ca/)\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -106,13 +107,11 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Mode aleatori"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -149,11 +148,16 @@ msgstr "Àlbums populars"
 msgid "Playlists"
 msgstr "Llistes"
 
-#: ../src/window.py:358
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Tots els artistes"
 
-#: ../src/window.py:401
+#: ../src/window.py:361
+#, fuzzy
+msgid "All albums"
+msgstr "Àlbums populars"
+
+#: ../src/window.py:404
 msgid "Compilations"
 msgstr "Compilacions"
 
@@ -178,7 +182,7 @@ msgstr "Molts artistes"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:67 ../src/collectionscanner.py:183
+#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
 #: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
 msgid "Unknown"
 msgstr "Desconegut"
@@ -204,20 +208,20 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr "S’està carregant, espereu-vos…"
 
-#: ../src/devicemanager.py:52 ../src/devicemanager.py:387
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:371
-msgid "No free space available on device"
-msgstr ""
-
-#: ../src/devicemanager.py:373
+#: ../src/devicemanager.py:372
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/devicemanager.py:395
+#: ../src/devicemanager.py:379
+msgid "No free space available on device"
+msgstr ""
+
+#: ../src/devicemanager.py:402
 msgid "Cancel synchronization"
 msgstr ""
 

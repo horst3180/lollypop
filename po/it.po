@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 23:12+0100\n"
+"POT-Creation-Date: 2015-03-16 09:29+0100\n"
 "PO-Revision-Date: 2015-03-07 12:44+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
+"language/it/)\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -107,14 +108,15 @@ msgstr "INTERNO"
 msgid "Shuffle mode"
 msgstr "Modalità mescola"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
-msgstr "Questo valore identifica se mischiare tracce/album. I valori consentiti sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album\" (album casuale)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+"Questo valore identifica se mischiare tracce/album. I valori consentiti "
+"sono: \"none\" (non mescolare), \"tracce\" (tracce casuale), \"Album"
+"\" (album casuale)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -150,11 +152,16 @@ msgstr "Album popolari"
 msgid "Playlists"
 msgstr "Playlists"
 
-#: ../src/window.py:358
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Tutti gli artisti"
 
-#: ../src/window.py:401
+#: ../src/window.py:361
+#, fuzzy
+msgid "All albums"
+msgstr "Album popolari"
+
+#: ../src/window.py:404
 msgid "Compilations"
 msgstr "Compilation"
 
@@ -179,7 +186,7 @@ msgstr "Molti artisti"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:67 ../src/collectionscanner.py:183
+#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
 #: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
 msgid "Unknown"
 msgstr "Sconosciuto"
@@ -205,20 +212,22 @@ msgstr "Rimuovere queste tracce?"
 msgid "Loading please wait..."
 msgstr "Caricando, attendere..."
 
-#: ../src/devicemanager.py:52 ../src/devicemanager.py:387
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
 #, python-format
 msgid "Synchronize %s"
 msgstr "Sincronizza %s"
 
-#: ../src/devicemanager.py:371
+#: ../src/devicemanager.py:372
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr ""
+"Errore sconosciuto durante la sincronizzazione, prova a riavviare il tuo "
+"dispositivo"
+
+#: ../src/devicemanager.py:379
 msgid "No free space available on device"
 msgstr "Non c'è spazio disponibile sul dispositivo"
 
-#: ../src/devicemanager.py:373
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Errore sconosciuto durante la sincronizzazione, prova a riavviare il tuo dispositivo"
-
-#: ../src/devicemanager.py:395
+#: ../src/devicemanager.py:402
 msgid "Cancel synchronization"
 msgstr "Annulla la sincronizzazione"
 

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Mark Gerlach, 2015
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015
@@ -10,14 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 23:12+0100\n"
+"POT-Creation-Date: 2015-03-16 09:29+0100\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
+"de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -108,14 +109,14 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Zufallsmodus"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
-msgstr "Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks\" (zufälliger Titel), \"albums\" (zufälliges Album)"
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+"Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks"
+"\" (zufälliger Titel), \"albums\" (zufälliges Album)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -151,11 +152,16 @@ msgstr "Beliebte Alben"
 msgid "Playlists"
 msgstr "Wiedergabelisten"
 
-#: ../src/window.py:358
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Alle Künstler"
 
-#: ../src/window.py:401
+#: ../src/window.py:361
+#, fuzzy
+msgid "All albums"
+msgstr "Beliebte Alben"
+
+#: ../src/window.py:404
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -180,7 +186,7 @@ msgstr "Viele Künstler"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:67 ../src/collectionscanner.py:183
+#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
 #: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
 msgid "Unknown"
 msgstr "Unbekannt"
@@ -206,20 +212,22 @@ msgstr "Diese Titel entfernen?"
 msgid "Loading please wait..."
 msgstr "Lade, bitte warten..."
 
-#: ../src/devicemanager.py:52 ../src/devicemanager.py:387
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synchronisieren %s"
 
-#: ../src/devicemanager.py:371
+#: ../src/devicemanager.py:372
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr ""
+"Unbekannter Fehler während der Synchronisation, versuche das Gerät neu zu "
+"starten"
+
+#: ../src/devicemanager.py:379
 msgid "No free space available on device"
 msgstr "Kein freier Platz verfügbar auf diesem Gerät"
 
-#: ../src/devicemanager.py:373
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Unbekannter Fehler während der Synchronisation, versuche das Gerät neu zu starten"
-
-#: ../src/devicemanager.py:395
+#: ../src/devicemanager.py:402
 msgid "Cancel synchronization"
 msgstr "Beende Synchronisation"
 

@@ -355,7 +355,10 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         items = []
         items.append((Navigation.POPULARS, _("Popular albums")))
         items.append((Navigation.PLAYLISTS, _("Playlists")))
-        items.append((Navigation.ALL, _("All artists")))
+        if self._show_genres:
+            items.append((Navigation.ALL, _("All artists")))
+        else:
+            items.append((Navigation.ALL, _("All albums")))
         return items
 
     """

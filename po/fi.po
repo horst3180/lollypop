@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 23:12+0100\n"
+"POT-Creation-Date: 2015-03-16 09:29+0100\n"
 "PO-Revision-Date: 2015-03-07 11:41+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
+"language/fi/)\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -106,14 +107,15 @@ msgstr ""
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle "
-"albums)."
-msgstr "Arvo määrittää sekoitetaanko kappaleet/albumit. Sallitut arvot ovat seuraavat: \"none\" (ei sekoitusta), \"tracks\" (sekoita kappaleet), \"albums\" (sekoita albumit)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+msgstr ""
+"Arvo määrittää sekoitetaanko kappaleet/albumit. Sallitut arvot ovat "
+"seuraavat: \"none\" (ei sekoitusta), \"tracks\" (sekoita kappaleet), \"albums"
+"\" (sekoita albumit)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -149,11 +151,16 @@ msgstr "Suositut albumit"
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/window.py:358
+#: ../src/window.py:359
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/window.py:401
+#: ../src/window.py:361
+#, fuzzy
+msgid "All albums"
+msgstr "Suositut albumit"
+
+#: ../src/window.py:404
 msgid "Compilations"
 msgstr "Kokoelmat"
 
@@ -178,7 +185,7 @@ msgstr "Useita esittäjiä"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:67 ../src/collectionscanner.py:183
+#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
 #: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
 msgid "Unknown"
 msgstr "Tuntematon"
@@ -204,20 +211,20 @@ msgstr "Poistetaanko nämä kappaleet?"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/devicemanager.py:52 ../src/devicemanager.py:387
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronoi %s"
 
-#: ../src/devicemanager.py:371
-msgid "No free space available on device"
-msgstr "Laitteella ei ole vapaata tilaa"
-
-#: ../src/devicemanager.py:373
+#: ../src/devicemanager.py:372
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 
-#: ../src/devicemanager.py:395
+#: ../src/devicemanager.py:379
+msgid "No free space available on device"
+msgstr "Laitteella ei ole vapaata tilaa"
+
+#: ../src/devicemanager.py:402
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 23:12+0100\n"
+"POT-Creation-Date: 2015-03-16 09:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,11 +146,15 @@ msgstr ""
 msgid "Playlists"
 msgstr ""
 
-#: ../src/window.py:358
+#: ../src/window.py:359
 msgid "All artists"
 msgstr ""
 
-#: ../src/window.py:401
+#: ../src/window.py:361
+msgid "All albums"
+msgstr ""
+
+#: ../src/window.py:404
 msgid "Compilations"
 msgstr ""
 
@@ -175,7 +179,7 @@ msgstr ""
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:149
 #: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:67 ../src/collectionscanner.py:183
+#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
 #: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
 msgid "Unknown"
 msgstr ""
@@ -201,20 +205,20 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr ""
 
-#: ../src/devicemanager.py:52 ../src/devicemanager.py:387
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:371
-msgid "No free space available on device"
-msgstr ""
-
-#: ../src/devicemanager.py:373
+#: ../src/devicemanager.py:372
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/devicemanager.py:395
+#: ../src/devicemanager.py:379
+msgid "No free space available on device"
+msgstr ""
+
+#: ../src/devicemanager.py:402
 msgid "Cancel synchronization"
 msgstr ""
 
