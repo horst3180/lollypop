@@ -78,6 +78,7 @@ class AlbumArt:
         @return cover file path as string
     """
     def get_art_path(self, album_id, sql=None):
+        return None
         album_path = Objects.albums.get_path(album_id, sql)
         album_name = Objects.albums.get_name(album_id, sql)
         artist_name = Objects.albums.get_artist_name(album_id, sql)
@@ -210,15 +211,18 @@ class AlbumArt:
         filepath = Objects.tracks.get_path(track_id)
         filetag = mutagen.File(filepath, easy=False)
         for tag in filetag.tags:
-            if isinstance(tag, tuple) and tag[0] == "METADATA_BLOCK_PICTURE":
-                image = mutagen.flac.Picture(base64.standard_b64decode(tag[1]))
-                stream = Gio.MemoryInputStream.new_from_data(image.data, None)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+            if isinstance(tag, tuple):
+                if tag[0] == "METADATA_BLOCK_PICTURE":
+                    image = mutagen.flac.Picture(
+                                            base64.standard_b64decode(tag[1]))
+                    stream = Gio.MemoryInputStream.new_from_data(image.data,
+                                                                 None)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    size,
                                                                    size,
                                                                    False,
                                                                    None)
-                break
+                    break
             elif tag.startswith("APIC:"):
                 audiotag = filetag.tags[tag]
                 # TODO check type by pref
