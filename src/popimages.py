@@ -133,33 +133,9 @@ class PopImages(Gtk.Popover):
         Reset cache and use player object to announce cover change
     """
     def _on_activate(self, flowbox, child):
-        album_path = Objects.albums.get_path(self._album_id)
-        path_count = Objects.albums.get_path_count(album_path)
-        album_name = Objects.albums.get_name(self._album_id)
-        artist_name = Objects.albums.get_artist_name(self._album_id)
-        try:
-            # Many albums with same path, suffix with artist_album name
-            if path_count > 1:
-                artpath = album_path + "/folder_" +\
-                          artist_name + "_" +\
-                          album_name + ".jpg"
-                if os.path.exists(album_path+"/folder.jpg"):
-                    os.remove(album_path+"/folder.jpg")
-            else:
-                artpath = album_path+"/folder.jpg"
-            # Flowboxitem => image =>  pixbuf
-            pixbuf = child.get_child().get_pixbuf()
-            # Gdk < 3.15 was missing save method
-            try:
-                pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
-            # > 3.15 is missing savev method :(
-            except:
-                pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
-            Objects.art.clean_cache(self._album_id)
-            Objects.player.announce_cover_update(self._album_id)
-        except Exception as e:
-            print("Check rights on ", album_path)
-            print(e)
-            pass
+        pixbuf = child.get_child().get_pixbuf()
+        Objects.art.save_art(pixbuf, self._album_id)
+        Objects.art.clean_cache(self._album_id)
+        Objects.player.announce_cover_update(self._album_id)
         self.hide()
         self._streams = {}

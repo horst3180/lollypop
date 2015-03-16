@@ -247,7 +247,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 # Copy album art
                 art = Objects.art.get_art_path(album_id, sql)
                 if art:
-                    dst_art = "%s/folder.jpg" % on_device_album_path
+                    dst_art = "%s/cover.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
                         copyfile(art, dst_art)
 
@@ -304,7 +304,7 @@ class DeviceManagerWidget(Gtk.Bin):
                     self._fraction = 1.0
                     self._in_thread = False
                     return
-                if f != "folder.jpg":
+                if f != "cover.jpg":
                     filepath = os.path.join(root, f)
                     if filepath not in tracks_path:
                         self._delete(filepath)
@@ -312,7 +312,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._fraction = self._done/self._total
 
     """
-        Del empty dirs, folder.jpg doesn't count
+        Del empty dirs, cover.jpg doesn't count
         @param path as str
     """
     def _empty_dirs(self, path):
@@ -325,7 +325,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 dirpath = os.path.join(root, d)
                 ls = os.listdir(dirpath)
                 if len(ls) == 1:
-                    if ls[0] == "folder.jpg":
+                    if ls[0] == "cover.jpg":
                         self._delete("%s/%s" % (dirpath, ls[0]))
                         self._done += 1
                         self._fraction = self._done/self._total

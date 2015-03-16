@@ -173,6 +173,36 @@ class AlbumArt:
                 os.remove(os.path.join(self._CACHE_PATH, f))
 
     """
+        Save pixbuf for album id
+        @param pixbuf as Gdk.Pixbuf
+        @param album id as int
+    """
+    def save_art(self, pixbuf, album_id):
+        album_path = Objects.albums.get_path(album_id)
+        path_count = Objects.albums.get_path_count(album_path)
+        album_name = Objects.albums.get_name(album_id)
+        artist_name = Objects.albums.get_artist_name(album_id)
+        try:
+            # Many albums with same path, suffix with artist_album name
+            if path_count > 1:
+                artpath = album_path + "/" +\
+                          artist_name + "_" +\
+                          album_name + ".jpg"
+                if os.path.exists(album_path+"/"+self._favorite):
+                    os.remove(album_path+"/"+self._favorite)
+            else:
+                artpath = album_path+"/"+self._favorite
+
+            # Gdk < 3.15 was missing save method
+            try:
+                pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
+            # > 3.15 is missing savev method :(
+            except:
+                pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
+        except Exception as e:
+            print("AlbumArt::save_art(): %s" % e)
+
+    """
         Get arts on google image corresponding to search
         @param search words as string
         @return [urls as string]
