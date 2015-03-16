@@ -40,7 +40,7 @@ class Database:
                                               name TEXT NOT NULL)'''
     create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)'''
-    create_albums_genres = '''CREATE TABLE albums_genres (
+    create_album_genres = '''CREATE TABLE album_genres (
                                                     album_id INT NOT NULL,
                                                     genre_id INT NOT NULL)'''
     create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
@@ -51,9 +51,10 @@ class Database:
                         discnumber INT,
                         artist_id INT NOT NULL,
                         album_id INT NOT NULL,
-                        genre_id INT NOT NULL,
                         mtime INT)'''
-
+    create_track_genres = '''CREATE TABLE track_genres (
+                                                    track_id INT NOT NULL,
+                                                    genre_id INT NOT NULL)'''
     version = 4
 
     """
@@ -83,8 +84,9 @@ class Database:
             sql.execute(self.create_albums)
             sql.execute(self.create_artists)
             sql.execute(self.create_genres)
-            sql.execute(self.create_albums_genres)
+            sql.execute(self.create_album_genres)
             sql.execute(self.create_tracks)
+            sql.execute(self.create_track_genres)
             sql.commit()
             Objects.settings.set_value('db-version',
                                        GLib.Variant('i', self.version))

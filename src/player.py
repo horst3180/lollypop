@@ -199,7 +199,8 @@ class Player(GObject.GObject):
             except:
                 track_id = None
         elif self._context.position != -1:
-            tracks = Objects.albums.get_tracks(self.current.album_id)
+            tracks = Objects.albums.get_tracks(self.current.album_id,
+                                               self.current.genre_id)
             if self._context.position <= 0:  # Prev album
                 pos = self._albums.index(self.current.album_id)
                 if pos - 1 < 0:  # we are on last album, go to first
@@ -207,7 +208,8 @@ class Player(GObject.GObject):
                 else:
                     pos -= 1
                 self.current.album_id = self._albums[pos]
-                tracks = Objects.albums.get_tracks(self.current.album_id)
+                tracks = Objects.albums.get_tracks(self.current.album_id,
+                                                   self.current.genre_id)
                 self._context.position = len(tracks) - 1
                 track_id = tracks[self._context.position]
             else:

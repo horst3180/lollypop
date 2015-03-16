@@ -73,9 +73,9 @@ class DatabaseGenres:
         if not sql:
             sql = Objects.sql
         albums = []
-        result = sql.execute("SELECT albums.rowid FROM albums, albums_genres\
-                             WHERE albums_genres.genre_id=?\
-                             AND albums_genres.album_id=albums.rowid",
+        result = sql.execute("SELECT albums.rowid FROM albums, album_genres\
+                             WHERE album_genres.genre_id=?\
+                             AND album_genres.album_id=albums.rowid",
                              (genre_id,))
         for row in result:
             albums += row

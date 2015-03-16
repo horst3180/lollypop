@@ -38,8 +38,8 @@ class DatabaseAlbums:
 
     """
         Add genre to album
-        @param album_id as int
-        @param genre_id as int
+        @param album id as int
+        @param genre id as int
         @warning: commit needed
     """
     def add_genre(self, album_id, genre_id, sql=None):
@@ -47,7 +47,7 @@ class DatabaseAlbums:
             sql = Objects.sql
         genres = self.get_genre_ids(album_id, sql)
         if genre_id not in genres:
-            sql.execute("INSERT INTO albums_genres (album_id, genre_id)"
+            sql.execute("INSERT INTO album_genres (album_id, genre_id)"
                         "VALUES (?, ?)", (album_id, genre_id))
 
     """
@@ -119,7 +119,7 @@ class DatabaseAlbums:
     def get_genre_ids(self, album_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT genre_id FROM albums_genres\
+        result = sql.execute("SELECT genre_id FROM album_genres\
                               WHERE album_id=?", (album_id,))
         genres = []
         for row in result:
@@ -134,9 +134,9 @@ class DatabaseAlbums:
     def get_genre_name(self, album_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT name FROM genres, albums_genres\
-                              WHERE albums_genres.album_id=?\
-                              AND albums_genres.genre_id=genres.rowid",
+        result = sql.execute("SELECT name FROM genres, album_genres\
+                              WHERE album_genres.album_id=?\
+                              AND album_genres.genre_id=genres.rowid",
                              (album_id,))
         genres = ""
         for row in result:
@@ -324,13 +324,14 @@ class DatabaseAlbums:
             sql = Objects.sql
         tracks = []
         if genre_id:
-            result = sql.execute("SELECT tracks.rowid FROM tracks\
+            result = sql.execute("SELECT tracks.rowid FROM tracks, track_genres\
                                   WHERE album_id=?\
-                                  AND tracks.genre_id=?\
+                                  AND track_genres.track_id = tracks.rowid\
+                                  AND track_genres.genre_id=?\
                                   ORDER BY discnumber, tracknumber",
                                  (album_id, genre_id))
         else:
-            result = sql.execute("SELECT tracks.rowid FROM tracks\
+            result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE album_id=?\
                                   ORDER BY discnumber, tracknumber",
                                  (album_id,))
@@ -373,10 +374,12 @@ class DatabaseAlbums:
         if genre_id:
             result = sql.execute("SELECT tracks.rowid, tracks.name,\
                                   tracks.artist_id, tracks.filepath,\
-                                  tracks.length FROM tracks, albums\
+                                  tracks.length\
+                                  FROM tracks, albums, track_genres\
                                   WHERE albums.artist_id=? AND albums.rowid=?\
                                   AND albums.rowid=tracks.album_id\
-                                  AND tracks.genre_id=?\
+                                  AND tracks.rowid = track_genres.track_id\
+                                  AND track_genres.genre_id=?\
                                   ORDER BY discnumber, tracknumber", (artist_id,
                                                                       album_id,
                                                                       genre_id))
@@ -405,10 +408,10 @@ class DatabaseAlbums:
         # Get albums for artist id and genre id
         if artist_id and genre_id:
             result = sql.execute("SELECT albums.rowid\
-                                  FROM albums, albums_genres\
+                                  FROM albums, album_genres\
                                   WHERE artist_id=?\
-                                  AND albums_genres.genre_id=?\
-                                  AND albums_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id=?\
+                                  AND album_genres.album_id=albums.rowid\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id, genre_id))
         # Get albums for all artists
@@ -421,10 +424,10 @@ class DatabaseAlbums:
         # Get albums for genre
         elif not artist_id:
             result = sql.execute("SELECT albums.rowid FROM albums,\
-                                  albums_genres, artists\
-                                  WHERE albums_genres.genre_id=?\
+                                  album_genres, artists\
+                                  WHERE album_genres.genre_id=?\
                                   AND artists.rowid=artist_id\
-                                  AND albums_genres.album_id=albums.rowid\
+                                  AND album_genres.album_id=albums.rowid\
                                   ORDER BY artists.name COLLATE NOCASE,\
                                   albums.year,\
                                   albums.name COLLATE NOCASE", (genre_id,))
@@ -457,9 +460,9 @@ class DatabaseAlbums:
         # Get compilation for genre id
         else:
             result = sql.execute(
-                        "SELECT albums.rowid FROM albums, albums_genres\
-                         WHERE albums_genres.genre_id=?\
-                         AND albums_genres.album_id=albums.rowid\
+                        "SELECT albums.rowid FROM albums, album_genres\
+                         WHERE album_genres.genre_id=?\
+                         AND album_genres.album_id=albums.rowid\
                          AND albums.artist_id=-1\
                          ORDER BY albums.name,\
                          albums.year", (genre_id,))

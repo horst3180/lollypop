@@ -36,25 +36,39 @@ class DatabaseTracks:
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            artist_id, album_id, genre_id, mtime, sql=None):
+            artist_id, album_id, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
-                discnumber, artist_id, album_id, genre_id, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                               filepath,
-                                               length,
-                                               tracknumber,
-                                               discnumber,
-                                               artist_id,
-                                               album_id,
-                                               genre_id,
-                                               mtime))
+                discnumber, artist_id, album_id, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                            filepath,
+                                            length,
+                                            tracknumber,
+                                            discnumber,
+                                            artist_id,
+                                            album_id,
+                                            mtime))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
+
+
+    """
+        Add genre to track
+        @param track id as int
+        @param genre id as int
+        @warning: commit needed
+    """
+    def add_genre(self, track_id, genre_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        genres = self.get_genre_ids(track_id, sql)
+        if genre_id not in genres:
+            sql.execute("INSERT INTO track_genres (track_id, genre_id)"
+                        "VALUES (?, ?)", (track_id, genre_id))
 
     """
         Return track id for path
@@ -135,6 +149,21 @@ class DatabaseTracks:
             return v[0]
 
         return _("Unknown")
+
+    """
+        Get genre ids
+        @param track id as int
+        @return genres id as [int]
+    """
+    def get_genre_ids(self, track_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT genre_id FROM track_genres\
+                              WHERE track_id=?", (track_id,))
+        genres = []
+        for row in result:
+            genres += row
+        return genres
 
     """
         Get mtime for tracks
@@ -318,11 +347,21 @@ class DatabaseTracks:
                      AND NOT EXISTS\
                         (SELECT rowid FROM albums\
                          WHERE artists.rowid = albums.artist_id)")
-        print("Missing a clean here")
-        sql.execute("DELETE FROM genres\
+        sql.execute("DELETE FROM album_genres\
+                     WHERE NOT EXISTS\
+                        (SELECT rowid FROM albums\
+                         WHERE album_genres.album_id = albums.rowid)")
+        sql.execute("DELETE FROM track_genres\
                      WHERE NOT EXISTS\
                         (SELECT rowid FROM tracks\
-                         WHERE genres.rowid = tracks.genre_id)")
+                         WHERE track_genres.track_id = tracks.rowid)")
+        sql.execute("DELETE FROM genres\
+                     WHERE NOT EXISTS\
+                        (SELECT rowid FROM album_genres\
+                         WHERE genres.rowid = album_genres.genre_id)\
+                     AND NOT EXISTS\
+                        (SELECT rowid FROM track_genres\
+                         WHERE genres.rowid = track_genres.genre_id)")
 
     """
         Search for tracks looking like string

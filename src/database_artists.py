@@ -105,10 +105,10 @@ class DatabaseArtists:
                                   ORDER BY name COLLATE NOCASE")
         else:
             result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists, albums, albums_genres\
+                                  FROM artists, albums, album_genres\
                                   WHERE artists.rowid == albums.artist_id\
-                                  AND albums_genres.genre_id=?\
-                                  AND albums_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id=?\
+                                  AND album_genres.album_id=albums.rowid\
                                   ORDER BY artists.name\
                                   COLLATE NOCASE", (genre_id,))
 

@@ -278,4 +278,6 @@ class CollectionScanner(GObject.GObject):
         # Add track to db
         Objects.tracks.add(title, filepath, length,
                            tracknumber, discnumber, artist_id,
-                           album_id, genre_id, mtime, sql)
+                           album_id, mtime, sql)
+        track_id = Objects.tracks.get_id_by_path(filepath, sql)
+        Objects.tracks.add_genre(track_id, genre_id, sql)
