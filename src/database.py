@@ -16,7 +16,6 @@ import os
 from gi.repository import GLib
 
 from lollypop.define import Objects
-from lollypop.database_upgrade import DatabaseUpgrade
 
 
 class Database:
@@ -52,6 +51,8 @@ class Database:
                         album_id INT NOT NULL,
                         mtime INT)'''
 
+    version = 4
+
     """
         Create database tables or manage update if needed
     """
@@ -63,14 +64,17 @@ class Database:
                 os.mkdir(self.LOCAL_PATH)
             except:
                 print("Can't create %s" % self.LOCAL_PATH)
-        try:
+
+        sql = self.get_cursor()
+      
+        if Objects.settings.get_value('db-version').get_int32() < self.version:        
+            self._set_popularities(sql)
+            sql.close()
+            os.remove(self.DB_PATH)
             sql = self.get_cursor()
-
-        except:
-            exit(-1)
-
-        db_version = Objects.settings.get_value('db-version')
-        upgrade = DatabaseUpgrade(sql, db_version)
+            Objects.settings.set_value('db-version',
+                                       GLib.Variant('i', self.version))
+        
         # Create db schema
         try:
             sql.execute(self.create_albums)
@@ -79,34 +83,10 @@ class Database:
             sql.execute(self.create_tracks)
             sql.commit()
             Objects.settings.set_value('db-version',
-                                       GLib.Variant('i', upgrade.count()))
-        # Upgrade db schema
+                                       GLib.Variant('i', self.version))
         except:
-            try:
-                if db_version.get_int32() < upgrade.count():
-                    Objects.settings.set_value(
-                                        'db-version',
-                                        GLib.Variant('i',
-                                                     upgrade.do_db_upgrade())
-                                              )
-                if upgrade.reset_needed():
-                    self._set_popularities(sql)
-                    Objects.settings.set_value(
-                                        'party-ids',
-                                        GLib.Variant('ai', []))
-                    sql.execute("DROP TABLE tracks")
-                    sql.execute("DROP TABLE albums")
-                    sql.execute("DROP TABLE artists")
-                    sql.execute("DROP TABLE genres")
-                    sql.execute(self.create_albums)
-                    sql.execute(self.create_artists)
-                    sql.execute(self.create_genres)
-                    sql.execute(self.create_tracks)
-                    sql.commit()
-            except Exception as e:
-                print(e)
-                pass
-        sql.close()
+            pass
+
 
     """
         Get a dict with album path and popularity
@@ -134,4 +114,7 @@ class Database:
         Return a new sqlite cursor
     """
     def get_cursor(self):
-        return sqlite3.connect(self.DB_PATH)
+        try:
+            return sqlite3.connect(self.DB_PATH)
+        except:
+            exit (-1)

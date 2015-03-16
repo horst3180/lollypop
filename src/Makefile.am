@@ -13,7 +13,6 @@ app_PYTHON = \
 	database_artists.py\
 	database_genres.py\
 	database_tracks.py\
-	database_upgrade.py\
 	albumart.py\
 	selectionlist.py\
 	queue.py\
