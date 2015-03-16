@@ -78,7 +78,7 @@ class SettingsDialog(Gtk.Dialog):
         if len(dirs) > 0:
             path = dirs.pop(0)
         else:
-            path = GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)
+            path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC)
         self._main_chooser.set_dir(path)
 
         # Others choosers
@@ -185,7 +185,7 @@ class SettingsDialog(Gtk.Dialog):
         paths = []
         main_path = self._main_chooser.get_dir()
         choosers = self._chooser_box.get_children()
-        if main_path == GLib.get_user_special_dir(GLib.USER_DIRECTORY_MUSIC)\
+        if main_path == GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC)\
            and not choosers:
             paths = []
         else:
@@ -234,7 +234,7 @@ class ChooserWidget(Gtk.Grid):
         self._chooser_btn.set_property("margin", 5)
         self._chooser_btn.show()
         self.add(self._chooser_btn)
-        self._action_btn = Gtk.Button(None)
+        self._action_btn = Gtk.Button()
         self._action_btn.set_property("margin", 5)
         self._action_btn.show()
         self.add(self._action_btn)
