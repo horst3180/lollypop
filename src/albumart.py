@@ -78,7 +78,6 @@ class AlbumArt:
         @return cover file path as string
     """
     def get_art_path(self, album_id, sql=None):
-        return None
         album_path = Objects.albums.get_path(album_id, sql)
         album_name = Objects.albums.get_name(album_id, sql)
         artist_name = Objects.albums.get_artist_name(album_id, sql)
