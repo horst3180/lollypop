@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, GObject
 from cgi import escape
 
 from lollypop.define import Objects, Navigation, ArtSize
@@ -78,7 +78,9 @@ class AlbumWidget(Gtk.Grid):
 
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(Gtk.Grid):
-
+    __gsignals__ = {
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
     """
         Init album widget songs ui with a complex grid:
             - Album cover
@@ -190,6 +192,7 @@ class AlbumDetailedWidget(Gtk.Grid):
     """
     def _add_tracks(self, infos, mid_tracks, i):
         if not infos:
+            self.emit('populated')
             return
         info = infos.pop(0)
         track_id = info[0]
