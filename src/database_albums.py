@@ -403,7 +403,7 @@ class DatabaseAlbums:
                                   (album_id, genre_id))
         else:
             result = sql.execute("SELECT tracks.rowid,\
-                                  tracks.name\
+                                  tracks.name,\
                                   tracks.length\
                                   FROM tracks, track_artists, albums\
                                   WHERE albums.rowid = ?\
@@ -413,10 +413,15 @@ class DatabaseAlbums:
                                   (album_id,))
 
         infos = []
+        rm_doublon = []
         for row in result:
-            # Add artists
-            row += (Objects.tracks.get_artist_ids(row[0], sql),)
-            infos.append(row,)
+            # Check for doublon
+            if row[0] not in rm_doublon:
+                rm_doublon.append(row[0])
+                # Add artists
+                row += (Objects.tracks.get_artist_ids(row[0], sql),)
+                infos.append(row,)
+        del rm_doublon
         return infos
 
     """
