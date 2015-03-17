@@ -212,9 +212,11 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         artists = []
-        result = sql.execute("SELECT artist_id from tracks where album_id=?\
-                              AND artist_id=?", (album_id,
-                                                 Navigation.COMPILATIONS))
+        result = sql.execute("SELECT track_artists.artist_id\
+                              FROM tracks, track_artists\
+                              WHERE tracks.album_id=?\
+                              AND track_artists.track_id = tracks.rowid",
+                              (album_id,))
         for row in result:
             artists += row
         return artists

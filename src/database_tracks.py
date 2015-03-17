@@ -357,14 +357,21 @@ class DatabaseTracks:
                      AND NOT EXISTS\
                         (SELECT rowid FROM albums\
                          WHERE artists.rowid = albums.artist_id)")
-        sql.execute("DELETE FROM album_genres\
+        sql.execute("DELETE FROM track_artists\
                      WHERE NOT EXISTS\
-                        (SELECT rowid FROM albums\
-                         WHERE album_genres.album_id = albums.rowid)")
+                        (SELECT rowid FROM tracks\
+                         WHERE track_artists.track_id = tracks.rowid)")
         sql.execute("DELETE FROM track_genres\
                      WHERE NOT EXISTS\
                         (SELECT rowid FROM tracks\
                          WHERE track_genres.track_id = tracks.rowid)")
+        sql.execute("DELETE FROM album_genres\
+                     WHERE NOT EXISTS\
+                        (SELECT tracks.rowid\
+                         FROM tracks, track_genres\
+                         WHERE track_genres.genre_id = album_genres.genre_id\
+                         AND tracks.rowid = track_genres.track_id\
+                         AND album_genres.album_id = tracks.album_id)")
         sql.execute("DELETE FROM genres\
                      WHERE NOT EXISTS\
                         (SELECT rowid FROM album_genres\
@@ -395,7 +402,13 @@ class DatabaseTracks:
     def remove(self, path, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("DELETE FROM tracks WHERE filepath=?", (path,))
+        track_id = self.get_id_by_path(path, sql)
+        sql.execute("DELETE FROM track_genres\
+                     WHERE track_id=?", (track_id,))
+        sql.execute("DELETE FROM track_artists\
+                     WHERE track_id=?", (track_id,))
+        sql.execute("DELETE FROM tracks\
+                     WHERE rowid=?", (track_id,))
 
 #######################
 # PRIVATE             #
