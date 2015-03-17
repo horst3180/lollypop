@@ -382,15 +382,20 @@ class PlaylistWidget(Gtk.Grid):
     def _add_tracks(self, tracks, widget, pos):
         if not tracks:
             return
+
         track_id = tracks.pop(0)
         if track_id == -1:
             return
-        (title, filepath, length, artist_id, album_id) =\
+
+        (title, filepath, length, album_id) =\
             Objects.tracks.get_infos(track_id)
-        title = "<b>%s</b>\n %s" %\
-            (escape(translate_artist_name(
-                Objects.artists.get_name(artist_id))),
-                escape(title))
+
+        artist_name = ""
+        for artist_id in Objects.tracks.get_artist_ids(track_id):
+            artist_name += translate_artist_name(
+                            Objects.artists.get_name(artist_id)) + ", "
+        title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                                   escape(title))
 
         widget.add_track(track_id, pos, title, length, None, True)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1)

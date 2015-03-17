@@ -218,7 +218,7 @@ class DatabaseTracks:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT name, filepath,\
-                              length, artist_id, album_id\
+                              length, album_id\
                               FROM tracks WHERE rowid=?", (track_id,))
         v = result.fetchone()
         if v and len(v) > 0:
@@ -330,9 +330,10 @@ class DatabaseTracks:
             sql = Objects.sql
         tracks = []
         result = sql.execute("SELECT tracks.rowid, tracks.name\
-                              FROM tracks, albums\
+                              FROM tracks, track_artists, albums\
                               WHERE albums.rowid == tracks.album_id\
-                              AND tracks.artist_id=?\
+                              AND track_artists.artist_id=?\
+                              AND track_artists.track_id=tracks.rowid\
                               AND albums.artist_id != ?", (artist_id,
                                                            artist_id))
         for row in result:
