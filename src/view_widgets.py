@@ -200,7 +200,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         if self._artist_id == Navigation.COMPILATIONS or\
            self._artist_id != artist_id:
             artist_name = translate_artist_name(
-                                Objects.tracks.get_artist_name(track_id))
+                                Objects.artists.get_name(artist_id))
             title = artist_name + " - " + title
 
         # Get track position in queue

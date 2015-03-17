@@ -386,26 +386,28 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         tracks = []
-        artist_id = Objects.albums.get_artist_id(album_id, sql)
+
         if genre_id:
             result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  tracks.artist_id, tracks.length\
-                                  FROM tracks, albums, track_genres\
-                                  WHERE albums.artist_id=? AND albums.rowid=?\
-                                  AND albums.rowid=tracks.album_id\
+                                  track_artists.artist_id, tracks.length\
+                                  FROM tracks, albums,\
+                                  track_artists, track_genres\
+                                  WHERE albums.rowid=?\
+                                  AND albums.rowid = tracks.album_id\
+                                  AND tracks.rowid = track_artists.track_id\
                                   AND tracks.rowid = track_genres.track_id\
                                   AND track_genres.genre_id=?\
-                                  ORDER BY discnumber, tracknumber", (artist_id,
-                                                                      album_id,
-                                                                      genre_id))
+                                  ORDER BY discnumber, tracknumber", 
+                                  (album_id, genre_id))
         else:
             result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  tracks.artist_id, tracks.length\
-                                  FROM tracks, albums\
-                                  WHERE albums.artist_id=? AND albums.rowid=?\
-                                  AND albums.rowid=tracks.album_id\
-                                  ORDER BY discnumber, tracknumber", (artist_id,
-                                                                      album_id))
+                                  track_artists.artist_id, tracks.length\
+                                  FROM tracks, track_artists, albums\
+                                  WHERE albums.rowid = ?\
+                                  AND albums.rowid = tracks.album_id\
+                                  AND track_artists.track_id = tracks.rowid\
+                                  ORDER BY discnumber, tracknumber",
+                                  (album_id,))
         for row in result:
             tracks += (row,)
         return tracks
@@ -494,13 +496,15 @@ class DatabaseAlbums:
     def sanitize(self, sql):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT DISTINCT tracks.artist_id, album_id,\
-                              albums.name, albums.year FROM tracks, albums\
-                              WHERE albums.rowid == tracks.album_id\
-                              AND albums.artist_id == ?\
+        result = sql.execute("SELECT DISTINCT track_artists.artist_id,\
+                              album_id, albums.name, albums.year\
+                              FROM tracks, albums, track_artists\
+                              WHERE albums.rowid = tracks.album_id\
+                              AND albums.artist_id = ?\
+                              AND track_artists.track_id = tracks.rowid\
                               GROUP BY album_id\
-                              HAVING COUNT(DISTINCT tracks.artist_id) == 1", (
-                              Navigation.COMPILATIONS,))
+                              HAVING COUNT(DISTINCT track_artists.artist_id)\
+                              == 1", (Navigation.COMPILATIONS,))
 
         for artist_id, album_id, album_name, album_year in result:
             existing_id = self.get_id(album_name, artist_id, album_year, sql)
@@ -510,7 +514,7 @@ class DatabaseAlbums:
                             (existing_id, album_id))
                 for genre_id in self.get_genre_ids(album_id, sql):
                     self.add_genre(existing_id, genre_id, sql)
-                sql.execute("DELETE FROM albums WHERE rowid == ?",
+                sql.execute("DELETE FROM albums WHERE rowid = ?",
                             (album_id,))
             # Album is not a compilation,
             # so update album id to march track album id

@@ -29,32 +29,43 @@ class DatabaseTracks:
         @param length as int
         @param tracknumber as int
         @param discnumber as int
-        @param artist_id as int
         @param album_id as int
         @param genre_id as int
         @param mtime as int
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            artist_id, album_id, mtime, sql=None):
+            album_id, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
-                discnumber, artist_id, album_id, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                discnumber, album_id, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?)", (name,
                                             filepath,
                                             length,
                                             tracknumber,
                                             discnumber,
-                                            artist_id,
                                             album_id,
                                             mtime))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 
+    """
+        Add artist to track
+        @param track id as int
+        @param artist id as int
+        @warning: commit needed
+    """
+    def add_artist(self, track_id, artist_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        artists = self.get_artist_ids(track_id, sql)
+        if artist_id not in artists:
+            sql.execute("INSERT INTO track_artists (track_id, artist_id)"
+                        "VALUES (?, ?)", (track_id, artist_id))
 
     """
         Add genre to track
@@ -151,9 +162,24 @@ class DatabaseTracks:
         return _("Unknown")
 
     """
+        Get artist ids
+        @param track id as int
+        @return artist ids as [int]
+    """
+    def get_artist_ids(self, track_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT artist_id FROM track_artists\
+                              WHERE track_id=?", (track_id,))
+        artists = []
+        for row in result:
+            artists += row
+        return artists
+
+    """
         Get genre ids
         @param track id as int
-        @return genres id as [int]
+        @return genre ids as [int]
     """
     def get_genre_ids(self, track_id, sql=None):
         if not sql:
@@ -200,23 +226,6 @@ class DatabaseTracks:
         return ()
 
     """
-        Get artist name for track id
-        @param Track id as int
-        @return Artist name as string
-    """
-    def get_artist_name(self, track_id, sql=None):
-        if not sql:
-            sql = Objects.sql
-        result = sql.execute("SELECT artists.name from artists,tracks\
-                              WHERE tracks.rowid=? AND\
-                              tracks.artist_id=artists.rowid", (track_id,))
-        v = result.fetchone()
-        if v and len(v) > 0:
-            return v[0]
-
-        return _("Unknown")
-
-    """
         Get artist id for track id
         @param Track id as int
         @return Artist id as int
@@ -224,8 +233,9 @@ class DatabaseTracks:
     def get_artist_id(self, track_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT artist_id FROM tracks\
-                              WHERE tracks.rowid=?", (track_id,))
+        result = sql.execute("SELECT artist_id\
+                              FROM track_artists\
+                              WHERE track_id=?", (track_id,))
         v = result.fetchone()
 
         if v and len(v) > 0:
@@ -342,8 +352,8 @@ class DatabaseTracks:
                          WHERE albums.rowid = tracks.album_id)")
         sql.execute("DELETE FROM artists\
                      WHERE NOT EXISTS\
-                        (SELECT rowid FROM tracks\
-                         WHERE artists.rowid = tracks.artist_id)\
+                        (SELECT rowid FROM track_artists\
+                         WHERE artists.rowid = track_artists.artist_id)\
                      AND NOT EXISTS\
                         (SELECT rowid FROM albums\
                          WHERE artists.rowid = albums.artist_id)")

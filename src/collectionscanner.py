@@ -176,9 +176,9 @@ class CollectionScanner(GObject.GObject):
             title = os.path.basename(filepath)
 
         if "artist" in keys:
-            artist = format_artist_name(tag["artist"][0])
+            artists = tag["artist"][0]
         else:
-            artist = _("Unknown")
+            artists = _("Unknown")
 
         # Vorbis comment uses albumartist for original artist
         # Id3tag uses performer for original artist
@@ -240,11 +240,16 @@ class CollectionScanner(GObject.GObject):
         else:
             year = 0
 
-        # Get artist id, add it if missing
-        artist_id = Objects.artists.get_id(artist, sql)
-        if artist_id is None:
-            Objects.artists.add(artist, sql)
+        # Get all artist ids
+        artist_ids = []
+        for word in artists.split(';'):
+            artist = format_artist_name(word)
+            # Get artist id, add it if missing            
             artist_id = Objects.artists.get_id(artist, sql)
+            if artist_id is None:
+                Objects.artists.add(artist, sql)
+                artist_id = Objects.artists.get_id(artist, sql)
+            artist_ids.append(artist_id)
 
         if performer:
             # Get performer id, add it if missing
@@ -255,10 +260,10 @@ class CollectionScanner(GObject.GObject):
         else:
             performer_id = Navigation.COMPILATIONS
 
-        # Get all genres ids
+        # Get all genre ids
         genre_ids = []
         for genre in genres.split(';'):
-            # Get genre id, add genre if missing            
+            # Get genre id, add genre if missing
             genre_id = Objects.genres.get_id(genre, sql)
             if genre_id is None:
                 Objects.genres.add(genre, sql)
@@ -280,10 +285,12 @@ class CollectionScanner(GObject.GObject):
 
         # Add track to db
         Objects.tracks.add(title, filepath, length,
-                           tracknumber, discnumber, artist_id,
+                           tracknumber, discnumber,
                            album_id, mtime, sql)
+
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
-        
+        for artist_id in artist_ids:
+            Objects.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:
            Objects.tracks.add_genre(track_id, genre_id, sql)
            

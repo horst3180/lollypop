@@ -49,9 +49,11 @@ class Database:
                         length INT,
                         tracknumber INT,
                         discnumber INT,
-                        artist_id INT NOT NULL,
                         album_id INT NOT NULL,
                         mtime INT)'''
+    create_track_artists = '''CREATE TABLE track_artists (
+                                                    track_id INT NOT NULL,
+                                                    artist_id INT NOT NULL)'''
     create_track_genres = '''CREATE TABLE track_genres (
                                                     track_id INT NOT NULL,
                                                     genre_id INT NOT NULL)'''
@@ -86,6 +88,7 @@ class Database:
             sql.execute(self.create_genres)
             sql.execute(self.create_album_genres)
             sql.execute(self.create_tracks)
+            sql.execute(self.create_track_artists)
             sql.execute(self.create_track_genres)
             sql.commit()
             Objects.settings.set_value('db-version',
