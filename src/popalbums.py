@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from _thread import start_new_thread
 
 from lollypop.view import ArtistView, ViewContainer
@@ -62,8 +62,8 @@ class PopAlbums(Gtk.Popover, ViewContainer):
     def do_hide(self):
         Gtk.Popover.do_hide(self)
         child = self._stack.get_visible_child()
-        if child is not None:
-            child.destroy()
+        child.stop()
+        GLib.timeout_add(1000, self._clean_view, child)
 
 #######################
 # PRIVATE             #
