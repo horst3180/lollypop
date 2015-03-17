@@ -34,7 +34,6 @@ class CollectionScanner(GObject.GObject):
         self._in_thread = False
         self._progress = None
         self._smooth = False
-        self._popularities = Objects.db.get_popularities()
 
     """
         Update database
@@ -155,6 +154,7 @@ class CollectionScanner(GObject.GObject):
 
         Objects.tracks.clean(sql)
         Objects.albums.sanitize(sql)
+        self._restore_popularities(sql)
         sql.commit()
         sql.close()
         GLib.idle_add(self._finish)
@@ -168,9 +168,6 @@ class CollectionScanner(GObject.GObject):
     """
     def _add2db(self, filepath, mtime, tag, sql):
         path = os.path.dirname(filepath)
-        popularity = 0
-        if path in self._popularities:
-            popularity = self._popularities[path]
 
         keys = tag.keys()
         if "title" in keys:
@@ -271,7 +268,7 @@ class CollectionScanner(GObject.GObject):
         album_id = Objects.albums.get_id(album, performer_id, year, sql)
         if album_id is None:
             Objects.albums.add(album, performer_id,
-                               year, path, popularity, sql)
+                               year, path, 0, sql)
             album_id = Objects.albums.get_id(album, performer_id, year, sql)
         
         for genre_id in genre_ids:
@@ -289,3 +286,18 @@ class CollectionScanner(GObject.GObject):
         
         for genre_id in genre_ids:
            Objects.tracks.add_genre(track_id, genre_id, sql)
+           
+    """
+        Restore albums popularties
+    """
+    def _restore_popularities(self, sql):
+        self._popularities = Objects.db.get_popularities()
+        result = sql.execute("SELECT albums.name, artists.name,\
+                              albums.year, albums.rowid\
+                              FROM albums, artists\
+                              WHERE artists.rowid == albums.artist_id")
+        for row in result:
+            string = "%s_%s_%s" % (row[0], row[1], str(row[2]))
+            if string in self._popularities:
+                Objects.albums.set_popularity(row[3],
+                                              self._popularities[string], sql)

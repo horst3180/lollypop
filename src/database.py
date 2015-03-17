@@ -55,7 +55,7 @@ class Database:
     create_track_genres = '''CREATE TABLE track_genres (
                                                     track_id INT NOT NULL,
                                                     genre_id INT NOT NULL)'''
-    version = 4
+    version = 5
 
     """
         Create database tables or manage update if needed
@@ -107,14 +107,18 @@ class Database:
 ###########
 
     """
-        Set a dict with album path and popularity
+        Set a dict with album string and popularity
         This is usefull for collection scanner be
         able to restore popularities after db reset
     """
     def _set_popularities(self, sql):
-        result = sql.execute("SELECT path, popularity FROM albums")
+        result = sql.execute("SELECT albums.name, artists.name,\
+                              albums.year, popularity\
+                              FROM albums, artists\
+                              WHERE artists.rowid == albums.artist_id")
         for row in result:
-            self._popularity_backup[row[0]] = row[1]
+            string = "%s_%s_%s" % (row[0], row[1], str(row[2]))
+            self._popularity_backup[string] = row[3]
 
     """
         Return a new sqlite cursor

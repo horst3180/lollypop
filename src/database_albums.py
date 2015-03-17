@@ -72,8 +72,18 @@ class DatabaseAlbums:
         sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
 
     """
+        Set popularity
+        @param album_id as int
+        @param popularity as int
+        @warning: commit needed
+    """
+    def set_popularity(self, album_id, popularity, sql=None):
+        if not sql:
+            sql = Objects.sql
+        sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
+                    (popularity, album_id))
+    """
         Increment popularity field for album id
-        No commit needed
         @param int
     """
     def set_more_popular(self, album_id, sql=None):
