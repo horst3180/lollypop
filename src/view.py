@@ -295,7 +295,6 @@ class ArtistView(View):
                                              albums,
                                              genre_id)
             start_new_thread(widget.populate, ())
-            widget.show()
             self._albumbox.add(widget)
             if widget.eventbox:
                 window = widget.eventbox.get_window()
@@ -314,6 +313,7 @@ class ArtistView(View):
         if self._signal_id:
             widget.disconnect(self._signal_id)
             self._signal_id = None
+        widget.show()
         GLib.idle_add(self._add_albums, albums,
                       genre_id, priority=GLib.PRIORITY_LOW)
 
