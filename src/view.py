@@ -212,6 +212,7 @@ class ArtistView(View):
     def __init__(self, artist_id, show_artist_details):
         View.__init__(self)
         self._artist_id = artist_id
+        self._signal_id = None
 
         if show_artist_details:
             self._ui = Gtk.Builder()
@@ -289,7 +290,10 @@ class ArtistView(View):
                                          True,
                                          self._show_menu,
                                          size_group)
-            widget.connect('populated', self._another_one, albums, genre_id)
+            self._signal_id = widget.connect('populated',
+                                             self._another_one,
+                                             albums,
+                                             genre_id)
             start_new_thread(widget.populate, ())
             widget.show()
             self._albumbox.add(widget)
@@ -307,7 +311,9 @@ class ArtistView(View):
         @param genre id as int
     """
     def _another_one(self, widget, albums, genre_id):
-        widget.disconnect_by_func(self._another_one)
+        if self._signal_id:
+            widget.disconnect(self._signal_id)
+            self._signal_id = None
         GLib.idle_add(self._add_albums, albums,
                       genre_id, priority=GLib.PRIORITY_LOW)
 
@@ -468,6 +474,7 @@ class PlaylistView(View):
     def __init__(self, playlist_name):
         View.__init__(self)
         self._playlist_name = playlist_name
+        self._signal_id = None
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
@@ -515,15 +522,17 @@ class PlaylistView(View):
         Do show, connect signals
     """
     def do_show(self):
-        Objects.playlists.connect("playlist-changed",
-                                  self._update_view)
+        self._signal_id = Objects.playlists.connect("playlist-changed",
+                                                    self._update_view)
         View.do_show(self)
 
     """
         Do hide, disconnect signals
     """
     def do_hide(self):
-        Objects.playlists.disconnect_by_func(self._update_view)
+        if self._signal_id:
+            Objects.playlists.disconnect(self._signal_id)
+            self._signal_id = None
         View.do_hide(self)
 
 #######################

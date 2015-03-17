@@ -153,6 +153,7 @@ class TracksWidget(Gtk.ListBox):
     """
     def __init__(self, show_menu):
         Gtk.ListBox.__init__(self)
+        self._signal_id = None
         self._show_menu = show_menu
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
@@ -204,14 +205,17 @@ class TracksWidget(Gtk.ListBox):
         Set signals callback
     """
     def do_show(self):
-        Objects.player.connect("queue-changed", self._update_pos_label)
+        self._signal_id = Objects.player.connect("queue-changed",
+                                                 self._update_pos_label)
         Gtk.ListBox.do_show(self)
 
     """
         Clean signals callback
     """
     def do_hide(self):
-        Objects.player.disconnect_by_func(self._update_pos_label)
+        if self._signal_id:
+            Objects.player.disconnect(self._signal_id)
+            self._signal_id = None
         Gtk.ListBox.do_hide(self)
 
 #######################

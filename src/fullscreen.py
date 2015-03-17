@@ -29,6 +29,8 @@ class FullScreen(Gtk.Window):
         Gtk.Window.__init__(self)
         self._timeout = None
         self._seeking = False
+        self._signal1_id = None
+        self._signal2_id = None
         self.set_transient_for(parent)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
@@ -65,8 +67,10 @@ class FullScreen(Gtk.Window):
     """
     def do_show(self):
         is_playing = Objects.player.is_playing()
-        Objects.player.connect("current-changed", self._on_current_changed)
-        Objects.player.connect("status-changed", self._on_status_changed)
+        self._signal1_id = Objects.player.connect("current-changed",
+                                                  self._on_current_changed)
+        self._signal2_id = Objects.player.connect("status-changed",
+                                                  self._on_status_changed)
         if not Objects.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", True)
@@ -85,8 +89,12 @@ class FullScreen(Gtk.Window):
         Remove signals and unset color
     """
     def do_hide(self):
-        Objects.player.disconnect_by_func(self._on_current_changed)
-        Objects.player.disconnect_by_func(self._on_status_changed)
+        if self._signal1_id:
+            Objects.player.disconnect(self._signal1_id)
+            self._signal1_id = None
+        if self._signal2_id:
+            Objects.player.disconnect(self._signal2_id)
+            self._signal2_id = None
         if not Objects.player.is_party() and not Objects.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", False)

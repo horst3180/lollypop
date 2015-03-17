@@ -31,6 +31,7 @@ class QueueWidget(Gtk.Popover):
 
         self._timeout = None
         self._in_drag = False
+        self._signal_id = None
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             "list-remove-symbolic",
                                             22,
@@ -98,16 +99,19 @@ class QueueWidget(Gtk.Popover):
                                 self._del_pixbuf,
                                 track_id])
 
-        Objects.player.connect("current-changed", self._on_current_changed)
+        self._signal_id = Objects.player.connect("current-changed",
+                                                 self._on_current_changed)
         Gtk.Popover.do_show(self)
 
     """
         Clear model
     """
     def do_hide(self):
+        if self._signal_id:
+            Objects.player.disconnect(self._signal_id)
+            self._signal_id = None
         Gtk.Popover.do_hide(self)
         self._model.clear()
-        Objects.player.disconnect_by_func(self._on_current_changed)
 
 #######################
 # PRIVATE             #
