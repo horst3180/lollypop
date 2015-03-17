@@ -29,27 +29,25 @@ class GstPlayFlags:
 
 # Represent current playing track
 class CurrentTrack:
-    def __init__(self):
-        self.id = None
-        self.title = None
-        self.album_id = None
-        self.album = None
-        self.artist = None
-        self.performer_id = None
-        self.performer = None
-        self.genre_id = None
-        self.genre = None
-        self.number = None
-        self.duration = None
-        self.path = None
+        id = None
+        title = None
+        album_id = None
+        album = None
+        artist = None
+        performer_id = None
+        performer = None
+        genre_id = None
+        genre = None
+        number = None
+        duration = None
+        path = None
 
 
 # Represent playback context
-class CurrentContext:
-    def __init__(self):
-        self.album_id = None
-        self.genre_id = None
-        self.position = None
+class PlayContext:
+        album_id = None
+        genre_id = None
+        position = None
 
 
 # Player object used to manage playback and playlists
@@ -73,7 +71,7 @@ class Player(GObject.GObject):
         Gst.init(None)
 
         self.current = CurrentTrack()
-        self._context = CurrentContext()
+        self._context = PlayContext()
         # Albums in current playlist
         self._albums = None
         # Used by shuffle albums to restore playlist before shuffle
