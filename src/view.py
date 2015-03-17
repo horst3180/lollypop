@@ -407,6 +407,7 @@ class AlbumView(View):
                                                    False,
                                                    True,
                                                    size_group)
+        start_new_thread(self._context_widget.populate, ())
         self._context_widget.show()
         view = Gtk.ScrolledWindow()
         view.set_min_content_height(250)

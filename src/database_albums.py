@@ -381,17 +381,17 @@ class DatabaseAlbums:
         with same name and different genre
         @param album id as int
         @param genre id as int
-        @return Arrays of (tracks id as int, name as string, artist id as int,
-                           length as int)
+        @return Arrays of (tracks id as int, name as string,
+                           length as int, [artist ids])
     """
     def get_tracks_infos(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        tracks = []
 
         if genre_id:
-            result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  track_artists.artist_id, tracks.length\
+            result = sql.execute("SELECT tracks.rowid,\
+                                  tracks.name,\
+                                  tracks.length\
                                   FROM tracks, albums,\
                                   track_artists, track_genres\
                                   WHERE albums.rowid=?\
@@ -402,17 +402,22 @@ class DatabaseAlbums:
                                   ORDER BY discnumber, tracknumber", 
                                   (album_id, genre_id))
         else:
-            result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  track_artists.artist_id, tracks.length\
+            result = sql.execute("SELECT tracks.rowid,\
+                                  tracks.name\
+                                  tracks.length\
                                   FROM tracks, track_artists, albums\
                                   WHERE albums.rowid = ?\
                                   AND albums.rowid = tracks.album_id\
                                   AND track_artists.track_id = tracks.rowid\
                                   ORDER BY discnumber, tracknumber",
                                   (album_id,))
+
+        infos = []
         for row in result:
-            tracks += (row,)
-        return tracks
+            # Add artists
+            row += (Objects.tracks.get_artist_ids(row[0], sql),)
+            infos.append(row,)
+        return infos
 
     """
         Get albums ids

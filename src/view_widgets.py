@@ -184,7 +184,7 @@ class AlbumDetailedWidget(Gtk.Grid):
 
     """
         Add tracks for to Album widget
-        @param infos as [(track_id, title, artist_id, length)]
+        @param infos as [(track_id, title, length, [artist ids])]
         @param mid tracks as int
         @param i as int
     """
@@ -193,15 +193,20 @@ class AlbumDetailedWidget(Gtk.Grid):
             return
         info = infos.pop(0)
         track_id = info[0]
-        title = info[1]
-        artist_id = info[2]
-        length = info[3]
+        title = escape(info[1])
+        length = info[2]
+        artist_ids = info[3]
+
         # If we are listening to a compilation, prepend artist name
         if self._artist_id == Navigation.COMPILATIONS or\
-           self._artist_id != artist_id:
-            artist_name = translate_artist_name(
-                                Objects.artists.get_name(artist_id))
-            title = artist_name + " - " + title
+           len(artist_ids) > 1 or\
+           self._artist_id not in artist_ids:
+            artist_name = ""
+            for artist_id in artist_ids:
+                artist_name += translate_artist_name(
+                                Objects.artists.get_name(artist_id)) + ", "
+            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                                       title)
 
         # Get track position in queue
         pos = None
@@ -211,13 +216,13 @@ class AlbumDetailedWidget(Gtk.Grid):
         if i <= mid_tracks:
             self._tracks_widget1.add_track(track_id,
                                            i,
-                                           escape(title),
+                                           title,
                                            length,
                                            pos)
         else:
             self._tracks_widget2.add_track(track_id,
                                            i,
-                                           escape(title),
+                                           title,
                                            length,
                                            pos)
         GLib.idle_add(self._add_tracks, infos, mid_tracks, i+1)
