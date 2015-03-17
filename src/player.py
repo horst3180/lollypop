@@ -34,7 +34,6 @@ class CurrentTrack:
         self.title = None
         self.album_id = None
         self.album = None
-        self.artist_id = None
         self.artist = None
         self.performer_id = None
         self.performer = None
@@ -299,7 +298,7 @@ class Player(GObject.GObject):
             if genre_id:
                 self.set_albums(self.current.id,
                                 self.current.album_id,
-                                self.current.artist_id,
+                                self.current.performer_id,
                                 genre_id,
                                 False)
             else:
@@ -334,7 +333,7 @@ class Player(GObject.GObject):
             # We need to put some context, take first available genre
             if self.current.id:
                 self.set_albums(self.current.id, self.current.album_id,
-                                self.current.artist_id, None, True)
+                                self.current.performer_id, None, True)
 
     """
         Set party ids to ids
@@ -724,12 +723,13 @@ class Player(GObject.GObject):
                                         Objects.artists.get_name(
                                                 self.current.performer_id,
                                                 sql))
-        self.current.artist_id = Objects.tracks.get_artist_id(self.current.id,
-                                                              sql)
-        self.current.artist = translate_artist_name(
-                                        Objects.artists.get_name(
-                                                self.current.artist_id,
-                                                sql))
+        artist_name = ""
+        for artist_id in Objects.tracks.get_artist_ids(self.current.id,
+                                                      sql):
+            artist_name += translate_artist_name(
+                            Objects.artists.get_name(artist_id)) + ", "
+        self.current.artist = artist_name[:-2]
+
         self.current.genre = Objects.albums.get_genre_name(
                                                 self.current.album_id,
                                                 sql)

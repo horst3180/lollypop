@@ -28,10 +28,6 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         Gtk.Popover.__init__(self)
         ViewContainer.__init__(self, 1000)
 
-        self._widgets = []
-        self._populating_view = None
-        self._artist_id = None
-
         self.add(self._stack)
 
         Objects.player.connect("current-changed", self._update_content)
@@ -40,17 +36,10 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         Run _populate in a thread
     """
     def populate(self):
-        artist_id = Objects.player.current.performer_id
-
-        # View already populated
-        if self._artist_id == artist_id:
-            return
-
         previous = self._stack.get_visible_child()
-        view = ArtistView(artist_id, False)
+        view = ArtistView(Objects.player.current.performer_id, False)
         view.show()
         start_new_thread(view.populate, (None,))
-        self._artist_id = artist_id
         self._stack.add(view)
         self._stack.set_visible_child(view)
         self._clean_view(previous)
@@ -67,6 +56,15 @@ class PopAlbums(Gtk.Popover, ViewContainer):
             self.set_size_request(600, 600)
         Gtk.Popover.do_show(self)
 
+    """
+        Remove view
+    """
+    def do_hide(self):
+        Gtk.Popover.do_hide(self)
+        child = self._stack.get_visible_child()
+        if not child is None:
+            child.destroy()
+
 #######################
 # PRIVATE             #
 #######################
@@ -78,13 +76,3 @@ class PopAlbums(Gtk.Popover, ViewContainer):
     def _update_content(self, player):
         if self.is_visible():
             self.populate()
-        # Destroy view if artist changed
-        else:
-            artist_id = Objects.player.current.performer_id
-            if artist_id == -1:
-                artist_id = Objects.player.current.artist_id
-            if self._artist_id != artist_id:
-                self._artist_id = None
-                current = self._stack.get_visible_child()
-                if current:
-                    current.destroy()
