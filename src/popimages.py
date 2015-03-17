@@ -15,7 +15,6 @@ from gettext import gettext as _
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 import urllib.request
 import urllib.parse
-import os
 from _thread import start_new_thread
 
 from lollypop.define import Objects

@@ -44,12 +44,12 @@ class DatabaseTracks:
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
                 discnumber, album_id, mtime) VALUES\
                 (?, ?, ?, ?, ?, ?, ?)", (name,
-                                            filepath,
-                                            length,
-                                            tracknumber,
-                                            discnumber,
-                                            album_id,
-                                            mtime))
+                                         filepath,
+                                         length,
+                                         tracknumber,
+                                         discnumber,
+                                         album_id,
+                                         mtime))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 

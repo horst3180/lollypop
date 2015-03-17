@@ -725,7 +725,7 @@ class Player(GObject.GObject):
                                                 sql))
         artist_name = ""
         for artist_id in Objects.tracks.get_artist_ids(self.current.id,
-                                                      sql):
+                                                       sql):
             artist_name += translate_artist_name(
                             Objects.artists.get_name(artist_id, sql)) + ", "
         self.current.artist = artist_name[:-2]

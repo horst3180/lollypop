@@ -95,7 +95,8 @@ class FullScreen(Gtk.Window):
         if self._signal2_id:
             Objects.player.disconnect(self._signal2_id)
             self._signal2_id = None
-        if not Objects.player.is_party() and not Objects.settings.get_value('dark-ui'):
+        if not Objects.player.is_party() and\
+           not Objects.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", False)
         if self._timeout:

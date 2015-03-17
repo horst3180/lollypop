@@ -72,15 +72,15 @@ class Database:
                 print("Can't create %s" % self.LOCAL_PATH)
 
         sql = self.get_cursor()
-      
-        if Objects.settings.get_value('db-version').get_int32() < self.version:        
+
+        if Objects.settings.get_value('db-version').get_int32() < self.version:
             self._set_popularities(sql)
             sql.close()
             os.remove(self.DB_PATH)
             sql = self.get_cursor()
             Objects.settings.set_value('db-version',
                                        GLib.Variant('i', self.version))
-        
+
         # Create db schema
         try:
             sql.execute(self.create_albums)
@@ -95,7 +95,6 @@ class Database:
                                        GLib.Variant('i', self.version))
         except:
             pass
-
 
     """
         Get a dict with album path and popularity
@@ -130,4 +129,4 @@ class Database:
         try:
             return sqlite3.connect(self.DB_PATH)
         except:
-            exit (-1)
+            exit(-1)

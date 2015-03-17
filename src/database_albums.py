@@ -216,7 +216,7 @@ class DatabaseAlbums:
                               FROM tracks, track_artists\
                               WHERE tracks.album_id=?\
                               AND track_artists.track_id = tracks.rowid",
-                              (album_id,))
+                             (album_id,))
         for row in result:
             artists += row
         return artists
@@ -363,14 +363,14 @@ class DatabaseAlbums:
                                   WHERE album_id=?\
                                   AND track_genres.genre_id=?\
                                   AND track_genres.track_id=tracks.rowid\
-                                  ORDER BY discnumber, tracknumber", (album_id,
-                                                                      genre_id))
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id, genre_id))
         else:
             result = sql.execute("SELECT tracks.filepath\
                                   FROM tracks\
                                   WHERE album_id=?\
-                                  ORDER BY discnumber, tracknumber", 
-                                  (album_id,))
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id,))
         for row in result:
             tracks += row
         return tracks
@@ -399,8 +399,8 @@ class DatabaseAlbums:
                                   AND tracks.rowid = track_artists.track_id\
                                   AND tracks.rowid = track_genres.track_id\
                                   AND track_genres.genre_id=?\
-                                  ORDER BY discnumber, tracknumber", 
-                                  (album_id, genre_id))
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id, genre_id))
         else:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
@@ -410,7 +410,7 @@ class DatabaseAlbums:
                                   AND albums.rowid = tracks.album_id\
                                   AND track_artists.track_id = tracks.rowid\
                                   ORDER BY discnumber, tracknumber",
-                                  (album_id,))
+                                 (album_id,))
 
         infos = []
         rm_doublon = []

@@ -227,7 +227,7 @@ class PlaylistsManager(GObject.GObject):
                    genre_id, is_album, sql=None):
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
-            tracks_path = Objects.albums.get_tracks_path(object_id, 
+            tracks_path = Objects.albums.get_tracks_path(object_id,
                                                          genre_id,
                                                          sql)
         else:

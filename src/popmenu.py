@@ -239,8 +239,9 @@ class PopMainMenu(Gio.Menu):
     """
     def _prepend_to_queue(self, action, variant, album_id):
         if self._is_album:
-            for track_id in reversed(Objects.albums.get_tracks(album_id,
-                                                               self._genre_id)):
+            for track_id in reversed(Objects.albums.get_tracks(
+                                                    album_id,
+                                                    self._genre_id)):
                 Objects.player.prepend_to_queue(track_id)
         else:
             Objects.player.prepend_to_queue(album_id)

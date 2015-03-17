@@ -68,7 +68,7 @@ class AlbumArt:
                 else:
                     return None
         except Exception as e:
-            print("AlbumArt::get_path(): %s" %e, ascii(path))
+            print("AlbumArt::get_path(): %s" % e, ascii(path))
             return None
 
     """
@@ -251,10 +251,10 @@ class AlbumArt:
                     stream = Gio.MemoryInputStream.new_from_data(image.data,
                                                                  None)
                     pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   size,
-                                                                   size,
-                                                                   False,
-                                                                   None)
+                                                                       size,
+                                                                       size,
+                                                                       False,
+                                                                       None)
                     break
             elif tag.startswith("APIC:"):
                 audiotag = filetag.tags[tag]

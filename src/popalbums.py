@@ -62,7 +62,7 @@ class PopAlbums(Gtk.Popover, ViewContainer):
     def do_hide(self):
         Gtk.Popover.do_hide(self)
         child = self._stack.get_visible_child()
-        if not child is None:
+        if child is not None:
             child.destroy()
 
 #######################

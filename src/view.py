@@ -317,6 +317,7 @@ class ArtistView(View):
         GLib.idle_add(self._add_albums, albums,
                       genre_id, priority=GLib.PRIORITY_LOW)
 
+
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
 
@@ -438,9 +439,9 @@ class AlbumView(View):
     """
     def _on_album_activated(self, flowbox, child):
         if self._album_id == child.get_child().get_id():
-             if Objects.settings.get_value('auto-play'):
+            if Objects.settings.get_value('auto-play'):
                 Objects.player.play_album(self._album_id)
-             else:
+            else:
                 self._album_id = None
                 self._stack.hide()
         else:

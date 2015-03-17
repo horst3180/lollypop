@@ -244,7 +244,7 @@ class CollectionScanner(GObject.GObject):
         artist_ids = []
         for word in artists.split(';'):
             artist = format_artist_name(word)
-            # Get artist id, add it if missing            
+            # Get artist id, add it if missing
             artist_id = Objects.artists.get_id(artist, sql)
             if artist_id is None:
                 Objects.artists.add(artist, sql)
@@ -275,7 +275,7 @@ class CollectionScanner(GObject.GObject):
             Objects.albums.add(album, performer_id,
                                year, path, 0, sql)
             album_id = Objects.albums.get_id(album, performer_id, year, sql)
-        
+
         for genre_id in genre_ids:
             Objects.albums.add_genre(album_id, genre_id, sql)
 
@@ -292,8 +292,8 @@ class CollectionScanner(GObject.GObject):
         for artist_id in artist_ids:
             Objects.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:
-           Objects.tracks.add_genre(track_id, genre_id, sql)
-           
+            Objects.tracks.add_genre(track_id, genre_id, sql)
+
     """
         Restore albums popularties
     """
