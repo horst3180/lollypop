@@ -133,7 +133,6 @@ class AlbumDetailedWidget(Gtk.Grid):
             self._ui.get_object('menu').show()
         else:
             self.eventbox = None
-        self._add_tracks()
 
     """
         Update playing track
@@ -159,6 +158,16 @@ class AlbumDetailedWidget(Gtk.Grid):
     def get_id(self):
         return self._album_id
 
+    """
+        Populate tracks
+    """
+    def populate(self):
+        sql = Objects.db.get_cursor()
+        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id, sql)/2)
+        infos = Objects.albums.get_tracks_infos(self._album_id,
+                                                self._genre_id,
+                                                sql)
+        GLib.idle_add(self._add_tracks, infos, mid_tracks, 1)
 
 #######################
 # PRIVATE             #
@@ -175,39 +184,43 @@ class AlbumDetailedWidget(Gtk.Grid):
 
     """
         Add tracks for to Album widget
+        @param infos as [(track_id, title, artist_id, length)]
+        @param mid tracks as int
+        @param i as int
     """
-    def _add_tracks(self):
-        i = 1
-        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id)/2)
-        for track_id, title, artist_id, filepath,\
-                length in Objects.albums.get_tracks_infos(self._album_id,
-                                                          self._genre_id):
+    def _add_tracks(self, infos, mid_tracks, i):
+        if not infos:
+            return
+        info = infos.pop(0)
+        track_id = info[0]
+        title = info[1]
+        artist_id = info[2]
+        length = info[3]
+        # If we are listening to a compilation, prepend artist name
+        if self._artist_id == Navigation.COMPILATIONS or\
+           self._artist_id != artist_id:
+            artist_name = translate_artist_name(
+                                Objects.tracks.get_artist_name(track_id))
+            title = artist_name + " - " + title
 
-            # If we are listening to a compilation, prepend artist name
-            if self._artist_id == Navigation.COMPILATIONS or\
-               self._artist_id != artist_id:
-                artist_name = translate_artist_name(
-                                    Objects.tracks.get_artist_name(track_id))
-                title = artist_name + " - " + title
+        # Get track position in queue
+        pos = None
+        if Objects.player.is_in_queue(track_id):
+            pos = Objects.player.get_track_position(track_id)
 
-            # Get track position in queue
-            pos = None
-            if Objects.player.is_in_queue(track_id):
-                pos = Objects.player.get_track_position(track_id)
-
-            if i <= mid_tracks:
-                self._tracks_widget1.add_track(track_id,
-                                               i,
-                                               escape(title),
-                                               length,
-                                               pos)
-            else:
-                self._tracks_widget2.add_track(track_id,
-                                               i,
-                                               escape(title),
-                                               length,
-                                               pos)
-            i += 1
+        if i <= mid_tracks:
+            self._tracks_widget1.add_track(track_id,
+                                           i,
+                                           escape(title),
+                                           length,
+                                           pos)
+        else:
+            self._tracks_widget2.add_track(track_id,
+                                           i,
+                                           escape(title),
+                                           length,
+                                           pos)
+        GLib.idle_add(self._add_tracks, infos, mid_tracks, i+1)
 
     """
         On track activation, play track

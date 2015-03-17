@@ -289,6 +289,7 @@ class ArtistView(View):
                                          True,
                                          self._show_menu,
                                          size_group)
+            start_new_thread(widget.populate, ())
             widget.show()
             self._albumbox.add(widget)
             if widget.eventbox:

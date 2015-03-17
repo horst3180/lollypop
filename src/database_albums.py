@@ -376,7 +376,7 @@ class DatabaseAlbums:
         @param album id as int
         @param genre id as int
         @return Arrays of (tracks id as int, name as string, artist id as int,
-                           filepath as string, length as int)
+                           length as int)
     """
     def get_tracks_infos(self, album_id, genre_id, sql=None):
         if not sql:
@@ -385,8 +385,7 @@ class DatabaseAlbums:
         artist_id = Objects.albums.get_artist_id(album_id, sql)
         if genre_id:
             result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  tracks.artist_id, tracks.filepath,\
-                                  tracks.length\
+                                  tracks.artist_id, tracks.length\
                                   FROM tracks, albums, track_genres\
                                   WHERE albums.artist_id=? AND albums.rowid=?\
                                   AND albums.rowid=tracks.album_id\
@@ -397,8 +396,8 @@ class DatabaseAlbums:
                                                                       genre_id))
         else:
             result = sql.execute("SELECT tracks.rowid, tracks.name,\
-                                  tracks.artist_id, tracks.filepath,\
-                                  tracks.length FROM tracks, albums\
+                                  tracks.artist_id, tracks.length\
+                                  FROM tracks, albums\
                                   WHERE albums.artist_id=? AND albums.rowid=?\
                                   AND albums.rowid=tracks.album_id\
                                   ORDER BY discnumber, tracknumber", (artist_id,
