@@ -370,7 +370,7 @@ class DatabaseAlbums:
                                   FROM tracks\
                                   WHERE album_id=?\
                                   ORDER BY discnumber, tracknumber", 
-                                  (album_id))
+                                  (album_id,))
         for row in result:
             tracks += row
         return tracks
