@@ -31,25 +31,27 @@ class DatabaseTracks:
         @param discnumber as int
         @param album_id as int
         @param genre_id as int
+        @param year as int
         @param mtime as int
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            album_id, mtime, sql=None):
+            album_id, year, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
-                discnumber, album_id, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?)", (name,
-                                         filepath,
-                                         length,
-                                         tracknumber,
-                                         discnumber,
-                                         album_id,
-                                         mtime))
+                discnumber, album_id, year, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                            filepath,
+                                            length,
+                                            tracknumber,
+                                            discnumber,
+                                            album_id,
+                                            year,
+                                            mtime))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 
@@ -109,6 +111,23 @@ class DatabaseTracks:
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]
+
+        return ""
+
+    """
+        Get track year
+        @param track id as int
+        @return track year as string
+    """
+    def get_year(self, album_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT year FROM tracks where rowid=?",
+                             (album_id,))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            if v[0]:
+                return str(v[0])
 
         return ""
 
@@ -325,7 +344,7 @@ class DatabaseTracks:
 
     """
         Clean database deleting orphaned entries
-        No commit needed
+        @warning commit needed
     """
     def clean(self, sql=None):
         if not sql:

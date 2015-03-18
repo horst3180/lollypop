@@ -287,8 +287,7 @@ class AlbumArt:
     """
     def _get_cache_path(self, album_id):
         path = Objects.albums.get_name(album_id) + "_" + \
-               Objects.albums.get_artist_name(album_id) + "_" + \
-               str(Objects.albums.get_year(album_id))
+               Objects.albums.get_artist_name(album_id)
         return path[0:240].replace("/", "_")
 
     """

@@ -33,7 +33,7 @@ class Database:
     create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         artist_id INT NOT NULL,
-                        year INT NOT NULL,
+                        year INT,
                         path TEXT NOT NULL,
                         popularity INT NOT NULL)'''
     create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
@@ -50,6 +50,7 @@ class Database:
                         tracknumber INT,
                         discnumber INT,
                         album_id INT NOT NULL,
+                        year INT,
                         mtime INT)'''
     create_track_artists = '''CREATE TABLE track_artists (
                                                     track_id INT NOT NULL,
@@ -114,13 +115,12 @@ class Database:
         able to restore popularities after db reset
     """
     def _set_popularities(self, sql):
-        result = sql.execute("SELECT albums.name, artists.name,\
-                              albums.year, popularity\
+        result = sql.execute("SELECT albums.name, artists.name, popularity\
                               FROM albums, artists\
                               WHERE artists.rowid == albums.artist_id")
         for row in result:
-            string = "%s_%s_%s" % (row[0], row[1], str(row[2]))
-            self._popularity_backup[string] = row[3]
+            string = "%s_%s" % (row[0], row[1])
+            self._popularity_backup[string] = row[2]
 
     """
         Return a new sqlite cursor

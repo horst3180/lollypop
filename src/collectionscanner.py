@@ -236,9 +236,9 @@ class CollectionScanner(GObject.GObject):
                 else:
                     year = int(string)
             except:
-                year = 0
+                year = None
         else:
-            year = 0
+            year = None
 
         # Get all artist ids
         artist_ids = []
@@ -270,11 +270,11 @@ class CollectionScanner(GObject.GObject):
                 genre_id = Objects.genres.get_id(genre, sql)
             genre_ids.append(genre_id)
 
-        album_id = Objects.albums.get_id(album, performer_id, year, sql)
+        album_id = Objects.albums.get_id(album, performer_id, sql)
         if album_id is None:
             Objects.albums.add(album, performer_id,
-                               year, path, 0, sql)
-            album_id = Objects.albums.get_id(album, performer_id, year, sql)
+                               path, 0, sql)
+            album_id = Objects.albums.get_id(album, performer_id, sql)
 
         for genre_id in genre_ids:
             Objects.albums.add_genre(album_id, genre_id, sql)
@@ -286,8 +286,13 @@ class CollectionScanner(GObject.GObject):
         # Add track to db
         Objects.tracks.add(title, filepath, length,
                            tracknumber, discnumber,
-                           album_id, mtime, sql)
+                           album_id, year, mtime, sql)
 
+        # Update year for album
+        year = Objects.albums.get_year_from_tracks(album_id, sql)
+        Objects.albums.set_year(album_id, year, sql)
+
+        # Set artists/genres for track
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
         for artist_id in artist_ids:
             Objects.tracks.add_artist(track_id, artist_id, sql)
@@ -299,12 +304,11 @@ class CollectionScanner(GObject.GObject):
     """
     def _restore_popularities(self, sql):
         self._popularities = Objects.db.get_popularities()
-        result = sql.execute("SELECT albums.name, artists.name,\
-                              albums.year, albums.rowid\
+        result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
                               FROM albums, artists\
                               WHERE artists.rowid == albums.artist_id")
         for row in result:
-            string = "%s_%s_%s" % (row[0], row[1], str(row[2]))
+            string = "%s_%s" % (row[0], row[1])
             if string in self._popularities:
-                Objects.albums.set_popularity(row[3],
+                Objects.albums.set_popularity(row[2],
                                               self._popularities[string], sql)
