@@ -139,7 +139,6 @@ class DeviceManagerWidget(Gtk.Bin):
             self._model.append([selected, playlist])
             GLib.idle_add(self._append_playlists, playlists)
         else:
-            self._view.grab_focus()
             self._view.get_selection().unselect_all()
 
     """

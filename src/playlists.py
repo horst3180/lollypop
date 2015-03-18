@@ -382,7 +382,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
             self._model.append([selected, playlist, self._del_pixbuf])
             GLib.idle_add(self._append_playlists, playlists)
         else:
-            self._view.grab_focus()
             self._view.get_selection().unselect_all()
 
     """
@@ -599,8 +598,7 @@ class PlaylistEditWidget:
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
-        self._view.grab_focus()
-        self._view.get_selection().unselect_all()
+        self.unselectall()
         self._update_on_disk()
 
     """
