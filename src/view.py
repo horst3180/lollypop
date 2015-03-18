@@ -302,9 +302,9 @@ class ArtistView(View):
         else:
             self._stop = False
 
+
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
-
     """
         Init album view ui with a scrolled flow box and a scrolled context view
     """

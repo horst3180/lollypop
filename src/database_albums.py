@@ -320,12 +320,17 @@ class DatabaseAlbums:
     def get_count(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT COUNT(tracks.rowid)\
-                              FROM tracks, track_genres\
-                              WHERE tracks.album_id=?\
-                              AND track_genres.track_id = tracks.rowid\
-                              AND track_genres.genre_id=?", (album_id, 
-                                                             genre_id))
+        if genre_id:
+            result = sql.execute("SELECT COUNT(tracks.rowid)\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.album_id=?\
+                                  AND track_genres.track_id = tracks.rowid\
+                                  AND track_genres.genre_id=?", (album_id,
+                                                                 genre_id))
+        else:
+            result = sql.execute("SELECT COUNT(tracks.rowid)\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?", (album_id,))
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]
