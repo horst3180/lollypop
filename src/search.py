@@ -280,16 +280,24 @@ class SearchWidget(Gtk.Popover):
 
         for track_id, track_name in Objects.tracks.search(searched, sql) +\
                 tracks_non_performer:
-            artist_name = ""
-            for artist_id in Objects.tracks.get_artist_ids(track_id, sql):
-                artist_name += translate_artist_name(
-                                Objects.artists.get_name(artist_id, sql)) + ", "
             search_obj = SearchObject()
-            search_obj.artist = artist_name[:-2]
             search_obj.title = track_name
             search_obj.id = track_id
             search_obj.album_id = Objects.tracks.get_album_id(track_id, sql)
             search_obj.is_track = True
+
+            album_artist_id = Objects.albums.get_artist_id(search_obj.album_id,
+                                                           sql)
+            artist_name = Objects.albums.get_artist_name(search_obj.album_id,
+                                                         sql) + ", "
+            for artist_id in Objects.tracks.get_artist_ids(track_id, sql):
+                if artist_id != album_artist_id:
+                    artist_name += translate_artist_name(
+                                    Objects.artists.get_name(artist_id,
+                                                             sql)) + ", "
+
+            search_obj.artist = artist_name[:-2]
+
             results.append(search_obj)
 
         if not self._stop_thread:
