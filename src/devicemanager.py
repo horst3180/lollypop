@@ -238,9 +238,10 @@ class DeviceManagerWidget(Gtk.Bin):
                 artist_name = translate_artist_name(
                                  Objects.albums.get_artist_name(album_id, sql))
                 track_path = Objects.tracks.get_path(track_id, sql)
-                on_device_album_path = "%s/tracks/%s_%s" % (self._path,
-                                                            artist_name,
-                                                            album_name)
+                on_device_album_path = "%s/tracks/%s_%s" %\
+                                                (self._path,
+                                                 artist_name.lower(),
+                                                 album_name.lower())
 
                 self._mkdir(on_device_album_path)
 
@@ -255,7 +256,9 @@ class DeviceManagerWidget(Gtk.Bin):
                 dst_path = "%s/%s" % (on_device_album_path, track_name)
                 if m3u:
                     m3u.write("tracks/%s_%s/%s\n" %
-                              (artist_name, album_name, track_name))
+                              (artist_name.lower(),
+                               album_name.lower(),
+                               track_name))
                 if not os.path.exists(dst_path):
                     copyfile(track_path, dst_path)
                     sleep(0.1)
@@ -291,8 +294,8 @@ class DeviceManagerWidget(Gtk.Bin):
                                  Objects.albums.get_artist_name(album_id, sql))
             track_path = Objects.tracks.get_path(track_id, sql)
             album_path = "%s/tracks/%s_%s" % (self._path,
-                                              artist_name,
-                                              album_name)
+                                              artist_name.lower(),
+                                              album_name.lower())
             track_name = os.path.basename(track_path)
             dst_path = "%s/%s" % (album_path, track_name)
             tracks_path.append(dst_path)
