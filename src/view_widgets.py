@@ -54,9 +54,10 @@ class AlbumWidget(Gtk.Grid):
         artist.set_label(translate_artist_name(artist_name))
         self.add(artist)
         
-        year = self._ui.get_object('year')
-        year.set_label(Objects.albums.get_year(album_id))
-        self.add(year)
+        if Objects.settings.get_value('show-year'):
+            year = self._ui.get_object('year')
+            year.set_label(Objects.albums.get_year(album_id))
+            self.add(year)
 
     def do_get_preferred_width(self):
         return (ArtSize.BIG, ArtSize.BIG)

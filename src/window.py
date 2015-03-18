@@ -144,6 +144,13 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         view.hide()
         GLib.timeout_add(2000, view.destroy)
 
+    """
+        Return True if important action is running
+        @return bool
+    """
+    def need_ui_locking(self):
+        return self._progress.is_visible()
+
 ############
 # Private  #
 ############

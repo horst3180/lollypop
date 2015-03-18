@@ -140,14 +140,14 @@ class Application(Gtk.Application):
         Search for new music
     """
     def _update_db(self, action=None, param=None):
-        if self._window:
+        if self._window and not self._window.need_ui_locking:
             self._window.update_db()
 
     """
         Show a fullscreen window with cover and artist informations
     """
     def _fullscreen(self, action=None, param=None):
-        if self._window:
+        if self._window and not self._window.need_ui_locking:
             fs = FullScreen(self._window)
             fs.show()
 
@@ -155,8 +155,9 @@ class Application(Gtk.Application):
         Show settings dialog
     """
     def _settings_dialog(self, action=None, param=None):
-        dialog = SettingsDialog(self._window)
-        dialog.show()
+        if self._window and not self._window.need_ui_locking:
+            dialog = SettingsDialog(self._window)
+            dialog.show()
 
     """
         Setup about dialog
