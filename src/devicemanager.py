@@ -239,9 +239,9 @@ class DeviceManagerWidget(Gtk.Bin):
                                  Objects.albums.get_artist_name(album_id, sql))
                 track_path = Objects.tracks.get_path(track_id, sql)
                 on_device_album_path = "%s/tracks/%s_%s" %\
-                                                (self._path,
-                                                 artist_name.lower(),
-                                                 album_name.lower())
+                                       (self._path,
+                                        artist_name.lower(),
+                                        album_name.lower())
 
                 self._mkdir(on_device_album_path)
 
