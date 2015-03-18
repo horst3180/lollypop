@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, Navigation
 from lollypop.utils import translate_artist_name
 
 
@@ -288,8 +288,11 @@ class SearchWidget(Gtk.Popover):
 
             album_artist_id = Objects.albums.get_artist_id(search_obj.album_id,
                                                            sql)
-            artist_name = Objects.albums.get_artist_name(search_obj.album_id,
-                                                         sql) + ", "
+            artist_name = ""
+            if album_artist_id != Navigation.COMPILATIONS:
+                artist_name = Objects.albums.get_artist_name(
+                                            search_obj.album_id,
+                                            sql) + ", "
             for artist_id in Objects.tracks.get_artist_ids(track_id, sql):
                 if artist_id != album_artist_id:
                     artist_name += translate_artist_name(
