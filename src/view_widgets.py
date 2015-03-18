@@ -43,19 +43,18 @@ class AlbumWidget(Gtk.Grid):
 
         self._cover = self._ui.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
-        self.add(self._cover)
-        
+
         title = self._ui.get_object('title')
         title.set_label(Objects.albums.get_name(album_id))
-        self.add(title)
-        
         artist_name = Objects.albums.get_artist_name(album_id) 
         artist = self._ui.get_object('artist')
         artist.set_label(translate_artist_name(artist_name))
-        self.add(artist)
-        
         year = self._ui.get_object('year')
         year.set_label(Objects.albums.get_year(album_id))
+
+        self.add(self._cover)
+        self.add(title)
+        self.add(artist)
         self.add(year)
 
     def do_get_preferred_width(self):

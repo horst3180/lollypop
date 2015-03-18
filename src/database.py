@@ -71,20 +71,18 @@ class Database:
             except:
                 print("Can't create %s" % self.LOCAL_PATH)
 
-        self.create()
+        sql = self.get_cursor()
+
         if Objects.settings.get_value('db-version').get_int32() < self.version:
             self._set_popularities(sql)
-            self.reset()
-            self.create()
+            sql.close()
+            os.remove(self.DB_PATH)
+            sql = self.get_cursor()
             Objects.settings.set_value('db-version',
                                        GLib.Variant('i', self.version))
 
-    """
-        Create db schema
-    """
-    def create(self):
+        # Create db schema
         try:
-            sql = self.get_cursor()
             sql.execute(self.create_albums)
             sql.execute(self.create_artists)
             sql.execute(self.create_genres)
@@ -93,19 +91,10 @@ class Database:
             sql.execute(self.create_track_artists)
             sql.execute(self.create_track_genres)
             sql.commit()
-            sql.close()
             Objects.settings.set_value('db-version',
                                        GLib.Variant('i', self.version))
         except:
             pass
-
-    """
-        Reset db
-    """
-    def reset(self):
-        sql = self.get_cursor()
-        self._set_popularities(sql)
-        os.remove(self.DB_PATH)
 
     """
         Get a dict with album path and popularity
@@ -114,15 +103,7 @@ class Database:
     """
     def get_popularities(self):
         return self._popularity_backup
-    
-    """
-        Return a new sqlite cursor
-    """
-    def get_cursor(self):
-        try:
-            return sqlite3.connect(self.DB_PATH)
-        except:
-            exit(-1)
+
 ###########
 # Private #
 ###########
@@ -140,3 +121,12 @@ class Database:
         for row in result:
             string = "%s_%s_%s" % (row[0], row[1], str(row[2]))
             self._popularity_backup[string] = row[3]
+
+    """
+        Return a new sqlite cursor
+    """
+    def get_cursor(self):
+        try:
+            return sqlite3.connect(self.DB_PATH)
+        except:
+            exit(-1)

@@ -170,29 +170,6 @@
                     <property name="top_attach">4</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkLabel" id="year">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">Show album's year</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSwitch" id="switch_year">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">This will change the way Lollypop handle your music, albums with differents years will be differents albums</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">5</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="tab_fill">False</property>

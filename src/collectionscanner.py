@@ -227,18 +227,18 @@ class CollectionScanner(GObject.GObject):
         else:
             tracknumber = 0
 
-        year = 0
-        if Objects.settings.get_value('show-year'):
-            if "date" in keys:
-                try:
-                    string = tag["date"][0]
-                    if "-" in string:
-                        index = string.find("-")
-                        year = int(string[0:index])
-                    else:
-                        year = int(string)
-                except:
-                    pass
+        if "date" in keys:
+            try:
+                string = tag["date"][0]
+                if "-" in string:
+                    index = string.find("-")
+                    year = int(string[0:index])
+                else:
+                    year = int(string)
+            except:
+                year = 0
+        else:
+            year = 0
 
         # Get all artist ids
         artist_ids = []
