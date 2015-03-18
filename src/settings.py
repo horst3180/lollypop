@@ -54,6 +54,11 @@ class SettingsDialog(Gtk.Dialog):
         switch_autoplay.set_state(Objects.settings.get_value('auto-play'))
         switch_autoplay.connect('state-set', self._update_autoplay_setting)
 
+        switch_year = builder.get_object('switch_year')
+        self._show_year_orig = Objects.settings.get_value('show-year')
+        switch_year.set_state(self._show_year_orig)
+        switch_year.connect('state-set', self._update_showyear_setting)
+
         close_button = builder.get_object('close_btn')
         close_button.connect('clicked', self._edit_settings_close)
 
@@ -179,6 +184,14 @@ class SettingsDialog(Gtk.Dialog):
                                    GLib.Variant('b', state))
 
     """
+        Update show year setting
+        @param widget as unused, state as widget state
+    """
+    def _update_showyear_setting(self, widget, state):
+        Objects.settings.set_value('show-year',
+                                   GLib.Variant('b', state))
+
+    """
         Close edit party dialog
         @param unused
     """
@@ -201,7 +214,11 @@ class SettingsDialog(Gtk.Dialog):
         Objects.settings.set_value('music-path', GLib.Variant('as', paths))
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
-        if set(previous) != set(paths):
+        if self._show_year_orig != Objects.settings.get_value('show-year'):
+            Objects.db.reset()
+            Objects.db.create()
+            self._window.update_db()
+        elif set(previous) != set(paths):
             self._window.update_db()
 
     """

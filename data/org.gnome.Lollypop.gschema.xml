@@ -76,6 +76,11 @@
             <summary>Restore previous view</summary>
             <description></description>
         </key>
+        <key type="b" name="show-year">
+            <default>false</default>
+            <summary>Show album's year</summary>
+            <description></description>
+        </key>
         <key type="b" name="auto-play">
             <default>false</default>
             <summary>Auto play albums on click</summary>
