@@ -73,7 +73,6 @@ class Database:
 
         self.create()
         if Objects.settings.get_value('db-version').get_int32() < self.version:
-            self._set_popularities(sql)
             self.reset()
             self.create()
             Objects.settings.set_value('db-version',
