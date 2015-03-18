@@ -290,33 +290,17 @@ class ArtistView(View):
                                          True,
                                          self._show_menu,
                                          size_group)
-            self._signal_id = widget.connect('populated',
-                                             self._another_one,
-                                             albums,
-                                             genre_id)
+            widget.show()
             start_new_thread(widget.populate, ())
             self._albumbox.add(widget)
             if widget.eventbox:
                 window = widget.eventbox.get_window()
                 if window:
                     window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+            GLib.idle_add(self._add_albums, albums,
+                          genre_id, priority=GLib.PRIORITY_LOW)
         else:
             self._stop = False
-
-    """
-        Add another album
-        @param widget as AlbumDetailedWidget
-        @param albums as array of album ids [int]
-        @param genre id as int
-    """
-    def _another_one(self, widget, albums, genre_id):
-        if self._signal_id:
-            widget.disconnect(self._signal_id)
-            self._signal_id = None
-        widget.show()
-        GLib.idle_add(self._add_albums, albums,
-                      genre_id, priority=GLib.PRIORITY_LOW)
-
 
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):

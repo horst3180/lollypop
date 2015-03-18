@@ -78,9 +78,6 @@ class AlbumWidget(Gtk.Grid):
 
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(Gtk.Grid):
-    __gsignals__ = {
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
     """
         Init album widget songs ui with a complex grid:
             - Album cover
@@ -165,11 +162,38 @@ class AlbumDetailedWidget(Gtk.Grid):
     """
     def populate(self):
         sql = Objects.db.get_cursor()
-        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id, sql)/2)
-        infos = Objects.albums.get_tracks_infos(self._album_id,
-                                                self._genre_id,
-                                                sql)
-        GLib.idle_add(self._add_tracks, infos, mid_tracks, 1)
+        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
+                                                      self._genre_id,
+                                                      sql)/2)
+        tracks = Objects.albums.get_tracks_infos(self._album_id,
+                                                 self._genre_id,
+                                                 sql)
+        self.populate_list_one(tracks[:mid_tracks],
+                               1)
+        self.populate_list_two(tracks[mid_tracks:],
+                               mid_tracks + 1)
+
+    """
+        Populate list one, thread safe
+        @param track's ids as array of int
+        @param track position as int
+    """
+    def populate_list_one(self, tracks, pos):
+        GLib.idle_add(self._add_tracks,
+                      tracks,
+                      self._tracks_widget1,
+                      pos)
+
+    """
+        Populate list two, thread safe
+        @param track's ids as array of int
+        @param track position as int
+    """
+    def populate_list_two(self, tracks, pos):
+        GLib.idle_add(self._add_tracks,
+                      tracks,
+                      self._tracks_widget2,
+                      pos)
 
 #######################
 # PRIVATE             #
@@ -186,19 +210,18 @@ class AlbumDetailedWidget(Gtk.Grid):
 
     """
         Add tracks for to Album widget
-        @param infos as [(track_id, title, length, [artist ids])]
-        @param mid tracks as int
+        @param tracks as [(track_id, title, length, [artist ids])]
+        @param widget as TracksWidget
         @param i as int
     """
-    def _add_tracks(self, infos, mid_tracks, i):
-        if not infos:
-            self.emit('populated')
+    def _add_tracks(self, tracks, widget, i):
+        if not tracks:
             return
-        info = infos.pop(0)
-        track_id = info[0]
-        title = escape(info[1])
-        length = info[2]
-        artist_ids = info[3]
+        track = tracks.pop(0)
+        track_id = track[0]
+        title = escape(track[1])
+        length = track[2]
+        artist_ids = track[3]
 
         # If we are listening to a compilation, prepend artist name
         if self._artist_id == Navigation.COMPILATIONS or\
@@ -216,19 +239,12 @@ class AlbumDetailedWidget(Gtk.Grid):
         if Objects.player.is_in_queue(track_id):
             pos = Objects.player.get_track_position(track_id)
 
-        if i <= mid_tracks:
-            self._tracks_widget1.add_track(track_id,
-                                           i,
-                                           title,
-                                           length,
-                                           pos)
-        else:
-            self._tracks_widget2.add_track(track_id,
-                                           i,
-                                           title,
-                                           length,
-                                           pos)
-        GLib.idle_add(self._add_tracks, infos, mid_tracks, i+1)
+        widget.add_track(track_id,
+                         i,
+                         title,
+                         length,
+                         pos)
+        GLib.idle_add(self._add_tracks, tracks, widget, i+1)
 
     """
         On track activation, play track

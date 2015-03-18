@@ -313,15 +313,19 @@ class DatabaseAlbums:
 
     """
         Get number of tracks for album_id
-        @param Album id as int
+        @param album id as int
+        @param genre id as int
         @return count as int
     """
-    def get_count(self, album_id, sql=None):
+    def get_count(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT COUNT(tracks.rowid) FROM tracks\
+        result = sql.execute("SELECT COUNT(tracks.rowid)\
+                              FROM tracks, track_genres\
                               WHERE tracks.album_id=?\
-                              ORDER BY discnumber, tracknumber", (album_id,))
+                              AND track_genres.track_id = tracks.rowid\
+                              AND track_genres.genre_id=?", (album_id, 
+                                                             genre_id))
         v = result.fetchone()
         if v and len(v) > 0:
             return v[0]
