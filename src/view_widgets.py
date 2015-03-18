@@ -132,6 +132,7 @@ class AlbumDetailedWidget(Gtk.Grid):
             self._ui.get_object('menu').show()
         else:
             self.eventbox = None
+        self._add_tracks()
 
     """
         Update playing track
@@ -157,44 +158,6 @@ class AlbumDetailedWidget(Gtk.Grid):
     def get_id(self):
         return self._album_id
 
-    """
-        Populate tracks
-    """
-    def populate(self):
-        sql = Objects.db.get_cursor()
-        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
-                                                      self._genre_id,
-                                                      sql)/2)
-        tracks = Objects.albums.get_tracks_infos(self._album_id,
-                                                 self._genre_id,
-                                                 sql)
-        self.populate_list_one(tracks[:mid_tracks],
-                               1)
-        self.populate_list_two(tracks[mid_tracks:],
-                               mid_tracks + 1)
-
-    """
-        Populate list one, thread safe
-        @param track's ids as array of int
-        @param track position as int
-    """
-    def populate_list_one(self, tracks, pos):
-        GLib.idle_add(self._add_tracks,
-                      tracks,
-                      self._tracks_widget1,
-                      pos)
-
-    """
-        Populate list two, thread safe
-        @param track's ids as array of int
-        @param track position as int
-    """
-    def populate_list_two(self, tracks, pos):
-        GLib.idle_add(self._add_tracks,
-                      tracks,
-                      self._tracks_widget2,
-                      pos)
-
 #######################
 # PRIVATE             #
 #######################
@@ -210,41 +173,44 @@ class AlbumDetailedWidget(Gtk.Grid):
 
     """
         Add tracks for to Album widget
-        @param tracks as [(track_id, title, length, [artist ids])]
-        @param widget as TracksWidget
-        @param i as int
     """
-    def _add_tracks(self, tracks, widget, i):
-        if not tracks:
-            return
-        track = tracks.pop(0)
-        track_id = track[0]
-        title = escape(track[1])
-        length = track[2]
-        artist_ids = track[3]
+    def _add_tracks(self):
+        i = 1
+        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
+                                                      self._genre_id)/2)
+        for track_id, title, length, artist_ids\
+            in Objects.albums.get_tracks_infos(self._album_id,
+                                               self._genre_id):
+            title = escape(title)
+            # If we are listening to a compilation, prepend artist name
+            if self._artist_id == Navigation.COMPILATIONS or\
+               len(artist_ids) > 1 or\
+               self._artist_id not in artist_ids:
+                artist_name = ""
+                for artist_id in artist_ids:
+                    artist_name += translate_artist_name(
+                                    Objects.artists.get_name(artist_id)) + ", "
+                title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                                           title)
 
-        # If we are listening to a compilation, prepend artist name
-        if self._artist_id == Navigation.COMPILATIONS or\
-           len(artist_ids) > 1 or\
-           self._artist_id not in artist_ids:
-            artist_name = ""
-            for artist_id in artist_ids:
-                artist_name += translate_artist_name(
-                                Objects.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
-                                       title)
+            # Get track position in queue
+            pos = None
+            if Objects.player.is_in_queue(track_id):
+                pos = Objects.player.get_track_position(track_id)
 
-        # Get track position in queue
-        pos = None
-        if Objects.player.is_in_queue(track_id):
-            pos = Objects.player.get_track_position(track_id)
-
-        widget.add_track(track_id,
-                         i,
-                         title,
-                         length,
-                         pos)
-        GLib.idle_add(self._add_tracks, tracks, widget, i+1)
+            if i <= mid_tracks:
+                self._tracks_widget1.add_track(track_id,
+                                               i,
+                                               title,
+                                               length,
+                                               pos)
+            else:
+                self._tracks_widget2.add_track(track_id,
+                                               i,
+                                               title,
+                                               length,
+                                               pos)
+            i += 1
 
     """
         On track activation, play track
