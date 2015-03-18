@@ -289,7 +289,8 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._fraction = 1.0
                 self._in_thread = False
                 return
-            album_name = Objects.tracks.get_album_name(track_id, sql)
+            album_id = Objects.tracks.get_album_id(track_id, sql)
+            album_name = Objects.albums.get_name(album_id, sql)
             artist_name = translate_artist_name(
                                  Objects.albums.get_artist_name(album_id, sql))
             track_path = Objects.tracks.get_path(track_id, sql)
