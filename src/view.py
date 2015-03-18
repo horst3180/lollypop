@@ -291,6 +291,7 @@ class ArtistView(View):
                                          self._show_menu,
                                          size_group)
             widget.show()
+            start_new_thread(widget.populate, ())
             self._albumbox.add(widget)
             if widget.eventbox:
                 window = widget.eventbox.get_window()
