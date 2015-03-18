@@ -28,6 +28,7 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         Gtk.Popover.__init__(self)
         ViewContainer.__init__(self, 1000)
 
+        self._on_screen_artist = None
         self.add(self._stack)
 
         Objects.player.connect("current-changed", self._update_content)
@@ -36,13 +37,15 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         Run _populate in a thread
     """
     def populate(self):
-        previous = self._stack.get_visible_child()
-        view = ArtistView(Objects.player.current.performer_id, False)
-        view.show()
-        start_new_thread(view.populate, (None,))
-        self._stack.add(view)
-        self._stack.set_visible_child(view)
-        self._clean_view(previous)
+        if self._on_screen_artist != Objects.player.current.performer_id:
+            self._on_screen_artist = Objects.player.current.performer_id
+            previous = self._stack.get_visible_child()
+            view = ArtistView(self._on_screen_artist, False)
+            view.show()
+            start_new_thread(view.populate, (None,))
+            self._stack.add(view)
+            self._stack.set_visible_child(view)
+            self._clean_view(previous)
 
     """
         Resize popover
@@ -63,6 +66,7 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         Gtk.Popover.do_hide(self)
         child = self._stack.get_visible_child()
         child.stop()
+        self._on_screen_artist = None
         GLib.timeout_add(1000, self._clean_view, child)
 
 #######################
