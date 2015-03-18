@@ -34,6 +34,7 @@ class SelectionList(GObject.GObject):
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
         self._sort = False
+        self._selected_id = None
         self._values = None
         self._is_artists = False
 
@@ -46,6 +47,8 @@ class SelectionList(GObject.GObject):
                                             16,
                                             0)
         self._view = Gtk.TreeView(model=self._model)
+        self._view.set_enable_search(True)
+        self._view.set_search_column(1)
         self._view.connect('cursor-changed', self._new_item_selected)
 
         renderer0 = Gtk.CellRendererText()
@@ -256,6 +259,8 @@ class SelectionList(GObject.GObject):
         @param view as Gtk.TreeView
     """
     def _new_item_selected(self, view):
-        self._selected_id = self.get_selected_id()
-        if self._selected_id is not None:
-            self.emit('item-selected', self._selected_id)
+        new_selected_id = self.get_selected_id()
+        if new_selected_id != self._selected_id:
+            self._selected_id = self.get_selected_id()
+            if self._selected_id is not None:
+                self.emit('item-selected', self._selected_id)
