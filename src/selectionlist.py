@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GdkPixbuf, GLib, GObject, Pango
+from time import time
 
 from lollypop.utils import translate_artist_name
 from lollypop.define import Navigation
@@ -39,6 +40,7 @@ class SelectionList(GObject.GObject):
         self._stop = False        # Stop current populate
         self._populating = False  # Are we populating?
         self._timeout = None
+        self._pop_time = 0.0
 
         self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'go-next-symbolic',
@@ -93,17 +95,9 @@ class SelectionList(GObject.GObject):
         @thread safe
     """
     def populate(self, values):
-        if self._timeout:
-            GLib.source_remove(self._timeout)
-            self._timeout = None
-        # Wait for previous populate to stop
-        if self._populating:
-            self._timeout = GLib.timeout_add(250, self.populate, values)
-        else:
-            self._populating = True
-            self._stop = False
-            GLib.idle_add(self._model.clear)
-            GLib.idle_add(self._add_item, values)
+        self._pop_time = time()
+        GLib.idle_add(self._model.clear)
+        GLib.idle_add(self._add_item, values, self._pop_time)
 
     """
         Remove row from model
@@ -203,13 +197,11 @@ class SelectionList(GObject.GObject):
     """
         Add an item to the list
         @param items as [(int,str)]
+        @param time as float
     """
-    def _add_item(self, values):
-        if not values or self._stop:
-            self._populating = False
+    def _add_item(self, values, time):
+        if not values or time != self._pop_time:
             self.emit("populated")
-            self._stop = False
-            self._populating = False
             del values
             values = None
             return
@@ -222,7 +214,7 @@ class SelectionList(GObject.GObject):
         self._model.append([object_id,
                             string,
                             self._get_pixbuf(object_id)])
-        GLib.idle_add(self._add_item, values)
+        GLib.idle_add(self._add_item, values, time)
 
     """
         Return pixbuf for id
@@ -280,5 +272,4 @@ class SelectionList(GObject.GObject):
         @param view as Gtk.TreeView
     """
     def _new_item_selected(self, view):
-        if not self._populating:
-            self.emit('item-selected', self.get_selected_id())
+        self.emit('item-selected', self.get_selected_id())

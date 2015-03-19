@@ -135,8 +135,8 @@ class DeviceManagerWidget(Gtk.Bin):
     def _append_playlists(self, playlists):
         if len(playlists) > 0:
             playlist = playlists.pop(0)
-            selected = playlist+".m3u" in self._on_disk_playlists
-            self._model.append([selected, playlist])
+            selected = playlist[1]+".m3u" in self._on_disk_playlists
+            self._model.append([selected, playlist[1]])
             GLib.idle_add(self._append_playlists, playlists)
         else:
             self._view.get_selection().unselect_all()
