@@ -22,6 +22,7 @@ class SelectionList(GObject.GObject):
 
     __gsignals__ = {
         'item-selected': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     """
@@ -36,7 +37,6 @@ class SelectionList(GObject.GObject):
         self._values = None       # Sort disabled if None
         self._is_artists = False  # for string translation
         self._stop = False        # Stop current populate
-        self._to_select = None    # Item to be selected after populate
         self._populating = False  # Are we populating?
         self._timeout = None
 
@@ -148,27 +148,23 @@ class SelectionList(GObject.GObject):
 
     """
         Make treeview select first default item
-        @param position as int
+        @param object id as int
     """
-    def select_item(self, position):
+    def select_id(self, object_id):
         try:
-            iterator = self._model.get_iter(position)
-            path = self._model.get_path(iterator)
-            self._view.set_cursor(path, None, False)
-            self._to_select = None
-        except:  # list not populated yet
-            self._to_select = position
-
-    """
-        Get treeview current position
-        @return position as str
-    """
-    def get_selected_item(self):
-        (path, column) = self._view.get_cursor()
-        if path:
-            return path.get_indices()[0]
-        else:
-            return -1
+            selected = None
+            for item in self._model:
+                if item[0] == object_id:
+                    selected = item.iter
+            # Select default
+            if selected is None:
+                selected = self._model.get_iter(0)
+            # If ok, here we go
+            if selected is not None:
+                path = self._model.get_path(selected)
+                self._view.set_cursor(path, None, False)
+        except Exception as e:
+            print("SelectionList::select_item(): %s" % e)
 
     """
         Get id at current position
@@ -180,7 +176,7 @@ class SelectionList(GObject.GObject):
             iter = self._model.get_iter(path)
             if iter:
                 return self._model.get_value(iter, 0)
-        return None
+        return -1
 
     """
         Return items number in list
@@ -211,10 +207,9 @@ class SelectionList(GObject.GObject):
     def _add_item(self, values):
         if not values or self._stop:
             self._populating = False
+            self.emit("populated")
             self._stop = False
             self._populating = False
-            if self._to_select is not None and not values:
-                self.select_item(self._to_select)
             del values
             values = None
             return

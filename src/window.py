@@ -56,10 +56,15 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         if not self._setup_scanner():
             self._setup_lists(False)
             self._list_one.widget.show()
-            if Objects.settings.get_value('save-state'):
-                self._restore_view_state()
-            else:
-                self._list_one.select_item(0)
+
+        self._list_one_restore = None
+        self._list_two_restore = None
+        if Objects.settings.get_value('save-state'):
+            self._restore_view_state()
+        else:
+            self._list_one_restore = Navigation.POPULARS
+            self._list_two_restore = None
+
 
         self._setup_media_keys()
 
@@ -84,8 +89,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def update_db(self):
         if not self._progress.is_visible():
             self._list_one.widget.hide()
+            self._list_one_restore = self._list_one.get_selected_id()
             self._list_two.widget.hide()
-
+            self._list_two_restore = self._list_two.get_selected_id()
             old_view = self._stack.get_visible_child()
             view = LoadingView()
             self._stack.add(view)
@@ -108,11 +114,11 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         Objects.settings.set_value("list-one",
                                    GLib.Variant(
                                         'i',
-                                        self._list_one.get_selected_item()))
+                                        self._list_one.get_selected_id()))
         Objects.settings.set_value("list-two",
                                    GLib.Variant(
                                         'i',
-                                        self._list_two.get_selected_item()))
+                                        self._list_two.get_selected_id()))
 
     """
         Show playlist manager for playlist id/object_id
@@ -146,10 +152,11 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _restore_view_state(self):
         position = Objects.settings.get_value('list-one').get_int32()
         if position != -1:
-            self._list_one.select_item(position)
+            self._list_one_restore = position
         position = Objects.settings.get_value('list-two').get_int32()
         if position != -1:
-            self._list_two.select_item(position)
+            self._list_two_restore = position
+
 
     """
         Run collection update if needed
@@ -181,7 +188,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             view = self._stack.get_visible_child()
             if isinstance(view, LoadingView):
                 view.destroy()
-                self._restore_view_state()
 
     """
         Update list one
@@ -300,7 +306,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         self._list_one = SelectionList()
         self._list_two = SelectionList()
         self._list_one.connect('item-selected', self._on_list_one_selected)
+        self._list_one.connect('populated', self._on_list_one_populated)
         self._list_two.connect('item-selected', self._on_list_two_selected)
+        self._list_two.connect('populated', self._on_list_two_populated)
         self._list_two.visible = False
 
         loading_view = LoadingView()
@@ -353,9 +361,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             items.append((Navigation.ALL, _("All artists")))
         else:
             items.append((Navigation.ALL, _("All albums")))
-        for dev in self._devices.values():
-            print(dev)
-            items.append((dev.id, dev.name))
         return items
 
     """
@@ -569,7 +574,20 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
             self._list_two.visible = True
-            self._update_view_albums(object_id)
+            if self._list_two_restore is None:   
+                self._update_view_albums(object_id)
+
+    """
+        Restore previous state
+        @param selection list as SelectionList
+    """
+    def _on_list_one_populated(self, selection_list):
+        if self._list_one_restore is not None:
+            self._list_one.select_id(self._list_one_restore)
+            self._list_one_restore = None
+        for dev in self._devices.values():
+            self._list_one.add_device(dev.name, dev.id)
+
 
     """
         Update view based on selected object
@@ -586,13 +604,20 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._update_view_artists(object_id, selected_id)
 
     """
+        Restore previous state
+        @param selection list as SelectionList
+    """
+    def _on_list_two_populated(self, selection_list):
+        if self._list_two_restore is not None:
+            self._list_two.select_id(self._list_two_restore)
+            self._list_two_restore = None
+
+    """
         On genres button toggled, update lists/views
     """
     def _on_genres_btn_toggled(self, button):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
         self._setup_lists(False)
-        for volume in self._vm.get_volumes():
-            self._add_device(volume)
 
     """
         Update playlist view if we are in playlist view
