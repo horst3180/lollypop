@@ -37,10 +37,8 @@ class SelectionList(GObject.GObject):
         self._model.set_sort_func(0, self._sort_items)
         self._values = None       # Sort disabled if None
         self._is_artists = False  # for string translation
-        self._stop = False        # Stop current populate
-        self._populating = False  # Are we populating?
-        self._timeout = None
-        self._pop_time = 0.0
+        self._pop_time = 0.0      # Keep track of time when starting populate
+        self._signal_id = None
 
         self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'go-next-symbolic',
@@ -53,7 +51,6 @@ class SelectionList(GObject.GObject):
         self._view = Gtk.TreeView(model=self._model)
         self._view.set_enable_search(True)
         self._view.set_search_column(1)
-        self._view.connect('cursor-changed', self._new_item_selected)
 
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
@@ -96,6 +93,9 @@ class SelectionList(GObject.GObject):
     """
     def populate(self, values):
         self._pop_time = time()
+        if self._signal_id:
+            self._view.disconnect(self._signal_id)
+            self._signal_id = None
         GLib.idle_add(self._model.clear)
         GLib.idle_add(self._add_item, values, self._pop_time)
 
@@ -201,6 +201,8 @@ class SelectionList(GObject.GObject):
     """
     def _add_item(self, values, time):
         if not values or time != self._pop_time:
+            self._signal_id = self._view.connect('cursor-changed',
+                                                 self._new_item_selected)
             self.emit("populated")
             del values
             values = None
