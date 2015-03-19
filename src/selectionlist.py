@@ -37,7 +37,6 @@ class SelectionList(GObject.GObject):
         self._is_artists = False  # for string translation
         self._stop = False        # Stop current populate
         self._to_select = None    # Item to be selected after populate
-        self._to_clear = False    # Clear list before populate
         self._populating = False  # Are we populating?
         self._timeout = None
 
@@ -103,10 +102,7 @@ class SelectionList(GObject.GObject):
         else:
             self._populating = True
             self._stop = False
-            # Clear list if needed
-            if self._to_clear:
-                self._to_clear = False
-                GLib.idle_add(self._model.clear)
+            GLib.idle_add(self._model.clear)
             GLib.idle_add(self._add_item, values)
 
     """
@@ -118,13 +114,6 @@ class SelectionList(GObject.GObject):
             if item[0] == object_id:
                 self._model.remove(item.iter)
                 break
-
-    """
-        Clear the list and stop previous populate
-    """
-    def mark_to_clear(self):
-        self._stop = True
-        self._to_clear = True
 
     """
         Update view with values

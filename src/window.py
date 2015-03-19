@@ -353,6 +353,9 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             items.append((Navigation.ALL, _("All artists")))
         else:
             items.append((Navigation.ALL, _("All albums")))
+        for dev in self._devices.values():
+            print(dev)
+            items.append((dev.id, dev.name))
         return items
 
     """
@@ -391,7 +394,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
            self._list_two.widget.is_visible():
             self._list_two.widget.hide()
             self._list_two.visible = False
-            self._list_two.mark_to_clear()
 
     """
         Setup list for artists
@@ -427,7 +429,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._list_two.update(playlists)
         else:
             self._list_two.mark_as_artists(False)
-            self._list_two.mark_to_clear()
             self._list_two.populate(playlists)
 
         # Only update view on list populate
@@ -555,18 +556,15 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
             self._list_two.visible = False
-            self._list_two.mark_to_clear()
             self._update_view_albums(object_id)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
             self._list_two.visible = False
-            self._list_two.mark_to_clear()
             if object_id == Navigation.ALL:
                 self._update_view_albums(object_id)
             else:
                 self._update_view_artists(object_id, None)
         else:
-            self._list_two.mark_to_clear()
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
@@ -592,8 +590,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _on_genres_btn_toggled(self, button):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
-        self._list_one.mark_to_clear()
-        self._list_two.mark_to_clear()
         self._setup_lists(False)
         for volume in self._vm.get_volumes():
             self._add_device(volume)
