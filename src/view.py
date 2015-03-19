@@ -255,7 +255,14 @@ class ArtistView(View):
         GLib.idle_add(self._add_albums, albums, navigation_id)
         sql.close()
 
-
+    """
+        Stop populating
+    """
+    def stop(self):
+        View.stop(self)
+        for child in self._albumbox.get_children():
+            child.stop()
+            child.destroy()
 #######################
 # PRIVATE             #
 #######################
@@ -360,7 +367,6 @@ class AlbumView(View):
 
         GLib.idle_add(self._add_albums, albums)
         sql.close()
-
 
 #######################
 # PRIVATE             #

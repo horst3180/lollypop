@@ -94,6 +94,7 @@ class AlbumDetailedWidget(Gtk.Grid):
     def __init__(self, album_id, genre_id, limit_to_artist,
                  show_menu, size_group):
         Gtk.Grid.__init__(self)
+        self._stop = False
 
         self._ui = Gtk.Builder()
         self._ui.add_from_resource(
@@ -161,6 +162,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         Populate tracks
     """
     def populate(self):
+        self._stop = False
         sql = Objects.db.get_cursor()
         mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
                                                       self._genre_id,
@@ -195,6 +197,11 @@ class AlbumDetailedWidget(Gtk.Grid):
                       self._tracks_widget2,
                       pos)
 
+    """
+        Stop populating
+    """
+    def stop(self):
+        self._stop = True
 #######################
 # PRIVATE             #
 #######################
@@ -215,7 +222,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param i as int
     """
     def _add_tracks(self, tracks, widget, i):
-        if not tracks:
+        if not tracks or self._stop:
             return
         track = tracks.pop(0)
         track_id = track[0]
