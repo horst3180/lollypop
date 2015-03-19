@@ -223,6 +223,7 @@ class AlbumDetailedWidget(Gtk.Grid):
     """
     def _add_tracks(self, tracks, widget, i):
         if not tracks or self._stop:
+            self._stop = False
             return
         track = tracks.pop(0)
         track_id = track[0]

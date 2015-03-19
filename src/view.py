@@ -244,10 +244,6 @@ class ArtistView(View):
         if self._artist_id == Navigation.COMPILATIONS:
             albums = Objects.albums.get_compilations(navigation_id,
                                                      sql)
-        elif navigation_id == Navigation.ALL:
-            albums = Objects.albums.get_ids(self._artist_id,
-                                            None,
-                                            sql)
         else:
             albums = Objects.albums.get_ids(self._artist_id,
                                             navigation_id,

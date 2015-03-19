@@ -16,6 +16,7 @@ from gettext import gettext as _
 
 from _thread import start_new_thread
 import os
+from operator import itemgetter
 from cgi import escape
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
@@ -37,12 +38,14 @@ class PlaylistsManager(GObject.GObject):
 
     def __init__(self):
         GObject.GObject.__init__(self)
+        self._idx = {}
         # Create playlists directory if missing
         if not os.path.exists(self.PLAYLISTS_PATH):
             try:
                 os.mkdir(self.PLAYLISTS_PATH)
             except Exception as e:
                 print("Lollypop::PlaylistsManager::init: %s" % e)
+        self._init_idx()
 
     """
         Add a playlist (Thread safe)
@@ -53,14 +56,19 @@ class PlaylistsManager(GObject.GObject):
     def add(self, playlist_name, get_desc=False):
         filename = self.PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
         try:
-            if not os.path.exists(filename):
-                GLib.idle_add(self.emit, "playlists-changed")
+            if os.path.exists(filename):
+                changed = False
+            else:
+                changed = True
             f = open(filename, "w")
             f.write("#EXTM3U\n")
             if get_desc:
                 return f
             else:
                 f.close()
+            if changed:
+                self._idx[max(self._idx.keys())+1] = playlist_name
+                GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
 
@@ -73,6 +81,10 @@ class PlaylistsManager(GObject.GObject):
         try:
             os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u",
                       self.PLAYLISTS_PATH+"/"+new_name+".m3u")
+            for (idx, playlist) in self.idx.items():
+                if playlist == old_name:
+                    self._idx[idx] = new_name
+                    break
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::rename: %s" % e)
@@ -84,6 +96,10 @@ class PlaylistsManager(GObject.GObject):
     def delete(self, playlist_name):
         try:
             os.remove(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u")
+            for (idx, playlist) in self._idx.items():
+                if playlist == playlist_name:
+                    del self._idx[idx]
+                    break
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::delete: %s" % e)
@@ -93,14 +109,7 @@ class PlaylistsManager(GObject.GObject):
         @return array of (id, string)
     """
     def get(self):
-        playlists = []
-        try:
-            for filename in sorted(os.listdir(self.PLAYLISTS_PATH)):
-                if filename.endswith(".m3u"):
-                    playlists.append(filename[:-4])
-        except Exception as e:
-            print("Lollypop::PlaylistManager::get: %s" % e)
-        return playlists
+        return sorted(self._idx.items(), key=itemgetter(1))
 
     """
         Return 5 last modified playlist
@@ -125,16 +134,6 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("Lollypop::PlaylistManager::get_last: %s" % e)
         return playlists
-
-    """
-        Return playlist name for id
-        @param playlist id as int
-    """
-    def get_name(self, playlist_id):
-        for playlist in self._playlists:
-            if playlist[0] == playlist_id:
-                return playlist[1]
-        return ""
 
     """
         Return availables tracks for playlist
@@ -248,6 +247,23 @@ class PlaylistsManager(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Create initial index
+    """
+    def _init_idx(self):
+        playlists = []
+        try:
+            for filename in sorted(os.listdir(self.PLAYLISTS_PATH)):
+                if filename.endswith(".m3u"):
+                    playlists.append(filename[:-4])
+        except Exception as e:
+            print("Lollypop::PlaylistManager::get: %s" % e)
+
+        idx = 0
+        for playlist in playlists:
+            self._idx[idx] = playlist
+            idx += 1
+
     """
         Add track to playlist if not already present
         @param f as file descriptor
@@ -375,11 +391,14 @@ class PlaylistsManagerWidget(Gtk.Bin):
     def _append_playlists(self, playlists):
         if len(playlists) > 0:
             playlist = playlists.pop(0)
-            selected = Objects.playlists.is_present(playlist,
-                                                    self._object_id,
-                                                    self._genre_id,
-                                                    self._is_album)
-            self._model.append([selected, playlist, self._del_pixbuf])
+            if self._object_id != -1:
+                selected = Objects.playlists.is_present(playlist[1],
+                                                        self._object_id,
+                                                        self._genre_id,
+                                                        self._is_album)
+            else:
+                selected = False
+            self._model.append([selected, playlist[1], self._del_pixbuf])
             GLib.idle_add(self._append_playlists, playlists)
         else:
             self._view.get_selection().unselect_all()

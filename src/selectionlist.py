@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GdkPixbuf, GObject, Pango
+from gi.repository import Gtk, GdkPixbuf, GLib, GObject, Pango
 
 from lollypop.utils import translate_artist_name
 from lollypop.define import Navigation
@@ -33,10 +33,13 @@ class SelectionList(GObject.GObject):
         self._model = Gtk.ListStore(int, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
-        self._sort = False
-        self._selected_id = None
-        self._values = None
-        self._is_artists = False
+        self._values = None       # Sort disabled if None
+        self._is_artists = False  # for string translation
+        self._stop = False        # Stop current populate
+        self._to_select = None    # Item to be selected after populate
+        self._to_clear = False    # Clear list before populate
+        self._populating = False  # Are we populating?
+        self._timeout = None
 
         self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'go-next-symbolic',
@@ -87,16 +90,24 @@ class SelectionList(GObject.GObject):
 
     """
         Populate view with values
-        @param [(int, str)]
+        @param [(int, str)], will be deleted
+        @thread safe
     """
     def populate(self, values):
-        for (object_id, string) in values:
-            # Translating artist@@@@the => The artist
-            if self._is_artists:
-                string = translate_artist_name(string)
-            self._model.append([object_id,
-                                string,
-                                self._get_pixbuf(object_id)])
+        if self._timeout:
+            GLib.source_remove(self._timeout)
+            self._timeout = None
+        # Wait for previous populate to stop
+        if self._populating:
+            self._timeout = GLib.timeout_add(250, self.populate, values)
+        else:
+            self._populating = True
+            self._stop = False
+            # Clear list if needed
+            if self._to_clear:
+                self._to_clear = False
+                GLib.idle_add(self._model.clear)
+            GLib.idle_add(self._add_item, values)
 
     """
         Remove row from model
@@ -109,10 +120,11 @@ class SelectionList(GObject.GObject):
                 break
 
     """
-        Clear the list
+        Clear the list and stop previous populate
     """
-    def clear(self):
-        self._model.clear()
+    def mark_to_clear(self):
+        self._stop = True
+        self._to_clear = True
 
     """
         Update view with values
@@ -147,15 +159,16 @@ class SelectionList(GObject.GObject):
 
     """
         Make treeview select first default item
-        @param position as str
+        @param position as int
     """
     def select_item(self, position):
         try:
-            iterator = self._model.get_iter(str(position))
+            iterator = self._model.get_iter(position)
             path = self._model.get_path(iterator)
             self._view.set_cursor(path, None, False)
-        except Exception as e:
-            print("SelectionList::select_item: ", e)
+            self._to_select = None
+        except:  # list not populated yet
+            self._to_select = position
 
     """
         Get treeview current position
@@ -199,10 +212,34 @@ class SelectionList(GObject.GObject):
                                            device,
                                            self._device_pixbuf])
                 return
-
 #######################
 # PRIVATE             #
 #######################
+    """
+        Add an item to the list
+        @param items as [(int,str)]
+    """
+    def _add_item(self, values):
+        if not values or self._stop:
+            self._populating = False
+            self._stop = False
+            self._populating = False
+            if self._to_select is not None and not values:
+                self.select_item(self._to_select)
+            del values
+            values = None
+            return
+
+        (object_id, string) = values.pop(0)
+        # Translating artist@@@@the => The artist
+        if self._is_artists:
+            string = translate_artist_name(string)
+
+        self._model.append([object_id,
+                            string,
+                            self._get_pixbuf(object_id)])
+        GLib.idle_add(self._add_item, values)
+
     """
         Return pixbuf for id
         @param ojbect_id as id
@@ -259,8 +296,5 @@ class SelectionList(GObject.GObject):
         @param view as Gtk.TreeView
     """
     def _new_item_selected(self, view):
-        new_selected_id = self.get_selected_id()
-        if new_selected_id != self._selected_id:
-            self._selected_id = self.get_selected_id()
-            if self._selected_id is not None:
-                self.emit('item-selected', self._selected_id)
+        if not self._populating:
+            self.emit('item-selected', self.get_selected_id())

@@ -45,13 +45,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                                        title="Lollypop")
         ViewContainer.__init__(self, 500)
         self._timeout_configure = None
-        # SelectionList::update() is based on index in values tuple.
-        # For db objects, it's rowid so it will works.
-        # For playlists, we just use a static int and increment it over time
-        self._counter = 0
-        # Playlist do not have id (not in db),
-        # so we use an index to retrieve playlist name
-        self._playlists = []
         # Same for volumes, as volumes are in list one,
         # Index will start at -VOLUMES
         self._devices = {}
@@ -206,9 +199,10 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     def _update_list_two(self, updater):
         object_id = self._list_one.get_selected_id()
         if object_id == Navigation.PLAYLISTS:
-            self._setup_list_playlists(object_id)
+            start_new_thread(self._setup_list_playlists, (True,))
         elif isinstance(updater, CollectionScanner):
-            self._setup_list_artists(self._list_two, object_id, True)
+            start_new_thread(self._setup_list_artists,
+                             (self._list_two, object_id, True))
 
     """
         Setup media player keys
@@ -367,73 +361,78 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _setup_lists(self, update):
         if self._show_genres:
-            self._setup_list_genres(self._list_one, update)
+            start_new_thread(self._setup_list_genres,
+                             (self._list_one, update))
         else:
-            self._setup_list_artists(self._list_one, Navigation.ALL, update)
+            start_new_thread(self._setup_list_artists,
+                             (self._list_one, Navigation.ALL, update))
 
     """
         Setup list for genres
         @param list as SelectionList
         @param update as bool, if True, just update entries
+        @thread safe
     """
     def _setup_list_genres(self, selection_list, update):
+        sql = Objects.db.get_cursor()
         selection_list.mark_as_artists(False)
-        items = self._get_headers() + Objects.genres.get()
+        items = self._get_headers() + Objects.genres.get(sql)
         if update:
-            selection_list.update(items)
+            GLib.idle_add(selection_list.update, items)
         else:
             selection_list.populate(items)
+        sql.close()
+
+    """
+        Hide list two base on current artist list
+    """
+    def _pre_setup_list_artists(self, selection_list):
+        if selection_list == self._list_one and\
+           self._list_two.widget.is_visible():
+            self._list_two.widget.hide()
+            self._list_two.visible = False
+            self._list_two.mark_to_clear()
 
     """
         Setup list for artists
         @param list as SelectionList
         @param update as bool, if True, just update entries
+        @thread safe
     """
     def _setup_list_artists(self, selection_list, genre_id, update):
-        if selection_list == self._list_one and\
-           self._list_two.widget.is_visible():
-            self._list_two.widget.hide()
-            self._list_two.visible = False
-            self._list_two.clear()
-
+        GLib.idle_add(self._pre_setup_list_artists, selection_list)
+        sql = Objects.db.get_cursor()
         items = []
         selection_list.mark_as_artists(True)
         if selection_list == self._list_one:
             items = self._get_headers()
-        if len(Objects.albums.get_compilations(genre_id)) > 0:
+        if len(Objects.albums.get_compilations(genre_id, sql)) > 0:
             items.append((Navigation.COMPILATIONS, _("Compilations")))
 
-        items += Objects.artists.get(genre_id)
+        items += Objects.artists.get(genre_id, sql)
 
         if update:
-            selection_list.update(items)
+            GLib.idle_add(selection_list.update, items)
         else:
             selection_list.populate(items)
+        sql.close()
 
     """
         Setup list for playlists
         @param update as bool
     """
     def _setup_list_playlists(self, update):
-        self._playlists = []
-        self._clear_list(self._list_two, self._on_list_two_selected)
-        self._list_two.mark_as_artists(False)
-        playlist_names = Objects.playlists.get()
-        for playlist_name in playlist_names:
-            self._playlists.append((self._counter, playlist_name))
-            self._counter += 1
-        values = self._playlists
-
-        # Do not show list if empty
-        if len(values) > 0:
-            if update:
-                self._list_two.update(values)
-            else:
-                self._list_two.populate(values)
+        playlists = Objects.playlists.get()
+        if update:
+            self._list_two.update(playlists)
+        else:
+            self._list_two.mark_as_artists(False)
+            self._list_two.mark_to_clear()
+            self._list_two.populate(playlists)
 
         # Only update view on list populate
         if not update:
-            self._update_view_playlists(None)
+            GLib.idle_add(self._update_view_playlists, None)
 
     """
         Update current view with device view,
@@ -489,32 +488,21 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         @param playlist id as int
     """
     def _update_view_playlists(self, playlist_id):
-        playlist_name = None
         old_view = self._stack.get_visible_child()
+        view = None
         if playlist_id is not None:
-            for item in self._playlists:
-                if item[0] == playlist_id:
-                    playlist_name = item[1]
+            for (p_id, p_str) in Objects.playlists.get():
+                if p_id == playlist_id:
+                    view = PlaylistView(p_str)
                     break
-        if playlist_name:
-            view = PlaylistView(playlist_name)
         else:
             view = PlaylistManageView(-1, None)
-        view.show()
-        self._stack.add(view)
-        self._stack.set_visible_child(view)
-        start_new_thread(view.populate, ())
-        self._clean_view(old_view)
-
-    """
-        Clear selection list
-        @param selection list as SelectionList
-        @param callback associated to selection list
-    """
-    def _clear_list(self, selection_list, callback):
-        selection_list.disconnect_by_func(callback)
-        selection_list.clear()
-        selection_list.connect('item-selected', callback)
+        if view:
+            view.show()
+            self._stack.add(view)
+            self._stack.set_visible_child(view)
+            start_new_thread(view.populate, ())
+            self._clean_view(old_view)
 
     """
         Add volume to device list
@@ -557,7 +545,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
     """
     def _on_list_one_selected(self, selection_list, object_id):
         if object_id == Navigation.PLAYLISTS:
-            self._setup_list_playlists(False)
+            start_new_thread(self._setup_list_playlists, (False,))
             self._list_two.widget.show()
             self._list_two.visible = True
         elif object_id < Navigation.DEVICES:
@@ -567,19 +555,20 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
             self._list_two.visible = False
-            self._list_two.clear()
+            self._list_two.mark_to_clear()
             self._update_view_albums(object_id)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
             self._list_two.visible = False
-            self._list_two.clear()
+            self._list_two.mark_to_clear()
             if object_id == Navigation.ALL:
                 self._update_view_albums(object_id)
             else:
                 self._update_view_artists(object_id, None)
         else:
-            self._clear_list(self._list_two, self._on_list_two_selected)
-            self._setup_list_artists(self._list_two, object_id, False)
+            self._list_two.mark_to_clear()
+            start_new_thread(self._setup_list_artists,
+                             (self._list_two, object_id, False))
             self._list_two.widget.show()
             self._list_two.visible = True
             self._update_view_albums(object_id)
@@ -590,19 +579,21 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         @param object id as int
     """
     def _on_list_two_selected(self, selection_list, object_id):
-        if self._list_one.get_selected_id() == Navigation.PLAYLISTS:
+        selected_id = self._list_one.get_selected_id()
+        if selected_id == Navigation.PLAYLISTS:
             self._update_view_playlists(object_id)
+        elif selected_id == Navigation.ALL:
+            self._update_view_artists(object_id, None)
         else:
-            self._update_view_artists(object_id,
-                                      self._list_one.get_selected_id())
+            self._update_view_artists(object_id, selected_id)
 
     """
         On genres button toggled, update lists/views
     """
     def _on_genres_btn_toggled(self, button):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
-        self._clear_list(self._list_one, self._on_list_one_selected)
-        self._clear_list(self._list_two, self._on_list_two_selected)
+        self._list_one.mark_to_clear()
+        self._list_two.mark_to_clear()
         self._setup_lists(False)
         for volume in self._vm.get_volumes():
             self._add_device(volume)
