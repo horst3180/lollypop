@@ -321,6 +321,7 @@ class Player(GObject.GObject):
         self._shuffle_history = {}
         self._shuffle_albums_backup = []
         self._user_playlist = None
+        self.current.next = NextContext.STOP_NONE
         if party:
             self._rgvolume.props.album_mode = 0
         else:
