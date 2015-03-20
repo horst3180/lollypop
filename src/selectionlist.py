@@ -38,7 +38,6 @@ class SelectionList(GObject.GObject):
         self._values = None       # Sort disabled if None
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
-        self._signal_id = None
 
         self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'go-next-symbolic',
@@ -51,6 +50,8 @@ class SelectionList(GObject.GObject):
         self._view = Gtk.TreeView(model=self._model)
         self._view.set_enable_search(True)
         self._view.set_search_column(1)
+        self._signal_id = self._view.connect('cursor-changed',
+                                             self._new_item_selected)
 
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
@@ -114,6 +115,9 @@ class SelectionList(GObject.GObject):
         @param [(int, str)]
     """
     def update(self, values):
+        if self._signal_id:
+            self._view.disconnect(self._signal_id)
+            self._signal_id = None
         for item in self._model:
             found = False
             for value in values:
@@ -139,6 +143,9 @@ class SelectionList(GObject.GObject):
                                    self._get_pixbuf(value[0])])
         # Disable sort
         self._values = None
+        self._signal_id = self._view.connect('cursor-changed',
+                                             self._new_item_selected)
+        self.emit("populated")
 
     """
         Make treeview select first default item

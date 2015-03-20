@@ -279,7 +279,7 @@ msgstr "Configurer lollypop"
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:25
 msgid "The the"
-msgstr "The the Les les La Le la le"
+msgstr "The the Les les La Le la le l' L'"
 
 #: ../src/search.py:150
 msgid "Search:"
