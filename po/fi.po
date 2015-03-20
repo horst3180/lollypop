@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-16 09:29+0100\n"
+"POT-Creation-Date: 2015-03-20 10:38+0100\n"
 "PO-Revision-Date: 2015-03-07 11:41+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -60,55 +60,63 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Jos tyhjä, käytä arvoa XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
-msgid "DO NOT MODIFY"
+msgid "Favorite cover file"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Restart needed"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "DO NOT MODIFY"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Replay gain value in db"
 msgstr "Replay gain -arvo desibeleissä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Between -15 and 15"
 msgstr "Välillä -15 ja 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Scan library at startup"
 msgstr "Tarkista kirjasto käynnistyksen yhteydessä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Do not show genres list"
 msgstr "Älä näytä tyylilajiluetteloa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Use dark gtk theme"
 msgstr "Käytä tummaa teemaa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Show stylized covers"
 msgstr "Näytä tyylitellyt kansikuvitukset"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Jatka toistoa, kun sovellus suljetaan"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Restore previous view"
 msgstr "Palauta edellinen näkymä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Auto play albums on click"
 msgstr "Toista albumit automaattisesti napsautuksella"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "INTERNAL"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -133,34 +141,34 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/toolbar.py:258 ../src/toolbar.py:287 ../src/fullscreen.py:76
-#: ../src/fullscreen.py:172
+#: ../src/toolbar.py:259 ../src/toolbar.py:288 ../src/fullscreen.py:80
+#: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/toolbar.py:268 ../src/toolbar.py:284 ../src/fullscreen.py:176
+#: ../src/toolbar.py:269 ../src/toolbar.py:285 ../src/fullscreen.py:185
 #: ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/window.py:356
+#: ../src/window.py:358
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/window.py:357 ../src/popmenu.py:47
+#: ../src/window.py:359 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/window.py:359
+#: ../src/window.py:361
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/window.py:361
+#: ../src/window.py:363
 #, fuzzy
 msgid "All albums"
 msgstr "Suositut albumit"
 
-#: ../src/window.py:404
+#: ../src/window.py:417
 msgid "Compilations"
 msgstr "Kokoelmat"
 
@@ -174,7 +182,7 @@ msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:72
+#: ../src/notification.py:74
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
@@ -183,27 +191,27 @@ msgstr "esittäjän %s levyltä %s"
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:149
-#: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
-#: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
+#: ../src/database_artists.py:70 ../src/database_albums.py:180
+#: ../src/database_tracks.py:181 ../src/database_genres.py:66
+#: ../src/collectionscanner.py:181 ../src/collectionscanner.py:195
+#: ../src/collectionscanner.py:200
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/database_albums.py:166
+#: ../src/database_albums.py:197
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/playlists.py:388 ../src/playlists.py:657
+#: ../src/playlists.py:413 ../src/playlists.py:681
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/playlists.py:455 ../src/playlists.py:458
+#: ../src/playlists.py:480 ../src/playlists.py:483
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
-#: ../src/playlists.py:685
+#: ../src/playlists.py:709
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
@@ -211,62 +219,76 @@ msgstr "Poistetaanko nämä kappaleet?"
 msgid "Loading please wait..."
 msgstr "Ladataan..."
 
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:397
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronoi %s"
 
-#: ../src/devicemanager.py:372
+#: ../src/devicemanager.py:375
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 
-#: ../src/devicemanager.py:379
+#: ../src/devicemanager.py:382
 msgid "No free space available on device"
 msgstr "Laitteella ei ole vapaata tilaa"
 
-#: ../src/devicemanager.py:402
+#: ../src/devicemanager.py:405
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/popmenu.py:42
+#: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/popmenu.py:62
-msgid "Only play this album"
-msgstr "Toista vain tämä albumi"
+#: ../src/popmenu.py:65
+#, fuzzy
+msgid "Continue playback"
+msgstr "Jatka toistoa, kun sovellus suljetaan"
 
-#: ../src/popmenu.py:78
+#: ../src/popmenu.py:70
+msgid "Stop after this track"
+msgstr ""
+
+#: ../src/popmenu.py:75
+#, fuzzy
+msgid "Stop after this album"
+msgstr "Valitse kansikuva tälle albumille"
+
+#: ../src/popmenu.py:80
+msgid "Stop after this artist"
+msgstr ""
+
+#: ../src/popmenu.py:96
 msgid "Add to others"
 msgstr "Lisää muihin"
 
-#: ../src/popmenu.py:91
+#: ../src/popmenu.py:110
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Poista kohteesta \"%s\""
 
-#: ../src/popmenu.py:99
+#: ../src/popmenu.py:118
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Lisää kohteeseen \"%s\""
 
-#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
-#: ../src/popmenu.py:150
+#: ../src/popmenu.py:169
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/popmenu.py:152
+#: ../src/popmenu.py:171
 msgid "Next track"
 msgstr "Seuraava kappale"
 
-#: ../src/popmenu.py:157
+#: ../src/popmenu.py:176
 msgid "Remove from queue"
 msgstr "Poista jonosta"
 
-#: ../src/popimages.py:55
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
@@ -419,3 +441,6 @@ msgstr "Valitse mitä biletilassa on käytettävissä"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
+
+#~ msgid "Only play this album"
+#~ msgstr "Toista vain tämä albumi"

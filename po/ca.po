@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-16 09:29+0100\n"
+"POT-Creation-Date: 2015-03-20 10:38+0100\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/"
@@ -60,55 +60,63 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Quan sigui buit, utilitza XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
-msgid "DO NOT MODIFY"
-msgstr "NO HO MODIFIQUEU"
+msgid "Favorite cover file"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
-msgid "Replay gain value in db"
+msgid "Restart needed"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
-msgid "Between -15 and 15"
-msgstr ""
+msgid "DO NOT MODIFY"
+msgstr "NO HO MODIFIQUEU"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
-msgid "Scan library at startup"
+msgid "Replay gain value in db"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Between -15 and 15"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Scan library at startup"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Do not show genres list"
 msgstr "No mostris la llista de gèneres"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Use dark gtk theme"
 msgstr "Utilitza el tema fosc del Gtk+"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Show stylized covers"
 msgstr "Mostra les caràtules estilitzades"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Restore previous view"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Auto play albums on click"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "INTERNAL"
 msgstr "INTERN"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Shuffle mode"
 msgstr "Mode aleatori"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -130,34 +138,34 @@ msgstr "Reproduïu i organitzeu la vostra col·lecció musical"
 msgid "Music player for the GNOME desktop"
 msgstr "Reproductor musical per a l’escriptori del GNOME"
 
-#: ../src/toolbar.py:258 ../src/toolbar.py:287 ../src/fullscreen.py:76
-#: ../src/fullscreen.py:172
+#: ../src/toolbar.py:259 ../src/toolbar.py:288 ../src/fullscreen.py:80
+#: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Fes una pausa"
 
-#: ../src/toolbar.py:268 ../src/toolbar.py:284 ../src/fullscreen.py:176
+#: ../src/toolbar.py:269 ../src/toolbar.py:285 ../src/fullscreen.py:185
 #: ../data/headerbar.ui.h:5
 msgid "Play"
 msgstr "Reprodueix"
 
-#: ../src/window.py:356
+#: ../src/window.py:358
 msgid "Popular albums"
 msgstr "Àlbums populars"
 
-#: ../src/window.py:357 ../src/popmenu.py:47
+#: ../src/window.py:359 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Llistes"
 
-#: ../src/window.py:359
+#: ../src/window.py:361
 msgid "All artists"
 msgstr "Tots els artistes"
 
-#: ../src/window.py:361
+#: ../src/window.py:363
 #, fuzzy
 msgid "All albums"
 msgstr "Àlbums populars"
 
-#: ../src/window.py:404
+#: ../src/window.py:417
 msgid "Compilations"
 msgstr "Compilacions"
 
@@ -171,7 +179,7 @@ msgstr "Següent"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:72
+#: ../src/notification.py:74
 #, python-format
 msgid "by %s, from %s"
 msgstr "per %s, de l’àlbum %s"
@@ -180,27 +188,27 @@ msgstr "per %s, de l’àlbum %s"
 msgid "Many artists"
 msgstr "Molts artistes"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:149
-#: ../src/database_tracks.py:134 ../src/database_tracks.py:185
-#: ../src/database_genres.py:66 ../src/collectionscanner.py:183
-#: ../src/collectionscanner.py:197 ../src/collectionscanner.py:202
+#: ../src/database_artists.py:70 ../src/database_albums.py:180
+#: ../src/database_tracks.py:181 ../src/database_genres.py:66
+#: ../src/collectionscanner.py:181 ../src/collectionscanner.py:195
+#: ../src/collectionscanner.py:200
 msgid "Unknown"
 msgstr "Desconegut"
 
-#: ../src/database_albums.py:166
+#: ../src/database_albums.py:197
 msgid "Compilation"
 msgstr "Compilació"
 
-#: ../src/playlists.py:388 ../src/playlists.py:657
+#: ../src/playlists.py:413 ../src/playlists.py:681
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlists.py:455 ../src/playlists.py:458
+#: ../src/playlists.py:480 ../src/playlists.py:483
 msgid "New playlist "
 msgstr "Llista nova"
 
-#: ../src/playlists.py:685
+#: ../src/playlists.py:709
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -208,62 +216,75 @@ msgstr ""
 msgid "Loading please wait..."
 msgstr "S’està carregant, espereu-vos…"
 
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:394
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:397
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:372
+#: ../src/devicemanager.py:375
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/devicemanager.py:379
+#: ../src/devicemanager.py:382
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/devicemanager.py:402
+#: ../src/devicemanager.py:405
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/popmenu.py:42
+#: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Reproducció"
 
-#: ../src/popmenu.py:62
-msgid "Only play this album"
-msgstr "Reprodueix només aquest àlbum"
+#: ../src/popmenu.py:65
+msgid "Continue playback"
+msgstr ""
 
-#: ../src/popmenu.py:78
+#: ../src/popmenu.py:70
+msgid "Stop after this track"
+msgstr ""
+
+#: ../src/popmenu.py:75
+#, fuzzy
+msgid "Stop after this album"
+msgstr "Trieu una caràtula per a aquest àlbum"
+
+#: ../src/popmenu.py:80
+msgid "Stop after this artist"
+msgstr ""
+
+#: ../src/popmenu.py:96
 msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:91
+#: ../src/popmenu.py:110
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Treu de «%s»"
 
-#: ../src/popmenu.py:99
+#: ../src/popmenu.py:118
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Afegeix a «%s»"
 
-#: ../src/popmenu.py:144 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Afegeix a la cua"
 
-#: ../src/popmenu.py:150
+#: ../src/popmenu.py:169
 msgid "Next tracks"
 msgstr "Peces següents"
 
-#: ../src/popmenu.py:152
+#: ../src/popmenu.py:171
 msgid "Next track"
 msgstr "Peça següent"
 
-#: ../src/popmenu.py:157
+#: ../src/popmenu.py:176
 msgid "Remove from queue"
 msgstr "Treu de la cua"
 
-#: ../src/popimages.py:55
+#: ../src/popimages.py:53
 msgid "Select a cover art for this album"
 msgstr "Trieu una caràtula per a aquest àlbum"
 
@@ -416,3 +437,6 @@ msgstr ""
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr ""
+
+#~ msgid "Only play this album"
+#~ msgstr "Reprodueix només aquest àlbum"

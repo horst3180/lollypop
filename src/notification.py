@@ -57,6 +57,8 @@ class NotificationManager:
         @param player Player
     """
     def _on_current_changed(self, player):
+        if player.current.id is None:
+            return
         cover_path = Objects.art.get_path(player.current.album_id,
                                           ArtSize.BIG)
         if cover_path is not None:

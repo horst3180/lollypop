@@ -15,7 +15,7 @@ from gettext import gettext as _
 from gi.repository import Gio
 from _thread import start_new_thread
 
-from lollypop.define import Objects
+from lollypop.define import Objects, NextContext
 
 
 # Show a contextual menu for object
@@ -36,12 +36,12 @@ class PopMainMenu(Gio.Menu):
         app = Gio.Application.get_default()
         # FIXME How signal connect works when called many times
 
+        playback_menu = Gio.Menu()
+        if toolbar_context and not Objects.player.is_party():
+            self._set_playback_actions(app, playback_menu, object_id)
         if not toolbar_context:
-            playback_menu = Gio.Menu()
-            if is_album and not Objects.player.is_party():
-                self._set_album_actions(app, playback_menu, object_id)
             self._set_queue_actions(app, playback_menu, object_id, is_album)
-            self.insert_section(0, _("Playback"), playback_menu)
+        self.insert_section(0, _("Playback"), playback_menu)
 
         playlist_menu = Gio.Menu()
         self._set_playlist_actions(app, playlist_menu, object_id, is_album)
@@ -52,16 +52,32 @@ class PopMainMenu(Gio.Menu):
 # PRIVATE             #
 #######################
     """
-        Set album actions
+        Set playback actions
         @param app as Gio.Application
         @param menu as Gio.Menu
         @param object_id as int
     """
-    def _set_album_actions(self, app, menu, object_id):
-        play_album_action = Gio.SimpleAction(name="play_album_action")
-        app.add_action(play_album_action)
-        play_album_action.connect('activate', self._play_album, object_id)
-        menu.append(_("Only play this album"), 'app.play_album_action')
+    def _set_playback_actions(self, app, menu, object_id):
+        if Objects.player.context.next != NextContext.STOP_NONE:
+            continue_play_action = Gio.SimpleAction(name="continue_play_action")
+            app.add_action(continue_play_action)
+            continue_play_action.connect('activate', self._continue_playback)
+            menu.append(_("Continue playback"), 'app.continue_play_action')
+        if Objects.player.context.next != NextContext.STOP_TRACK:
+            stop_track_action = Gio.SimpleAction(name="stop_track_action")
+            app.add_action(stop_track_action)
+            stop_track_action.connect('activate', self._stop_track)
+            menu.append(_("Stop after this track"), 'app.stop_track_action')
+        if Objects.player.context.next != NextContext.STOP_ALBUM:
+            stop_album_action = Gio.SimpleAction(name="stop_album_action")
+            app.add_action(stop_album_action)
+            stop_album_action.connect('activate', self._stop_album)
+            menu.append(_("Stop after this album"), 'app.stop_album_action')
+        if Objects.player.context.next != NextContext.STOP_ARTIST:
+            stop_artist_action = Gio.SimpleAction(name="stop_artist_action")
+            app.add_action(stop_artist_action)
+            stop_artist_action.connect('activate', self._stop_artist)
+            menu.append(_("Stop after this artist"), 'app.stop_artist_action')
 
     """
         Set playlist actions
@@ -160,13 +176,37 @@ class PopMainMenu(Gio.Menu):
             menu.append(_("Remove from queue"), 'app.del_queue_action')
 
     """
-        Play album
+        Tell player to continue playback
         @param SimpleAction
         @param GVariant
         @param album id as int
     """
-    def _play_album(self, action, variant, album_id):
-        Objects.player.play_album(album_id)
+    def _continue_playback(self, action, variant):
+        Objects.player.current.next = NextContext.STOP_NONE
+
+    """
+        Tell player to stop after current track
+        @param SimpleAction
+        @param GVariant
+    """
+    def _stop_track(self, action, variant):
+        Objects.player.context.next = NextContext.STOP_TRACK
+
+    """
+        Tell player to stop after current album
+        @param SimpleAction
+        @param GVariant
+    """
+    def _stop_album(self, action, variant):
+        Objects.player.context.next = NextContext.STOP_ALBUM
+        
+    """
+        Tell player to stop after current artist
+        @param SimpleAction
+        @param GVariant
+    """
+    def _stop_artist(self, action, variant):
+        Objects.player.context.next = NextContext.STOP_ARTIST
 
     """
         Add to playlists
