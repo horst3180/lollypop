@@ -27,12 +27,13 @@ class Objects_:
     player = None
     art = None
 
+
 # Represent what to do on next track
 class NextContext:
     STOP_NONE = 0    # Continue playback
     STOP_TRACK = 1   # Stop after current track
     STOP_ALBUM = 2   # Stop after current album
-    STOP_ARTIST = 3  # Stop after current artist 
+    STOP_ARTIST = 3  # Stop after current artist
 
 
 class ArtSize_:

@@ -65,7 +65,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._list_one_restore = Navigation.POPULARS
             self._list_two_restore = None
 
-
         self._setup_media_keys()
 
         # Volume manager
@@ -156,7 +155,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
         position = Objects.settings.get_value('list-two').get_int32()
         if position != -1:
             self._list_two_restore = position
-
 
     """
         Run collection update if needed
@@ -574,7 +572,7 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
             self._list_two.visible = True
-            if self._list_two_restore is None:   
+            if self._list_two_restore is None:
                 self._update_view_albums(object_id)
 
     """
@@ -587,7 +585,6 @@ class Window(Gtk.ApplicationWindow, ViewContainer):
             self._list_one_restore = None
         for dev in self._devices.values():
             self._list_one.add_device(dev.name, dev.id)
-
 
     """
         Update view based on selected object

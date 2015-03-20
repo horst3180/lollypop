@@ -59,7 +59,8 @@ class PopMainMenu(Gio.Menu):
     """
     def _set_playback_actions(self, app, menu, object_id):
         if Objects.player.context.next != NextContext.STOP_NONE:
-            continue_play_action = Gio.SimpleAction(name="continue_play_action")
+            continue_play_action = Gio.SimpleAction(
+                                                name="continue_play_action")
             app.add_action(continue_play_action)
             continue_play_action.connect('activate', self._continue_playback)
             menu.append(_("Continue playback"), 'app.continue_play_action')
@@ -199,7 +200,7 @@ class PopMainMenu(Gio.Menu):
     """
     def _stop_album(self, action, variant):
         Objects.player.context.next = NextContext.STOP_ALBUM
-        
+
     """
         Tell player to stop after current artist
         @param SimpleAction

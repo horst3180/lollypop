@@ -42,6 +42,7 @@ class CurrentTrack:
         duration = None
         path = None
 
+
 # Represent playback context
 class PlayContext:
         album_id = None
@@ -505,7 +506,7 @@ class Player(GObject.GObject):
 #######################
     """
         Stop current track (for track change)
-    """        
+    """
     def _stop(self):
         self._playbin.set_state(Gst.State.NULL)
 
@@ -732,7 +733,7 @@ class Player(GObject.GObject):
            self.current.album_id != new_album_id:
             GLib.idle_add(self.stop)
             return False
-        
+
         # Stop if performer changed
         new_performer_id = Objects.tracks.get_performer_id(
                                                 track_id,
