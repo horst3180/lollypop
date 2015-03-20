@@ -24,8 +24,8 @@ def format_artist_name(name):
     # Translators: Add here words that shoud be ignored for artist sort order
     for special in _("The the").split():
         if name.startswith(special+" "):
-                strlen = len(special+" ")
-                name = name[strlen:]+"@@@@"+special
+            strlen = len(special)+1
+            name = name[strlen:]+"@@@@"+special
     return name
 
 
