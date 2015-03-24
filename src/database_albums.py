@@ -96,6 +96,7 @@ class DatabaseAlbums:
     """
         Increment popularity field for album id
         @param int
+        @raise sqlite3.OperationalError on db update
     """
     def set_more_popular(self, album_id, sql=None):
         if not sql:

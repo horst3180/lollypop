@@ -722,7 +722,10 @@ class Player(GObject.GObject):
         self.next(False, sql)
         # Add populariy if we listen to the song
         album_id = Objects.tracks.get_album_id(self._previous_track_id, sql)
-        Objects.albums.set_more_popular(album_id, sql)
+        try:
+            Objects.albums.set_more_popular(album_id, sql)
+        except:
+            pass
         sql.close()
 
     """
