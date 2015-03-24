@@ -242,7 +242,7 @@ class Container(ViewContainer):
     def _update_list_one(self, updater):
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
-            self._setup_lists(True)
+            self._setup_lists(updater is not None)
 
     """
         Update list two

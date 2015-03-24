@@ -241,7 +241,9 @@ class AlbumArt:
         pixbuf = None
         filepath = Objects.tracks.get_path(track_id)
         infos = Objects.player.get_infos(filepath)
-        (exist, sample) = infos.get_tags().get_sample_index('image', 0)
+        exist = False
+        if infos is not None:        
+            (exist, sample) = infos.get_tags().get_sample_index('image', 0)
         if exist:
             (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
         if exist:

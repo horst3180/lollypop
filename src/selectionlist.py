@@ -253,28 +253,18 @@ class SelectionList(GObject.GObject):
     """
     def _sort_items(self, model, itera, iterb, data):
 
-        a = model.get_value(itera, 0)
-        b = model.get_value(iterb, 0)
+        a_index = model.get_value(itera, 0)
+        a = model.get_value(itera, 1)
+        b = model.get_value(iterb, 1)
 
         if not self._values:
             return False
 
         # Do not order static entries
-        if a < 0:
+        if a_index < 0:
             return False
         else:
-            pos_a = 0
-            for rowid, string in self._values:
-                if rowid == a:
-                    break
-                pos_a += 1
-            pos_b = 0
-            for rowid, string in self._values:
-                if rowid == b:
-                    break
-                pos_b += 1
-
-            return pos_a > pos_b
+            return a.lower() > b.lower()
 
     """
         Forward "cursor-changed" as "item-selected" with item id as arg
