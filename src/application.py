@@ -116,10 +116,10 @@ class Application(Gtk.Application):
         Activate window and create it if missing
     """
     def do_activate(self):
+        self._window.update_lists()
         self._window.show()
         self._window.present()
-        if self._window.update_db():
-            self._window.manage_lists()
+        self._window.update_db()
 
     """
         Destroy main window

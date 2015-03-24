@@ -22,26 +22,6 @@ from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
 
-# Loading view used on db update
-class LoadingView(Gtk.Bin):
-    def __init__(self):
-        Gtk.Bin.__init__(self)
-        self.set_property('expand', True)
-        self.set_property('halign', Gtk.Align.CENTER)
-        self.set_property('valign', Gtk.Align.CENTER)
-        label = Gtk.Label()
-        label.set_label(_("Loading please wait..."))
-        label.show()
-        self.add(label)
-        self.show()
-
-    def remove_signals(self):
-        pass
-
-    def stop(self):
-        pass
-
-
 # Playlist view used to manage playlists
 class PlaylistManageView(Gtk.Bin):
     """

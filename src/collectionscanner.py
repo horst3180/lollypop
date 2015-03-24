@@ -23,7 +23,7 @@ from lollypop.utils import format_artist_name
 
 class CollectionScanner(GObject.GObject):
     __gsignals__ = {
-        'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'scan-update': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
     _mimes = ["mp3", "ogg", "flac", "m4a", "mp4", "opus"]
@@ -112,7 +112,7 @@ class CollectionScanner(GObject.GObject):
     def _finish(self):
         self._in_thread = False
         self._progress.hide()
-        self.emit("scan-finished")
+        self.emit("scan-update")
 
     """
         Clean track's compilation if needed
@@ -176,6 +176,9 @@ class CollectionScanner(GObject.GObject):
                 print(ascii(filepath))
                 print("CollectionScanner::_scan(): %s" % e)
             i += 1
+            if i%100 == 0:
+                sql.commit()
+                GLib.idle_add(self.emit, "scan-update")
             if self._smooth:
                 sleep(0.001)
 

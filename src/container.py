@@ -21,7 +21,7 @@ from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view import AlbumView, ArtistView, DeviceView
-from lollypop.view import PlaylistView, PlaylistManageView, LoadingView
+from lollypop.view import PlaylistView, PlaylistManageView
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -97,37 +97,19 @@ class Container(ViewContainer):
         self._vm.connect('mount-removed', self._on_mount_removed)
 
         Objects.playlists.connect("playlists-changed",
-                                  self.manage_lists)
+                                  self.update_lists)
 
 
     """
         Update db at startup only if needed
         @param force as bool to force update (if possible)
-        @return True if no loading view showed
     """
     def update_db(self, force=False):
-        no_loading = True
         if not self._progress.is_visible():
             if force or Objects.tracks.is_empty():
                 self._scanner.update(False)
-                no_loading = False
             elif Objects.settings.get_value('startup-scan'):
                 self._scanner.update(True)
-        if not no_loading:
-            self._list_one.widget.hide()
-            self._list_one_restore = self._list_one.get_selected_id()
-            self._list_two.widget.hide()
-            self._list_two_restore = self._list_two.get_selected_id()
-            old_view = self._stack.get_visible_child()
-            view = LoadingView()
-            self._stack.add(view)
-            self._stack.set_visible_child(view)
-            self.save_view_state()
-            self._scanner.update(False)
-            self._clean_view(old_view)
-
-        return no_loading
-
 
     """
         Save view state
@@ -166,16 +148,12 @@ class Container(ViewContainer):
         GLib.timeout_add(2000, view.destroy)
 
     """
-        Manage lists visibility
-        @param updater as GObject:
+        Update lists
+        @param updater as GObject
     """
-    def manage_lists(self, updater=None):
-        if not self._list_one.widget.is_visible():
-            self._list_one.widget.show()
+    def update_lists(self, updater=None):
         self._update_list_one(updater)
-        if self._list_two.visible:
-            self._list_two.widget.show()
-            self._update_list_two(updater)
+        self._update_list_two(updater)
 
     """
         Load external files
@@ -207,12 +185,12 @@ class Container(ViewContainer):
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._list_one = SelectionList()
+        self._list_one.widget.show()
         self._list_two = SelectionList()
         self._list_one.connect('item-selected', self._on_list_one_selected)
         self._list_one.connect('populated', self._on_list_one_populated)
         self._list_two.connect('item-selected', self._on_list_two_selected)
         self._list_two.connect('populated', self._on_list_two_populated)
-        self._list_two.visible = False
 
         self._progress = Gtk.ProgressBar()
 
@@ -254,7 +232,7 @@ class Container(ViewContainer):
     """
     def _setup_scanner(self):
         self._scanner = CollectionScanner(self._progress)
-        self._scanner.connect("scan-finished", self.manage_lists)
+        self._scanner.connect("scan-update", self.update_lists)
         self._scanner.connect("add-finished", self._play_tracks)
 
     """
@@ -326,7 +304,6 @@ class Container(ViewContainer):
         if selection_list == self._list_one and\
            self._list_two.widget.is_visible():
             self._list_two.widget.hide()
-            self._list_two.visible = False
 
     """
         Setup list for artists
@@ -481,18 +458,14 @@ class Container(ViewContainer):
         if object_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (False,))
             self._list_two.widget.show()
-            self._list_two.visible = True
         elif object_id < Navigation.DEVICES:
             self._list_two.widget.hide()
-            self._list_two.visible = False
             self._update_view_device(object_id)
         elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
-            self._list_two.visible = False
             self._update_view_albums(object_id)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
-            self._list_two.visible = False
             if object_id == Navigation.ALL:
                 self._update_view_albums(object_id)
             else:
@@ -501,7 +474,6 @@ class Container(ViewContainer):
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
-            self._list_two.visible = True
             if self._list_two_restore is None:
                 self._update_view_albums(object_id)
 
