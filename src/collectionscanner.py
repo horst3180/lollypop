@@ -259,7 +259,7 @@ class CollectionScanner(GObject.GObject):
         else:
             year = None
 
-        length = infos.get_duration()
+        length = infos.get_duration()/1000000000
 
         # Get all artist ids
         artist_ids = []
