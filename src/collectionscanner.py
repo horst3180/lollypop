@@ -176,7 +176,7 @@ class CollectionScanner(GObject.GObject):
                 print(ascii(filepath))
                 print("CollectionScanner::_scan(): %s" % e)
             i += 1
-            if i%100 == 0:
+            if i%50 == 0:
                 sql.commit()
                 GLib.idle_add(self.emit, "scan-update")
             if self._smooth:
