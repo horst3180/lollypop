@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GObject, Gst
+from gi.repository import GLib, GObject, Gst, GstPbutils
 import random
 from os import path
 
@@ -96,6 +96,7 @@ class Player(GObject.GObject):
         self._queue = []
 
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
+        self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
         self._playbin.set_property("flags", flags)
@@ -110,6 +111,15 @@ class Player(GObject.GObject):
         self._bus.connect('message::error', self._on_bus_error)
         self._bus.connect('message::eos', self._on_bus_eos)
         self._bus.connect('message::stream-start', self._on_stream_start)
+
+    """
+        Return informations on file at path
+        @param path as str
+        @return GstPbutils.DiscovererInfo
+    """
+    def get_infos(self, path):
+        uri = GLib.filename_to_uri(path)
+        return self._tagreader.discover_uri(uri)
 
     """
         True if player is playing

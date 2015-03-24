@@ -118,7 +118,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         self._window.show()
         self._window.present()
-        if not self._window.update_db():
+        if self._window.update_db():
             self._window.manage_lists()
 
     """
@@ -128,7 +128,10 @@ class Application(Gtk.Application):
         Objects.player.stop()
         if self._opened_files:
             Objects.tracks.remove_tmp()
-        Objects.sql.execute("VACUUM")
+        try:
+            Objects.sql.execute("VACUUM")
+        except:
+            pass
         Objects.sql.close()
         if Objects.settings.get_value('save-state'):
             self._window.save_view_state()

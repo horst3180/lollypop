@@ -16,7 +16,6 @@ from time import sleep
 from gettext import gettext as _
 from gi.repository import GLib, GObject
 from _thread import start_new_thread
-import mutagen
 
 from lollypop.define import Objects, Navigation
 from lollypop.utils import format_artist_name
@@ -79,8 +78,8 @@ class CollectionScanner(GObject.GObject):
         for f in files:
             path = f.get_path()
             if path not in tracks:
-                tag = mutagen.File(path, easy=True)
-                self._added.append(self._add2db(path, 0, tag, sql))
+                infos = Objects.player.get_infos(path)
+                self._added.append(self._add2db(path, 0, infos, sql))
             i += 1
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.sanitize(sql)
@@ -160,17 +159,17 @@ class CollectionScanner(GObject.GObject):
             mtime = int(os.path.getmtime(filepath))
             try:
                 if filepath not in tracks:
-                    tag = mutagen.File(filepath, easy=True)
-                    self._add2db(filepath, mtime, tag, sql)
+                    infos = Objects.player.get_infos(filepath)
+                    self._add2db(filepath, mtime, infos, sql)
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
-                        tag = mutagen.File(filepath, easy=True)
+                        infos = Objects.player.get_infos(filepath)
                         track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
                         self._clean_compilation(album_id, sql)
-                        self._add2db(filepath, mtime, tag, sql)
+                        self._add2db(filepath, mtime, infos, sql)
                     tracks.remove(filepath)
 
             except Exception as e:
@@ -196,86 +195,71 @@ class CollectionScanner(GObject.GObject):
         GLib.idle_add(self._finish)
 
     """
-        Add new file to db with tag
+        Add new file to db with informations
         @param filepath as string
         @param file modification time as int
-        @param tag as mutagen.File(easy=True)
+        @param infos as GstPbutils.DiscovererInfo
         @param sql as sqlite cursor
         @return track id as int
     """
-    def _add2db(self, filepath, mtime, tag, sql):
+    def _add2db(self, filepath, mtime, infos, sql):
         path = os.path.dirname(filepath)
 
-        keys = tag.keys()
-        if "title" in keys:
-            title = tag["title"][0]
-        else:
+        tags = infos.get_tags()
+
+        (exist, title) = tags.get_string_index('title', 0)
+        if not exist:
             title = os.path.basename(filepath)
 
-        if "artist" in keys:
-            artists = tag["artist"][0]
-        else:
+        (exist, artists) = tags.get_string_index('artist', 0)
+        if not exist:
             artists = _("Unknown")
 
-        # Vorbis comment uses albumartist for original artist
-        # Id3tag uses performer for original artist
-        if "albumartist" in keys:
-            performer = format_artist_name(tag["albumartist"][0])
-        elif "performer" in keys:
-            performer = format_artist_name(tag["performer"][0])
+        artists = ""
+        size = tags.get_tag_size('artist')
+        if size == 0:
+            artists = _("Unknown")
         else:
+            for i in range(0, size):
+                (exist, artist) = tags.get_string_index('artist', i)
+                artists += artist
+                if i < size-1:
+                    artists += ";"
+
+        (exist, performer) = tags.get_string_index('album-artist', 0)
+        if not exist:
             performer = None
 
-        if "album" in keys:
-            album = tag["album"][0]
-        else:
+        (exist, album) = tags.get_string_index('album', 0)
+        if not exist:
             album = _("Unknown")
 
-        if "genre" in keys:
-            genres = tag["genre"][0]
-        else:
+        genres = ""
+        size = tags.get_tag_size('genre')
+        if size == 0:
             genres = _("Unknown")
-
-        length = int(tag.info.length)
-
-        if "discnumber" in keys:
-            string = tag["discnumber"][0]
-            if "/" in string:
-                index = string.find("/")
-                discnumber = int(string[0:index])
-            else:
-                try:
-                    discnumber = int(string)
-                except:
-                    discnumber = 0
         else:
+            for i in range(0, size):
+                (exist, genre) = tags.get_string_index('genre', i)
+                genres += genre
+                if i < size-1:
+                    genres += ";"
+
+        (exist, discnumber) = tags.get_int_index('disc-number', 0)
+        if not exist:
             discnumber = 0
 
-        if "tracknumber" in keys:
-            string = tag["tracknumber"][0]
-            if "/" in string:
-                index = string.find("/")
-                tracknumber = int(string[0:index])
-            else:
-                try:
-                    tracknumber = int(string)
-                except:
-                    tracknumber = 0
-        else:
+        (exist, tracknumber) = tags.get_int_index('track-number', 0)
+        if not exist:
             tracknumber = 0
 
-        if "date" in keys:
-            try:
-                string = tag["date"][0]
-                if "-" in string:
-                    index = string.find("-")
-                    year = int(string[0:index])
-                else:
-                    year = int(string)
-            except:
-                year = None
+        (exist, datetime) = tags.get_date_time('datetime')
+        if exist:
+            year = datetime.get_year()
         else:
             year = None
+
+        length = infos.get_duration()
 
         # Get all artist ids
         artist_ids = []

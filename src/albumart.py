@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, Gio
+from gi.repository import Gtk, Gdk, GdkPixbuf, Gio, Gst
 import cairo
 import os
 import re
@@ -25,8 +25,6 @@ import json
 import urllib.request
 import urllib.parse
 from math import pi
-import mutagen
-import base64
 
 from lollypop.define import Objects, ArtSize
 
@@ -242,43 +240,18 @@ class AlbumArt:
     def _pixbuf_from_tags(self, track_id, size):
         pixbuf = None
         filepath = Objects.tracks.get_path(track_id)
-        filetag = mutagen.File(filepath, easy=False)
-        for tag in filetag.tags:
-            if isinstance(tag, tuple):
-                if tag[0] == "METADATA_BLOCK_PICTURE":
-                    image = mutagen.flac.Picture(
-                                            base64.standard_b64decode(tag[1]))
-                    stream = Gio.MemoryInputStream.new_from_data(image.data,
-                                                                 None)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                       size,
-                                                                       size,
-                                                                       False,
-                                                                       None)
-                    break
-            elif tag.startswith("APIC:"):
-                audiotag = filetag.tags[tag]
-                # TODO check type by pref
-                stream = Gio.MemoryInputStream.new_from_data(audiotag.data,
-                                                             None)
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   size,
-                                                                   size,
-                                                                   False,
-                                                                   None)
-                break
-            elif tag == "covr":
-                data = filetag.tags["covr"]
-                if len(data) > 0:
-                    stream = Gio.MemoryInputStream.new_from_data(data[0],
-                                                                 None)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                                   stream,
-                                                                   size,
-                                                                   size,
-                                                                   False,
-                                                                   None)
-                    break
+        infos = Objects.player.get_infos(filepath)
+        (exist, sample) = infos.get_tags().get_sample_index('image', 0)
+        if exist:
+            (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
+        if exist:
+            stream = Gio.MemoryInputStream.new_from_data(mapflags.data,
+                                                         None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               size,
+                                                               size,
+                                                               False,
+                                                               None)
         return pixbuf
 
     """

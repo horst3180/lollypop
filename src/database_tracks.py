@@ -348,8 +348,8 @@ class DatabaseTracks:
     def remove_tmp(self, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("DELETE FROM tracks\
-                              WHERE mtime=0")
+        sql.execute("DELETE FROM tracks\
+                     WHERE mtime=0")
         self.clean()
         sql.commit()
 
