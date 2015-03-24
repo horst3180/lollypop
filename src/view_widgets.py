@@ -438,5 +438,4 @@ class PlaylistWidget(Gtk.Grid):
             if not self._tracks:
                 self._tracks = Objects.playlists.get_tracks_id(playlist_name)
             Objects.player.set_user_playlist(self._tracks, track_id)
-            self._is_loaded = True
         Objects.player.load(track_id)

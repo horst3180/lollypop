@@ -25,22 +25,26 @@ from lollypop.utils import format_artist_name
 class CollectionScanner(GObject.GObject):
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
     _mimes = ["mp3", "ogg", "flac", "m4a", "mp4", "opus"]
 
-    def __init__(self):
+    """
+        @param progress as Gtk.Progress
+    """
+    def __init__(self, progress):
         GObject.GObject.__init__(self)
 
+        self._progress = progress
         self._in_thread = False
-        self._progress = None
         self._smooth = False
-
+        self._added = []
+         
     """
         Update database
-        @param progress as Gtk.Progress
         @param smooth as bool, if smooth, try to scan smoothly
     """
-    def update(self,  progress, smooth):
+    def update(self, smooth):
         self._smooth = smooth
         paths = Objects.settings.get_value('music-path')
         if not paths:
@@ -53,12 +57,44 @@ class CollectionScanner(GObject.GObject):
                 return
 
         if not self._in_thread:
-            self._progress = progress
-            progress.show()
+            self._progress.show()
             self._in_thread = True
             self._compilations = []
             self._mtimes = Objects.tracks.get_mtimes()
             start_new_thread(self._scan, (paths,))
+
+    """
+        Add specified files to collection
+        @param files as [Gio.Files]
+        @thread safe
+    """
+    def add(self, files):
+        GLib.idle_add(self._progress.show)
+        sql = Objects.db.get_cursor()
+        tracks = Objects.tracks.get_paths(sql)
+        count = len(files)
+        i = 0
+        GLib.idle_add(self._update_progress, i, count)
+        self._added = []
+        for f in files:
+            path = f.get_path()
+            if path not in tracks:
+                tag = mutagen.File(path, easy=True)
+                self._added.append(self._add2db(path, 0, tag, sql))
+            i += 1
+            GLib.idle_add(self._update_progress, i, count)
+        Objects.albums.sanitize(sql)
+        sql.commit()
+        sql.close()     
+        GLib.idle_add(self._progress.hide)     
+        GLib.idle_add(self.emit, "add-finished")
+
+    """
+        Return files added by last call to CollectionScanner::add
+        @return [int]
+    """
+    def get_added(self):
+        return self._added
 
 #######################
 # PRIVATE             #
@@ -165,6 +201,7 @@ class CollectionScanner(GObject.GObject):
         @param file modification time as int
         @param tag as mutagen.File(easy=True)
         @param sql as sqlite cursor
+        @return track id as int
     """
     def _add2db(self, filepath, mtime, tag, sql):
         path = os.path.dirname(filepath)
@@ -298,6 +335,7 @@ class CollectionScanner(GObject.GObject):
             Objects.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:
             Objects.tracks.add_genre(track_id, genre_id, sql)
+        return track_id
 
     """
         Restore albums popularties

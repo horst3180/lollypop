@@ -22,43 +22,6 @@ from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
 
-
-# Container for a view
-class ViewContainer:
-    def __init__(self, duration):
-        self._duration = duration
-        self._stack = Gtk.Stack()
-        # Don't pass resize request to parent
-        self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
-        self._stack.set_transition_duration(duration)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
-
-#######################
-# PRIVATE             #
-#######################
-    """
-        Clean view
-        @param view as View
-    """
-    def _clean_view(self, view):
-        if view and not isinstance(view, DeviceView):
-            view.stop()
-            # Delayed destroy as we may have an animation running
-            # Gtk.StackTransitionType.CROSSFADE
-            GLib.timeout_add(self._duration,
-                             self._delayed_clean_view,
-                             view)
-
-    """
-        Clean view
-        @param valid view as View
-    """
-    def _delayed_clean_view(self, view):
-        view.remove_signals()
-        view.destroy()
-
-
 # Loading view used on db update
 class LoadingView(Gtk.Bin):
     def __init__(self):

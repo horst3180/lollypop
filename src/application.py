@@ -41,6 +41,8 @@ class Application(Gtk.Application):
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
+        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
+        self.connect('open', self._on_files_opened)
         cssProviderFile = Gio.File.new_for_uri(
                             'resource:///org/gnome/Lollypop/application.css'
                                               )
@@ -61,20 +63,28 @@ class Application(Gtk.Application):
         Objects.db = Database()
         # We store a cursor for the main thread
         Objects.sql = Objects.db.get_cursor()
+        Objects.player = Player()
         Objects.albums = DatabaseAlbums()
         Objects.artists = DatabaseArtists()
         Objects.genres = DatabaseGenres()
         Objects.tracks = DatabaseTracks()
         Objects.playlists = PlaylistsManager()
-        Objects.player = Player()
         Objects.art = AlbumArt()
 
         settings = Gtk.Settings.get_default()
         dark = Objects.settings.get_value('dark-ui')
         settings.set_property("gtk-application-prefer-dark-theme", dark)
 
+        party_settings = Objects.settings.get_value('party-ids')
+        ids = []
+        for setting in party_settings:
+            if isinstance(setting, int):
+                ids.append(setting)
+        Objects.player.set_party_ids(ids)
+
         self.add_action(Objects.settings.create_action('shuffle'))
         self._window = None
+        self._opened_files = False
 
         DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
         if DESKTOP and "GNOME" in DESKTOP:
@@ -93,6 +103,11 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
+        if not self._window:
+            self._window = Window(self)
+            self._window.connect('delete-event', self._hide_on_delete)
+            self._service = MPRIS(self)
+            self._notifications = NotificationManager()
         if self._appmenu:
             menu = self._setup_app_menu()
             self.set_app_menu(menu)
@@ -101,23 +116,18 @@ class Application(Gtk.Application):
         Activate window and create it if missing
     """
     def do_activate(self):
-        if not self._window:
-            self._window = Window(self)
-            self._window.connect('delete-event', self._hide_on_delete)
-            self._service = MPRIS(self)
-            self._notifications = NotificationManager()
-
-            if not self._appmenu:
-                menu = self._setup_app_menu()
-                self._window.setup_menu(menu)
         self._window.show()
         self._window.present()
+        if not self._window.update_db():
+            self._window.manage_lists()
 
     """
         Destroy main window
     """
     def quit(self, action=None, param=None):
         Objects.player.stop()
+        if self._opened_files:
+            Objects.tracks.remove_tmp()
         Objects.sql.execute("VACUUM")
         Objects.sql.close()
         if Objects.settings.get_value('save-state'):
@@ -128,7 +138,24 @@ class Application(Gtk.Application):
 # PRIVATE             #
 #######################
     """
+        Play specified files
+        @param app as Gio.Application
+        @param files as [Gio.Files]
+        @param hint as str
+        @param data as unused
+    """
+    def _on_files_opened(self, app, files, hint, data):
+        self._opened_files = True
+        external_files = []
+        for f in files:
+            external_files.append(f)
+        self._window.load_external(external_files)
+        self.do_activate()
+
+    """
         Hide window
+        @param widget as Gtk.Widget
+        @param event as Gdk.Event
     """
     def _hide_on_delete(self, widget, event):
         if not Objects.settings.get_value('background-mode'):
@@ -141,7 +168,7 @@ class Application(Gtk.Application):
     """
     def _update_db(self, action=None, param=None):
         if self._window:
-            self._window.update_db()
+            self._window.update_db(True)
 
     """
         Show a fullscreen window with cover and artist informations

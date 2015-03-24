@@ -343,6 +343,17 @@ class DatabaseTracks:
         return tracks
 
     """
+        Remove temp tracks for db (ie with mtime=0)
+    """
+    def remove_tmp(self, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("DELETE FROM tracks\
+                              WHERE mtime=0")
+        self.clean()
+        sql.commit()
+
+    """
         Clean database deleting orphaned entries
         @warning commit needed
     """

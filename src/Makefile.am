@@ -5,6 +5,7 @@ app_PYTHON = \
 	application.py\
 	toolbar.py\
 	window.py\
+	container.py\
 	fullscreen.py\
 	notification.py\
 	utils.py\
