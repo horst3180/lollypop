@@ -150,7 +150,7 @@ class Toolbar:
         @param widget as GtkToggleButton
     """
     def _save_genres_btn_state(self, widget):
-        Objects.settings.set_value('hide-genres',
+        Objects.settings.set_value('show-genres',
                                    GLib.Variant('b',
                                                 not widget.get_active()))
 
