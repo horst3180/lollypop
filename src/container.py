@@ -329,9 +329,10 @@ class Container(ViewContainer):
         Hide list two base on current artist list
     """
     def _pre_setup_list_artists(self, selection_list):
-        if selection_list == self._list_one and\
-           self._list_two.widget.is_visible():
-            self._list_two.widget.hide()
+        if selection_list == self._list_one:
+            if self._list_two.widget.is_visible():
+                self._list_two.widget.hide()
+            self._list_two_restore = None
 
     """
         Setup list for artists
