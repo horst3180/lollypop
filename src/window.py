@@ -146,7 +146,7 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def _on_genres_btn_toggled(self, button):
         self._show_genres = self._toolbar.get_view_genres_btn().get_active()
-        self._setup_lists(False)
+        self._update_list_one(None)
 
     """
         Delay event

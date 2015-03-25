@@ -268,21 +268,29 @@ class Container(ViewContainer):
         @param updater as GObject
     """
     def _update_list_one(self, updater):
+        update = updater is not None
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
-            self._setup_lists(updater is not None)
+            if self._show_genres:
+                start_new_thread(self._setup_list_genres,
+                                 (self._list_one, update))
+            else:
+                start_new_thread(self._setup_list_artists,
+                                 (self._list_one, Navigation.ALL, update))
+
 
     """
         Update list two
         @param updater as GObject
     """
     def _update_list_two(self, updater):
-        object_id = self._list_one.get_selected_id()
-        if object_id == Navigation.PLAYLISTS:
-            start_new_thread(self._setup_list_playlists, (True,))
-        elif isinstance(updater, CollectionScanner):
-            start_new_thread(self._setup_list_artists,
-                             (self._list_two, object_id, True))
+        if self._show_genres:
+            object_id = self._list_one.get_selected_id()
+            if object_id == Navigation.PLAYLISTS:
+                start_new_thread(self._setup_list_playlists, (True,))
+            elif isinstance(updater, CollectionScanner):
+                start_new_thread(self._setup_list_artists,
+                                 (self._list_two, object_id, True))
 
     """
         Return list one headers
@@ -296,18 +304,6 @@ class Container(ViewContainer):
         else:
             items.append((Navigation.ALL, _("All albums")))
         return items
-
-    """
-        Setup genres/artists lists
-        @param update as bool, if True, just update entries
-    """
-    def _setup_lists(self, update):
-        if self._show_genres:
-            start_new_thread(self._setup_list_genres,
-                             (self._list_one, update))
-        else:
-            start_new_thread(self._setup_list_artists,
-                             (self._list_one, Navigation.ALL, update))
 
     """
         Setup list for genres
