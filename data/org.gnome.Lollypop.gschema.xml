@@ -51,9 +51,9 @@
             <summary>Scan library at startup</summary>
             <description></description>
         </key>
-         <key type="b" name="hide-genres">
-            <default>true</default>
-            <summary>Do not show genres list</summary>
+         <key type="b" name="show-genres">
+            <default>false</default>
+            <summary>Show genres list</summary>
             <description></description>
         </key>
 		 <key type="b" name="dark-ui">

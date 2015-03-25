@@ -87,7 +87,7 @@ class Toolbar:
 
         self._view_genres_btn = self._ui.get_object('genres_button')
         self._view_genres_btn.set_active(
-                                not Objects.settings.get_value('hide-genres'))
+                                   Objects.settings.get_value('show-genres'))
         self._view_genres_btn.connect("toggled", self._save_genres_btn_state)
 
         search_button = self._ui.get_object('search-button')
