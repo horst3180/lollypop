@@ -34,8 +34,8 @@ class CurrentTrack:
         album_id = None
         album = None
         artist = None
-        performer_id = None
-        performer = None
+        aartist_id = None
+        aartist = None
         genre_id = None
         genre = None
         number = None
@@ -315,7 +315,7 @@ class Player(GObject.GObject):
             if genre_id:
                 self.set_albums(self.current.id,
                                 self.current.album_id,
-                                self.current.performer_id,
+                                self.current.aartist_id,
                                 genre_id,
                                 False)
             else:
@@ -351,7 +351,7 @@ class Player(GObject.GObject):
             # We need to put some context, take first available genre
             if self.current.id:
                 self.set_albums(self.current.id, self.current.album_id,
-                                self.current.performer_id, None, True)
+                                self.current.aartist_id, None, True)
 
     """
         Set party ids to ids
@@ -748,12 +748,12 @@ class Player(GObject.GObject):
             GLib.idle_add(self.stop)
             return False
 
-        # Stop if performer changed
-        new_performer_id = Objects.tracks.get_performer_id(
+        # Stop if aartist changed
+        new_aartist_id = Objects.tracks.get_aartist_id(
                                                 track_id,
                                                 sql)
         if self.context.next == NextContext.STOP_ARTIST and\
-           self.current.performer_id != new_performer_id:
+           self.current.aartist_id != new_aartist_id:
             GLib.idle_add(self.stop)
             return False
 
@@ -765,10 +765,10 @@ class Player(GObject.GObject):
         self.current.album = Objects.albums.get_name(
                                                 self.current.album_id,
                                                 sql)
-        self.current.performer_id = new_performer_id
-        self.current.performer = translate_artist_name(
+        self.current.aartist_id = new_aartist_id
+        self.current.aartist = translate_artist_name(
                                         Objects.artists.get_name(
-                                                self.current.performer_id,
+                                                self.current.aartist_id,
                                                 sql))
         artist_name = ""
         for artist_id in Objects.tracks.get_artist_ids(self.current.id,

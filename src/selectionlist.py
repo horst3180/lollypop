@@ -35,7 +35,7 @@ class SelectionList(GObject.GObject):
         self._model = Gtk.ListStore(int, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
-        self._values = None       # Sort disabled if None
+        self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
 
@@ -111,10 +111,32 @@ class SelectionList(GObject.GObject):
                 break
 
     """
+        Add item to list
+        @param value as (int, str)
+    """
+    def add(self, value):
+        self._updating = True
+        found = False
+        for item in self._model:
+            if value[0] == item[0]:
+                found = True
+                break
+        if not found:
+            if self._is_artists:
+                string = translate_artist_name(value[1])
+            else:
+                string = value[1]
+            self._model.append([value[0],
+                                string,
+                                self._get_pixbuf(value[0])])     
+        self._updating = False
+
+    """
         Update view with values
         @param [(int, str)]
     """
     def update(self, values):
+        self._updating = True
         if self._signal_id:
             self._view.disconnect(self._signal_id)
             self._signal_id = None
@@ -123,16 +145,17 @@ class SelectionList(GObject.GObject):
             for value in values:
                 if item[1] == value[1]:
                     found = True
+                    break
             # Remove not found items but not devices
             if not found and item[0] > Navigation.DEVICES:
                 self._model.remove(item.iter)
 
-        self._values = values
         for value in values:
             found = False
             for item in self._model:
                 if item[1] == value[1]:
                     found = True
+                    break
             if not found:
                 if self._is_artists:
                     string = translate_artist_name(value[1])
@@ -141,10 +164,9 @@ class SelectionList(GObject.GObject):
                 self._model.append([value[0],
                                    string,
                                    self._get_pixbuf(value[0])])
-        # Disable sort
-        self._values = None
         self._signal_id = self._view.connect('cursor-changed',
                                              self._new_item_selected)
+        self._updating = False
         self.emit("populated")
 
     """
@@ -257,7 +279,7 @@ class SelectionList(GObject.GObject):
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
 
-        if not self._values:
+        if not self._updating:
             return False
 
         # Do not order static entries

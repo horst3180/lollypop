@@ -646,7 +646,7 @@ class PlaylistEditWidget:
             track_id = tracks.pop(0)
             filepath = Objects.tracks.get_path(track_id)
             album_id = Objects.tracks.get_album_id(track_id)
-            artist_id = Objects.tracks.get_performer_id(track_id)
+            artist_id = Objects.tracks.get_aartist_id(track_id)
             if artist_id == Navigation.COMPILATIONS:
                 artist_id = Objects.tracks.get_artist_id(track_id)
             artist_name = Objects.artists.get_name(artist_id)

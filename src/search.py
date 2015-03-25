@@ -255,17 +255,17 @@ class SearchWidget(Gtk.Popover):
 
         searched = self._text_entry.get_text()
 
-        tracks_non_performer = []
+        tracks_non_aartist = []
 
-        # Get all albums for all artists and non performer tracks
+        # Get all albums for all artists and non aartist tracks
         for artist_id in Objects.artists.search(searched, sql):
             for album_id in Objects.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Objects.tracks.get_as_non_performer(
+            for track_id, track_name in Objects.tracks.get_as_non_aartist(
                                                                    artist_id,
                                                                    sql):
-                tracks_non_performer.append((track_id, track_name))
+                tracks_non_aartist.append((track_id, track_name))
 
         albums += Objects.albums.search(searched, sql)
 
@@ -279,7 +279,7 @@ class SearchWidget(Gtk.Popover):
             results.append(search_obj)
 
         for track_id, track_name in Objects.tracks.search(searched, sql) +\
-                tracks_non_performer:
+                tracks_non_aartist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id

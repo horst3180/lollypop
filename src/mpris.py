@@ -160,7 +160,7 @@ class MPRIS(dbus.service.Object):
             self._metadata['xesam:album'] = Objects.player.current.album
             self._metadata['xesam:artist'] = [Objects.player.current.artist]
             self._metadata['xesam:albumArtist'] = [
-                                            Objects.player.current.performer
+                                            Objects.player.current.aartist
                                                   ]
             self._metadata['mpris:length'] = dbus.Int64(
                                               Objects.player.current.duration *

@@ -245,11 +245,11 @@ class DatabaseTracks:
         return ()
 
     """
-        Get performer id for track id
+        Get aartist id for track id
         @param Track id as int
         @return Performer id as int
     """
-    def get_performer_id(self, track_id, sql=None):
+    def get_aartist_id(self, track_id, sql=None):
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT albums.artist_id from albums,tracks\
@@ -327,7 +327,7 @@ class DatabaseTracks:
         @param artist id as int
         @return array of (tracks id as int, track name as string)
     """
-    def get_as_non_performer(self, artist_id, sql=None):
+    def get_as_non_aartist(self, artist_id, sql=None):
         if not sql:
             sql = Objects.sql
         tracks = []

@@ -32,7 +32,6 @@ class Window(Gtk.ApplicationWindow, Container):
                                        title="Lollypop")
         
         self._timeout_configure = None
-        self._show_genres = True
 
         self._setup_window()
         self._setup_media_keys()

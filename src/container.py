@@ -79,6 +79,7 @@ class Container(ViewContainer):
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
+        self._show_genres = True
 
         self._setup_view()
         self._setup_scanner()
@@ -227,12 +228,39 @@ class Container(ViewContainer):
             self._list_two_restore = position
 
     """
+        Add genre to genre list
+        @param scanner as CollectionScanner
+        @param genre id as int
+    """
+    def _add_genre(self, scanner, genre_id):
+        if self._show_genres:
+            genre_name = Objects.genres.get_name(genre_id)
+            self._list_one.add((genre_id, genre_name))
+
+    """
+        Add artist to artist list
+        @param scanner as CollectionScanner
+        @param artist id as int
+        @param album id as int
+    """
+    def _add_artist(self, scanner, artist_id, album_id):
+        artist_name = Objects.artists.get_name(artist_id)
+        if self._show_genres:
+            genre_ids = Objects.albums.get_genre_ids(album_id)
+            if self._list_one.get_selected_id() in genre_ids:
+                self._list_two.add((artist_id, artist_name))
+        else:
+            self._list_one.add((artist_id, artist_name))
+
+    """
         Run collection update if needed
         @return True if hard scan is running
     """
     def _setup_scanner(self):
         self._scanner = CollectionScanner(self._progress)
-        self._scanner.connect("scan-update", self.update_lists)
+        self._scanner.connect("scan-finished", self.update_lists)
+        self._scanner.connect("genre-update", self._add_genre)
+        self._scanner.connect("artist-update", self._add_artist)
         self._scanner.connect("add-finished", self._play_tracks)
 
     """
