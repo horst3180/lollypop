@@ -134,11 +134,18 @@ class View(Gtk.Grid):
 
     """
         Update album cover in view
-        @param widget as unused, album id as int
+        @param player as Player
+        @param album id as int, if None, use object name
+        @param object name as str, unused if album id not None
     """
-    def _on_cover_changed(self, widget, album_id):
+    def _on_cover_changed(self, player, album_id, object_name):
+        if album_id is not None:
+            param = album_id
+        else:
+            param = object_name
+
         for widget in self._get_children():
-            widget.update_cover(album_id)
+            widget.update_cover(param)
 
     """
         Current song changed
@@ -564,6 +571,18 @@ class PlaylistEditView(View):
     def _on_back_btn_clicked(self, button):
         Objects.window.destroy_current_view()
 
+
+# Radio view
+class RadiosView(View):
+    def __init__(self):
+        View.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
+        self._viewport.add(builder.get_object('widget'))
+        self.add(self._scrolledWindow)
+
+    def populate(self):
+        pass
 
 # Playlist synchronisation view
 class DeviceView(View):

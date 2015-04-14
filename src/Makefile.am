@@ -25,6 +25,7 @@ app_PYTHON = \
 	search.py\
 	tracks.py\
 	album_widgets.py\
+	radio_widgets.py\
 	player.py\
 	popimages.py\
 	popalbums.py\

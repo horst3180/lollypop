@@ -20,8 +20,9 @@ import os
 from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
-from lollypop.view import AlbumView, ArtistView, DeviceView, PlaylistEditView
+from lollypop.view import AlbumView, ArtistView, PlaylistEditView
 from lollypop.view import ViewContainer, PlaylistView, PlaylistManageView
+from lollypop.view import RadiosView, DeviceView
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -307,6 +308,7 @@ class Container:
         items = []
         items.append((Navigation.POPULARS, _("Popular albums")))
         items.append((Navigation.PLAYLISTS, _("Playlists")))
+        items.append((Navigation.RADIOS, _("Radios")))
         if self._show_genres:
             items.append((Navigation.ALL, _("All artists")))
         else:
@@ -422,6 +424,17 @@ class Container:
         self._stack.clean_old_views(view)
 
     """
+        Update current view with radios view
+    """
+    def _update_view_radios(self):
+        view = RadiosView()
+        self._stack.add(view)
+        view.show()
+        start_new_thread(view.populate, ())
+        self._stack.set_visible_child(view)
+        self._stack.clean_old_views(view)
+
+    """
         Update current view with playlist view
         @param playlist id as int
     """
@@ -491,6 +504,9 @@ class Container:
         elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
             self._update_view_albums(object_id, None)
+        elif object_id == Navigation.RADIOS:
+            self._list_two.widget.hide()
+            self._update_view_radios()
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
             if object_id == Navigation.ALL or\

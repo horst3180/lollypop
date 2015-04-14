@@ -47,6 +47,10 @@ class ArtSize_:
     BIG = 200
     MONSTER = 500
 
+class PlayListType:
+    MUSIC = 0
+    RADIO = 1
+
 
 class Shuffle_:
     NONE = 0             # No shuffle
@@ -60,7 +64,8 @@ class Navigation_:
     COMPILATIONS = -1
     POPULARS = -2
     PLAYLISTS = -3
-    ALL = -4
+    RADIOS = -4
+    ALL = -5
     DEVICES = -1000
 
 Objects = Objects_()

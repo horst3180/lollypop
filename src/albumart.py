@@ -33,6 +33,7 @@ from lollypop.define import Objects, ArtSize
 class AlbumArt:
 
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
+    _RADIO_PATH = os.path.expanduser("~") + "/.local/share/lollypop/radios"
     _mimes = ["jpeg", "jpg", "png", "gif"]
 
     """
@@ -144,13 +145,16 @@ class AlbumArt:
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
-                                            self._get_default_icon(size),
+                                            self._get_default_icon(
+                                                    size,
+                                                    'folder-music-symbolic'),
                                             size,
                                             selected)
 
                 # No cover, use default one
                 if not pixbuf:
-                    pixbuf = self._get_default_icon(size)
+                    pixbuf = self._get_default_icon(size,
+                                                    'folder-music-symbolic')
                 else:
                     # Gdk < 3.15 was missing save method
                     # > 3.15 is missing savev method
@@ -165,8 +169,41 @@ class AlbumArt:
 
         except Exception as e:
             print(e)
-            return self._make_icon_frame(self._get_default_icon(size),
+            return self._make_icon_frame(self._get_default_icon(
+                                                    size,
+                                                    'folder-music-symbolic'),
                                          size,
+                                         selected)
+
+    """
+        Return pixbuf for radio
+        @param name as str
+        @param selected as bool
+        return: pixbuf
+    """
+    def get_radio(self, name, selected=False):
+        PATH_JPG = "%s/%s.jpg" % self._RADIO_PATH
+        pixbuf = None
+
+        try:
+            # Look in cache
+            if os.path.exists(PATH_JPG):
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(PATH_JPG,
+                                                                ArtSize.BIG,
+                                                                ArtSize.BIG)
+            else:
+                pixbuf = self._get_default_icon(
+                                           ArtSize.BIG,
+                                           'audio-input-microphone-symbolic')
+            
+            return self._make_icon_frame(pixbuf, ArtSize.BIG, selected)
+
+        except Exception as e:
+            print(e)
+            return self._make_icon_frame(self._get_default__icon(
+                                           ArtSize.BIG,
+                                          'audio-input-microphone-symbolic'),
+                                         ArtSize.BIG,
                                          selected)
 
     """
@@ -208,6 +245,23 @@ class AlbumArt:
                 pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
         except Exception as e:
             print("AlbumArt::save_art(): %s" % e)
+
+    """
+        Save logo (used for radios)
+        @param pixbuf as Gdk.Pixbuf
+        @param name as str
+    """
+    def save_logo(self, pixbuf, name):
+        logopath = self._LOGO_PATH + "/" + name + ".jpg"
+        try:
+            # Gdk < 3.15 was missing save method
+            try:
+                pixbuf.save(logopath, "jpeg", ["quality"], ["90"])
+            # > 3.15 is missing savev method :(
+            except:
+                pixbuf.savev(logopath, "jpeg", ["quality"], ["90"])
+        except Exception as e:
+            print("AlbumArt::save_logo(): %s" % e)
 
     """
         Get arts on google image corresponding to search
@@ -342,13 +396,13 @@ class AlbumArt:
         Construct an empty cover album,
         code forked Gnome Music, see copyright header
         @param size as int
+        @param name as str (symbolic icon name)
         @return pixbuf as Gdk.Pixbuf
     """
-    def _get_default_icon(self, size):
+    def _get_default_icon(self, size, name):
         # get a small pixbuf with the given path
         icon_size = size / 4
-        icon = Gtk.IconTheme.get_default().load_icon('folder-music-symbolic',
-                                                     icon_size, 0)
+        icon = Gtk.IconTheme.get_default().load_icon(name, icon_size, 0)
         # create an empty pixbuf with the requested size
         result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
                                       True,

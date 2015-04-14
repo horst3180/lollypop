@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from locale import getlocale
 
 from lollypop.utils import is_audio, is_gnome
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, PlayListType
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -69,7 +69,8 @@ class Application(Gtk.Application):
         Objects.artists = DatabaseArtists()
         Objects.genres = DatabaseGenres()
         Objects.tracks = DatabaseTracks()
-        Objects.playlists = PlaylistsManager()
+        Objects.playlists = PlaylistsManager(PlayListType.MUSIC)
+        Objects.radios = PlaylistsManager(PlayListType.RADIO)
         Objects.art = AlbumArt()
 
         settings = Gtk.Settings.get_default()

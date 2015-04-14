@@ -26,11 +26,13 @@ class PopImages(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
+        @param album id as int
     """
     def __init__(self, album_id):
         Gtk.Popover.__init__(self)
 
         self._album_id = album_id
+        self._searched = ""
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -62,6 +64,7 @@ class PopImages(Gtk.Popover):
     """
     def populate(self, string):
         self._thread = True
+        self._searched = string
         start_new_thread(self._populate, (string,))
 
     """
@@ -133,8 +136,12 @@ class PopImages(Gtk.Popover):
     """
     def _on_activate(self, flowbox, child):
         pixbuf = child.get_child().get_pixbuf()
-        Objects.art.save_art(pixbuf, self._album_id)
-        Objects.art.clean_cache(self._album_id)
-        Objects.player.announce_cover_update(self._album_id)
+        if self._album_id:
+            Objects.art.save_art(pixbuf, self._album_id)
+            Objects.art.clean_cache(self._album_id)
+            Objects.player.announce_cover_update(self._album_id)
+        else:
+            Objects.art.save_logo(pixbuf, self._searched)
+            Objects.player.announce_cover_update(self._searched)            
         self.hide()
         self._streams = {}

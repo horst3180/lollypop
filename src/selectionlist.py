@@ -270,6 +270,8 @@ class SelectionList(GObject.GObject):
             icon = 'avatar-default-symbolic'
         elif object_id == Navigation.COMPILATIONS:
             icon = 'system-users-symbolic'
+        elif object_id == Navigation.RADIOS:
+            icon = 'audio-input-microphone-symbolic'
 
         if icon:
             return Gtk.IconTheme.get_default().load_icon(

@@ -17,14 +17,11 @@ import os
 
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
-from lollypop.define import Objects
+from lollypop.define import Objects, PlayListType
 
 
 # Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
-
-    PLAYLISTS_PATH = os.path.expanduser("~") +\
-                     "/.local/share/lollypop/playlists"
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -32,13 +29,25 @@ class PlaylistsManager(GObject.GObject):
         'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
-    def __init__(self):
+    """
+        Create a playlist for type
+        @param t as PlayListType
+    """
+    def __init__(self, t):
         GObject.GObject.__init__(self)
         self._idx = {}
+        if t == PlayListType.RADIO:
+            self._PLAYLISTS_PATH = os.path.expanduser("~") +\
+                     "/.local/share/lollypop/radios" 
+        else:  # Music
+           self._PLAYLISTS_PATH = os.path.expanduser("~") +\
+                     "/.local/share/lollypop/playlists" 
+
+
         # Create playlists directory if missing
-        if not os.path.exists(self.PLAYLISTS_PATH):
+        if not os.path.exists(self._PLAYLISTS_PATH):
             try:
-                os.mkdir(self.PLAYLISTS_PATH)
+                os.mkdir(self._PLAYLISTS_PATH)
             except Exception as e:
                 print("Lollypop::PlaylistsManager::init: %s" % e)
         self._init_idx()
@@ -50,7 +59,7 @@ class PlaylistsManager(GObject.GObject):
         @return file descriptor if 2nd param True
     """
     def add(self, playlist_name, get_desc=False):
-        filename = self.PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
+        filename = self._PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
         try:
             if os.path.exists(filename):
                 changed = False
@@ -80,8 +89,8 @@ class PlaylistsManager(GObject.GObject):
     """
     def rename(self, new_name, old_name):
         try:
-            os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u",
-                      self.PLAYLISTS_PATH+"/"+new_name+".m3u")
+            os.rename(self._PLAYLISTS_PATH+"/"+old_name+".m3u",
+                      self._PLAYLISTS_PATH+"/"+new_name+".m3u")
             for (idx, playlist) in self._idx.items():
                 if playlist == old_name:
                     self._idx[idx] = new_name
@@ -96,7 +105,7 @@ class PlaylistsManager(GObject.GObject):
     """
     def delete(self, playlist_name):
         try:
-            os.remove(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u")
+            os.remove(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u")
             for (idx, playlist) in self._idx.items():
                 if playlist == playlist_name:
                     del self._idx[idx]
@@ -122,8 +131,8 @@ class PlaylistsManager(GObject.GObject):
         try:
             index = 0
             entries = []
-            for filename in os.listdir(self.PLAYLISTS_PATH):
-                stat = os.stat(self.PLAYLISTS_PATH+"/"+filename)
+            for filename in os.listdir(self._PLAYLISTS_PATH):
+                stat = os.stat(self._PLAYLISTS_PATH+"/"+filename)
                 if S_ISREG(stat[ST_MODE]):
                     entries.append((stat[ST_MTIME], filename))
             for cdate, filename in sorted(entries, reverse=True):
@@ -145,7 +154,7 @@ class PlaylistsManager(GObject.GObject):
     def get_tracks(self, playlist_name):
         tracks = []
         try:
-            f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
+            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
             for filepath in f:
                 if filepath[0] == "/":
                     tracks.append(filepath[:-1])
@@ -197,7 +206,7 @@ class PlaylistsManager(GObject.GObject):
     """
     def add_tracks(self, playlist_name, tracks_path):
         try:
-            f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
+            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
             for filepath in tracks_path:
                 self._add_track(f, playlist_name, filepath)
             GLib.idle_add(self.emit, "playlist-changed", playlist_name)
@@ -255,7 +264,7 @@ class PlaylistsManager(GObject.GObject):
     def _init_idx(self):
         playlists = []
         try:
-            for filename in sorted(os.listdir(self.PLAYLISTS_PATH)):
+            for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
                 if filename.endswith(".m3u"):
                     playlists.append(filename[:-4])
         except Exception as e:
@@ -289,7 +298,7 @@ class PlaylistsManager(GObject.GObject):
     """
     def _remove_tracks(self, playlist_name, playlist_tracks, tracks_to_remove):
         try:
-            f = open(self.PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
+            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
             for path in playlist_tracks:
                 if path not in tracks_to_remove:
                     f.write(path+'\n')

@@ -24,6 +24,10 @@ from lollypop.utils import translate_artist_name
 
 # Base class for album widgets
 class AlbumWidget(Gtk.Bin):
+    """
+        Init album widget
+        @param album id as int
+    """
     def __init__(self, album_id):
         Gtk.Bin.__init__(self)
         self._album_id = album_id

@@ -62,7 +62,7 @@ class Player(GObject.GObject):
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,str))
     }
 
     """
@@ -141,10 +141,13 @@ class Player(GObject.GObject):
 
     """
         Emit a "cover-changed" signal
-        @param album id as int
+        @param data as str/int
     """
-    def announce_cover_update(self, album_id):
-        self.emit("cover-changed", album_id)
+    def announce_cover_update(self, data):
+        if isinstance(data, int):
+            self.emit("cover-changed", data, "")
+        elif isinstance(data, str):
+            self.amit("cover-changed", None, str)
 
     """
         Playback status

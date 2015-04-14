@@ -224,6 +224,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._model.append([True, name, self._del_pixbuf])
         Objects.playlists.add(name)
         self._set_current_object(name, True)
+
 #######################
 # PRIVATE             #
 #######################
@@ -419,7 +420,10 @@ class PlaylistEditWidget(Gtk.Bin):
     def populate(self):
         if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
-    
+
+#######################
+# PRIVATE             #
+#######################
     """
         Delete tracks after confirmation
         @param button as Gtk.Button
@@ -440,9 +444,6 @@ class PlaylistEditWidget(Gtk.Bin):
         self._unselectall()
         self._update_on_disk()
 
-#######################
-# PRIVATE             #
-#######################
     """
         Unselect all in view
     """
