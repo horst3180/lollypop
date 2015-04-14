@@ -20,7 +20,34 @@ from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
 
-# Base class for album widgets
+# Popover for radio creation
+class PopRadio(Gtk.Popover):
+    """
+        Init Popover
+    """
+    def __init__(self):
+        Gtk.Popover.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/PopRadio.ui')
+        builder.connect_signals(self)
+        self._name = builder.get_object('name')
+        self._uri = builder.get_object('uri')
+        self.add(builder.get_object('widget'))
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Create the radio
+        @param widget as Gtk.Widget
+    """
+    def _on_add_clicked(self, widget):
+        name = self._name.get_text()
+        uri = self._uri.get_text()
+        print(uri)
+
+
+# A radio widget
 class RadioWidget(Gtk.Bin):
     """
         Init radio widget

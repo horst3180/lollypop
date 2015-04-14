@@ -22,6 +22,7 @@ from lollypop.playlist_widgets import PlaylistsManagerWidget,\
                                       PlaylistWidget
 from lollypop.devicemanager import DeviceManagerWidget
 from lollypop.album_widgets import AlbumDetailedWidget, AlbumSimpleWidget
+from lollypop.radio_widgets import PopRadio, RadioWidget
 from lollypop.utils import translate_artist_name
 
 # Container for a view
@@ -577,12 +578,26 @@ class RadiosView(View):
     def __init__(self):
         View.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/RadioView.ui')
+        builder.connect_signals(self)
         self._viewport.add(builder.get_object('widget'))
         self.add(self._scrolledWindow)
 
     def populate(self):
         pass
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Show popover for playlist creation
+        @param widget as Gtk.Widget
+    """
+    def _on_new_clicked(self, widget):
+        popover = PopRadio()
+        popover.set_relative_to(widget)
+        popover.show()
+
 
 # Playlist synchronisation view
 class DeviceView(View):

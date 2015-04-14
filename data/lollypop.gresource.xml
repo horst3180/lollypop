@@ -12,7 +12,9 @@
     <file preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
     <file preprocess="xml-stripblanks">DeviceManagerView.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
-    <file preprocess="xml-stripblanks">RadiosView.ui</file>
+    <file preprocess="xml-stripblanks">RadioView.ui</file>
+    <file preprocess="xml-stripblanks">RadioWidget.ui</file>
+    <file preprocess="xml-stripblanks">PopRadio.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
     <file preprocess="xml-stripblanks">Unicode.ui</file>
     <file preprocess="xml-stripblanks">PlaylistsManagerView.ui</file>

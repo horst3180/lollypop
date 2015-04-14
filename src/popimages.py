@@ -23,7 +23,6 @@ from lollypop.define import ArtSize
 
 # Show a popover with album covers from the web
 class PopImages(Gtk.Popover):
-
     """
         Init Popover ui with a text entry and a scrolled treeview
         @param album id as int
