@@ -20,7 +20,6 @@
   <object class="GtkEventBox" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="above_child">True</property>
     <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
     <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
     <child>
